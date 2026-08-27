@@ -1,5 +1,7 @@
 # BACKS AIOS Skills
 
+**Read this in:** [Español](i18n/es/README.md) · [Português (BR)](i18n/pt-BR/README.md) · [Français](i18n/fr/README.md) · [Deutsch](i18n/de/README.md) · [हिन्दी](i18n/hi/README.md) · [简体中文](i18n/zh-CN/README.md)
+
 An agent harness distilled into 27 portable skills and 8 named plays, taken from a
 running agent platform and rebuilt as plain markdown any agent can load.
 

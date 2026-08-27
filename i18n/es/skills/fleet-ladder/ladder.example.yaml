@@ -1,0 +1,32 @@
+# Fleet ladder — EJEMPLO. Copia esto junto a tu código (p. ej. ladder.yaml) y
+# cambia cada marcador por un modelo que tus proveedores sirvan de verdad.
+# Por rol: candidatos en orden, el más fuerte primero, terminando en una cola
+# local de supervivencia (lo que corra en tu propio hardware cuando todos los
+# proveedores cloud estén caídos).
+# Para cambiar o agregar un modelo, edita ESTE archivo — nunca el código.
+
+builder:                        # implementa y repara
+  - strong-cloud-model          # la mejor calidad; primera opción cuando está arriba
+  - mid-cloud-model             # sólido y más barato; el respaldo usual
+  - local-coder-model           # cola de supervivencia: tu propio hardware
+
+grader:                         # revisión independiente — nunca el modelo que construyó
+  - other-family-strong-model   # una familia DISTINTA a la de los peldaños del builder
+  - other-family-mid-model
+  - local-review-model
+
+worker:                         # trabajos acotados y bien especificados; peldaños baratos sirven
+  - fast-cheap-model
+  - local-small-model
+
+# --- Variante solo: una sola familia de modelos disponible ------------------
+# El constructor y el evaluador igual no deben resolver al MISMO modelo para
+# el mismo cambio. Separa dentro de la familia (otro modelo u otro tamaño) y
+# dilo en el log de despacho — es la separación legal más débil, no la ideal.
+#
+# builder:
+#   - family-large-model
+# grader:
+#   - family-small-model        # misma familia, otro modelo — déjalo en el log
+# worker:
+#   - family-small-model
