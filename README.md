@@ -2,7 +2,7 @@
 
 **Read this in:** [Español](i18n/es/README.md) · [Português (BR)](i18n/pt-BR/README.md) · [Français](i18n/fr/README.md) · [Deutsch](i18n/de/README.md) · [हिन्दी](i18n/hi/README.md) · [简体中文](i18n/zh-CN/README.md)
 
-An agent harness distilled into 27 portable skills and 8 named plays, taken from a
+An agent harness distilled into 28 portable skills and 8 named plays, taken from a
 running agent platform and rebuilt as plain markdown any agent can load.
 
 ## Mission
@@ -79,6 +79,26 @@ bare API loop — are in [INSTALL.md](INSTALL.md).
 - **Effort stamps** — every skill's one-line cost claim (free / light / heavy) and
   every play's closing Weight line are decoded in [NAMING.md](NAMING.md#effort-stamps).
 
+## Performance
+
+Real numbers, measured on one Linux dev box — spawn cost varies by machine, so
+treat the shape, not the digits. Armed, the grounding hook costs about
+28ms per tool call on Node (39ms in Python); a read-only Bash call pays about
+32ms. Even the `AIOS_GATE=off` kill-switch pays ~35ms, because spawning the hook
+process is most of the cost. True zero hook overhead means disabling the hook in
+`/hooks` or disabling the plugin — the env var cannot get you there.
+
+The always-on token cost is the skill descriptions: about 4.1k tokens per
+session. Full skill bodies load only when a skill is invoked. The cost map is
+already in the pack: every skill's Effort stamp and every play's Weight line say
+what a discipline spends before you fire it.
+
+On a plain repo the big lever is [repo-map](skills/repo-map/SKILL.md): with no
+index, agents re-derive the repo's shape every session. Pay the walk once, then
+read the map. The rest is argument, not measurement — but we will make it
+plainly: the discipline removes more latency than the harness adds, because the
+real latency is wasted iteration, not a 30ms hook.
+
 ## The skills
 
 | Skill | What it does |
@@ -104,6 +124,7 @@ bare API loop — are in [INSTALL.md](INSTALL.md).
 | [human-voice](skills/human-voice/SKILL.md) | The no-degree bar: if reading it needs a degree, rewrite it. Keeps the full idea while it strips the machine tells. |
 | [red-first](skills/red-first/SKILL.md) | Commit a proven-failing test before the build starts. The builder may not touch it. A grader verifies it never moved. |
 | [repair-loop](skills/repair-loop/SKILL.md) | The full fix loop: ground in the floor, reproduce, red test, fix the class, verify on the real path, independent grade, land. |
+| [repo-map](skills/repo-map/SKILL.md) | Walk the tree once, write one CODE_MAP.md at the repo root, and read the map before walking raw. The repo's shape is derived once, not every session. |
 | [root-cause-first](skills/root-cause-first/SKILL.md) | No fixes without investigation. Reproduce on demand, instrument boundaries, trace the data backward to the source. |
 | [seam-engineering](skills/seam-engineering/SKILL.md) | Fix the flaw class once at its shared primitive, sweep every sibling, land a guard that catches the next offender. |
 | [session-handoff](skills/session-handoff/SKILL.md) | Compact a session into one flat file a brand-new agent can read cold and continue from. Secrets redacted. |

@@ -85,5 +85,6 @@ says.
 - [root-cause-first](../root-cause-first/SKILL.md) — the investigation the next session continues.
 - [repair-loop](../repair-loop/SKILL.md) — hand off mid-loop without losing the seam.
 - [decision-bar](../decision-bar/SKILL.md) — how open decisions reach your human.
+- [repo-map](../repo-map/SKILL.md) — the durable repo index the next session reads first.
 
 > Scaffold credit: Matt Pocock, handoff (mattpocock/skills). The composition and hard rules here are BACKS AIOS.

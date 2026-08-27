@@ -9,7 +9,7 @@ source is the law.
 
 Each mirror is a full drop-in copy of the pack under `i18n/<lang>/`:
 
-- `i18n/<lang>/skills/<name>/SKILL.md` — all 27 skills, same directory names
+- `i18n/<lang>/skills/<name>/SKILL.md` — all skills, same directory names
 - `i18n/<lang>/plays/*.md` — all 8 plays, same file names
 - `i18n/<lang>/README.md`, `INSTALL.md`, `NAMING.md`
 
@@ -35,7 +35,7 @@ work — each translated skill keeps them and adds natural native-language trigg
 ## Contributing a new language
 
 Open a pull request that mirrors the tree: `i18n/<code>/` with all 38 files
-(27 skills + 8 plays + `README.md`, `INSTALL.md`, `NAMING.md`), using the
+(every skill + every play + `README.md`, `INSTALL.md`, `NAMING.md`), using the
 language's standard code (like `pt-BR` or `zh-CN`). The translation contract's
 laws apply: native register over word-for-word, full depth kept, names and links
 unchanged, English triggers kept plus native ones added, community tech terms,

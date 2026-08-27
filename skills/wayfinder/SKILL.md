@@ -86,5 +86,6 @@ has broken this.
 - [live-research](../live-research/SKILL.md) — resolves the agent-alone research tickets.
 - [decision-bar](../decision-bar/SKILL.md) — which decisions actually reach the human.
 - [human-voice](../human-voice/SKILL.md) — how the map reads to a human.
+- [repo-map](../repo-map/SKILL.md) — read the repo's map first; walk the tree raw only when the map has no answer.
 
 > Scaffold credit: Matt Pocock, wayfinder (mattpocock/skills, MIT). The composition and hard rules here are BACKS AIOS.

@@ -70,5 +70,6 @@ and moves.
 
 - [wayfinder](../wayfinder/SKILL.md) — research tickets are the agent-alone type this skill resolves.
 - [root-cause-first](../root-cause-first/SKILL.md) — the same source-first discipline, aimed at bugs.
+- [repo-map](../repo-map/SKILL.md) — read the repo's map first; walk the tree raw only when the map has no answer.
 
 > Scaffold credit: Matt Pocock, research (mattpocock/skills, MIT). The composition and hard rules here are BACKS AIOS.

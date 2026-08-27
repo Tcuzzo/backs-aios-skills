@@ -102,6 +102,7 @@ free is a lie. The "Removes:" clause names the specific waste the skill deletes
 | human-voice | Named for what it enforces: the agent writes the way a person talks, and hard ideas still arrive whole. |
 | red-first | The failing (red) test comes first, committed before the build starts. |
 | repair-loop | The full fix loop, named for its shape: ground, reproduce, fix, verify, land. |
+| repo-map | Named for its artifact: one map file of the repo's shape, read map-first before any raw tree walk. |
 | root-cause-first | The order of operations is the rule: cause before fix, always. |
 | seam-engineering | Fixes land at the seam — the shared primitive — never as scattered point patches. |
 | session-handoff | Named for its artifact: one handoff file a cold session can continue from. |
