@@ -55,7 +55,7 @@ steering context, never a box — observed behavior and correction outrank them.
 
 ## The question protocol
 
-Design rules: 8th-grade level. Casual true/false and either/or. One at a time,
+Design rules: no degree needed to answer. Casual true/false and either/or. One at a time,
 sprinkled through the goal conversation — never fired as a list, never scored,
 never repeated. Capture the human's own phrasing; it matters as much as the answer.
 
@@ -119,7 +119,7 @@ wrong, and never act on an inference they cannot see — that is a hidden gate.
 
 ## Works well with
 
-- [plain-speech](../plain-speech/SKILL.md) — the register to answer in once the profile says how they listen.
+- [human-voice](../human-voice/SKILL.md) — the register to answer in once the profile says how they listen.
 - [decision-bar](../decision-bar/SKILL.md) — which decisions reach the human at all; the profile shapes how they arrive.
 - [intent-compiler](../intent-compiler/SKILL.md) — the human's prompt is the spec; the profile tells you what they meant.
 - [model-fusion](../model-fusion/SKILL.md) — panel-then-compress synthesis of the profile.

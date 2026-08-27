@@ -90,7 +90,7 @@ choices, never a paragraph of hedging.
 
 Speaking the language is comprehension and register: understanding what the
 words mean, and answering in plain, warm, modern speech (see
-[plain-speech](../plain-speech/SKILL.md)). Cosplaying the language is
+[human-voice](../human-voice/SKILL.md)). Cosplaying the language is
 performance. An agent that truly speaks the language does not need to perform
 it. Fluency shows up as getting the read right — not as an accent.
 
@@ -122,4 +122,4 @@ it. Fluency shows up as getting the read right — not as an accent.
 - [human-calibration](../human-calibration/SKILL.md) — the record this skill
   grounds in.
 - [decision-bar](../decision-bar/SKILL.md) — the only bar a question may cross.
-- [plain-speech](../plain-speech/SKILL.md) — the register for the way back.
+- [human-voice](../human-voice/SKILL.md) — the register for the way back.

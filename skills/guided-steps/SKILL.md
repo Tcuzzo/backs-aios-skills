@@ -28,7 +28,7 @@ One script, two parts:
 
 - **A helper library at the top** — identical in every wizard, never
   hand-edited. It provides: stage headers with progress ("stage 3 of 7"),
-  plain-speech narration, cross-platform URL opening, hidden entry for
+  human-voice narration, cross-platform URL opening, hidden entry for
   secrets, idempotent `.env` upserts (update the key if present, append if
   not), writes to your CI provider's secret store, a confirm/pause step, and
   a closing summary of everything captured.
@@ -46,7 +46,7 @@ One script, two parts:
 2. **Map each stage's journey.** One line per stage: URL → action → value →
    destination. The human sees the whole path before they start.
 3. **Author.** Copy the template. Write only the stages; never touch the
-   library. Keep the narration in plain speech — the person running this may
+   library. Keep the narration in plain words — the person running this may
    not be an engineer.
 4. **Verify statically.** Syntax-check the script (`bash -n`, shellcheck),
    make it executable, then walk every stage by hand: is each URL right, each
@@ -71,7 +71,7 @@ One script, two parts:
 ## Works well with
 
 - [session-handoff](../session-handoff/SKILL.md) — record which stages ran if the run is split.
-- [plain-speech](../plain-speech/SKILL.md) — the register every stage narrates in.
+- [human-voice](../human-voice/SKILL.md) — the register every stage narrates in.
 - [bounded-loops](../bounded-loops/SKILL.md) — the no-hammering rule behind remote writes.
 
 > Scaffold credit: Matt Pocock, wizard (mattpocock/skills). The composition and hard rules here are BACKS AIOS.

@@ -44,7 +44,7 @@ finding ends FIXED or REFUTED-WITH-EVIDENCE.
 - Lower your confidence. Reground from the ledger and the node's attempt history,
   never from your own memory. Relaunch means re-claim from the frontier; hand off
   through [session-handoff](../skills/session-handoff/SKILL.md).
-- Stream progress in plain speech as you go. Unknown stays unknown — it never
+- Stream progress in a human voice as you go. Unknown stays unknown — it never
   becomes "pass".
 - Once candidate bytes, commands, tests, and verdict are frozen, landing is a
   deterministic replay. No model call re-decides an already-decided command.

@@ -88,7 +88,7 @@ pack's own (the re-engineering and composition).
   ASD. (2025). *ASD-STE100, Simplified Technical English, Issue 9*
   [International standard]. https://www.asd-ste100.org/
   Publisher: ASD (AeroSpace, Security and Defence Industries Association of
-  Europe), maintained by STEMG. Base register for plain-speech, softened;
+  Europe), maintained by STEMG. Base register for human-voice, softened;
   inspiration-and-citation only.
 
 - **Andrej Karpathy — autoresearch (MIT).**

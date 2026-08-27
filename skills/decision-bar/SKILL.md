@@ -48,5 +48,5 @@ own truth, the human's known intent, and sensible defaults. Zero added friction.
 ## Works well with
 
 - [wayfinder](../wayfinder/SKILL.md) — chart the route through unknowns below the bar instead of asking.
-- [plain-speech](../plain-speech/SKILL.md) — the register every delivered ask is written in.
+- [human-voice](../human-voice/SKILL.md) — the register every delivered ask is written in.
 - [invariant-floor](../invariant-floor/SKILL.md) — the standing rules to re-read before any question goes up.

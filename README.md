@@ -97,7 +97,7 @@ bare API loop — are in [INSTALL.md](INSTALL.md).
 | [live-research](skills/live-research/SKILL.md) | A parallel research agent reads the live source — READMEs, docs, actual code — so reasoning grounds in what is really there, not memory. |
 | [model-fusion](skills/model-fusion/SKILL.md) | A panel of models drafts in parallel, an independent judge picks, the winner is validated against the original intent. |
 | [optimus](skills/optimus/SKILL.md) | No code until the harness is loaded. A deterministic hook blocks mutating tools until the agent has read the rules. |
-| [plain-speech](skills/plain-speech/SKILL.md) | Short sentences, one idea each, active voice, 8th-grade level — on every human-facing message. |
+| [human-voice](skills/human-voice/SKILL.md) | The no-degree bar: if reading it needs a degree, rewrite it. Keeps the full idea while it strips the machine tells. |
 | [red-first](skills/red-first/SKILL.md) | Commit a proven-failing test before the build starts. The builder may not touch it. A grader verifies it never moved. |
 | [repair-loop](skills/repair-loop/SKILL.md) | The full fix loop: ground in the floor, reproduce, red test, fix the class, verify on the real path, independent grade, land. |
 | [root-cause-first](skills/root-cause-first/SKILL.md) | No fixes without investigation. Reproduce on demand, instrument boundaries, trace the data backward to the source. |

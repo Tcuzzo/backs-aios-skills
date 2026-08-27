@@ -100,4 +100,4 @@ the work — it drives the repair loop until the law IS true, then the change la
 - [seam-engineering](../seam-engineering/SKILL.md) — laws 11–12 in depth.
 - [sniper-testing](../sniper-testing/SKILL.md) — honest tests for law 4.
 - [decision-bar](../decision-bar/SKILL.md) — law 17 in depth.
-- [plain-speech](../plain-speech/SKILL.md) — the register for law 16.
+- [human-voice](../human-voice/SKILL.md) — the register for law 16.

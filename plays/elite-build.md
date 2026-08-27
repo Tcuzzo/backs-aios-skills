@@ -61,7 +61,7 @@ to [sniper-testing](../skills/sniper-testing/SKILL.md) and land.
 - Live proof on the human's real surface. Green tests with broken capability is
   failure, not success.
 - Report in two words — PROVEN or STILL-BUILDING — in
-  [plain-speech](../skills/plain-speech/SKILL.md). Proven means landed, plus
+  [human-voice](../skills/human-voice/SKILL.md). Proven means landed, plus
   independently graded, plus demonstrated live.
 - Commit only this change's own files — never another session's in-flight work.
 

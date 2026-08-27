@@ -83,7 +83,7 @@ A rename that breaks an existing trigger is a regression, not a cleanup.
 | live-research | Research against live sources — docs and code as they are now — not model memory. |
 | model-fusion | Many models draft, one independent judge picks — fusion of outputs, not a vote. |
 | optimus | The boot brand, kept as a proper name. It boots the floor; every session starts here. |
-| plain-speech | Named for the register it enforces: plain speech to humans, everywhere. |
+| human-voice | Named for what it enforces: the agent writes the way a person talks, and hard ideas still arrive whole. |
 | red-first | The failing (red) test comes first, committed before the build starts. |
 | repair-loop | The full fix loop, named for its shape: ground, reproduce, fix, verify, land. |
 | root-cause-first | The order of operations is the rule: cause before fix, always. |
