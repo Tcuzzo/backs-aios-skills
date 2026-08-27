@@ -47,7 +47,7 @@ Ein Skript, zwei Teile:
    CI-Workflows. Jedes Secret und jede Variable, die sie referenzieren, ist ein
    Wert, den der Wizard produzieren muss. Zeig dem Menschen die geordneten
    Etappen und die Werte vorab — bestätige den Plan vor dem Verfassen.
-2. **Kartiere die Reise jeder Etappe.** Eine Zeile pro Etappe: URL → Aktion →
+2. **Kartiere den Weg jeder Etappe.** Eine Zeile pro Etappe: URL → Aktion →
    Wert → Ziel. Der Mensch sieht den ganzen Weg, bevor er startet.
 3. **Verfassen.** Kopiere das Template. Schreibe nur die Etappen; fasse nie die
    Bibliothek an. Halte die Erzählung in klaren Worten — die Person, die das

@@ -88,6 +88,7 @@ O build, num relance:
    suíte é uma porta aberta numa superfície pública.
 8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — avaliação entre
    famílias antes do deploy.
+   Cada achado de jurado vira um novo teste vermelho; reconvoque até todos os jurados passarem.
 
 ## A doutrina (o que o build precisa cumprir)
 

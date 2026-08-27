@@ -46,7 +46,7 @@ Un script, dos partes:
    y los workflows de CI. Cada secreto o variable que referencian es un valor que
    el asistente debe producir. Muéstrale al humano las etapas ordenadas y los
    valores por adelantado — confirma el plan antes de redactar.
-2. **Mapea el viaje de cada etapa.** Una línea por etapa: URL → acción → valor →
+2. **Mapea el camino de cada etapa.** Una línea por etapa: URL → acción → valor →
    destino. El humano ve el camino completo antes de empezar.
 3. **Redacta.** Copia la plantilla. Escribe solo las etapas; nunca toques la
    librería. Mantén la narración en palabras llanas — la persona que corre esto

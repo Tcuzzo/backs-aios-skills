@@ -45,7 +45,7 @@ Um script, duas partes:
    workflows de CI. Todo secret ou variável que eles referenciam é um valor que o
    wizard tem que produzir. Mostre ao humano os estágios ordenados e os valores
    logo de cara — confirme o plano antes de escrever.
-2. **Mapeie a jornada de cada estágio.** Uma linha por estágio: URL → ação →
+2. **Mapeie o caminho de cada estágio.** Uma linha por estágio: URL → ação →
    valor → destino. O humano vê o caminho inteiro antes de começar.
 3. **Escreva.** Copie o template. Escreva só os estágios; nunca toque na
    biblioteca. Mantenha a narração em palavras simples — a pessoa rodando isto

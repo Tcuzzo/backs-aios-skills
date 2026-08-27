@@ -73,6 +73,7 @@ Le build, en un coup d'œil :
 7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — des graders (les
    évaluateurs) d'une autre famille de modèles valident l'agent avant la
    livraison. Le builder (celui qui construit) ne note jamais son propre travail.
+   Chaque constat d'un juré devient un nouveau test rouge ; reconvoque jusqu'à ce que chaque juré valide.
 
 ## La doctrine (ce que le build doit satisfaire)
 

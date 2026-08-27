@@ -88,6 +88,7 @@ Der Build auf einen Blick:
    noch besteht, ist eine offene Tür auf einer öffentlichen Fläche.
 8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — familienfremde Benotung
    vor dem Deploy.
+   Jeder Befund eines Jurors wird ein neuer roter Test; berufe das Tribunal neu ein, bis jeder Juror passt.
 
 ## Die Doktrin (was der Build erfüllen muss)
 

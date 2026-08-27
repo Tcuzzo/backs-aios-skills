@@ -72,6 +72,7 @@ action लेती हो।
 7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — ship से पहले
    cross-family graders agent को पास करें। builder कभी अपने ही काम का grade नहीं
    करता।
+   हर juror finding एक नया red test बनती है; tribunal तब तक दोबारा बिठाएँ जब तक हर juror pass न कर दे।
 
 ## Doctrine (build को क्या-क्या पूरा करना है)
 

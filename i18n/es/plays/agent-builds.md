@@ -70,6 +70,7 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
 7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — evaluadores de otra
    familia de modelos aprueban el agente antes de la entrega. El que construye nunca
    califica su propio trabajo.
+   Cada hallazgo de un jurado se vuelve un nuevo test en rojo; reconvoca hasta que todos los jurados aprueben.
 
 ## La doctrina (lo que la construcción debe cumplir)
 

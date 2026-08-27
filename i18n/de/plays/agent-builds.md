@@ -72,6 +72,7 @@ Der Build auf einen Blick:
 7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — Prüfer aus einer anderen
    Modellfamilie geben den Agenten frei, bevor er ausgeliefert wird. Der Builder
    benotet nie seine eigene Arbeit.
+   Jeder Befund eines Jurors wird ein neuer roter Test; berufe das Tribunal neu ein, bis jeder Juror passt.
 
 ## Die Doktrin (was der Build erfüllen muss)
 

@@ -42,7 +42,7 @@ credentials बनाना, provisioning screen को approve करना। 
    जिस भी secret या variable का ज़िक्र करते हैं, वो value wizard को पैदा करनी
    है। इंसान को क्रमबद्ध stages और values पहले ही दिखाओ — लिखने से पहले plan
    confirm करो।
-2. **हर stage का सफ़र map करो।** हर stage की एक line: URL → action → value →
+2. **हर stage का रास्ता map करो।** हर stage की एक line: URL → action → value →
    destination. इंसान शुरू करने से पहले पूरा रास्ता देख लेता है।
 3. **लिखो।** Template copy करो। सिर्फ stages लिखो; library को कभी मत छुओ।
    Narration सादे शब्दों में रखो — इसे चलाने वाला इंसान engineer न भी हो।

@@ -87,6 +87,7 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
    la suite es una puerta abierta en una superficie pública.
 8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — calificación entre familias
    antes del deploy.
+   Cada hallazgo de un jurado se vuelve un nuevo test en rojo; reconvoca hasta que todos los jurados aprueben.
 
 ## La doctrina (lo que el build debe cumplir)
 

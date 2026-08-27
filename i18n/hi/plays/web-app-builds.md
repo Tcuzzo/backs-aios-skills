@@ -87,6 +87,7 @@
    दरवाज़ा है।
 8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — deploy से पहले
    cross-family grade।
+   हर juror finding एक नया red test बनती है; tribunal तब तक दोबारा बिठाएँ जब तक हर juror pass न कर दे।
 
 ## Doctrine (build को क्या-क्या पूरा करना है)
 

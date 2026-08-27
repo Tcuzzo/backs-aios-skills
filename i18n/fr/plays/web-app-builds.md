@@ -92,6 +92,7 @@ Le build, en un coup d'œil :
    ouverte sur une surface publique.
 8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — notation inter-famille
    avant le déploiement.
+   Chaque constat d'un juré devient un nouveau test rouge ; reconvoque jusqu'à ce que chaque juré valide.
 
 ## La doctrine (ce que le build doit satisfaire)
 

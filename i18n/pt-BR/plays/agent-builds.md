@@ -72,6 +72,7 @@ O build, num relance:
 7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — avaliadores de outra
    família de modelos aprovam o agente antes da entrega. Quem constrói nunca
    avalia o próprio trabalho.
+   Cada achado de jurado vira um novo teste vermelho; reconvoque até todos os jurados passarem.
 
 ## A doutrina (o que o build precisa cumprir)
 
