@@ -20,7 +20,7 @@ give the builder eyes with a screenshot loop, and gate on accessibility — hard
 
 1. **Read the brief as spec.** A metaphor, a cadence, a named era, artist, or place in
    the human's words is a concrete design constraint, not decoration. Full
-   read-the-brief discipline: [prose-is-the-spec](../prose-is-the-spec/SKILL.md).
+   read-the-brief discipline: [intent-compiler](../intent-compiler/SKILL.md).
 2. **Pick a grounded direction.** Choose a *lead* reference (a real design system or
    library that sets the structural baseline) and an *accent* reference (one that
    stamps its signature on top). Both must be real and current, with a verifiable
@@ -70,7 +70,7 @@ give the builder eyes with a screenshot loop, and gate on accessibility — hard
 
 ## Works well with
 
-- [prose-is-the-spec](../prose-is-the-spec/SKILL.md) — the full read-the-brief discipline.
+- [intent-compiler](../intent-compiler/SKILL.md) — the full read-the-brief discipline.
 - [blind-eval](../blind-eval/SKILL.md) — keep-or-revert when taste is the question.
 - [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) — hardening the code behind the pixels.
 - [blind-tribunal](../blind-tribunal/SKILL.md) — cross-family grading before landing.

@@ -11,7 +11,7 @@ tools, calls networks, or takes actions without a human watching every step.
 
 ## The chain
 
-1. [prose-is-the-spec](../skills/prose-is-the-spec/SKILL.md) — read the ask whole;
+1. [intent-compiler](../skills/intent-compiler/SKILL.md) — read the ask whole;
    the mission and its limits come from the human's own words.
 2. [understanding-gates](../skills/understanding-gates/SKILL.md) — at the design
    stage, name the DOMAIN PRIMITIVES first: every core capability is a
@@ -45,7 +45,7 @@ tools, calls networks, or takes actions without a human watching every step.
 - Confirm ONLY genuinely destructive or irreversible actions (spend, delete, an
   external send that cannot be undone) against committed state before firing.
   Never gate a benign or read-only action, and never gate the human — see
-  [ask-me-bar](../skills/ask-me-bar/SKILL.md).
+  [decision-bar](../skills/decision-bar/SKILL.md).
 - Persist durable state (objectives, decisions, ledger) on disk OUTSIDE the context
   window and re-read it. Never trust in-context memory across a long run.
 - Ship an operating doc the agent loads before every task — nearest file wins,

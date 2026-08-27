@@ -70,4 +70,4 @@ fit your harness, and cite the scaffold. The citation is a fact, not a decoratio
 - [red-first](../red-first/SKILL.md) — the contract tests that guard each capability.
 - [sniper-testing](../sniper-testing/SKILL.md) — real side-effects, no mock theater.
 - [blind-tribunal](../blind-tribunal/SKILL.md) — cross-family grading of the port.
-- [ask-me-bar](../ask-me-bar/SKILL.md) — license blockers and taste calls go to your human; everything else executes.
+- [decision-bar](../decision-bar/SKILL.md) — license blockers and taste calls go to your human; everything else executes.

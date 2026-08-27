@@ -11,9 +11,9 @@ The first screen sets the standard for every screen after — run this before it
 
 ## The chain
 
-1. [prose-is-the-spec](../skills/prose-is-the-spec/SKILL.md) — deduce WHICH taste
+1. [intent-compiler](../skills/intent-compiler/SKILL.md) — deduce WHICH taste
    the human's own words ask for, and state the read in one line before writing.
-2. [know-your-human](../skills/know-your-human/SKILL.md) — anchor the read in the
+2. [human-calibration](../skills/human-calibration/SKILL.md) — anchor the read in the
    human's record and real studied references, never a demographic guess.
 3. Emit the three-tier design-token file FIRST, before any component — full token
    spec and banned-defaults list in [design-taste](../skills/design-taste/SKILL.md).

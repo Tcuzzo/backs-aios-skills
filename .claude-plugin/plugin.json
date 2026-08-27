@@ -1,0 +1,10 @@
+{
+  "name": "backs-aios",
+  "version": "0.2.0",
+  "description": "Agent operating system for coding sessions: harness-first boot, red-first repair, blind cross-family grading, and bounded autonomous delivery.",
+  "author": {
+    "name": "Tcuzzo"
+  },
+  "license": "MIT",
+  "hooks": "./hooks/hooks.json"
+}

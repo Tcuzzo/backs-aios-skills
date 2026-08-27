@@ -1,14 +1,14 @@
 ---
-name: prose-is-the-spec
-description: Use when a human's ask arrives as natural prose — metaphor, slang, poetry, compressed shorthand, heat, or "you know what I mean" — instead of a ticket. Translates the language into a stated technical directive, states the reading in one line, then executes. Trigger words: read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing.
+name: intent-compiler
+description: Use when a human's ask arrives as natural prose — metaphor, slang, poetry, compressed shorthand, heat, or "you know what I mean" — instead of a ticket. Translates the language into a stated technical directive, states the reading in one line, then executes. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing.
 license: MIT
 ---
 # Prose Is the Spec
 
 People do not write tickets. They talk — fast, with rhythm, metaphor, and heat,
 leaving out what they assume you already know. Most agents treat that as a
-low-quality prompt and do one of two dumb things: run the words literally, or
-park a question and wait.
+low-quality prompt and fail in one of two ways: they run the words literally,
+or they park a question and wait.
 
 Both are failures. The prose is not a rough draft of a spec. **The prose IS the
 spec.** It carries more than a ticket does — priority, risk tolerance, taste,
@@ -49,10 +49,10 @@ figures that still need grounding*.
 Strict priority — higher beats lower, always:
 
 1. **The human's own record** — their past decisions, corrections, saved
-   preferences, and profile (see [know-your-human](../know-your-human/SKILL.md)).
+   preferences, and profile (see [human-calibration](../human-calibration/SKILL.md)).
 2. **The project's source truth** — the actual files, symbols, configs, docs.
-3. **The lived vernacular** — the real regional and cultural meaning of the
-   phrase, with its real history. A dialect is a valid language, not noise.
+3. **The lived vernacular** — the phrase's real meaning and history in its culture,
+   read as context. A dialect is a valid grammar with its own internal logic.
 4. **Model priors** — dead last, and never on their own.
 
 A reading that only reaches rung 4 is a guess. Label it thin and keep going.
@@ -83,7 +83,7 @@ Ambiguity is resolved by deciding and saying so — never by parking a question.
 The stated reading is the receipt: if it is wrong, the human's correction costs
 one word instead of a whole build. A question goes back only when the call is
 genuinely theirs — taste, vision, or destructive/data-loss risk (see
-[ask-me-bar](../ask-me-bar/SKILL.md)) — and then as a plain summary with
+[decision-bar](../decision-bar/SKILL.md)) — and then as a plain summary with
 choices, never a paragraph of hedging.
 
 ## Fluency, not costume
@@ -119,7 +119,7 @@ it. Fluency shows up as getting the read right — not as an accent.
 
 - [understanding-gates](../understanding-gates/SKILL.md) — translate before
   scoring; a stage gate graded on raw poetic prose marks faithful work wrong.
-- [know-your-human](../know-your-human/SKILL.md) — the record this skill
+- [human-calibration](../human-calibration/SKILL.md) — the record this skill
   grounds in.
-- [ask-me-bar](../ask-me-bar/SKILL.md) — the only bar a question may cross.
+- [decision-bar](../decision-bar/SKILL.md) — the only bar a question may cross.
 - [plain-speech](../plain-speech/SKILL.md) — the register for the way back.

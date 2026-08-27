@@ -1,6 +1,6 @@
 ---
-name: harness-boot
-description: Use when starting any agent session, job, or loop — before writing any code. Harness-first boot: load the invariant floor and the skills the job needs, so the agent reads the rules before it works; includes the grounding-gate hook pattern that blocks mutating tools until the harness is loaded. Trigger words: harness boot, harness first, load the harness, grounding gate, read the floor, no code without harness, session start, boot sequence.
+name: optimus
+description: Use when starting any agent session, job, or loop — before writing any code. Harness-first boot: load the invariant floor and the skills the job needs, so the agent reads the rules before it works; includes the grounding-gate hook pattern that blocks mutating tools until the harness is loaded. Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence.
 license: MIT
 ---
 
@@ -22,7 +22,7 @@ handoff. Loading the harness once and coasting for a week is not loading the har
    before touching anything. This is the floor the whole session stands on.
 2. **Load the map for this job.** Name which files, which rules, and which pack skills
    govern this specific work. If you cannot name them, you are not ready to edit.
-3. **Load the human profile** ([know-your-human](../know-your-human/SKILL.md)) when the
+3. **Load the human profile** ([human-calibration](../human-calibration/SKILL.md)) when the
    job touches a human's taste, surface, or workflow.
 4. **Invoke the skills the job needs — in real time, in this session.** A skill named
    but not invoked did not happen. Working "from memory of a skill" is not invoking it.
@@ -59,7 +59,7 @@ Design rules for the hook itself:
 Generic hook (pseudocode, ~25 lines):
 
 ```python
-HARNESS_SKILLS = {"harness-boot", "repair-loop", "invariant-floor"}  # your pack set
+HARNESS_SKILLS = {"optimus", "repair-loop", "invariant-floor"}  # your pack set
 MUTATING_TOOLS = {"Edit", "Write", "Delete"}
 MUTATING_SHELL = r"^\s*(sudo\s+)?(git (commit|push|reset|checkout)|rm|pip install|" \
                  r"npm install|systemctl (restart|stop)|sed .*-i)"
@@ -96,7 +96,7 @@ def handle(event, session_id, tool, args):
 ## Works well with
 
 - [invariant-floor](../invariant-floor/SKILL.md) — the floor boot loads first.
-- [know-your-human](../know-your-human/SKILL.md) — the profile step of boot.
+- [human-calibration](../human-calibration/SKILL.md) — the profile step of boot.
 - [repair-loop](../repair-loop/SKILL.md) — what a fix job runs after boot.
 - [bounded-loops](../bounded-loops/SKILL.md) — budgets for every loop boot starts.
 - [wayfinder](../wayfinder/SKILL.md) — when boot shows you do not know the route.

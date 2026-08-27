@@ -56,7 +56,7 @@ multi-step autonomous run, anything that can re-issue a call or re-attempt a ste
 
 ## Works well with
 
-- [harness-boot](../harness-boot/SKILL.md) — load the floor before any loop starts.
+- [optimus](../optimus/SKILL.md) — load the floor before any loop starts.
 - [repair-loop](../repair-loop/SKILL.md) — the main consumer of these ceilings.
 - [fleet-ladder](../fleet-ladder/SKILL.md) — bounded fallback across models, not hammering one.
 - [session-handoff](../session-handoff/SKILL.md) — what a checkpoint escalates into.

@@ -1,6 +1,6 @@
 ---
-name: full-close
-description: Use when the human reports breakage or says "fix it" — especially when the normal control plane (API, CLI, service) is dead and you must reach underneath it. The answer is a full understanding-first close — root cause with evidence, failing test first, green, live proof on the human's own path, commit — never a menu of options back at them. Trigger words: fix it, fix shit, broken, wiped, down, it stopped working, recover, restore.
+name: incident-closure
+description: Use when the human reports breakage or says "fix it" — especially when the normal control plane (API, CLI, service) is dead and you must reach underneath it. The answer is a full understanding-first close — root cause with evidence, failing test first, green, live proof on the human's own path, commit — never a menu of options back at them. Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore.
 license: MIT
 ---
 
@@ -14,7 +14,7 @@ at them, and never a confirmation prompt per step — they already said fix it.
 Where sibling skills demand an explicit yes for destructive acts, this rule wins the
 reversible half only: the human's "fix it" IS the standing yes for reversible recovery
 writes that leave a backup trail; anything irreversible — data destruction, spend,
-external sends — still crosses the [ask-me-bar](../ask-me-bar/SKILL.md), and the bar wins.
+external sends — still crosses the [decision-bar](../decision-bar/SKILL.md), and the bar wins.
 
 Ask the human for something only when it is provably lost everywhere else and only
 they can supply it. Every other input, you go find.
@@ -22,7 +22,7 @@ they can supply it. Every other input, you go find.
 ## The method
 
 1. **Probe the normal surface — then stop trusting it.** Call the API or CLI once. If
-   it answers normally, this is not a full-close situation; hand off. If it returns
+   it answers normally, this is not an incident-closure situation; hand off. If it returns
    401/403, connection refused, empty results where data should be, or stale data,
    stop treating that surface as authoritative.
 2. **Establish ground truth from disk, not from the API.** Never trust a broken
@@ -86,4 +86,4 @@ they can supply it. Every other input, you go find.
 
 - [repair-loop](../repair-loop/SKILL.md) — the code-fix loop this close runs when the defect is in code.
 - [root-cause-first](../root-cause-first/SKILL.md) · [red-first](../red-first/SKILL.md)
-- [ask-me-bar](../ask-me-bar/SKILL.md) — what may reach the human, and how.
+- [decision-bar](../decision-bar/SKILL.md) — what may reach the human, and how.

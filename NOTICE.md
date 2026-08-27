@@ -26,7 +26,7 @@ pack's own (the re-engineering and composition).
     BACKS AIOS.
   - `diagnosing-bugs` -> scaffold for our root-cause-first.
   - `handoff` -> scaffold for our session-handoff.
-  - `wizard` -> scaffold for our human-steps-wizard.
+  - `wizard` -> scaffold for our guided-steps.
   - `research` -> scaffold for our live-research.
 
 - **Jesse Vincent (obra) — Superpowers (MIT).**

@@ -83,6 +83,6 @@ says.
 
 - [root-cause-first](../root-cause-first/SKILL.md) — the investigation the next session continues.
 - [repair-loop](../repair-loop/SKILL.md) — hand off mid-loop without losing the seam.
-- [ask-me-bar](../ask-me-bar/SKILL.md) — how open decisions reach your human.
+- [decision-bar](../decision-bar/SKILL.md) — how open decisions reach your human.
 
 > Scaffold credit: Matt Pocock, handoff (mattpocock/skills). The composition and hard rules here are BACKS AIOS.

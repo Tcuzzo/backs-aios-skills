@@ -10,11 +10,24 @@ The frontmatter is deliberately the minimal 3-key subset — `name`, `descriptio
 the pack loads natively wherever the convention loads, and reads as plain markdown
 everywhere else.
 
-## 1. Claude Code
+## 1. Claude Code plugin (recommended)
 
-Claude Code discovers skills from two folders (confirmed against the official docs,
-2026-08): personal `~/.claude/skills/<name>/SKILL.md` (every project on your machine)
-and project `.claude/skills/` (rides with one repo).
+Two commands inside Claude Code:
+
+    /plugin marketplace add Tcuzzo/backs-aios-skills
+    /plugin install backs-aios
+
+That installs everything at once: the skills load, the slash commands become
+available (type `/optimus` to boot the floor), and the grounding hook ships enabled —
+it blocks mutating tools until the harness is loaded. The hook's kill-switch is yours:
+set `AIOS_GATE=off` in the environment to disable it, loudly. Updates flow through
+`/plugin` when the marketplace repo moves.
+
+## 2. Claude Code, manual
+
+Claude Code also discovers skills from two folders (confirmed against the official
+docs, 2026-08): personal `~/.claude/skills/<name>/SKILL.md` (every project on your
+machine) and project `.claude/skills/` (rides with one repo).
 
 Personal, one line:
 
@@ -25,11 +38,11 @@ Project: `cp -r ~/backs-aios-skills/skills/* .claude/skills/`
 Symlink if you want pack updates to flow through; copy if you want the version pinned
 (or if symlinks give your runtime trouble). Start a new session. A skill fires when the
 task matches its `description` — say the trigger words and the agent loads the file.
-Plays are not skills: keep them in the clone and tell the agent to read one
-(`read ~/backs-aios-skills/plays/elite-build.md`) at session start, or paste your
-default play into the project's CLAUDE.md.
+On the manual path, plays are not skills: keep them in the clone and tell the agent to
+read one (`read ~/backs-aios-skills/plays/elite-build.md`) at session start, or paste
+your default play into the project's CLAUDE.md.
 
-## 2. Any Agent Skills runtime (the open convention)
+## 3. Any Agent Skills runtime (the open convention)
 
 The convention is adopted well beyond Claude — OpenAI Codex, Gemini CLI, Cursor,
 VS Code and more (per the spec ecosystem, 2026-08). The rules that matter here: the
@@ -39,7 +52,7 @@ copy `skills/*` into wherever your runtime keeps skills (Cursor uses
 `.cursor/skills/`, for example). We did not verify every runtime's folder — check
 your platform docs for the exact path.
 
-## 3. OpenClaw, Hermes, other agent frameworks
+## 4. OpenClaw, Hermes, other agent frameworks
 
 Confirmed against their current docs (2026-08):
 
@@ -60,7 +73,7 @@ Any other framework — the generic pattern, no code needed:
 3. Verify the framework's current install mechanism in its own docs before trusting
    this file — mechanisms change fast; we only state what we confirmed above.
 
-## 4. Bare API loop (no framework)
+## 5. Bare API loop (no framework)
 
 You are the harness. On each loop:
 
@@ -75,7 +88,9 @@ You are the harness. On each loop:
 
 ## First session
 
-    You:   read ~/.claude/skills/harness-boot/SKILL.md and boot. This session follows it.
+Plugin install: type `/optimus` and give it the task. Manual install:
+
+    You:   read ~/.claude/skills/optimus/SKILL.md and boot. This session follows it.
     You:   task — checkout total is wrong when a coupon and a gift card stack.
     Agent: [boots: loads invariant-floor, picks plays/bughunt.md, names the skills it will fire]
     You:   go.

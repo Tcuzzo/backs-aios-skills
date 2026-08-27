@@ -1,6 +1,6 @@
 ---
-name: ask-me-bar
-description: Use when you are about to ask your human a question, wait for approval, or park a decision during autonomous work. Filters every decision through one bar — only taste, vision, or destructive risk reach the human; everything else executes. Trigger words: ask me, approval, permission, should I, decision, escalate, human in the loop, blocked on you.
+name: decision-bar
+description: Use when you are about to ask your human a question, wait for approval, or park a decision during autonomous work. Filters every decision through one bar — only taste, vision, or destructive risk reach the human; everything else executes. Trigger words: ask-me bar, ask me, approval, permission, should I, decision, escalate, human in the loop, blocked on you.
 license: MIT
 ---
 

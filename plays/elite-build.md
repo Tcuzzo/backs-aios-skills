@@ -12,12 +12,12 @@ to [sniper-testing](../skills/sniper-testing/SKILL.md) and land.
 
 ## The chain
 
-0. [harness-boot](../skills/harness-boot/SKILL.md) — boot the harness before
+0. [optimus](../skills/optimus/SKILL.md) — boot the harness before
    anything edits. The floor loads first, every session, every time.
-1. [prose-is-the-spec](../skills/prose-is-the-spec/SKILL.md) — read the ask as the
+1. [intent-compiler](../skills/intent-compiler/SKILL.md) — read the ask as the
    spec, whole. Deduce intent before surfacing any ship or option decision. Never
    present an option menu when a clear solve exists — solve it.
-2. [know-your-human](../skills/know-your-human/SKILL.md) — load the human's validated
+2. [human-calibration](../skills/human-calibration/SKILL.md) — load the human's validated
    profile and apply it. Never re-interrogate a human you already know.
 3. [understanding-gates](../skills/understanding-gates/SKILL.md) — Design → Plan →
    Build → Test → Ship, each stage gated. Before any design: read what exists via
@@ -67,8 +67,8 @@ to [sniper-testing](../skills/sniper-testing/SKILL.md) and land.
 
 ## Works well with
 
-- [harness-boot](../skills/harness-boot/SKILL.md) — re-boot the floor after a compaction or restart
+- [optimus](../skills/optimus/SKILL.md) — re-boot the floor after a compaction or restart
 - [invariant-floor](../skills/invariant-floor/SKILL.md) — the locked floor every landing must meet
-- [ask-me-bar](../skills/ask-me-bar/SKILL.md) — what reaches the human vs. what executes
+- [decision-bar](../skills/decision-bar/SKILL.md) — what reaches the human vs. what executes
 - [bounded-loops](../skills/bounded-loops/SKILL.md) — budgets and kill-switches on long runs
 - [session-handoff](../skills/session-handoff/SKILL.md) — seal state before stopping

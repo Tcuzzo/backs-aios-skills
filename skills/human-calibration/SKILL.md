@@ -1,6 +1,6 @@
 ---
-name: know-your-human
-description: Use when a build, design, or consequential UX decision starts and you must first meet the human it serves. Loads or builds a session profile of how this human thinks, decides, and wants to be spoken to, then steers the whole build through it. Trigger words: know your human, human profile, session profile, grounding ladder, interaction model, intent.
+name: human-calibration
+description: Use when a build, design, or consequential UX decision starts and you must first meet the human it serves. Loads or builds a session profile of how this human thinks, decides, and wants to be spoken to, then steers the whole build through it. Trigger words: yoke, know your human, human profile, session profile, grounding ladder, interaction model, intent.
 license: MIT
 ---
 
@@ -46,12 +46,12 @@ At the start of any build, design, uplift, or consequential UX decision. Not cha
 HUMAN CORRECTION
   > OBSERVED REPEATED BEHAVIOR
   > DECLARED ARCHETYPE   (what they say they are)
-  > CULTURAL PATTERN     (what that identity usually means)
+  > CULTURAL PATTERN     (what that declared archetype typically implies)
   > MODEL GUESS
 ```
 
-No lower rung ever overrides a higher one. Archetypes and self-labels are
-steering lenses, not science — behavior or correction can change any reading.
+No lower rung ever overrides a higher one. Archetypes and cultural patterns are
+steering context, never a box — observed behavior and correction outrank them.
 
 ## The question protocol
 
@@ -120,6 +120,6 @@ wrong, and never act on an inference they cannot see — that is a hidden gate.
 ## Works well with
 
 - [plain-speech](../plain-speech/SKILL.md) — the register to answer in once the profile says how they listen.
-- [ask-me-bar](../ask-me-bar/SKILL.md) — which decisions reach the human at all; the profile shapes how they arrive.
-- [prose-is-the-spec](../prose-is-the-spec/SKILL.md) — the human's prompt is the spec; the profile tells you what they meant.
+- [decision-bar](../decision-bar/SKILL.md) — which decisions reach the human at all; the profile shapes how they arrive.
+- [intent-compiler](../intent-compiler/SKILL.md) — the human's prompt is the spec; the profile tells you what they meant.
 - [model-fusion](../model-fusion/SKILL.md) — panel-then-compress synthesis of the profile.

@@ -16,6 +16,9 @@ theirs — without losing any of the meaning.
   controlled language aerospace manuals use so nobody misreads them.
 - Soften that base into modern everyday speech: easy, direct, warm. Never stiff,
   never corporate.
+- Plain is a clarity bar, not one dialect. Every variety of speech is a valid
+  grammar with its own internal logic — read the human's variety as context for
+  meaning, and answer with clarity, never with an imitation of their voice.
 - Hold an 8th-grade reading level.
 - A technical term appears only when the work truly needs it — and it brings a few
   words of context the first time: say "the router — the piece that picks which
@@ -45,8 +48,8 @@ theirs — without losing any of the meaning.
 
 ## Works well with
 
-- [ask-me-bar](../ask-me-bar/SKILL.md) — every ask that reaches the human is written in this register.
-- [know-your-human](../know-your-human/SKILL.md) — who you are meeting shapes how plainly you say it.
+- [decision-bar](../decision-bar/SKILL.md) — every ask that reaches the human is written in this register.
+- [human-calibration](../human-calibration/SKILL.md) — who you are meeting shapes how plainly you say it.
 
 > Base-spec credit: ASD-STE100, Simplified Technical English, Issue 9 (2025), ASD.
 > Used as the structural base and softened into an everyday register; the

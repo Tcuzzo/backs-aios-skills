@@ -65,5 +65,5 @@ or bug hunt. Especially when you feel the pull to "just patch it here."
   iterating; one full pass at landing.
 - [repair-loop](../repair-loop/SKILL.md) — the end-to-end loop this
   discipline runs inside.
-- [full-close](../full-close/SKILL.md) — "fix it" means a full close,
+- [incident-closure](../incident-closure/SKILL.md) — "fix it" means a full close,
   never an option menu.

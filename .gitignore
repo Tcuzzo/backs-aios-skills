@@ -3,3 +3,5 @@
 _build/
 .env
 .env.*
+__pycache__/
+*.pyc

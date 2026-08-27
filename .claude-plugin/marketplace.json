@@ -1,0 +1,19 @@
+{
+  "name": "backs-aios",
+  "description": "The BACKS AIOS skill pack marketplace — one plugin carrying the operating floor for elite agent sessions.",
+  "owner": {
+    "name": "Tcuzzo"
+  },
+  "plugins": [
+    {
+      "name": "backs-aios",
+      "source": "./",
+      "description": "Agent operating system for coding sessions: harness-first boot, red-first repair, blind cross-family grading, and bounded autonomous delivery.",
+      "version": "0.2.0",
+      "author": {
+        "name": "Tcuzzo"
+      },
+      "license": "MIT"
+    }
+  ]
+}

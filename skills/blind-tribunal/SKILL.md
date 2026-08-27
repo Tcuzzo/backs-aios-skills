@@ -1,6 +1,6 @@
 ---
 name: blind-tribunal
-description: Use when an autonomous change needs an independent grade before landing and no human is in the loop. Convenes blind, cross-family jurors — one lens each — over an author-redacted envelope of whole files; every finding becomes a new failing test; loop until every juror passes. Trigger words: blind tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing.
+description: Use when an autonomous change needs an independent grade before landing and no human is in the loop. Convenes blind, cross-family jurors — one lens each — over an author-redacted envelope of whole files; every finding becomes a new failing test; loop until every juror passes. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing.
 license: MIT
 ---
 
@@ -25,7 +25,7 @@ Each holds exactly ONE lens — a juror asked to check everything checks nothing
 | Juror | Lens | The question it asks |
 | --- | --- | --- |
 | Defect | defect hunting | What actually breaks? Escapes, edge cases, broken contracts. |
-| Proportion | right-sizing | Is this the right size? Over-built, or a bandaid on a symptom? |
+| Proportion | right-sizing | Is this the right size? Over-built, or a band-aid on a symptom? |
 | Consequence | human impact | If this is wrong, what happens to the person who depends on it? |
 
 **Solo rig.** When only one model family is available, degrade EXPLICITLY: a

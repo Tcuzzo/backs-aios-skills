@@ -13,10 +13,10 @@ discipline that makes "green but broken" structurally hard to ship.
 ## Load first, before any design or edit
 
 1. [invariant-floor](../invariant-floor/SKILL.md) — read your ruleset before you work.
-2. [know-your-human](../know-your-human/SKILL.md) — apply the human's profile; never re-interrogate them.
+2. [human-calibration](../human-calibration/SKILL.md) — apply the human's profile; never re-interrogate them.
 3. [understanding-gates](../understanding-gates/SKILL.md) — the diagnostic planner: Design → Plan → Build → Test → Ship.
 4. [wayfinder](../wayfinder/SKILL.md) — when lost, chart the route; never park a question on the human.
-5. If the ask arrives as prose or metaphor, run [prose-is-the-spec](../prose-is-the-spec/SKILL.md) first and loop on the deduced directive.
+5. If the ask arrives as prose or metaphor, run [intent-compiler](../intent-compiler/SKILL.md) first and loop on the deduced directive.
 
 ## The loop
 
@@ -71,10 +71,10 @@ blocker evidence and move to the next unblocked piece — never grind silently.
 
 Two words — **PROVEN** or **STILL-BUILDING** — plus the intent in plain language and
 the single decision in front of the human, if there is one. Questions go to the human
-only for taste, vision, or destructive risk; see [ask-me-bar](../ask-me-bar/SKILL.md).
+only for taste, vision, or destructive risk; see [decision-bar](../decision-bar/SKILL.md).
 
 ## Works well with
 
-- [full-close](../full-close/SKILL.md) — when the human reports breakage, this loop runs inside a full close.
+- [incident-closure](../incident-closure/SKILL.md) — when the human reports breakage, this loop runs inside a full close.
 - [red-first](../red-first/SKILL.md) · [seam-engineering](../seam-engineering/SKILL.md) · [sniper-testing](../sniper-testing/SKILL.md)
 - [blind-tribunal](../blind-tribunal/SKILL.md) · [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md)

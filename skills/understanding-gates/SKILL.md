@@ -16,7 +16,7 @@ A validation discipline for builds. It interrogates the work at five stages — 
 
 ## Stage 0 — anchor the intent
 
-Before scoring anything, fix the comparison anchor: the human's ORIGINAL words, plus a one-line translated directive (see [prose-is-the-spec](../prose-is-the-spec/SKILL.md)). Every gate scores against that anchor. Never score against your own paraphrase — a paraphrase drifts, and then every gate quietly validates the drift instead of the ask.
+Before scoring anything, fix the comparison anchor: the human's ORIGINAL words, plus a one-line translated directive (see [intent-compiler](../intent-compiler/SKILL.md)). Every gate scores against that anchor. Never score against your own paraphrase — a paraphrase drifts, and then every gate quietly validates the drift instead of the ask.
 
 ## The five gates
 
@@ -70,7 +70,7 @@ For each stage keep: the intent, the exact input artifact, the scores, the named
 
 ## Works well with
 
-- [prose-is-the-spec](../prose-is-the-spec/SKILL.md) — translate the ask before you score it.
+- [intent-compiler](../intent-compiler/SKILL.md) — translate the ask before you score it.
 - [red-first](../red-first/SKILL.md) — the Test gate's contract: failing test committed first.
 - [sniper-testing](../sniper-testing/SKILL.md) — real side-effects, no mock theater.
 - [blind-tribunal](../blind-tribunal/SKILL.md) — independent graders on top of these gates.

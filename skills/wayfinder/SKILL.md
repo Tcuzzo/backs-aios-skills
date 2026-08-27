@@ -1,6 +1,6 @@
 ---
 name: wayfinder
-description: Use when you are lost, the way forward is unclear, or you must decide what to work on next. Charts a decision map to the destination instead of parking a question on the human. Trigger words: wayfinder, chart the route, map the work, what next, lost, fog of war, decision map, frontier.
+description: Use when you are lost, the way forward is unclear, or you must decide what to work on next. Charts a decision map to the destination instead of parking a question on the human. Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier.
 license: MIT
 ---
 
@@ -68,7 +68,7 @@ has broken this.
 
 - **Never park a question on the human** that evidence, the code, or standing
   rules can answer. Only taste, vision, and destructive-risk calls go up — see
-  [ask-me-bar](../ask-me-bar/SKILL.md).
+  [decision-bar](../decision-bar/SKILL.md).
 - **Refer to work by name, never a bare id.** A wall of #42, #43, #44 is
   illegible; names read at a glance. The id or link rides inside the name — it
   never stands in for it.
@@ -77,13 +77,13 @@ has broken this.
 - **Plan, don't do.** The map produces decisions, not deliverables.
 - **When the ask itself is the fog** — the destination is unclear because the
   request arrived as prose or metaphor — first read the request with
-  [prose-is-the-spec](../prose-is-the-spec/SKILL.md), then chart from what it
+  [intent-compiler](../intent-compiler/SKILL.md), then chart from what it
   actually says.
 
 ## Works well with
 
 - [live-research](../live-research/SKILL.md) — resolves the agent-alone research tickets.
-- [ask-me-bar](../ask-me-bar/SKILL.md) — which decisions actually reach the human.
+- [decision-bar](../decision-bar/SKILL.md) — which decisions actually reach the human.
 - [plain-speech](../plain-speech/SKILL.md) — how the map reads to a human.
 
 > Scaffold credit: Matt Pocock, wayfinder (mattpocock/skills, MIT). The composition and hard rules here are BACKS AIOS.

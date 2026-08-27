@@ -11,7 +11,7 @@ will install and run.
 
 ## The chain
 
-1. [prose-is-the-spec](../skills/prose-is-the-spec/SKILL.md) — read the ask whole
+1. [intent-compiler](../skills/intent-compiler/SKILL.md) — read the ask whole
    before choosing a stack or a structure.
 2. [understanding-gates](../skills/understanding-gates/SKILL.md) — design the
    structure first: one documented entrypoint, an explicit dependency manifest,

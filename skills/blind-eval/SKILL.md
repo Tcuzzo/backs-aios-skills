@@ -1,6 +1,6 @@
 ---
 name: blind-eval
-description: Use before landing anything where taste or output quality is the question and a test cannot decide it. Judges a change on its merits with authorship hidden, then keeps or reverts — a tie reverts, only proven uplift lands. Trigger words: blind eval, keep or revert, quality gate, taste call, blind judge, A/B judge, prove uplift.
+description: Use before landing anything where taste or output quality is the question and a test cannot decide it. Judges a change on its merits with authorship hidden, then keeps or reverts — a tie reverts, only proven uplift lands. Trigger words: blind eval, karpathy, keep or revert, quality gate, taste call, blind judge, A/B judge, prove uplift.
 license: MIT
 ---
 
