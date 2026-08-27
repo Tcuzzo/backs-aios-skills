@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Full Close
+**Effort:** free — ordering discipline on a fix you already owe: disk-truth probes and the failing test come first, not extra. Removes: option menus and per-step confirmations lobbed at the human mid-outage.
 
 When the human reports breakage or says "fix it", there is exactly one right answer:
 a full, understanding-first close. Root cause with evidence, a failing test first,

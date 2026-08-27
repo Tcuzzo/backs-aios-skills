@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Root Cause First
+**Effort:** free — pure investigation discipline that usually cuts cost outright: one decisive probe replaces firing the whole pipeline to see what happens. Removes: patches to the wrong thing — the symptom fix that hides the real bug and breaks a downstream consumer.
 
 No fixes without investigation. A patch made before you understand the failure
 fixes the wrong thing, hides the real bug, and breaks something downstream.

@@ -56,3 +56,5 @@ construction: the harness enforces it, the model is never trusted to remember.
 - An unpinned dependency, an install script, or a tag-pinned CI action.
 - A surviving mutant in a detector, parser, or policy predicate.
 - The artifact was never run in a sandbox before ship.
+
+**Weight:** mostly free construction discipline plus light scanner and sandbox passes; the heavy step is mutation over every detector and policy predicate — it pays on anything a customer or another machine will run.

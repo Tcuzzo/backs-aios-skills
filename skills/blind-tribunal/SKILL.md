@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Blind Tribunal
+**Effort:** heavy — three cross-family juror models, re-convened on fresh envelopes every round until unanimous; spend it on autonomous changes that land with no human review. Removes: rogue landings gated by nothing but the builder's own word.
 
 The grading loop that lets the human walk away without the agent going rogue.
 A panel of jurors reviews the change blind, with authorship stripped. Every

@@ -64,3 +64,5 @@ finding ends FIXED or REFUTED-WITH-EVIDENCE.
 - Mock theater in a closure test: it silently re-opens the bug while the ledger
   claims it is shut.
 - A finding parked instead of fixed or refuted with evidence.
+
+**Weight:** free hunt discipline at the core; the heavy spend is triple — leap fan-out, the adversarial tribunal, and mutation closure proof — it pays when a whole backlog closes in parallel with every closure proven under mutation.

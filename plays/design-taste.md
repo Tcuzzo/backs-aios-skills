@@ -43,3 +43,5 @@ The first screen sets the standard for every screen after — run this before it
 
 - [blind-tribunal](../skills/blind-tribunal/SKILL.md) — grade the whole deliverable
 - [sniper-testing](../skills/sniper-testing/SKILL.md) — scope the component tests
+
+**Weight:** light through the loop — calibration and the screenshot-critic pass each cost one extra run; the heavy step is the gauntlet on the code behind the pixels — it pays on any screen a human will actually look at.

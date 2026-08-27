@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Red-First, Tamper-Proof
+**Effort:** free — pure ordering discipline: the test you would write anyway is written first, proven red, and sealed with one commit; the tamper check is a single git diff. Removes: tests shaped after the fix to pass, and green verdicts a builder bent by editing the test.
 
 A test written after the fix proves nothing — it was shaped to pass.
 A test the builder can edit proves less — it can be bent to pass.

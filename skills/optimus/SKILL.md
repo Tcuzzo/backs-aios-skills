@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Harness Boot
+**Effort:** light — one boot pass per session to load the floor and the job's skills, plus a deterministic hook that costs nothing to run. Removes: ungrounded edits — mutations made before the rules were read, and the redo that follows once they are.
 
 One rule: **no code and no job until the harness is loaded.** The harness is the pack's
 invariant floor plus the skills that cover this job. Every session, every runtime, every

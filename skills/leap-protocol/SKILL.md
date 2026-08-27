@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # LEAP Protocol
+**Effort:** heavy — parallel builders in isolated worktrees plus blind cross-family reviewers per ball; spend it only on seams too big for one builder, where the fan-out pays back the wall-clock a single lane would burn serially. Removes: builders colliding on shared files, and the one giant unreviewable diff nobody can roll back.
 
 LEAP is a bounded stateless-handoff method. You split a seam into **balls**. Each
 ball goes to one fresh builder that carries no hidden context. The builder runs a

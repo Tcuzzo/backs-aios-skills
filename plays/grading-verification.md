@@ -52,3 +52,5 @@ The judge-mechanics floor lives in [blind-eval](../skills/blind-eval/SKILL.md)'s
 - Fail-to-pass or pass-to-pass is missing from the graded run.
 - Any fake-green tell above is present.
 - The grader trusted the builder's own report instead of re-running the checks.
+
+**Weight:** free red and sniper checks up front; the heavy spend is the tribunal plus the grader re-running the gauntlet itself — it pays on any change that asks to land, because one fake green costs more than every grade combined.

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Clean Code Gauntlet
+**Effort:** heavy — real compute: coverage and complexity runs plus a bounded mutation pass, then one taste model; spend it on changes that ship. Removes: line-by-line human review of whole diffs, and the fake-green tests a regression hides behind.
 
 ## Why this exists
 
@@ -33,6 +34,9 @@ size, mutation kills. Humans and models audit samples — never whole diffs.
 | --- | --- |
 | Python | coverage.py + radon + mutmut |
 | JS/TS | c8 (or istanbul) + Stryker |
+| Go | go test -cover + gocyclo + go-mutesting |
+| Rust | cargo-tarpaulin + cargo-mutants |
+| Java | JaCoCo + PIT |
 | Other | any coverage % + any cyclomatic-complexity counter |
 
 One command shape per stage:

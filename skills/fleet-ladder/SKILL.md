@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Fleet Ladder
+**Effort:** light — one cached live probe of the rung before any dispatch. Removes: dispatches to dead providers, and model names hardcoded at call sites that break the day the model retires.
 
 Never hand-build a provider call, and never hardcode a model name at a call site.
 One resolver owns the question "which model does this job right now?" — and it

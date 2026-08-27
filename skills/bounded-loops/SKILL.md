@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Bounded Loops
+**Effort:** free — ceilings and checkpoints declared before the loop starts; cuts cost outright. Removes: runaway loop spend — burned quota, 429-blocked routes, and progress a crash erases.
 
 An unbounded loop is the most expensive bug an agent can ship. It burns budget, hammers
 providers until they block you, and hides its own failure inside the spin. Every loop

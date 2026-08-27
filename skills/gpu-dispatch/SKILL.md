@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # GPU Dispatch Law
+**Effort:** free — dispatcher-enforced rules read off the node's own live state; cuts cost outright. Removes: VRAM-spilled runs quietly 10x slower, cold-start churn between jobs, and cards idled by assumed fences.
 
 Four rules for running local models on GPUs. They exist because the two common
 failure modes are opposite and equally expensive: thrashing cards with loads

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Wayfinder
+**Effort:** free — pure charting discipline: a decision map built from evidence already on disk, no extra model calls. Removes: questions parked on the human that evidence could answer, and build work started before the decisions ahead of it were made.
 
 When you do not know the way, the cheap move is to stop and ask the human a
 question they hired you to answer. The wayfinder charts the route instead:

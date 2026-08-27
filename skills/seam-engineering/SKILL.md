@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Seam Engineering
+**Effort:** free — pure repair discipline: one class fix at the shared primitive instead of N point patches. Removes: the same bug repaired again at every sibling site, and the deferred medium finding that becomes the mystery bug nobody can find in six months.
 
 A seam is closed correctly and completely, or it is not closed.
 A quick patch today is the bug nobody can find in six months.

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # The Ask-Me Bar
+**Effort:** free — one bar test at the moment you'd ask; cuts cost outright by killing interrupt round-trips. Removes: questions the standing rules already answer, and real decisions parked where the human never looks.
 
 Agents fail their humans two ways: they interrupt with questions the rules already
 answer, or they "surface" a real decision somewhere no one will ever see it. This

@@ -61,6 +61,22 @@ so every habit and every doc that used the old name still routes correctly:
 
 A rename that breaks an existing trigger is a regression, not a cleanup.
 
+## Effort stamps
+
+Every skill carries one **Effort:** line under its title, answering two questions:
+what does running it SPEND, and what wasted effort does it REMOVE? Three tiers:
+
+- **free** — pure discipline: no extra model calls, no extra tooling runs. Some
+  free skills cut net cost outright, and their stamps say so.
+- **light** — one extra pass: a subagent, a validator run, a probe, a test-first write.
+- **heavy** — multiple models or agents, or real compute (mutation runs, juror
+  panels). A heavy stamp must also say WHEN the spend pays.
+
+Honesty law: the stamp is a claim the skill body must back — a tribunal stamped
+free is a lie. The "Removes:" clause names the specific waste the skill deletes
+(killed rework, killed rogue landings, killed full-suite reruns), never a generic
+"saves time". Each play ends with one **Weight:** line summing its chain the same way.
+
 ## Per-skill rationale
 
 | Name | Why this name |

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Human Steps Wizard
+**Effort:** free — authoring discipline plus a static syntax check; no model calls. Removes: re-explaining the same human-only clickpath every run, and secrets pasted into tracked files along the way.
 
 Some steps only a human can do: click through a third-party dashboard, create
 credentials, approve a provisioning screen. They are tedious to do by hand and

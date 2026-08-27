@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # The Invariant Floor
+**Effort:** free — a law-by-law check at the landing gate; pure discipline. Removes: fake-green landings — changes that pass tests but fail on the human's own surface.
 
 A harness is only as strong as its floor. These are the laws every autonomous
 change must satisfy before it lands. They constrain the agent, never the human.

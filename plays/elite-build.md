@@ -72,3 +72,5 @@ to [sniper-testing](../skills/sniper-testing/SKILL.md) and land.
 - [decision-bar](../skills/decision-bar/SKILL.md) — what reaches the human vs. what executes
 - [bounded-loops](../skills/bounded-loops/SKILL.md) — budgets and kill-switches on long runs
 - [session-handoff](../skills/session-handoff/SKILL.md) — seal state before stopping
+
+**Weight:** the full stack — free discipline, light gates, and three heavy steps (model fusion, the gauntlet, the tribunal) — the heavy spend pays on anything that ships, which is exactly what this play is for.

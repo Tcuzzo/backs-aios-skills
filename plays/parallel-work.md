@@ -55,3 +55,5 @@ for everything else: one write spine, many readers.
 - A merge landed without a green exit code, or without stat-verification.
 - A reviewer that shared context with the author.
 - A lane landing on another lane's test results, or mocking the seam it changed.
+
+**Weight:** heavy by design — leap decomposition, a gauntlet per lane, and a clean-context tribunal — the spend pays only when the work is big enough to split, which is the only time to run this play.

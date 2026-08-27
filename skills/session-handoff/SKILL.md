@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Session Handoff
+**Effort:** free — one flat file written before the context dies; no model calls, and it cuts cost outright at the next session start. Removes: the fresh agent re-deriving state, re-paying traps already paid for, and decisions lost in a dead context window.
 
 A context window dies; the work must not. Before a session ends or compacts,
 write one flat file a brand-new agent can read cold and continue from — what

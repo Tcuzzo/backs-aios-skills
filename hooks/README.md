@@ -3,6 +3,18 @@
 The pack's floor, made structural: a rule an agent must remember fails exactly
 when the agent is busiest — so this gate is programmed, not prompted.
 
+## Two runtimes, one behavior
+
+The gate ships in two behavior-identical implementations: `aios_gate.js` (Node,
+the default in `hooks.json`) and `aios_gate.py` (Python, the alternate). Node is
+the default because Claude Code itself runs on Node — so Node is guaranteed
+present wherever the plugin installs; Python is not. Same state files, same deny
+JSON, same mutating-verb pattern, same kill-switch, same fail-open.
+
+To swap to Python, change each command line in `hooks.json` in one move:
+
+    sed -i 's|node "${CLAUDE_PLUGIN_ROOT}/hooks/aios_gate.js"|python3 "${CLAUDE_PLUGIN_ROOT}/hooks/aios_gate.py"|' hooks/hooks.json
+
 - Every session starts RED.
 - While RED, the gate denies the file-edit tools (`Edit`, `Write`,
   `NotebookEdit`, `MultiEdit`) and the primary mutating shell verbs run through
@@ -54,6 +66,8 @@ session.
 
 To demand a fresh floor load for a new job in the same session:
 
-    python3 "${CLAUDE_PLUGIN_ROOT}/hooks/aios_gate.py" --rearm <session_id>
+    node "${CLAUDE_PLUGIN_ROOT}/hooks/aios_gate.js" --rearm <session_id>
 
+(or `python3 .../aios_gate.py --rearm <session_id>` on the Python alternate —
+both runtimes share the same state files, so either re-arms the session.)
 Without an id it falls back to the parent PID, matching the gate's own fallback.

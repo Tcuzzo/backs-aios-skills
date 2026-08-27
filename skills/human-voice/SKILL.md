@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Human Voice
+**Effort:** free — register discipline on every draft, nothing extra runs. Removes: messages the human must decode — jargon walls, and the AI slop tells stripped before anything ships.
 
 How an agent writes to humans. One test, one register, one strip list.
 

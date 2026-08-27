@@ -66,3 +66,5 @@ tools, calls networks, or takes actions without a human watching every step.
 
 - [root-cause-first](../skills/root-cause-first/SKILL.md) — when the agent misbehaves
 - [session-handoff](../skills/session-handoff/SKILL.md) — durable state done right
+
+**Weight:** mostly free discipline plus one light design gate; the heavy spend is the gauntlet's mutation runs and the cross-family tribunal — it pays on any agent that will act with nobody watching.

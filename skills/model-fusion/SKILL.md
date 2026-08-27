@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Model Fusion
+**Effort:** heavy — a full panel drafting in parallel plus an independent judge (and optional writer); spend it on hard builds and fixes that ship, never on one-line changes. Removes: betting the change on a single model's draft, and the rework when that one draft is wrong.
 
 Many independent voices beat one voice. A panel of models drafts the same task in
 parallel. A judge — a model that wrote none of the drafts — picks or merges the best.

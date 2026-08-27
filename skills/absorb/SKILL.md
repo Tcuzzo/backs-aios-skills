@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Absorb — Adopt Prior Art, Don't Reinvent It
+**Effort:** light — a repo ingest (metadata probe + shallow clone) and a cross-family grade of the port. Removes: reinventing a capability prior art already solved — the from-scratch duplicate you'd owe every bug for.
 
 **Capability is king.** A repo is a vehicle for a capability. When you need something
 an existing project already does, do not build a duplicate from scratch, and do not

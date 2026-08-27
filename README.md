@@ -76,6 +76,8 @@ bare API loop — are in [INSTALL.md](INSTALL.md).
   skill and runs it. One file each in `commands/`.
 - **The naming convention** — why skills are noun phrases, commands are verbs, and
   the floor is law — is in [NAMING.md](NAMING.md).
+- **Effort stamps** — every skill's one-line cost claim (free / light / heavy) and
+  every play's closing Weight line are decoded in [NAMING.md](NAMING.md#effort-stamps).
 
 ## The skills
 

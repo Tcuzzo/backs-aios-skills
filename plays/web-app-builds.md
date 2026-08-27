@@ -70,3 +70,5 @@ will install and run.
 
 - [seam-engineering](../skills/seam-engineering/SKILL.md) — fix a boundary flaw as a class
 - [bounded-loops](../skills/bounded-loops/SKILL.md) — rate-limit-aware outbound calls
+
+**Weight:** free hygiene discipline through the build; the heavy spend is mutation over the validation and auth predicates plus the tribunal — it pays on every public surface, where one flipped comparison is an open door.

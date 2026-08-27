@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Blind Eval
+**Effort:** light — one blind judge run: several shuffled readings of the frozen pair by a model that authored neither. Removes: self-graded "it's better" landings — taste regressions the author would wave through.
 
 A keep-or-revert quality gate for calls a test cannot decide — prose quality, UI
 copy, a refactor's readability, a prompt's output, a design's feel. Judge the

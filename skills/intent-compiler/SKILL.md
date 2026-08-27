@@ -3,7 +3,9 @@ name: intent-compiler
 description: Use when a human's ask arrives as natural prose — metaphor, slang, poetry, compressed shorthand, heat, or "you know what I mean" — instead of a ticket. Translates the language into a stated technical directive, states the reading in one line, then executes. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing.
 license: MIT
 ---
+
 # Prose Is the Spec
+**Effort:** free — reading discipline before any build, nothing extra runs. Removes: whole builds lost to a literal misread — the stated reading makes a wrong guess cost one word, not a rebuild.
 
 People do not write tickets. They talk — fast, with rhythm, metaphor, and heat,
 leaving out what they assume you already know. Most agents treat that as a
@@ -41,8 +43,7 @@ Strip the input down to its mechanics.
 - **Compression is not vagueness.** Missing detail is usually detail the human
   assumed you had. Go find it before you call it missing.
 
-Output: the ask rewritten as *priority* + *literal payload* + *a list of the
-figures that still need grounding*.
+Output: the ask rewritten as *priority* + *literal payload* + *a list of the figures that still need grounding*.
 
 ## Step 2 — Ground: anchor every reading in evidence
 
@@ -67,8 +68,7 @@ misalignment risk — shrinking a big vision into something easier to build:
 3. **The route available now.**
 4. **The route required later.**
 
-**Never lower the goal because the near route is short.** Build route 3, name
-route 4, keep capability 1 intact.
+**Never lower the goal because the near route is short.** Build route 3, name route 4, keep capability 1 intact.
 
 ## Output protocol — state the reading, then build
 

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Design Taste — Tokens First, Eyes On, Accessibility Hard
+**Effort:** light — a token file before any component, plus a screenshot → vision-critic pass per rendered surface. Removes: reshipping generic AI defaults — the restyle rework and the post-ship accessibility retrofit.
 
 Generic UI is a workflow bug, not a model bug. Fix it structurally: read the brief as
 a spec, set exact design tokens before any component, forbid the defaults by name,

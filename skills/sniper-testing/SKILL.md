@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Sniper Testing
+**Effort:** free — pure discipline, no extra runs; it cuts net cost outright by deleting full-suite reruns during iteration. Removes: test bloat (whole-suite runs for a tiny diff) and the mock-theater greens you would otherwise build on.
 
 ## Why this exists
 
@@ -21,7 +22,9 @@ test suite.
 2. Map each touched file to the test files that directly cover it
    (e.g. `src/payments/refund.py` → `tests/test_refund.py`).
 3. State your specific test target, then run ONLY those files
-   (e.g. `pytest tests/test_refund.py`).
+   (Python: `pytest tests/test_refund.py`;
+   JS: `npx vitest run tests/refund.test.js`;
+   Go: `go test ./payments/ -run TestRefund`).
 4. A test that already passed is not re-run unless your next change touches
    code it exercises. The diff defines the scope — not optimism, not fear.
 5. At landing time — the commit gate — run ONE full pass over every touched

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Know Your Human
+**Effort:** light — one profile pass: load the saved profile, or build it from at most 7 casual questions. Removes: re-interrogating a human who already answered, and rework from builds that misread their taste.
 
 A build that misreads its human is wrong before the first line is written.
 This skill replaces guessing with a working model of the human it serves:
@@ -60,8 +61,7 @@ sprinkled through the goal conversation — never fired as a list, never scored,
 never repeated. Capture the human's own phrasing; it matters as much as the answer.
 
 The 7 core questions (each reads two or more axes at once):
-1. New gadget: read how it works first, or just start pressing buttons?
-   → processing style, risk comfort.
+1. New gadget: read how it works first, or just start pressing buttons? → processing style, risk comfort.
 2. True/false: ugly bugs you more than slow. → taste priority (aesthetic vs mechanical).
 3. Late friend: quick text, or a call with the whole story? → register (compressed vs narrative).
 4. Building a treehouse: picture the finished thing, or the first board? → whole-picture vs step thinking.

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Repair Loop
+**Effort:** light — the loop itself is discipline plus one independent grading pass; the heavier steps it chains (gauntlet, tribunal) carry their own stamps and fire only on changes that ship. Removes: green-but-broken landings, and the reopened-bug rework they cost.
 
 The default loop for any fix, bug close, or uplift. It is a behavior, not approval
 machinery: it adds zero gates and zero friction for the human. It binds the agent to a

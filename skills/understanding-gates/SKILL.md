@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Understanding Gates
+**Effort:** light — one validator pass per stage, scored against the original ask and rerun after each repair. Removes: drift validated against a paraphrase — the build that lands green but answers a question nobody asked.
 
 A validation discipline for builds. It interrogates the work at five stages — Design, Plan, Build, Test, Ship — always against the ORIGINAL ask, never against the work's own restatement of it. Each gate returns evidence: scores, a verdict, named failures, and repair actions. It binds the agent, not the human: no new approval step, no friction on the person who asked.
 

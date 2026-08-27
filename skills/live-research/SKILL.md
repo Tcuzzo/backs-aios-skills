@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Live Research
+**Effort:** light — one background research agent reading the live source while the main lane keeps working. Removes: conclusions built on model memory that the real repo then refutes — the rework of shipping a guess.
 
 Model memory is a guess about how a project looked at training time. The live
 truth is what sits on disk and in the official docs right now. This skill runs
