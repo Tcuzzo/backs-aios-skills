@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "BACKS AIOS Skills"
+type: software
+authors:
+  - name: "Tcuzzo (BACKS AIOS)"
+date-released: "2026-08-26"
+license: MIT
+repository-code: "https://github.com/Tcuzzo/backs-aios-skills"
