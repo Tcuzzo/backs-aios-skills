@@ -82,6 +82,14 @@
 full-suite reruns), कभी कोई सामान्य "समय बचाता है" नहीं। हर play उसी अंदाज़ में
 अपनी chain का जोड़ बताती एक **Weight:** पंक्ति पर ख़त्म होती है।
 
+## Lord of the Loop
+
+हर play का wireframe एक **Lord of the Loop** चिह्नित करता है — loop का मालिक। एक
+ही हाथ पूरी iteration चलाता है: वह lanes dispatch करता है, जो लौटकर आता है उसे
+judge करता है, और findings को घुमाकर तब तक वापस भेजता है जब तक landing gate
+green न हो जाए। कोई lane कभी अपना काम खुद land नहीं करती; Lord ही उसे land
+करता है।
+
 ## हर skill के नाम की वजह
 
 | नाम | यही नाम क्यों |

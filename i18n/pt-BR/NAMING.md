@@ -85,6 +85,13 @@ desgovernados mortos, re-execuções de suíte inteira mortas), nunca um genéri
 "economiza tempo". Cada play termina com uma linha **Weight:** que soma sua
 cadeia do mesmo jeito.
 
+## Lord of the Loop
+
+O wireframe de cada play marca um **Lord of the Loop** — o dono do loop. Uma só
+mão conduz a iteração inteira: despacha as lanes, julga o que volta e faz os
+achados circularem até o gate de pouso ficar verde. Uma lane nunca pousa o
+próprio trabalho; o Lord é quem pousa.
+
 ## Justificativa por skill
 
 | Nome | Por que esse nome |

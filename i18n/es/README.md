@@ -80,7 +80,10 @@ equivalentes en español también disparan la misma disciplina.
   las skills con las que se combina. Un archivo cada una: `skills/<name>/SKILL.md`.
 - **Las jugadas** (plays) son combos con nombre. Una jugada dispara skills en un
   orden fijo y lista las puertas duras que bloquean un aterrizaje. Un archivo cada
-  una: `plays/<name>.md`.
+  una: `plays/<name>.md`. El wireframe de cada jugada marca un
+  **Lord of the Loop** — el dueño del bucle, quien conduce la iteración hasta que la puerta de
+  aterrizaje está en verde; el rol se define en
+  [NAMING.md](NAMING.md#lord-of-the-loop).
 - **Los comandos** son las entradas slash que instala el plugin — cada uno carga una
   jugada o una skill y la ejecuta. Un archivo cada uno en `commands/`.
 - **La convención de nombres** — por qué las skills son frases nominales, los

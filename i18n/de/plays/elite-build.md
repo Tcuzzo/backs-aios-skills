@@ -11,6 +11,46 @@ Jeder Build, Fix oder Uplift, bei dem wirklich etwas auf dem Spiel steht. Eine
 triviale Ein-Zeilen-Änderung darf direkt zu
 [sniper-testing](../skills/sniper-testing/SKILL.md) springen und landen.
 
+Der Loop auf einen Blick:
+
+```
++--------------------------------------------+
+| 0 optimus  boot the floor first            |
++--------------------------------------------+
+| 1 intent-compiler  the ask is the spec     |
++--------------------------------------------+
+| 2 human-calibration  load the profile      |
++--------------------------------------------+
+| 3 understanding-gates + live-research --   |
+|   read first, then gate Design -> Ship     |
++--------------------------------------------+
+| 4 wayfinder  lost? chart the route         |
++--------------------------------------------+
+| 5 red-first  failing test committed first  |<--------------------------+
++--------------------------------------------+  finding -> new red test  |
+| 6 build  fleet-ladder + model-fusion;      |   +---------------------+ |
+|   bugs: repair-loop + seam-engineering     |   |  LORD OF THE LOOP   |-+
++--------------------------------------------+   | one hand drives the |
+| 7 sniper-testing  scoped runs only         |   | loop: dispatch,     |
++--------------------------------------------+   | judge, loop back    |
+| 8 clean-code-gauntlet  measure + mutate    |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 9 blind-eval, then blind-tribunal          |-->| lands its own work. |
++--------------------------------------------+   +---------------------+
+          |
+          | every juror passes
+          v
++--------------------------------------------+
+| 10 LANDING GATE -- all green or no land:   |
+|    red test untouched . builder != grader  |
+|    every finding closed . one full pass .  |
+|    live proof on the human's own surface . |
+|    own files only . two-word report        |
++--------------------------------------------+
+```
+
+*Labels im Diagramm: „Lord of the Loop“ = der Besitzer des Loops, der die Iteration treibt, bis das Landing-Gate grün ist; „LAND“ = die Landung — die Änderung zieht erst ein, wenn jedes Gate grün ist.*
+
 ## Die Kette
 
 0. [optimus](../skills/optimus/SKILL.md) — boote den Harness, bevor irgendetwas

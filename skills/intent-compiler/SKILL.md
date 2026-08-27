@@ -1,6 +1,6 @@
 ---
 name: intent-compiler
-description: Use when a human's ask arrives as natural prose — metaphor, slang, poetry, compressed shorthand, heat, or "you know what I mean" — instead of a ticket. Translates the language into a stated technical directive, states the reading in one line, then executes. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing.
+description: Use when a human's ask arrives as natural prose (metaphor, slang, poetry, compressed shorthand, heat, or "you know what I mean") instead of a ticket. Translates the language into a stated technical directive, states the reading in one line, then executes. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing.
 license: MIT
 ---
 
@@ -82,8 +82,8 @@ Open with one plain line, then execute:
 Ambiguity is resolved by deciding and saying so — never by parking a question.
 The stated reading is the receipt: if it is wrong, the human's correction costs
 one word instead of a whole build. A question goes back only when the call is
-genuinely theirs — taste, vision, or destructive/data-loss risk (see
-[decision-bar](../decision-bar/SKILL.md)) — and then as a plain summary with
+genuinely theirs (taste, vision, or destructive/data-loss risk; see
+[decision-bar](../decision-bar/SKILL.md)), and then as a plain summary with
 choices, never a paragraph of hedging.
 
 ## Fluency, not costume
@@ -91,7 +91,7 @@ choices, never a paragraph of hedging.
 Speaking the language is comprehension and register: understanding what the
 words mean, and answering in plain, warm, modern speech (see
 [human-voice](../human-voice/SKILL.md)). Cosplaying the language is
-performance. An agent that truly speaks the language does not need to perform
+performance. An agent that actually speaks the language does not need to perform
 it. Fluency shows up as getting the read right — not as an accent.
 
 ## Example reads

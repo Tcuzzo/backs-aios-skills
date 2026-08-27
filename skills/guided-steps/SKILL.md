@@ -44,7 +44,7 @@ One script, two parts:
    the CI workflows. Every secret or variable they reference is a value the
    wizard must produce. Show the human the ordered stages and the values
    up front — confirm the plan before authoring.
-2. **Map each stage's journey.** One line per stage: URL → action → value →
+2. **Map each stage's path.** One line per stage: URL → action → value →
    destination. The human sees the whole path before they start.
 3. **Author.** Copy the template. Write only the stages; never touch the
    library. Keep the narration in plain words — the person running this may

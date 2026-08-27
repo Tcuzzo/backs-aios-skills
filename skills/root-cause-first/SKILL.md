@@ -81,7 +81,7 @@ For flaky bugs, chase a higher reproduction rate, not a clean repro: loop the
 trigger 100 times, add stress, narrow the timing windows. A 50% flake is
 debuggable; a 1% flake is not.
 
-If you truly cannot build a loop, stop and say so. List what you tried and ask
+If you still cannot build a loop, stop and say so. List what you tried and ask
 your human for access, a captured artifact, or temporary instrumentation. Do
 not theorize without a loop. And if no seam exists that can replicate the real
 call pattern, that absence IS a finding — flag the architecture gap after the

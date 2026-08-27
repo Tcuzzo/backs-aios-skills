@@ -86,6 +86,13 @@ gekillte entgleiste Landungen, gekillte Voll-Suite-Wiederholungen), nie ein
 generisches „spart Zeit“. Jedes Play endet mit einer **Weight:**-Zeile, die seine
 Kette auf dieselbe Art summiert.
 
+## Lord of the Loop
+
+Jedes Play-Wireframe markiert einen **Lord of the Loop** — den Besitzer des Loops.
+Eine Hand treibt die ganze Iteration: Sie schickt Lanes los, beurteilt, was
+zurückkommt, und schleift Funde zurück, bis das Landing-Gate grün ist. Eine
+Lane landet nie ihre eigene Arbeit; der Lord landet sie.
+
 ## Begründung pro Skill
 
 | Name | Warum dieser Name |

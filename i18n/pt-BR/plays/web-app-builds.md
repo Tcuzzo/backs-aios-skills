@@ -10,6 +10,46 @@ uma nota de rodapé.
 Ao construir ou estender qualquer app web, site, API ou repo entregável que
 outra pessoa vai instalar e rodar.
 
+O build, num relance:
+
+```
++--------------------------------------------+
+| 1 intent-compiler  read the ask whole      |
++--------------------------------------------+
+| 2 understanding-gates  structure first:    |
+|   one entrypoint, manifest, lockfile       |
++--------------------------------------------+
+| 3 dependency hygiene  validate + hash-pin  |
+|   every dep, no install scripts, pin CI    |
++--------------------------------------------+
+| 4 red-first  contract tests for routes,    |<--------------------------+
+|   loaders, validation -- committed first   |  finding -> a new red     |
++--------------------------------------------+  test -> fix ->           |
+| 5 build to the doctrine; any UI runs       |  re-convene               |
+|   the design-taste method                  |                           |
++--------------------------------------------+   +---------------------+ |
+| 6 sniper-testing  never mock your own      |   |  LORD OF THE LOOP   |-+
+|   validation or serialization              |   | one hand drives the |
++--------------------------------------------+   | loop: dispatch,     |
+| 7 clean-code-gauntlet  mutate validation   |   | judge, loop back    |
+|   + auth predicates until none survive     |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 8 blind-tribunal  cross-family grade       |-->| lands its own work. |
++--------------------------------------------+   +---------------------+
+          |
+          | every juror passes
+          v
++--------------------------------------------+
+| LANDING GATE -- all green or no deploy:    |
+| no unpinned dep . no committed secret .    |
+| zero mutation survivors in validation +    |
+| auth predicates . no external network      |
+| during tests (loopback is fine)            |
++--------------------------------------------+
+```
+
+*Lord of the Loop = o dono do loop, que conduz a iteração até o gate de pouso ficar verde; LAND = o pouso — o portão final que só abre com tudo verde.*
+
 ## A cadeia
 
 1. [intent-compiler](../skills/intent-compiler/SKILL.md) — leia o pedido inteiro

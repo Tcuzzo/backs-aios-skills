@@ -11,6 +11,45 @@ por todas as outras: uma só espinha de escrita, muitos leitores.
 - Você está tentado a deixar dois agentes escreverem código em paralelo. Leia
   isto primeiro.
 
+O fan-out, num relance:
+
+```
++--------------------------------------------+
+| 1 leap-protocol  balls with goals, specs,  |
+|   hard file scopes BEFORE any agent spawns |
++--------------------------------------------+
+| 2 spawn readers, not writers -- fan out    |
+|   read-heavy work only                     |
++--------------------------------------------+
+| 3 isolate -- every lane gets its OWN       |
+|   worktree; conflicts surface at merge     |
++--------------------------------------------+
+| 4 clean-code-gauntlet  per lane, in its    |<--------------------------+
+|   own worktree, before it asks to land     |  red exit? back to the    |
++--------------------------------------------+  lane -- fix, re-run      |
+| 5 blind-tribunal  the reviewer gets a      |                           |
+|   CLEAN context, never the author's        |   +---------------------+ |
++--------------------------------------------+   |  LORD OF THE LOOP   |-+
+| 6 merge ONE lane at a time, test-gated     |   | the one write spine |
+|   by exit code, in a merge workspace       |-->| drives dispatch,    |
++--------------------------------------------+   | judges, merges ONE  |
+          |                                      | lane at a time. a   |
+          | every merge green + verified         | lane never lands    |
+          v                                      | its own work.       |
++--------------------------------------------+   +---------------------+
+| LANDING GATE -- all green or no land:      |
+| every merge green by exit code AND         |
+| stat-verified -- counts, diffstat, each    |
+| lane's files present . no lane outside     |
+| its scope . reviewer context stayed        |
+| clean, never the author's . one writer     |
+| per workspace . no lane lands on           |
+| another lane's green                       |
++--------------------------------------------+
+```
+
+*Lord of the Loop = o dono do loop, que conduz a iteração até o gate de pouso ficar verde; LAND = o pouso — o portão final que só abre com tudo verde.*
+
 ## A cadeia
 
 1. [leap-protocol](../skills/leap-protocol/SKILL.md) — decomponha o trabalho em

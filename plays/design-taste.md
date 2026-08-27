@@ -9,6 +9,44 @@ design tokens first, give the agent eyes, and gate on accessibility.
 Any screen, page, component, dashboard, or visual deliverable a human will look at.
 The first screen sets the standard for every screen after — run this before it.
 
+The taste loop, at a glance:
+
+```
++--------------------------------------------+
+| 1 intent-compiler  WHICH taste do the      |
+|   human's words ask for? state the read    |
++--------------------------------------------+
+| 2 human-calibration  anchor in the record  |
+|   + studied references, never a guess      |
++--------------------------------------------+
+| 3 design-taste  emit the three-tier        |
+|   token file FIRST, before any component   |
++--------------------------------------------+
+| 4 build with the token file as a hard      |<--------------------------+
+|   constraint -- no raw hex, px, fonts      |  critique -> fix ->       |
++--------------------------------------------+  re-shoot                 |
+| 5 design-taste  screenshot -> critic;      |   +---------------------+ |
+|   critic resolved live via fleet-ladder    |-->|  LORD OF THE LOOP   |-+
++--------------------------------------------+   | one hand drives the |
+| 6 design-taste  8-axis taste rubric        |   | loop: dispatch,     |
++--------------------------------------------+   | judge, loop back    |
+| 7 design-taste  WCAG 2.2 HARD gate         |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 8 clean-code-gauntlet  the code BEHIND     |   | lands its own work. |
+|   the pixels; zero surviving mutants       |   +---------------------+
++--------------------------------------------+
+          |
+          | rubric + WCAG green
+          v
++--------------------------------------------+
+| LANDING GATE -- all green or no ship:      |
+| WCAG 2.2 passes . 8-axis rubric scored .   |
+| zero surviving mutants behind the pixels   |
+| . critic family != builder family, live-   |
+| resolved via fleet-ladder, never pinned    |
++--------------------------------------------+
+```
+
 ## The chain
 
 1. [intent-compiler](../skills/intent-compiler/SKILL.md) — deduce WHICH taste

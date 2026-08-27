@@ -9,6 +9,43 @@ every finding adversarially, and close whole seams — never single symptoms.
   repair loop for that).
 - A backlog of findings needs to be attacked in parallel without drift or trampling.
 
+The hunt, at a glance:
+
+```
+    +--------------------------------------------+
++-->| 1 wayfinder  chart the hunt as one map,    |
+|   |   a node per seam; claim from the frontier |
+|   +--------------------------------------------+
+|   | 2 leap-protocol  one node = one ball:      |
+|   |   goal, spec, hard file scope, ONE writer  |
+|   +--------------------------------------------+
+|   | 3 root-cause-first  reproduce + review     |
+|   |   evidence BEFORE any code changes         |
+|   +--------------------------------------------+
+|   | 4 repair-loop  red-first test committed,   |<--------------------------+
+|   |   sniper-testing while iterating           |  finding or survivor ->   |
+|   +--------------------------------------------+   +---------------------+ |
+|   | 5 blind-tribunal  a non-author grader      |-->|  LORD OF THE LOOP   |-+
+|   |   attacks; jurors judge redacted work      |   | one hand drives the |
+|   +--------------------------------------------+   | loop: dispatch,     |
+|   | 6 seam-engineering  close the CLASS at     |   | judge, loop back    |
+|   |   the shared seam, never the symptom       |   | until the gate is   |
+|   +--------------------------------------------+   | green. a lane never |
+|   | 7 clean-code-gauntlet  the fixed branch    |-->| lands its own work. |
+|   |   must DIE under mutation, or stay open    |   +---------------------+
+|   +--------------------------------------------+
+|             |
+|             | jurors pass + mutant dies
+|             v
+|   +--------------------------------------------+
+|   | LANDING GATE -- leap-protocol Score gate:  |
+|   | source truth . keep-or-revert . blind      |
+|   | review . live proof . provenance -- each   |
+|   | finding ends FIXED or REFUTED-W-EVIDENCE   |
++---| ball closed -> claim the next node         |
+    +--------------------------------------------+
+```
+
 ## The chain
 
 1. [wayfinder](../skills/wayfinder/SKILL.md) — chart the hunt FIRST as one map with
@@ -65,4 +102,4 @@ finding ends FIXED or REFUTED-WITH-EVIDENCE.
   claims it is shut.
 - A finding parked instead of fixed or refuted with evidence.
 
-**Weight:** free hunt discipline at the core; the heavy spend is triple — leap fan-out, the adversarial tribunal, and mutation closure proof — it pays when a whole backlog closes in parallel with every closure proven under mutation.
+**Weight:** free hunt discipline at the core; the heavy spend is triple (leap fan-out, the adversarial tribunal, and mutation closure proof); it pays when a whole backlog closes in parallel with every closure proven under mutation.

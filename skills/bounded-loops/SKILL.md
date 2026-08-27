@@ -31,7 +31,7 @@ multi-step autonomous run, anything that can re-issue a call or re-attempt a ste
    or to your human with what was done, what is left, and the blocker. Never silently
    continue past a budget. Never silently stop, either — exhaustion is loud.
 5. **Respect every external API.** Before the first call, learn the provider's rate
-   limit and quota; when unknown, treat it as strict — one call, wide spacing — until
+   limit and quota; when unknown, treat it as strict (one call, wide spacing) until
    measured. Throttle every call, cache and reuse responses, and hold a hard
    per-window ceiling.
 6. **Back off exponentially on pushback.** A 429 or 503 means wait, then wait longer.

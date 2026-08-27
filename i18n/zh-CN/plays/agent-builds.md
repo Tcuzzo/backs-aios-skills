@@ -9,6 +9,44 @@
 构建任何 agent、bot、worker 或长期运行的服务——凡是握着工具、访问网络、
 或在无人盯着每一步的情况下自己采取行动的东西。
 
+整个构建，一图看懂：
+
+```
+    +--------------------------------------------+
+    | 1 intent-compiler  mission + limits from   |
+    |   the human's own words                    |
+    +--------------------------------------------+
++-->| 2 understanding-gates  DOMAIN PRIMITIVES   |
+|   |   first; LLM slot for genuine reasoning    |
+|   +--------------------------------------------+
+|   | 3 red-first  a failing contract test per   |<--------------------------+
+|   |   typed IO boundary, committed first       |  finding -> a new red     |
+|   +--------------------------------------------+  test -> fix ->           |
+|   | 4 build to the doctrine -- every loop      |  re-convene               |
+|   |   inside bounded-loops                     |   +---------------------+ |
+|   +--------------------------------------------+   |  LORD OF THE LOOP   |-+
+|   | 5 sniper-testing  mock transport only      |   | one hand drives the |
+|   +--------------------------------------------+   | loop: dispatch,     |
+|   | 6 clean-code-gauntlet  mutate decision     |   | judge, loop back    |
+|   |   paths to zero survivors                  |   | until the gate is   |
+|   +--------------------------------------------+   | green. a lane never |
+|   | 7 blind-tribunal  cross-family graders     |-->| lands its own work. |
+|   +--------------------------------------------+   +---------------------+
+|             |
+|             | every juror passes
+|             v
+|   +--------------------------------------------+
+|   | LANDING GATE -- all green or no ship:      |
+|   | no fail-open boundary, silent fallback,    |
+|   | or swallowed error . zero mutation         |
+|   | survivors in decision paths . cross-       |
+|   | family pass; the builder never grades .    |
++---| zero primitives = invalid -> redesign      |
+    +--------------------------------------------+
+```
+
+图中两个特殊标签：Lord of the Loop = 循环之主，即由一只手驱动整个迭代（派发、评判、循环回炉）、直到落地门槛转绿的循环负责人；LANDING GATE（LAND，落地门槛）= 全部条件转绿才放行落地的最终关卡。
+
 ## 链路
 
 1. [intent-compiler](../skills/intent-compiler/SKILL.md) —— 把需求完整读懂；

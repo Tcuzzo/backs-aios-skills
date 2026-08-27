@@ -8,6 +8,46 @@
 
 构建或扩展任何会被别人安装并运行的 web 应用、网站、API 或交付仓库。
 
+整个构建，一图看懂：
+
+```
++--------------------------------------------+
+| 1 intent-compiler  read the ask whole      |
++--------------------------------------------+
+| 2 understanding-gates  structure first:    |
+|   one entrypoint, manifest, lockfile       |
++--------------------------------------------+
+| 3 dependency hygiene  validate + hash-pin  |
+|   every dep, no install scripts, pin CI    |
++--------------------------------------------+
+| 4 red-first  contract tests for routes,    |<--------------------------+
+|   loaders, validation -- committed first   |  finding -> a new red     |
++--------------------------------------------+  test -> fix ->           |
+| 5 build to the doctrine; any UI runs       |  re-convene               |
+|   the design-taste method                  |                           |
++--------------------------------------------+   +---------------------+ |
+| 6 sniper-testing  never mock your own      |   |  LORD OF THE LOOP   |-+
+|   validation or serialization              |   | one hand drives the |
++--------------------------------------------+   | loop: dispatch,     |
+| 7 clean-code-gauntlet  mutate validation   |   | judge, loop back    |
+|   + auth predicates until none survive     |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 8 blind-tribunal  cross-family grade       |-->| lands its own work. |
++--------------------------------------------+   +---------------------+
+          |
+          | every juror passes
+          v
++--------------------------------------------+
+| LANDING GATE -- all green or no deploy:    |
+| no unpinned dep . no committed secret .    |
+| zero mutation survivors in validation +    |
+| auth predicates . no external network      |
+| during tests (loopback is fine)            |
++--------------------------------------------+
+```
+
+图中两个特殊标签：Lord of the Loop = 循环之主，即由一只手驱动整个迭代（派发、评判、循环回炉）、直到落地门槛转绿的循环负责人；LANDING GATE（LAND，落地门槛）= 全部条件转绿才放行落地的最终关卡。
+
 ## 链路
 
 1. [intent-compiler](../skills/intent-compiler/SKILL.md) —— 选技术栈或结构

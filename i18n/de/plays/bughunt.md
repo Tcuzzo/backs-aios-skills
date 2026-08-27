@@ -11,6 +11,45 @@ gemeinsame Stelle im Code, an der eine Fehlerklasse wohnt — niemals einzelne S
 - Ein Rückstau an Funden muss parallel angegriffen werden, ohne Drift und ohne dass
   sich Lanes gegenseitig zertrampeln.
 
+Die Jagd auf einen Blick:
+
+```
+    +--------------------------------------------+
++-->| 1 wayfinder  chart the hunt as one map,    |
+|   |   a node per seam; claim from the frontier |
+|   +--------------------------------------------+
+|   | 2 leap-protocol  one node = one ball:      |
+|   |   goal, spec, hard file scope, ONE writer  |
+|   +--------------------------------------------+
+|   | 3 root-cause-first  reproduce + review     |
+|   |   evidence BEFORE any code changes         |
+|   +--------------------------------------------+
+|   | 4 repair-loop  red-first test committed,   |<--------------------------+
+|   |   sniper-testing while iterating           |  finding or survivor ->   |
+|   +--------------------------------------------+   +---------------------+ |
+|   | 5 blind-tribunal  a non-author grader      |-->|  LORD OF THE LOOP   |-+
+|   |   attacks; jurors judge redacted work      |   | one hand drives the |
+|   +--------------------------------------------+   | loop: dispatch,     |
+|   | 6 seam-engineering  close the CLASS at     |   | judge, loop back    |
+|   |   the shared seam, never the symptom       |   | until the gate is   |
+|   +--------------------------------------------+   | green. a lane never |
+|   | 7 clean-code-gauntlet  the fixed branch    |-->| lands its own work. |
+|   |   must DIE under mutation, or stay open    |   +---------------------+
+|   +--------------------------------------------+
+|             |
+|             | jurors pass + mutant dies
+|             v
+|   +--------------------------------------------+
+|   | LANDING GATE -- leap-protocol Score gate:  |
+|   | source truth . keep-or-revert . blind      |
+|   | review . live proof . provenance -- each   |
+|   | finding ends FIXED or REFUTED-W-EVIDENCE   |
++---| ball closed -> claim the next node         |
+    +--------------------------------------------+
+```
+
+*Labels im Diagramm: „Lord of the Loop“ = der Besitzer des Loops, der die Iteration treibt, bis das Landing-Gate grün ist; „LAND“ = die Landung — die Änderung zieht erst ein, wenn jedes Gate grün ist.*
+
 ## Die Kette
 
 1. [wayfinder](../skills/wayfinder/SKILL.md) — zeichne die Jagd ZUERST als eine

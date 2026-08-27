@@ -9,6 +9,46 @@
 任何有真实风险的构建、修复或升级。琐碎的一行改动可以直接跳到
 [sniper-testing](../skills/sniper-testing/SKILL.md) 然后落地。
 
+整个循环，一图看懂：
+
+```
++--------------------------------------------+
+| 0 optimus  boot the floor first            |
++--------------------------------------------+
+| 1 intent-compiler  the ask is the spec     |
++--------------------------------------------+
+| 2 human-calibration  load the profile      |
++--------------------------------------------+
+| 3 understanding-gates + live-research --   |
+|   read first, then gate Design -> Ship     |
++--------------------------------------------+
+| 4 wayfinder  lost? chart the route         |
++--------------------------------------------+
+| 5 red-first  failing test committed first  |<--------------------------+
++--------------------------------------------+  finding -> new red test  |
+| 6 build  fleet-ladder + model-fusion;      |   +---------------------+ |
+|   bugs: repair-loop + seam-engineering     |   |  LORD OF THE LOOP   |-+
++--------------------------------------------+   | one hand drives the |
+| 7 sniper-testing  scoped runs only         |   | loop: dispatch,     |
++--------------------------------------------+   | judge, loop back    |
+| 8 clean-code-gauntlet  measure + mutate    |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 9 blind-eval, then blind-tribunal          |-->| lands its own work. |
++--------------------------------------------+   +---------------------+
+          |
+          | every juror passes
+          v
++--------------------------------------------+
+| 10 LANDING GATE -- all green or no land:   |
+|    red test untouched . builder != grader  |
+|    every finding closed . one full pass .  |
+|    live proof on the human's own surface . |
+|    own files only . two-word report        |
++--------------------------------------------+
+```
+
+图中两个特殊标签：Lord of the Loop = 循环之主，即由一只手驱动整个迭代（派发、评判、循环回炉）、直到落地门槛转绿的循环负责人；LANDING GATE（LAND，落地门槛）= 全部条件转绿才放行落地的最终关卡。
+
 ## 链路
 
 0. [optimus](../skills/optimus/SKILL.md) —— 任何编辑之前先启动 harness

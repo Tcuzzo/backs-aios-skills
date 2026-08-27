@@ -90,6 +90,14 @@ atterrissages sauvages tués, des relances de suite complète tuées), jamais un
 « gain de temps » générique. Chaque play se termine par une ligne **Weight:**
 qui résume sa chaîne de la même façon.
 
+## Lord of the Loop
+
+Le wireframe de chaque play marque un **Lord of the Loop** — le maître de la
+boucle. Une seule main pilote toute l'itération : elle dispatche les lanes,
+juge ce qui revient, et fait reboucler les trouvailles jusqu'à ce que la
+barrière d'atterrissage soit verte. Une lane n'atterrit jamais son propre
+travail ; c'est le Lord qui l'atterrit.
+
 ## La raison de chaque nom
 
 | Nom | Pourquoi ce nom |

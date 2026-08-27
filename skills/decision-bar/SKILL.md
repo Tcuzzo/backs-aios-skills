@@ -30,7 +30,7 @@ own truth, the human's known intent, and sensible defaults. Zero added friction.
    The answer is almost always already written. Resolve it, execute, and note the
    call in your work log so the human can audit it later.
 4. At the bar: DELIVER the ask. One plain-language summary of the situation, then
-   the choices as a short list — as buttons if the human's channel supports them —
+   the choices as a short list (as buttons if the human's channel supports them)
    on the channel the human actually watches. Then continue any work that does not
    depend on the answer.
 5. Never park. A decision left in a doc, a commit message, a ledger row, or a long
@@ -39,7 +39,7 @@ own truth, the human's known intent, and sensible defaults. Zero added friction.
 ## Hard rules (any one fails the skill)
 
 - Asking anything answerable from standing rules, the code, or sensible defaults.
-- Inventing new approval machinery — a flag, a queue, a sign-off step — for
+- Inventing new approval machinery (a flag, a queue, a sign-off step) for
   below-bar work. Verification may be added; gates may not.
 - Manufacturing an approval for a decision the human's standing rules already made.
 - Parking a real decision anywhere the human does not actively look.

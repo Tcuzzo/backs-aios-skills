@@ -32,10 +32,9 @@ question read the map before it walks.
      leave empty and let later sessions fill it in.
 3. **Keep it lean.** A map, not documentation. One line per fact. If an entry
    grows into a paragraph, it is drifting into a doc — cut it back to a pointer.
-4. **Record the tree's shape.** Store one cheap fingerprint in the map —
-   `git ls-files | sha256sum` (catches adds, moves, and renames) — so a later
-   session can tell whether the
-   shape changed.
+4. **Record the tree's shape.** Store one cheap fingerprint in the map,
+   `git ls-files | sha256sum` (catches adds, moves, and renames), so a later
+   session can tell whether the shape changed.
 
 ## The map-first law
 

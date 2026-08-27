@@ -84,6 +84,13 @@ rebeldes matados, re-corridas de la suite completa matadas), nunca un genérico
 "ahorra tiempo". Cada jugada termina con una línea **Weight:** que suma su cadena
 de la misma manera.
 
+## Lord of the Loop
+
+El wireframe de cada jugada marca un **Lord of the Loop** — el dueño del bucle. Una
+sola mano conduce toda la iteración: despacha los carriles, juzga lo que vuelve y
+hace girar los hallazgos hasta que la puerta de aterrizaje está en verde. Un carril
+nunca aterriza su propio trabajo; lo aterriza el Lord.
+
 ## Justificación por skill
 
 | Nombre | Por qué este nombre |

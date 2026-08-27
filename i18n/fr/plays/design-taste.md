@@ -11,6 +11,46 @@ Tout écran, page, composant, dashboard ou livrable visuel qu'un humain va
 regarder. Le premier écran fixe le niveau de tous les suivants — lance ce play
 avant lui.
 
+La boucle de goût, en un coup d'œil :
+
+```
++--------------------------------------------+
+| 1 intent-compiler  WHICH taste do the      |
+|   human's words ask for? state the read    |
++--------------------------------------------+
+| 2 human-calibration  anchor in the record  |
+|   + studied references, never a guess      |
++--------------------------------------------+
+| 3 design-taste  emit the three-tier        |
+|   token file FIRST, before any component   |
++--------------------------------------------+
+| 4 build with the token file as a hard      |<--------------------------+
+|   constraint -- no raw hex, px, fonts      |  critique -> fix ->       |
++--------------------------------------------+  re-shoot                 |
+| 5 design-taste  screenshot -> critic;      |   +---------------------+ |
+|   critic resolved live via fleet-ladder    |-->|  LORD OF THE LOOP   |-+
++--------------------------------------------+   | one hand drives the |
+| 6 design-taste  8-axis taste rubric        |   | loop: dispatch,     |
++--------------------------------------------+   | judge, loop back    |
+| 7 design-taste  WCAG 2.2 HARD gate         |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 8 clean-code-gauntlet  the code BEHIND     |   | lands its own work. |
+|   the pixels; zero surviving mutants       |   +---------------------+
++--------------------------------------------+
+          |
+          | rubric + WCAG green
+          v
++--------------------------------------------+
+| LANDING GATE -- all green or no ship:      |
+| WCAG 2.2 passes . 8-axis rubric scored .   |
+| zero surviving mutants behind the pixels   |
+| . critic family != builder family, live-   |
+| resolved via fleet-ladder, never pinned    |
++--------------------------------------------+
+```
+
+*Dans le schéma : LORD OF THE LOOP = le maître de la boucle, la seule main qui pilote l'itération — dispatch, jugement, rebouclage — jusqu'à ce que la barrière d'atterrissage soit verte ; LANDING GATE = la barrière d'atterrissage — tout au vert, ou pas d'atterrissage.*
+
 ## La chaîne
 
 1. [intent-compiler](../skills/intent-compiler/SKILL.md) — déduis QUEL goût les

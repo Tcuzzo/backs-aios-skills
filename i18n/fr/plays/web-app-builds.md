@@ -10,6 +10,46 @@ l'hygiène EST donc le play, pas une réflexion d'après-coup.
 Pour construire ou étendre toute app web, site, API ou dépôt livré que
 quelqu'un d'autre va installer et exécuter.
 
+Le build, en un coup d'œil :
+
+```
++--------------------------------------------+
+| 1 intent-compiler  read the ask whole      |
++--------------------------------------------+
+| 2 understanding-gates  structure first:    |
+|   one entrypoint, manifest, lockfile       |
++--------------------------------------------+
+| 3 dependency hygiene  validate + hash-pin  |
+|   every dep, no install scripts, pin CI    |
++--------------------------------------------+
+| 4 red-first  contract tests for routes,    |<--------------------------+
+|   loaders, validation -- committed first   |  finding -> a new red     |
++--------------------------------------------+  test -> fix ->           |
+| 5 build to the doctrine; any UI runs       |  re-convene               |
+|   the design-taste method                  |                           |
++--------------------------------------------+   +---------------------+ |
+| 6 sniper-testing  never mock your own      |   |  LORD OF THE LOOP   |-+
+|   validation or serialization              |   | one hand drives the |
++--------------------------------------------+   | loop: dispatch,     |
+| 7 clean-code-gauntlet  mutate validation   |   | judge, loop back    |
+|   + auth predicates until none survive     |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 8 blind-tribunal  cross-family grade       |-->| lands its own work. |
++--------------------------------------------+   +---------------------+
+          |
+          | every juror passes
+          v
++--------------------------------------------+
+| LANDING GATE -- all green or no deploy:    |
+| no unpinned dep . no committed secret .    |
+| zero mutation survivors in validation +    |
+| auth predicates . no external network      |
+| during tests (loopback is fine)            |
++--------------------------------------------+
+```
+
+*Dans le schéma : LORD OF THE LOOP = le maître de la boucle, la seule main qui pilote l'itération — dispatch, jugement, rebouclage — jusqu'à ce que la barrière d'atterrissage soit verte ; LANDING GATE = la barrière d'atterrissage — tout au vert, ou pas d'atterrissage.*
+
 ## La chaîne
 
 1. [intent-compiler](../skills/intent-compiler/SKILL.md) — lis la demande en

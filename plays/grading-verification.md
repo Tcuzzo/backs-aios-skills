@@ -9,6 +9,37 @@ The grader attacks, and the floor is built so it cannot be gamed.
 - A suite claims green and nobody watched it fail first.
 - One model built the work and you need an honest verdict on it.
 
+The grade, at a glance:
+
+```
++--------------------------------------------+
+| 1 red-first  confirm the suite failed --   |<--------------------------+
+|   non-zero exit -- BEFORE the fix existed  |  each finding -> a new    |
++--------------------------------------------+  red test -> fix ->       |
+| 2 sniper-testing  scoped runs verified;    |  re-convene               |
+|   no mock theater on the changed seam      |                           |
++--------------------------------------------+   +---------------------+ |
+| 3 cross-family grade -- a model from a     |   |  LORD OF THE LOOP   |-+
+|   DIFFERENT family than the builder        |   | one hand drives the |
++--------------------------------------------+   | loop: dispatch,     |
+| 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
+|   author-redacted envelope                 |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 5 clean-code-gauntlet  the grader re-runs  |   | lands its own work. |
+|   it -- never trust the builder's numbers  |   +---------------------+
++--------------------------------------------+
+          |
+          | all jurors pass
+          v
++--------------------------------------------+
+| LANDING GATE -- the two-sided proof:       |
+| fail-to-pass AND pass-to-pass, run         |
+| hermetically . no fake-green tell .        |
+| builder + grader families differ . the     |
+| grader re-ran the checks itself            |
++--------------------------------------------+
+```
+
 ## The chain
 
 1. [red-first](../skills/red-first/SKILL.md) — confirm the suite failed with a

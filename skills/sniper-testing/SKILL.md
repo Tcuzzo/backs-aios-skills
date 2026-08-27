@@ -27,7 +27,7 @@ test suite.
    Go: `go test ./payments/ -run TestRefund`).
 4. A test that already passed is not re-run unless your next change touches
    code it exercises. The diff defines the scope — not optimism, not fear.
-5. At landing time — the commit gate — run ONE full pass over every touched
+5. At landing time (the commit gate), run ONE full pass over every touched
    module's suite. That single pass catches indirect couplings exactly once.
    Iteration speed and a sound landing are both part of the job.
 
@@ -49,8 +49,8 @@ never the brain.
 
 ## Audit before you trust
 
-Before relying on any test, read it. If it is mock theater — green because of
-mocks, with no physical assertion — delete the mock and rewrite the test to
+Before relying on any test, read it. If it is mock theater (green because of
+mocks, with no physical assertion), delete the mock and rewrite the test to
 assert a real side-effect. A test that cannot fail is worse than no test: it
 certifies a lie, and you will build on that lie.
 

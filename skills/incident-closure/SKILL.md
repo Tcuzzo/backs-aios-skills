@@ -1,6 +1,6 @@
 ---
 name: incident-closure
-description: Use when the human reports breakage or says "fix it" — especially when the normal control plane (API, CLI, service) is dead and you must reach underneath it. The answer is a full understanding-first close — root cause with evidence, failing test first, green, live proof on the human's own path, commit — never a menu of options back at them. Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore.
+description: Use when the human reports breakage or says "fix it" — especially when the normal control plane (API, CLI, service) is dead and you must reach underneath it. The answer is a full understanding-first close (root cause with evidence, failing test first, green, live proof on the human's own path, commit), never a menu of options back at them. Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore.
 license: MIT
 ---
 
@@ -14,8 +14,8 @@ at them, and never a confirmation prompt per step — they already said fix it.
 
 Where sibling skills demand an explicit yes for destructive acts, this rule wins the
 reversible half only: the human's "fix it" IS the standing yes for reversible recovery
-writes that leave a backup trail; anything irreversible — data destruction, spend,
-external sends — still crosses the [decision-bar](../decision-bar/SKILL.md), and the bar wins.
+writes that leave a backup trail; anything irreversible (data destruction, spend,
+external sends) still crosses the [decision-bar](../decision-bar/SKILL.md), and the bar wins.
 
 Ask the human for something only when it is provably lost everywhere else and only
 they can supply it. Every other input, you go find.

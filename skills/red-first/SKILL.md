@@ -1,6 +1,6 @@
 ---
 name: red-first
-description: Use when dispatching any builder — an agent, a model, or yourself — to make a change a test should prove. Commits a proven-failing contract test before the build starts, forbids the builder from touching it, and has an independent grader verify the test was never edited. Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build.
+description: Use when dispatching any builder (an agent, a model, or yourself) to make a change a test should prove. Commits a proven-failing contract test before the build starts, forbids the builder from touching it, and has an independent grader verify the test was never edited. Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build.
 license: MIT
 ---
 

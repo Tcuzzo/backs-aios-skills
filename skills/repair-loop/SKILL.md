@@ -1,6 +1,6 @@
 ---
 name: repair-loop
-description: Use when fixing a bug, closing a reported issue, or uplifting a seam end to end. Runs the full repair loop — ground in the floor, reproduce on live truth, red contract test, fix the class at the seam, verify on the real path, independent grade, land — and iterates until it is true. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build.
+description: Use when fixing a bug, closing a reported issue, or uplifting a seam end to end. Runs the full repair loop (ground in the floor, reproduce on live truth, red contract test, fix the class at the seam, verify on the real path, independent grade, land) and iterates until it is true. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build.
 license: MIT
 ---
 
@@ -31,7 +31,7 @@ discipline that makes "green but broken" structurally hard to ship.
 4. **Fix the CLASS at the seam** — not a point patch per symptom. The full formula
    lives in [seam-engineering](../seam-engineering/SKILL.md).
 5. **Verify on the real path.** Trust but verify. Capability is proven on the human's
-   own surface — the UI they type into, the command they run — never on a green test
+   own surface (the UI they type into, the command they run), never on a green test
    over a mocked seam. Check every claim ("the other branch landed it", "that service
    is down") against live truth before acting on it.
 6. **Measure the fix.** Mid-loop, run only the tests that cover the seam you touched —
@@ -40,8 +40,8 @@ discipline that makes "green but broken" structurally hard to ship.
    scoped tests, complexity-vs-coverage score, bounded mutation testing. A mutant that
    survives your fix means the test never reached the branch you changed — fake green;
    keep iterating.
-7. **Independent grade.** A grader that did not author the change — ideally a model
-   from a different family than the builder — must pass it. The builder never grades
+7. **Independent grade.** A grader that did not author the change (ideally a model
+   from a different family than the builder) must pass it. The builder never grades
    its own work. See [blind-tribunal](../blind-tribunal/SKILL.md).
 8. **Check concurrent work.** Before altering shared state, verify any other session's
    in-flight work is preserved (on a branch or commit). Never commit or clean up work
@@ -70,7 +70,7 @@ blocker evidence and move to the next unblocked piece — never grind silently.
 
 ## Report
 
-Two words — **PROVEN** or **STILL-BUILDING** — plus the intent in plain language and
+Two words, **PROVEN** or **STILL-BUILDING**, plus the intent in plain language and
 the single decision in front of the human, if there is one. Questions go to the human
 only for taste, vision, or destructive risk; see [decision-bar](../decision-bar/SKILL.md).
 

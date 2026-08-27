@@ -79,8 +79,8 @@ The judge-mechanics floor. These live here and nowhere else:
   into citation theater.
 - **Final-state grading.** Grade multi-step work on the FINAL end-state, not
   each intermediate step.
-- **Judge calibration.** Calibrate the judge on a small human-labeled set —
-  report its true-positive and true-negative rates — before trusting it on
+- **Judge calibration.** Calibrate the judge on a small human-labeled set
+  (report its true-positive and true-negative rates) before trusting it on
   your domain.
 
 Order-shuffling is part of the denoise rule above — one law, stated once.

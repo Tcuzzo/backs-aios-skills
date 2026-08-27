@@ -48,8 +48,8 @@ or bug hunt. Especially when you feel the pull to "just patch it here."
   medium bug is the future mystery bug. Every finding on the seam counts
   the same.
 - **"Good enough to land" is not a status.** If the seam is not right, keep
-  iterating — remove the blocker, escalate to a stronger model or reviewer,
-  retry — until it is.
+  iterating (remove the blocker, escalate to a stronger model or reviewer,
+  retry) until it is.
 - **A point patch beside an existing shared primitive fails the skill.**
   If a primitive already owns the seam, the fix rides it; a bypass fix
   recreates the class.

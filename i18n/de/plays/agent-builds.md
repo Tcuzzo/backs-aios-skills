@@ -11,6 +11,44 @@ Beim Bau jedes Agenten, Bots, Workers oder dauerhaft laufenden Services — alle
 Tools hält, Netzwerke anspricht oder handelt, ohne dass ein Mensch jeden Schritt
 beobachtet.
 
+Der Build auf einen Blick:
+
+```
+    +--------------------------------------------+
+    | 1 intent-compiler  mission + limits from   |
+    |   the human's own words                    |
+    +--------------------------------------------+
++-->| 2 understanding-gates  DOMAIN PRIMITIVES   |
+|   |   first; LLM slot for genuine reasoning    |
+|   +--------------------------------------------+
+|   | 3 red-first  a failing contract test per   |<--------------------------+
+|   |   typed IO boundary, committed first       |  finding -> a new red     |
+|   +--------------------------------------------+  test -> fix ->           |
+|   | 4 build to the doctrine -- every loop      |  re-convene               |
+|   |   inside bounded-loops                     |   +---------------------+ |
+|   +--------------------------------------------+   |  LORD OF THE LOOP   |-+
+|   | 5 sniper-testing  mock transport only      |   | one hand drives the |
+|   +--------------------------------------------+   | loop: dispatch,     |
+|   | 6 clean-code-gauntlet  mutate decision     |   | judge, loop back    |
+|   |   paths to zero survivors                  |   | until the gate is   |
+|   +--------------------------------------------+   | green. a lane never |
+|   | 7 blind-tribunal  cross-family graders     |-->| lands its own work. |
+|   +--------------------------------------------+   +---------------------+
+|             |
+|             | every juror passes
+|             v
+|   +--------------------------------------------+
+|   | LANDING GATE -- all green or no ship:      |
+|   | no fail-open boundary, silent fallback,    |
+|   | or swallowed error . zero mutation         |
+|   | survivors in decision paths . cross-       |
+|   | family pass; the builder never grades .    |
++---| zero primitives = invalid -> redesign      |
+    +--------------------------------------------+
+```
+
+*Labels im Diagramm: „Lord of the Loop“ = der Besitzer des Loops, der die Iteration treibt, bis das Landing-Gate grün ist; „LAND“ = die Landung — die Änderung zieht erst ein, wenn jedes Gate grün ist.*
+
 ## Die Kette
 
 1. [intent-compiler](../skills/intent-compiler/SKILL.md) — lies die Anfrage als

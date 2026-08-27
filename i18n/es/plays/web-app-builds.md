@@ -10,6 +10,46 @@ jugada, no una idea de último minuto.
 Al construir o extender cualquier app web, sitio, API o repo entregado que otra
 persona va a instalar y correr.
 
+El build, de un vistazo:
+
+```
++--------------------------------------------+
+| 1 intent-compiler  read the ask whole      |
++--------------------------------------------+
+| 2 understanding-gates  structure first:    |
+|   one entrypoint, manifest, lockfile       |
++--------------------------------------------+
+| 3 dependency hygiene  validate + hash-pin  |
+|   every dep, no install scripts, pin CI    |
++--------------------------------------------+
+| 4 red-first  contract tests for routes,    |<--------------------------+
+|   loaders, validation -- committed first   |  finding -> a new red     |
++--------------------------------------------+  test -> fix ->           |
+| 5 build to the doctrine; any UI runs       |  re-convene               |
+|   the design-taste method                  |                           |
++--------------------------------------------+   +---------------------+ |
+| 6 sniper-testing  never mock your own      |   |  LORD OF THE LOOP   |-+
+|   validation or serialization              |   | one hand drives the |
++--------------------------------------------+   | loop: dispatch,     |
+| 7 clean-code-gauntlet  mutate validation   |   | judge, loop back    |
+|   + auth predicates until none survive     |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 8 blind-tribunal  cross-family grade       |-->| lands its own work. |
++--------------------------------------------+   +---------------------+
+          |
+          | every juror passes
+          v
++--------------------------------------------+
+| LANDING GATE -- all green or no deploy:    |
+| no unpinned dep . no committed secret .    |
+| zero mutation survivors in validation +    |
+| auth predicates . no external network      |
+| during tests (loopback is fine)            |
++--------------------------------------------+
+```
+
+En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce la iteración — despacha, juzga y vuelve a iterar — hasta que la puerta de aterrizaje está en verde; **LAND / LANDING GATE** = aterrizar — integrar el cambio solo cuando todo está en verde.
+
 ## La cadena
 
 1. [intent-compiler](../skills/intent-compiler/SKILL.md) — lee el pedido completo

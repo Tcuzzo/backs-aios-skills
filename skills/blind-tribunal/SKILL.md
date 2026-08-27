@@ -1,6 +1,6 @@
 ---
 name: blind-tribunal
-description: Use when an autonomous change needs an independent grade before landing and no human is in the loop. Convenes blind, cross-family jurors — one lens each — over an author-redacted envelope of whole files; every finding becomes a new failing test; loop until every juror passes. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing.
+description: Use when an autonomous change needs an independent grade before landing and no human is in the loop. Convenes blind, cross-family jurors (one lens each) over an author-redacted envelope of whole files; every finding becomes a new failing test; loop until every juror passes. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing.
 license: MIT
 ---
 
@@ -32,7 +32,7 @@ Each holds exactly ONE lens — a juror asked to check everything checks nothing
 **Solo rig.** When only one model family is available, degrade EXPLICITLY: a
 fresh context or session that never saw the author's conversation acts as the
 blind grader, or the human reviews the redacted envelope. The report must name
-the weakened gate — "graded same-family-blind, not cross-family" — never
+the weakened gate ("graded same-family-blind, not cross-family"), never
 silently pretend the cross-family gate held.
 
 ## The envelope
@@ -57,7 +57,7 @@ Strict machine-parseable JSON, one object, no prose:
                "claim": "...", "evidence": "..."}]}
 ```
 
-- A juror that ANSWERED badly — garbage, non-JSON, refusal text — counts as
+- A juror that ANSWERED badly (garbage, non-JSON, refusal text) counts as
   **refuse**; a juror that NEVER answered (transport failure, unreachable) is a
   **hold**: re-seat it via [fleet-ladder](../fleet-ladder/SKILL.md), never a
   silent pass. One shot per answering juror per round — no retries.
@@ -76,7 +76,7 @@ Strict machine-parseable JSON, one object, no prose:
 5. Each juror also verifies, not just reads: the new tests pass; the regression
    suite is no worse than baseline; and a fake-green check — a test that SHOULD
    fail (the bug re-introduced) does fail. A fake green is a refuse.
-6. On any refuse: EVERY finding — blocker, major, and minor — becomes a NEW
+6. On any refuse: EVERY finding (blocker, major, and minor) becomes a NEW
    failing test that fails for the finding's real reason. Fix it. Rebuild the
    envelope on the revised files. Re-convene ALL jurors. A verdict on stale files
    is no verdict.

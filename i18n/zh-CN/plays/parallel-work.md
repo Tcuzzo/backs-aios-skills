@@ -9,6 +9,45 @@
 - 同一时间窗口里，会有不止一个 agent 碰同一个仓库。
 - 你正想让两个 agent 并行写代码。先读这个。
 
+整个铺开，一图看懂：
+
+```
++--------------------------------------------+
+| 1 leap-protocol  balls with goals, specs,  |
+|   hard file scopes BEFORE any agent spawns |
++--------------------------------------------+
+| 2 spawn readers, not writers -- fan out    |
+|   read-heavy work only                     |
++--------------------------------------------+
+| 3 isolate -- every lane gets its OWN       |
+|   worktree; conflicts surface at merge     |
++--------------------------------------------+
+| 4 clean-code-gauntlet  per lane, in its    |<--------------------------+
+|   own worktree, before it asks to land     |  red exit? back to the    |
++--------------------------------------------+  lane -- fix, re-run      |
+| 5 blind-tribunal  the reviewer gets a      |                           |
+|   CLEAN context, never the author's        |   +---------------------+ |
++--------------------------------------------+   |  LORD OF THE LOOP   |-+
+| 6 merge ONE lane at a time, test-gated     |   | the one write spine |
+|   by exit code, in a merge workspace       |-->| drives dispatch,    |
++--------------------------------------------+   | judges, merges ONE  |
+          |                                      | lane at a time. a   |
+          | every merge green + verified         | lane never lands    |
+          v                                      | its own work.       |
++--------------------------------------------+   +---------------------+
+| LANDING GATE -- all green or no land:      |
+| every merge green by exit code AND         |
+| stat-verified -- counts, diffstat, each    |
+| lane's files present . no lane outside     |
+| its scope . reviewer context stayed        |
+| clean, never the author's . one writer     |
+| per workspace . no lane lands on           |
+| another lane's green                       |
++--------------------------------------------+
+```
+
+图中两个特殊标签：Lord of the Loop = 循环之主，即由一只手驱动整个迭代（派发、评判、循环回炉）、直到落地门槛转绿的循环负责人；LANDING GATE（LAND，落地门槛）= 全部条件转绿才放行落地的最终关卡。
+
 ## 链路
 
 1. [leap-protocol](../skills/leap-protocol/SKILL.md) —— 在任何 agent 起跑

@@ -9,6 +9,42 @@ thing that works. A design that is all-LLM with zero primitives is invalid.
 Building any agent, bot, worker, or long-running service — anything that holds
 tools, calls networks, or takes actions without a human watching every step.
 
+The build, at a glance:
+
+```
+    +--------------------------------------------+
+    | 1 intent-compiler  mission + limits from   |
+    |   the human's own words                    |
+    +--------------------------------------------+
++-->| 2 understanding-gates  DOMAIN PRIMITIVES   |
+|   |   first; LLM slot for genuine reasoning    |
+|   +--------------------------------------------+
+|   | 3 red-first  a failing contract test per   |<--------------------------+
+|   |   typed IO boundary, committed first       |  finding -> a new red     |
+|   +--------------------------------------------+  test -> fix ->           |
+|   | 4 build to the doctrine -- every loop      |  re-convene               |
+|   |   inside bounded-loops                     |   +---------------------+ |
+|   +--------------------------------------------+   |  LORD OF THE LOOP   |-+
+|   | 5 sniper-testing  mock transport only      |   | one hand drives the |
+|   +--------------------------------------------+   | loop: dispatch,     |
+|   | 6 clean-code-gauntlet  mutate decision     |   | judge, loop back    |
+|   |   paths to zero survivors                  |   | until the gate is   |
+|   +--------------------------------------------+   | green. a lane never |
+|   | 7 blind-tribunal  cross-family graders     |-->| lands its own work. |
+|   +--------------------------------------------+   +---------------------+
+|             |
+|             | every juror passes
+|             v
+|   +--------------------------------------------+
+|   | LANDING GATE -- all green or no ship:      |
+|   | no fail-open boundary, silent fallback,    |
+|   | or swallowed error . zero mutation         |
+|   | survivors in decision paths . cross-       |
+|   | family pass; the builder never grades .    |
++---| zero primitives = invalid -> redesign      |
+    +--------------------------------------------+
+```
+
 ## The chain
 
 1. [intent-compiler](../skills/intent-compiler/SKILL.md) — read the ask whole;
@@ -23,13 +59,14 @@ tools, calls networks, or takes actions without a human watching every step.
    [bounded-loops](../skills/bounded-loops/SKILL.md): budgets, checkpoints,
    backoff, and a loud kill-switch — never a hammering retry.
 5. [sniper-testing](../skills/sniper-testing/SKILL.md) — only the outbound
-   transport may be mocked — never routing, prompt-building, or parsing.
+   transport may be mocked, never routing, prompt-building, or parsing.
 6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — the agent's tool
    handlers and decision functions pass the gauntlet: risk score under your
    ceiling, then mutation over the decision paths to zero survivors. Branch logic
    that survives a flipped comparison was never really tested.
 7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — cross-family graders pass
-   the agent before it ships. The builder never grades its own work.
+   the agent before it ships. The builder never grades its own work. Every juror
+   finding becomes a new red test; re-convene until every juror passes.
 
 ## The doctrine (what the build must satisfy)
 
@@ -48,8 +85,8 @@ tools, calls networks, or takes actions without a human watching every step.
   [decision-bar](../skills/decision-bar/SKILL.md).
 - Persist durable state (objectives, decisions, ledger) on disk OUTSIDE the context
   window and re-read it. Never trust in-context memory across a long run.
-- Ship an operating doc the agent loads before every task — nearest file wins,
-  size-capped — carrying the must-always-apply rules.
+- Ship an operating doc the agent loads before every task (nearest file wins,
+  size-capped) carrying the must-always-apply rules.
 - Tool failures return a structured error to the reasoning slot for
   self-correction. A swallowed tool error is a bug.
 - Least privilege: the agent carries exactly the tools its mission needs — no

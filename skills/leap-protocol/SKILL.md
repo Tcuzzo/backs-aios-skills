@@ -1,6 +1,6 @@
 ---
 name: leap-protocol
-description: Use when a seam is too big for one builder and must be split across parallel workers. LEAP decomposes work into independently ownable balls — goal, full spec, hard file scope — fans them to fresh builders in isolated worktrees, and reconciles through a single write spine. Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff.
+description: Use when a seam is too big for one builder and must be split across parallel workers. LEAP decomposes work into independently ownable balls (goal, full spec, hard file scope), fans them to fresh builders in isolated worktrees, and reconciles through a single write spine. Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff.
 license: MIT
 ---
 
@@ -50,7 +50,7 @@ balls. Validate the whole slice before any dispatch:
 - every ball id is unique, and every dependency names a ball in the same slice;
 - the graph has no cycles;
 - no two balls share a file (hard scopes are disjoint);
-- exactly one ball — or one integrator — is named the **single write spine**: the only
+- exactly one ball (or one integrator) is named the **single write spine**: the only
   place candidate bytes merge. All other lanes read, design, or prove.
 
 Run the graph in waves. A ball is ready only when all its dependencies returned `1`.
@@ -84,7 +84,7 @@ The builder never grades its own ball. Before any `1`:
    [blind-eval](../blind-eval/SKILL.md).
 3. **Blind cross-family review** — at least two reviewers from model families different
    from the builder's, each seeing the same candidate hash and the same author-redacted
-   envelope. A reviewer that ANSWERED badly — garbage, non-JSON, refusal text — is a
+   envelope. A reviewer that ANSWERED badly (garbage, non-JSON, refusal text) is a
    valid refusal: `-1`. A reviewer that NEVER answered (transport failure, unreachable)
    is `0`: hold and re-seat via the fleet ladder, never a faked pass. See
    [blind-tribunal](../blind-tribunal/SKILL.md).

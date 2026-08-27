@@ -11,6 +11,45 @@ Die Regel, die alles andere bezahlt: ein Schreib-Rückgrat, viele Leser.
 - Du bist versucht, zwei Agenten parallel Code schreiben zu lassen. Lies das hier
   zuerst.
 
+Das Auffächern auf einen Blick:
+
+```
++--------------------------------------------+
+| 1 leap-protocol  balls with goals, specs,  |
+|   hard file scopes BEFORE any agent spawns |
++--------------------------------------------+
+| 2 spawn readers, not writers -- fan out    |
+|   read-heavy work only                     |
++--------------------------------------------+
+| 3 isolate -- every lane gets its OWN       |
+|   worktree; conflicts surface at merge     |
++--------------------------------------------+
+| 4 clean-code-gauntlet  per lane, in its    |<--------------------------+
+|   own worktree, before it asks to land     |  red exit? back to the    |
++--------------------------------------------+  lane -- fix, re-run      |
+| 5 blind-tribunal  the reviewer gets a      |                           |
+|   CLEAN context, never the author's        |   +---------------------+ |
++--------------------------------------------+   |  LORD OF THE LOOP   |-+
+| 6 merge ONE lane at a time, test-gated     |   | the one write spine |
+|   by exit code, in a merge workspace       |-->| drives dispatch,    |
++--------------------------------------------+   | judges, merges ONE  |
+          |                                      | lane at a time. a   |
+          | every merge green + verified         | lane never lands    |
+          v                                      | its own work.       |
++--------------------------------------------+   +---------------------+
+| LANDING GATE -- all green or no land:      |
+| every merge green by exit code AND         |
+| stat-verified -- counts, diffstat, each    |
+| lane's files present . no lane outside     |
+| its scope . reviewer context stayed        |
+| clean, never the author's . one writer     |
+| per workspace . no lane lands on           |
+| another lane's green                       |
++--------------------------------------------+
+```
+
+*Labels im Diagramm: „Lord of the Loop“ = der Besitzer des Loops, der die Iteration treibt, bis das Landing-Gate grün ist; „LAND“ = die Landung — die Änderung zieht erst ein, wenn jedes Gate grün ist.*
+
 ## Die Kette
 
 1. [leap-protocol](../skills/leap-protocol/SKILL.md) — zerlege die Arbeit in Bälle

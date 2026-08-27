@@ -14,7 +14,7 @@ the wrong discipline. The convention below keeps routing honest.
   its name is a verb, or the name of the play or skill it fires: boot, build, hunt,
   grade, tribunal.
 - **The invariant floor is law.** `invariant-floor` is the one skill every other
-  skill inherits. It is named for what it is — the floor — because every hard rule
+  skill inherits. It is named for what it is, the floor, because every hard rule
   in the pack stands on it, and no skill may land a change below it.
 
 ## The shipped commands
@@ -77,6 +77,13 @@ free is a lie. The "Removes:" clause names the specific waste the skill deletes
 (killed rework, killed rogue landings, killed full-suite reruns), never a generic
 "saves time". Each play ends with one **Weight:** line summing its chain the same way.
 
+## Lord of the Loop
+
+Every play's wireframe marks a **Lord of the Loop** — the loop owner. One hand
+drives the whole iteration: it dispatches lanes, judges what comes back, and loops
+findings around until the landing gate is green. A lane never lands its own work;
+the Lord lands it.
+
 ## Per-skill rationale
 
 | Name | Why this name |
@@ -92,11 +99,11 @@ free is a lie. The "Removes:" clause names the specific waste the skill deletes
 | gpu-dispatch | The dispatch law for GPU work: one model per card, warm through the loop. |
 | guided-steps | Steps only a human can do, guided one stage at a time. |
 | human-calibration | Calibrating the build to the human it serves. (Was "yoke" — the old name survives as a trigger word.) |
-| incident-closure | An incident is closed fully — root cause to live proof — never triaged back to the human. |
+| incident-closure | An incident is closed fully, root cause to live proof, never triaged back to the human. |
 | intent-compiler | Compiles natural language into an executable directive. The prose is the source; the directive is the output. |
 | invariant-floor | The floor of numbered laws every change must clear. Law, not guidance. |
 | leap-protocol | The protocol for leaping big work across parallel builders and landing it through one spine. |
-| live-research | Research against live sources — docs and code as they are now — not model memory. |
+| live-research | Research against live sources (docs and code as they are now), not model memory. |
 | model-fusion | Many models draft, one independent judge picks — fusion of outputs, not a vote. |
 | optimus | The boot brand, kept as a proper name. It boots the floor; every session starts here. |
 | human-voice | Named for what it enforces: the agent writes the way a person talks, and hard ideas still arrive whole. |
@@ -104,7 +111,7 @@ free is a lie. The "Removes:" clause names the specific waste the skill deletes
 | repair-loop | The full fix loop, named for its shape: ground, reproduce, fix, verify, land. |
 | repo-map | Named for its artifact: one map file of the repo's shape, read map-first before any raw tree walk. |
 | root-cause-first | The order of operations is the rule: cause before fix, always. |
-| seam-engineering | Fixes land at the seam — the shared primitive — never as scattered point patches. |
+| seam-engineering | Fixes land at the seam (the shared primitive), never as scattered point patches. |
 | session-handoff | Named for its artifact: one handoff file a cold session can continue from. |
 | sniper-testing | One shot, one target: run only the tests that cover what you touched. |
 | understanding-gates | Gates on each build stage that check understanding, not just syntax. |

@@ -7,7 +7,7 @@ license: MIT
 # Understanding Gates
 **Effort:** light — one validator pass per stage, scored against the original ask and rerun after each repair. Removes: drift validated against a paraphrase — the build that lands green but answers a question nobody asked.
 
-A validation discipline for builds. It interrogates the work at five stages — Design, Plan, Build, Test, Ship — always against the ORIGINAL ask, never against the work's own restatement of it. Each gate returns evidence: scores, a verdict, named failures, and repair actions. It binds the agent, not the human: no new approval step, no friction on the person who asked.
+A validation discipline for builds. It interrogates the work at five stages (Design, Plan, Build, Test, Ship), always against the ORIGINAL ask, never against the work's own restatement of it. Each gate returns evidence: scores, a verdict, named failures, and repair actions. It binds the agent, not the human: no new approval step, no friction on the person who asked.
 
 ## When to run it
 
@@ -55,7 +55,7 @@ A verdict with no named failures behind it is a low-information verdict. Demand 
 
 **1. The echo law.** A check that can only agree is an echo, not a validator. The honesty proof is refutation: feed it a claim you know is false and watch it fail that claim. If it passes the lie, the check is theater. Corollary on mocking: mock only the unstable external leaf — a paid API, a flaky network. Never mock the organ whose behavior IS the proof; its scoring, claim extraction, and pass/fail logic must run for real.
 
-**2. Necessary, not sufficient.** A passing test is necessary, never sufficient. Done means the real surface — the one the human actually uses — does the job on its own. Name that surface, trigger the real path, and watch the correct result arrive. Never promote a unit-test receipt into a live-capability claim.
+**2. Necessary, not sufficient.** A passing test is necessary, never sufficient. Done means the real surface (the one the human actually uses) does the job on its own. Name that surface, trigger the real path, and watch the correct result arrive. Never promote a unit-test receipt into a live-capability claim.
 
 ## Hard rules (what fails this skill)
 

@@ -1,6 +1,6 @@
 ---
 name: fleet-ladder
-description: Use before any work is handed to a model — building, grading, or a bounded worker job — or when a provider is down and you need the fallback order. Resolves the LIVE model ladder: probe what is actually up, pick the best available by an explicit fallback order, fail loud when the ladder is exhausted. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability.
+description: Use before any work is handed to a model (building, grading, or a bounded worker job), or when a provider is down and you need the fallback order. Resolves the LIVE model ladder: probe what is actually up, pick the best available by an explicit fallback order, fail loud when the ladder is exhausted. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability.
 license: MIT
 ---
 

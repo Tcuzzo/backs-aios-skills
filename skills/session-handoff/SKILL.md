@@ -1,6 +1,6 @@
 ---
 name: session-handoff
-description: Use when a session is ending, the context window is about to compact, or the work must continue in another agent or harness. Compacts the session into one flat file a brand-new agent can read cold and continue from — state, half-done work, exact next command, open decisions — with secrets redacted and concurrent work verified preserved. Trigger words: handoff, hand off, compact, save state, continue in another session, portable handoff, before restart.
+description: Use when a session is ending, the context window is about to compact, or the work must continue in another agent or harness. Compacts the session into one flat file a brand-new agent can read cold and continue from (state, half-done work, exact next command, open decisions), with secrets redacted and concurrent work verified preserved. Trigger words: handoff, hand off, compact, save state, continue in another session, portable handoff, before restart.
 license: MIT
 ---
 

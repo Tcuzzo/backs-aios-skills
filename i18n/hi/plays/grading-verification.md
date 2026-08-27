@@ -10,6 +10,39 @@ Adversarial grading का play। इसका एक ही विश्वा
 - कोई suite green होने का दावा करती है और किसी ने उसे पहले fail होते नहीं देखा।
 - काम एक model ने बनाया है और आपको उस पर एक ईमानदार verdict चाहिए।
 
+पूरा grade, एक नज़र में:
+
+```
++--------------------------------------------+
+| 1 red-first  confirm the suite failed --   |<--------------------------+
+|   non-zero exit -- BEFORE the fix existed  |  each finding -> a new    |
++--------------------------------------------+  red test -> fix ->       |
+| 2 sniper-testing  scoped runs verified;    |  re-convene               |
+|   no mock theater on the changed seam      |                           |
++--------------------------------------------+   +---------------------+ |
+| 3 cross-family grade -- a model from a     |   |  LORD OF THE LOOP   |-+
+|   DIFFERENT family than the builder        |   | one hand drives the |
++--------------------------------------------+   | loop: dispatch,     |
+| 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
+|   author-redacted envelope                 |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 5 clean-code-gauntlet  the grader re-runs  |   | lands its own work. |
+|   it -- never trust the builder's numbers  |   +---------------------+
++--------------------------------------------+
+          |
+          | all jurors pass
+          v
++--------------------------------------------+
+| LANDING GATE -- the two-sided proof:       |
+| fail-to-pass AND pass-to-pass, run         |
+| hermetically . no fake-green tell .        |
+| builder + grader families differ . the     |
+| grader re-ran the checks itself            |
++--------------------------------------------+
+```
+
+*Lord of the Loop = loop का मालिक — एक ही हाथ जो dispatch, judge और दोहराव तब तक चलाता है जब तक landing gate green न हो जाए; LAND = बदलाव का final उतरना — हर gate green होने पर merge होकर ship होना।*
+
 ## चेन
 
 1. [red-first](../skills/red-first/SKILL.md) — पक्का करें कि fix के आने से पहले

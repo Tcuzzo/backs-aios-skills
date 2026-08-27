@@ -85,7 +85,10 @@ ajoutés dans les descriptions des skills de ce miroir.
   chacun : `skills/<name>/SKILL.md`.
 - **Les plays** sont des combos nommés. Un play déclenche des skills dans un
   ordre fixé et liste les barrières dures qui bloquent un atterrissage. Un
-  fichier chacun : `plays/<name>.md`.
+  fichier chacun : `plays/<name>.md`. Le wireframe de chaque play marque un
+  **Lord of the Loop** — le maître de la boucle qui pilote l'itération jusqu'à
+  ce que la barrière d'atterrissage soit verte ; le rôle est défini dans
+  [NAMING.md](NAMING.md#lord-of-the-loop).
 - **Les commandes** sont les entrées slash que le plugin installe — chacune
   charge un play ou un skill et l'exécute. Un fichier chacune dans `commands/`.
 - **La convention de nommage** — pourquoi les skills sont des groupes nominaux,

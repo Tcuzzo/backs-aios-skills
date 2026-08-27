@@ -1,6 +1,6 @@
 ---
 name: live-research
-description: Use when reasoning about a codebase, API, or system whose real shape matters. Runs a parallel research agent that reads the live truth — the project's own READMEs, section docs, actual source — so conclusions ground in what is really there, not model memory. Trigger words: live research, ground the reasoning, read the real source, check what is actually there, primary sources, background research, verify against the repo, what do the docs say.
+description: Use when reasoning about a codebase, API, or system whose real shape matters. Runs a parallel research agent that reads the live truth (the project's own READMEs, section docs, actual source) so conclusions ground in what is really there, not model memory. Trigger words: live research, ground the reasoning, read the real source, check what is actually there, primary sources, background research, verify against the repo, what do the docs say.
 license: MIT
 ---
 

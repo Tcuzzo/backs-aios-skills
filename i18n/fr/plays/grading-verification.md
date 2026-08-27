@@ -11,6 +11,39 @@ est construit pour qu'on ne puisse pas le truquer.
 - Une suite se dit verte et personne ne l'a vue échouer d'abord.
 - Un modèle a construit le travail et il te faut un verdict honnête dessus.
 
+La notation, en un coup d'œil :
+
+```
++--------------------------------------------+
+| 1 red-first  confirm the suite failed --   |<--------------------------+
+|   non-zero exit -- BEFORE the fix existed  |  each finding -> a new    |
++--------------------------------------------+  red test -> fix ->       |
+| 2 sniper-testing  scoped runs verified;    |  re-convene               |
+|   no mock theater on the changed seam      |                           |
++--------------------------------------------+   +---------------------+ |
+| 3 cross-family grade -- a model from a     |   |  LORD OF THE LOOP   |-+
+|   DIFFERENT family than the builder        |   | one hand drives the |
++--------------------------------------------+   | loop: dispatch,     |
+| 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
+|   author-redacted envelope                 |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 5 clean-code-gauntlet  the grader re-runs  |   | lands its own work. |
+|   it -- never trust the builder's numbers  |   +---------------------+
++--------------------------------------------+
+          |
+          | all jurors pass
+          v
++--------------------------------------------+
+| LANDING GATE -- the two-sided proof:       |
+| fail-to-pass AND pass-to-pass, run         |
+| hermetically . no fake-green tell .        |
+| builder + grader families differ . the     |
+| grader re-ran the checks itself            |
++--------------------------------------------+
+```
+
+*Dans le schéma : LORD OF THE LOOP = le maître de la boucle, la seule main qui pilote l'itération — dispatch, jugement, rebouclage — jusqu'à ce que la barrière d'atterrissage soit verte ; LANDING GATE = la barrière d'atterrissage — tout au vert, ou pas d'atterrissage.*
+
 ## La chaîne
 
 1. [red-first](../skills/red-first/SKILL.md) — confirme que la suite a échoué

@@ -21,7 +21,7 @@ Three beliefs run through every file in this pack.
 
 **Programmed, not prompted.** The agent behind this pack communicates plainly and
 refuses bad moves because those properties are engineered into the harness as
-structural rules — hooks, gates, tests — not suggested in a prompt. A rule an agent
+structural rules (hooks, gates, tests), not suggested in a prompt. A rule an agent
 must remember fails exactly when the agent is busiest. So the rules that matter are
 enforced where forgetting is impossible: in the harness, not in the model's memory.
 
@@ -53,8 +53,8 @@ available, and the grounding hook ships enabled (kill-switch: `AIOS_GATE=off`).
 ### Option 2 — manual
 
 Drop the `skills/` folders into your agent's skill directory and say the trigger
-words. Per-agent paths — Claude Code, any Agent Skills runtime, OpenClaw, Hermes, a
-bare API loop — are in [INSTALL.md](INSTALL.md).
+words. Per-agent paths (Claude Code, any Agent Skills runtime, OpenClaw, Hermes, a
+bare API loop) are in [INSTALL.md](INSTALL.md).
 
 | When you want... | Say... |
 | --- | --- |
@@ -71,11 +71,14 @@ bare API loop — are in [INSTALL.md](INSTALL.md).
   numbered steps, hard rules that fail the skill, and links to the skills it pairs
   with. One file each: `skills/<name>/SKILL.md`.
 - **Plays** are named combos. A play fires skills in a set order and lists the hard
-  gates that block a landing. One file each: `plays/<name>.md`.
+  gates that block a landing. One file each: `plays/<name>.md`. Every play's
+  wireframe marks a **Lord of the Loop** — the loop owner who drives iteration
+  until the landing gate is green; the role is defined in
+  [NAMING.md](NAMING.md#lord-of-the-loop).
 - **Commands** are the slash entries the plugin installs — each loads a play or
   skill and runs it. One file each in `commands/`.
-- **The naming convention** — why skills are noun phrases, commands are verbs, and
-  the floor is law — is in [NAMING.md](NAMING.md).
+- **The naming convention** (why skills are noun phrases, commands are verbs, and
+  the floor is law) is in [NAMING.md](NAMING.md).
 - **Effort stamps** — every skill's one-line cost claim (free / light / heavy) and
   every play's closing Weight line are decoded in [NAMING.md](NAMING.md#effort-stamps).
 
@@ -112,13 +115,13 @@ real latency is wasted iteration, not a 30ms hook.
 | [design-taste](skills/design-taste/SKILL.md) | Ship visual work that looks designed, not generated: design tokens first, screenshot critique, a hard accessibility gate. |
 | [fleet-ladder](skills/fleet-ladder/SKILL.md) | Resolve the live model ladder: probe what is up, fall back in order, fail loud when the ladder is exhausted. |
 | [gpu-dispatch](skills/gpu-dispatch/SKILL.md) | One model per GPU, no spill to system RAM, keep the card warm through the loop, unload at loop end. |
-| [guided-steps](skills/guided-steps/SKILL.md) | Script the steps only a human can do — dashboards, credentials, secrets — stage by stage, capturing each value. |
+| [guided-steps](skills/guided-steps/SKILL.md) | Script the steps only a human can do (dashboards, credentials, secrets) stage by stage, capturing each value. |
 | [human-calibration](skills/human-calibration/SKILL.md) | Build a profile of how this human thinks, decides, and wants to be spoken to, then steer the whole build through it. |
-| [incident-closure](skills/incident-closure/SKILL.md) | "Fix it" means a full close — root cause with evidence, failing test, green, live proof — never a menu of options back at the human. |
-| [intent-compiler](skills/intent-compiler/SKILL.md) | Read a human's natural language — dialect, metaphor, shorthand — as a full spec, then execute it whole. Every dialect is a valid grammar; the skill reads culture as context with its own internal logic, never as stereotype. |
+| [incident-closure](skills/incident-closure/SKILL.md) | "Fix it" means a full close (root cause with evidence, failing test, green, live proof), never a menu of options back at the human. |
+| [intent-compiler](skills/intent-compiler/SKILL.md) | Read a human's natural language (dialect, metaphor, shorthand) as a full spec, then execute it whole. Every dialect is a valid grammar; the skill reads culture as context with its own internal logic, never as stereotype. |
 | [invariant-floor](skills/invariant-floor/SKILL.md) | The numbered laws every autonomous change must satisfy before it lands. The floor the whole pack stands on. |
 | [leap-protocol](skills/leap-protocol/SKILL.md) | Split big work into independently ownable balls, fan them to parallel builders in isolated worktrees, reconcile through one write spine. |
-| [live-research](skills/live-research/SKILL.md) | A parallel research agent reads the live source — READMEs, docs, actual code — so reasoning grounds in what is really there, not memory. |
+| [live-research](skills/live-research/SKILL.md) | A parallel research agent reads the live source (READMEs, docs, actual code) so reasoning grounds in what is really there, not memory. |
 | [model-fusion](skills/model-fusion/SKILL.md) | A panel of models drafts in parallel, an independent judge picks, the winner is validated against the original intent. |
 | [optimus](skills/optimus/SKILL.md) | No code until the harness is loaded. A deterministic hook blocks mutating tools until the agent has read the rules. |
 | [human-voice](skills/human-voice/SKILL.md) | The no-degree bar: if reading it needs a degree, rewrite it. Keeps the full idea while it strips the machine tells. |
@@ -149,8 +152,8 @@ real latency is wasted iteration, not a 30ms hook.
 
 These skills are the portable layer of **BACKS AIOS**, an agent platform built by
 [Tcuzzo](https://github.com/Tcuzzo) — a graph-indexed, gate-enforced system where the
-harness, not the model, holds the discipline. The full system — its memory design, its
-model-behavior profiles, its code graph — is not in this pack. The skills still stand
+harness, not the model, holds the discipline. The full system (its memory design, its
+model-behavior profiles, its code graph) is not in this pack. The skills still stand
 alone on any agent: Claude Code, OpenClaw, Hermes, Codex, Cursor, or a bare API loop.
 The bigger your agent's autonomy, the more the floor pays for itself.
 

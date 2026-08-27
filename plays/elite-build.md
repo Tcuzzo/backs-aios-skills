@@ -10,6 +10,44 @@ tight, measure, grade blind, land.
 Any build, fix, or uplift with real stakes. A trivial one-line edit may skip straight
 to [sniper-testing](../skills/sniper-testing/SKILL.md) and land.
 
+The loop, at a glance:
+
+```
++--------------------------------------------+
+| 0 optimus  boot the floor first            |
++--------------------------------------------+
+| 1 intent-compiler  the ask is the spec     |
++--------------------------------------------+
+| 2 human-calibration  load the profile      |
++--------------------------------------------+
+| 3 understanding-gates + live-research --   |
+|   read first, then gate Design -> Ship     |
++--------------------------------------------+
+| 4 wayfinder  lost? chart the route         |
++--------------------------------------------+
+| 5 red-first  failing test committed first  |<--------------------------+
++--------------------------------------------+  finding -> new red test  |
+| 6 build  fleet-ladder + model-fusion;      |   +---------------------+ |
+|   bugs: repair-loop + seam-engineering     |   |  LORD OF THE LOOP   |-+
++--------------------------------------------+   | one hand drives the |
+| 7 sniper-testing  scoped runs only         |   | loop: dispatch,     |
++--------------------------------------------+   | judge, loop back    |
+| 8 clean-code-gauntlet  measure + mutate    |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 9 blind-eval, then blind-tribunal          |-->| lands its own work. |
++--------------------------------------------+   +---------------------+
+          |
+          | every juror passes
+          v
++--------------------------------------------+
+| 10 LANDING GATE -- all green or no land:   |
+|    red test untouched . builder != grader  |
+|    every finding closed . one full pass .  |
+|    live proof on the human's own surface . |
+|    own files only . two-word report        |
++--------------------------------------------+
+```
+
 ## The chain
 
 0. [optimus](../skills/optimus/SKILL.md) — boot the harness before
@@ -46,7 +84,7 @@ to [sniper-testing](../skills/sniper-testing/SKILL.md) and land.
    grades its own work. Every juror finding becomes a new red test; re-convene until
    every juror passes. Solo rig? Degrade per blind-tribunal's Solo rig rule — and
    name the weakened gate in the landing report.
-10. Land — merge cleanly, run ONE full pass over the touched modules' suites, restart
+10. Land: merge cleanly, run ONE full pass over the touched modules' suites, restart
     the real service, and prove the behavior on the human's own surface (the page
     they load, the command they run) — never a proxy probe. Then report.
 
@@ -56,11 +94,11 @@ to [sniper-testing](../skills/sniper-testing/SKILL.md) and land.
   verifies the test-file diff is empty.
 - Builder is never grader, and the grader is a different model family.
 - Every surfaced finding is closed, or adjudicated "not a bug" with recorded
-  evidence. Never silently deferred. Whole-seam closure — the seam is the shared
-  spot in the code where this class of bug lives — or no landing.
+  evidence. Never silently deferred. Whole-seam closure (the seam is the shared
+  spot in the code where this class of bug lives) or no landing.
 - Live proof on the human's real surface. Green tests with broken capability is
   failure, not success.
-- Report in two words — PROVEN or STILL-BUILDING — in
+- Report in two words, PROVEN or STILL-BUILDING, in
   [human-voice](../skills/human-voice/SKILL.md). Proven means landed, plus
   independently graded, plus demonstrated live.
 - Commit only this change's own files — never another session's in-flight work.
@@ -73,4 +111,4 @@ to [sniper-testing](../skills/sniper-testing/SKILL.md) and land.
 - [bounded-loops](../skills/bounded-loops/SKILL.md) — budgets and kill-switches on long runs
 - [session-handoff](../skills/session-handoff/SKILL.md) — seal state before stopping
 
-**Weight:** the full stack — free discipline, light gates, and three heavy steps (model fusion, the gauntlet, the tribunal) — the heavy spend pays on anything that ships, which is exactly what this play is for.
+**Weight:** the full stack — free discipline, light gates, and three heavy steps (model fusion, the gauntlet, the tribunal); the heavy spend pays on anything that ships, which is exactly what this play is for.

@@ -10,6 +10,45 @@
   （那个走 repair loop）。
 - 一堆积压的发现需要并行进攻，还不能跑偏、不能互相踩踏。
 
+整场狩猎，一图看懂：
+
+```
+    +--------------------------------------------+
++-->| 1 wayfinder  chart the hunt as one map,    |
+|   |   a node per seam; claim from the frontier |
+|   +--------------------------------------------+
+|   | 2 leap-protocol  one node = one ball:      |
+|   |   goal, spec, hard file scope, ONE writer  |
+|   +--------------------------------------------+
+|   | 3 root-cause-first  reproduce + review     |
+|   |   evidence BEFORE any code changes         |
+|   +--------------------------------------------+
+|   | 4 repair-loop  red-first test committed,   |<--------------------------+
+|   |   sniper-testing while iterating           |  finding or survivor ->   |
+|   +--------------------------------------------+   +---------------------+ |
+|   | 5 blind-tribunal  a non-author grader      |-->|  LORD OF THE LOOP   |-+
+|   |   attacks; jurors judge redacted work      |   | one hand drives the |
+|   +--------------------------------------------+   | loop: dispatch,     |
+|   | 6 seam-engineering  close the CLASS at     |   | judge, loop back    |
+|   |   the shared seam, never the symptom       |   | until the gate is   |
+|   +--------------------------------------------+   | green. a lane never |
+|   | 7 clean-code-gauntlet  the fixed branch    |-->| lands its own work. |
+|   |   must DIE under mutation, or stay open    |   +---------------------+
+|   +--------------------------------------------+
+|             |
+|             | jurors pass + mutant dies
+|             v
+|   +--------------------------------------------+
+|   | LANDING GATE -- leap-protocol Score gate:  |
+|   | source truth . keep-or-revert . blind      |
+|   | review . live proof . provenance -- each   |
+|   | finding ends FIXED or REFUTED-W-EVIDENCE   |
++---| ball closed -> claim the next node         |
+    +--------------------------------------------+
+```
+
+图中两个特殊标签：Lord of the Loop = 循环之主，即由一只手驱动整个迭代（派发、评判、循环回炉）、直到落地门槛转绿的循环负责人；LANDING GATE（LAND，落地门槛）= 全部条件转绿才放行落地的最终关卡。
+
 ## 链路
 
 1. [wayfinder](../skills/wayfinder/SKILL.md) —— 先把狩猎画成一张地图：

@@ -12,6 +12,46 @@ Tout build, correctif ou uplift avec de vrais enjeux. Une retouche triviale
 d'une ligne peut filer droit vers
 [sniper-testing](../skills/sniper-testing/SKILL.md) et atterrir.
 
+La boucle, en un coup d'œil :
+
+```
++--------------------------------------------+
+| 0 optimus  boot the floor first            |
++--------------------------------------------+
+| 1 intent-compiler  the ask is the spec     |
++--------------------------------------------+
+| 2 human-calibration  load the profile      |
++--------------------------------------------+
+| 3 understanding-gates + live-research --   |
+|   read first, then gate Design -> Ship     |
++--------------------------------------------+
+| 4 wayfinder  lost? chart the route         |
++--------------------------------------------+
+| 5 red-first  failing test committed first  |<--------------------------+
++--------------------------------------------+  finding -> new red test  |
+| 6 build  fleet-ladder + model-fusion;      |   +---------------------+ |
+|   bugs: repair-loop + seam-engineering     |   |  LORD OF THE LOOP   |-+
++--------------------------------------------+   | one hand drives the |
+| 7 sniper-testing  scoped runs only         |   | loop: dispatch,     |
++--------------------------------------------+   | judge, loop back    |
+| 8 clean-code-gauntlet  measure + mutate    |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 9 blind-eval, then blind-tribunal          |-->| lands its own work. |
++--------------------------------------------+   +---------------------+
+          |
+          | every juror passes
+          v
++--------------------------------------------+
+| 10 LANDING GATE -- all green or no land:   |
+|    red test untouched . builder != grader  |
+|    every finding closed . one full pass .  |
+|    live proof on the human's own surface . |
+|    own files only . two-word report        |
++--------------------------------------------+
+```
+
+*Dans le schéma : LORD OF THE LOOP = le maître de la boucle, la seule main qui pilote l'itération — dispatch, jugement, rebouclage — jusqu'à ce que la barrière d'atterrissage soit verte ; LANDING GATE = la barrière d'atterrissage — tout au vert, ou pas d'atterrissage.*
+
 ## La chaîne
 
 0. [optimus](../skills/optimus/SKILL.md) — démarre le harnais avant la moindre

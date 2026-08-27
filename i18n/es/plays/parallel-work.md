@@ -10,6 +10,45 @@ todo lo demás: una sola espina de escritura, muchos lectores.
 - Más de un agente va a tocar el mismo repositorio en la misma ventana.
 - Te tienta dejar que dos agentes escriban código en paralelo. Lee esto primero.
 
+El reparto, de un vistazo:
+
+```
++--------------------------------------------+
+| 1 leap-protocol  balls with goals, specs,  |
+|   hard file scopes BEFORE any agent spawns |
++--------------------------------------------+
+| 2 spawn readers, not writers -- fan out    |
+|   read-heavy work only                     |
++--------------------------------------------+
+| 3 isolate -- every lane gets its OWN       |
+|   worktree; conflicts surface at merge     |
++--------------------------------------------+
+| 4 clean-code-gauntlet  per lane, in its    |<--------------------------+
+|   own worktree, before it asks to land     |  red exit? back to the    |
++--------------------------------------------+  lane -- fix, re-run      |
+| 5 blind-tribunal  the reviewer gets a      |                           |
+|   CLEAN context, never the author's        |   +---------------------+ |
++--------------------------------------------+   |  LORD OF THE LOOP   |-+
+| 6 merge ONE lane at a time, test-gated     |   | the one write spine |
+|   by exit code, in a merge workspace       |-->| drives dispatch,    |
++--------------------------------------------+   | judges, merges ONE  |
+          |                                      | lane at a time. a   |
+          | every merge green + verified         | lane never lands    |
+          v                                      | its own work.       |
++--------------------------------------------+   +---------------------+
+| LANDING GATE -- all green or no land:      |
+| every merge green by exit code AND         |
+| stat-verified -- counts, diffstat, each    |
+| lane's files present . no lane outside     |
+| its scope . reviewer context stayed        |
+| clean, never the author's . one writer     |
+| per workspace . no lane lands on           |
+| another lane's green                       |
++--------------------------------------------+
+```
+
+En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce la iteración — despacha, juzga y vuelve a iterar — hasta que la puerta de aterrizaje está en verde; **LAND / LANDING GATE** = aterrizar — integrar el cambio solo cuando todo está en verde.
+
 ## La cadena
 
 1. [leap-protocol](../skills/leap-protocol/SKILL.md) — descompone el trabajo en

@@ -10,6 +10,46 @@ Nachgedanke.
 Beim Bauen oder Erweitern jeder Web-App, Website, API oder jedes ausgelieferten
 Repos, das jemand anderes installieren und ausführen wird.
 
+Der Build auf einen Blick:
+
+```
++--------------------------------------------+
+| 1 intent-compiler  read the ask whole      |
++--------------------------------------------+
+| 2 understanding-gates  structure first:    |
+|   one entrypoint, manifest, lockfile       |
++--------------------------------------------+
+| 3 dependency hygiene  validate + hash-pin  |
+|   every dep, no install scripts, pin CI    |
++--------------------------------------------+
+| 4 red-first  contract tests for routes,    |<--------------------------+
+|   loaders, validation -- committed first   |  finding -> a new red     |
++--------------------------------------------+  test -> fix ->           |
+| 5 build to the doctrine; any UI runs       |  re-convene               |
+|   the design-taste method                  |                           |
++--------------------------------------------+   +---------------------+ |
+| 6 sniper-testing  never mock your own      |   |  LORD OF THE LOOP   |-+
+|   validation or serialization              |   | one hand drives the |
++--------------------------------------------+   | loop: dispatch,     |
+| 7 clean-code-gauntlet  mutate validation   |   | judge, loop back    |
+|   + auth predicates until none survive     |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 8 blind-tribunal  cross-family grade       |-->| lands its own work. |
++--------------------------------------------+   +---------------------+
+          |
+          | every juror passes
+          v
++--------------------------------------------+
+| LANDING GATE -- all green or no deploy:    |
+| no unpinned dep . no committed secret .    |
+| zero mutation survivors in validation +    |
+| auth predicates . no external network      |
+| during tests (loopback is fine)            |
++--------------------------------------------+
+```
+
+*Labels im Diagramm: „Lord of the Loop“ = der Besitzer des Loops, der die Iteration treibt, bis das Landing-Gate grün ist; „LAND“ = die Landung — die Änderung zieht erst ein, wenn jedes Gate grün ist.*
+
 ## Die Kette
 
 1. [intent-compiler](../skills/intent-compiler/SKILL.md) — lies die Anfrage als

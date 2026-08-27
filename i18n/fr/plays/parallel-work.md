@@ -12,6 +12,45 @@ lecteurs.
 - Tu es tenté de laisser deux agents écrire du code en parallèle. Lis ceci
   d'abord.
 
+Le déploiement en parallèle, en un coup d'œil :
+
+```
++--------------------------------------------+
+| 1 leap-protocol  balls with goals, specs,  |
+|   hard file scopes BEFORE any agent spawns |
++--------------------------------------------+
+| 2 spawn readers, not writers -- fan out    |
+|   read-heavy work only                     |
++--------------------------------------------+
+| 3 isolate -- every lane gets its OWN       |
+|   worktree; conflicts surface at merge     |
++--------------------------------------------+
+| 4 clean-code-gauntlet  per lane, in its    |<--------------------------+
+|   own worktree, before it asks to land     |  red exit? back to the    |
++--------------------------------------------+  lane -- fix, re-run      |
+| 5 blind-tribunal  the reviewer gets a      |                           |
+|   CLEAN context, never the author's        |   +---------------------+ |
++--------------------------------------------+   |  LORD OF THE LOOP   |-+
+| 6 merge ONE lane at a time, test-gated     |   | the one write spine |
+|   by exit code, in a merge workspace       |-->| drives dispatch,    |
++--------------------------------------------+   | judges, merges ONE  |
+          |                                      | lane at a time. a   |
+          | every merge green + verified         | lane never lands    |
+          v                                      | its own work.       |
++--------------------------------------------+   +---------------------+
+| LANDING GATE -- all green or no land:      |
+| every merge green by exit code AND         |
+| stat-verified -- counts, diffstat, each    |
+| lane's files present . no lane outside     |
+| its scope . reviewer context stayed        |
+| clean, never the author's . one writer     |
+| per workspace . no lane lands on           |
+| another lane's green                       |
++--------------------------------------------+
+```
+
+*Dans le schéma : LORD OF THE LOOP = le maître de la boucle, la seule main qui pilote l'itération — dispatch, jugement, rebouclage — jusqu'à ce que la barrière d'atterrissage soit verte ; LANDING GATE = la barrière d'atterrissage — tout au vert, ou pas d'atterrissage.*
+
 ## La chaîne
 
 1. [leap-protocol](../skills/leap-protocol/SKILL.md) — décompose le travail en

@@ -80,7 +80,9 @@ Agent Skills, OpenClaw, Hermes, um loop de API puro — estão em
   skills com que ela combina. Um arquivo cada: `skills/<name>/SKILL.md`.
 - **Plays** são combos nomeados. Um play dispara skills numa ordem definida e
   lista os gates duros que bloqueiam um pouso. Um arquivo cada:
-  `plays/<name>.md`.
+  `plays/<name>.md`. O wireframe de cada play marca um **Lord of the Loop** — o
+  dono do loop, que conduz a iteração até o gate de pouso ficar verde; o papel
+  está definido em [NAMING.md](NAMING.md#lord-of-the-loop).
 - **Comandos** são as entradas de barra que o plugin instala — cada um carrega
   um play ou uma skill e roda. Um arquivo cada em `commands/`.
 - **A convenção de nomes** — por que skills são substantivos, comandos são

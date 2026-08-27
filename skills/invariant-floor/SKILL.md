@@ -26,8 +26,8 @@ the work — it drives the repair loop until the law IS true, then the change la
    happens with no agent hand-holding. Green without capability is failure.
 2. **Verification floor.** Failing test first → make it green → prove it live.
    A suite that mocks the exact seam under change proves nothing.
-3. **Builder never grades its own work.** An independent grader — a model or
-   agent that did not author the change, ideally a different model family —
+3. **Builder never grades its own work.** An independent grader (a model or
+   agent that did not author the change, ideally a different model family)
    must pass it before it lands.
 4. **No fake green.** Never claim a capability off a proxy probe while the real
    surface is broken. Proof happens on the real path, not a stand-in.

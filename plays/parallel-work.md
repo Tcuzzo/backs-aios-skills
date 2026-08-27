@@ -9,6 +9,43 @@ for everything else: one write spine, many readers.
 - More than one agent will touch the same repository in the same window.
 - You are tempted to let two agents write code in parallel. Read this first.
 
+The fan-out, at a glance:
+
+```
++--------------------------------------------+
+| 1 leap-protocol  balls with goals, specs,  |
+|   hard file scopes BEFORE any agent spawns |
++--------------------------------------------+
+| 2 spawn readers, not writers -- fan out    |
+|   read-heavy work only                     |
++--------------------------------------------+
+| 3 isolate -- every lane gets its OWN       |
+|   worktree; conflicts surface at merge     |
++--------------------------------------------+
+| 4 clean-code-gauntlet  per lane, in its    |<--------------------------+
+|   own worktree, before it asks to land     |  red exit? back to the    |
++--------------------------------------------+  lane -- fix, re-run      |
+| 5 blind-tribunal  the reviewer gets a      |                           |
+|   CLEAN context, never the author's        |   +---------------------+ |
++--------------------------------------------+   |  LORD OF THE LOOP   |-+
+| 6 merge ONE lane at a time, test-gated     |   | the one write spine |
+|   by exit code, in a merge workspace       |-->| drives dispatch,    |
++--------------------------------------------+   | judges, merges ONE  |
+          |                                      | lane at a time. a   |
+          | every merge green + verified         | lane never lands    |
+          v                                      | its own work.       |
++--------------------------------------------+   +---------------------+
+| LANDING GATE -- all green or no land:      |
+| every merge green by exit code AND         |
+| stat-verified -- counts, diffstat, each    |
+| lane's files present . no lane outside     |
+| its scope . reviewer context stayed        |
+| clean, never the author's . one writer     |
+| per workspace . no lane lands on           |
+| another lane's green                       |
++--------------------------------------------+
+```
+
 ## The chain
 
 1. [leap-protocol](../skills/leap-protocol/SKILL.md) — decompose the work into balls
@@ -34,8 +71,8 @@ for everything else: one write spine, many readers.
 - Coordinate through a tracker (issues, tickets) — never a shared checklist file in
   the working tree. That file is itself a merge-conflict surface and causes two
   agents to grab the same task.
-- Each subagent returns a distilled summary — key facts, decisions, open items, a
-  page or two — never its full transcript.
+- Each subagent returns a distilled summary (key facts, decisions, open items, a
+  page or two), never its full transcript.
 - Persist the plan, spec, and decisions to disk and re-read them. Long runs compact
   context and silently drop instructions; rules that must always apply live in the
   always-loaded file, nowhere else.
@@ -56,4 +93,4 @@ for everything else: one write spine, many readers.
 - A reviewer that shared context with the author.
 - A lane landing on another lane's test results, or mocking the seam it changed.
 
-**Weight:** heavy by design — leap decomposition, a gauntlet per lane, and a clean-context tribunal — the spend pays only when the work is big enough to split, which is the only time to run this play.
+**Weight:** heavy by design — leap decomposition, a gauntlet per lane, and a clean-context tribunal; the spend pays only when the work is big enough to split, which is the only time to run this play.

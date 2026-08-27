@@ -76,8 +76,8 @@ has broken this.
 - **One decision per session.** Resolve at most one ticket per session, research
   tickets excepted. Charting is a session's work; it hand-resolves nothing.
 - **Plan, don't do.** The map produces decisions, not deliverables.
-- **When the ask itself is the fog** — the destination is unclear because the
-  request arrived as prose or metaphor — first read the request with
+- **When the ask itself is the fog** (the destination is unclear because the
+  request arrived as prose or metaphor), first read the request with
   [intent-compiler](../intent-compiler/SKILL.md), then chart from what it
   actually says.
 

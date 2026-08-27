@@ -76,6 +76,9 @@ Hermes, एक bare API loop — [INSTALL.md](INSTALL.md) में हैं।
   साथ वह जोड़ी बनाती है। हर एक की एक file: `skills/<name>/SKILL.md`।
 - **Plays** नामी combos हैं। एक play skills को तय क्रम में चलाता है और उन hard
   gates की सूची देता है जो landing रोकते हैं। हर एक की एक file: `plays/<name>.md`।
+  हर play का wireframe एक **Lord of the Loop** चिह्नित करता है — loop का मालिक,
+  जो iteration तब तक चलाता है जब तक landing gate green न हो जाए; इस भूमिका की
+  परिभाषा [NAMING.md](NAMING.md#lord-of-the-loop) में है।
 - **Commands** वे slash entries हैं जो plugin install करता है — हर एक कोई play या
   skill load करके चलाती है। हर एक की एक file `commands/` में।
 - **Naming convention** — skills noun phrases क्यों हैं, commands verbs क्यों, और

@@ -10,6 +10,45 @@ completas — nunca síntomas sueltos.
   reportado (para eso está el repair loop).
 - Un backlog de hallazgos que hay que atacar en paralelo sin deriva y sin pisarse.
 
+La cacería, de un vistazo:
+
+```
+    +--------------------------------------------+
++-->| 1 wayfinder  chart the hunt as one map,    |
+|   |   a node per seam; claim from the frontier |
+|   +--------------------------------------------+
+|   | 2 leap-protocol  one node = one ball:      |
+|   |   goal, spec, hard file scope, ONE writer  |
+|   +--------------------------------------------+
+|   | 3 root-cause-first  reproduce + review     |
+|   |   evidence BEFORE any code changes         |
+|   +--------------------------------------------+
+|   | 4 repair-loop  red-first test committed,   |<--------------------------+
+|   |   sniper-testing while iterating           |  finding or survivor ->   |
+|   +--------------------------------------------+   +---------------------+ |
+|   | 5 blind-tribunal  a non-author grader      |-->|  LORD OF THE LOOP   |-+
+|   |   attacks; jurors judge redacted work      |   | one hand drives the |
+|   +--------------------------------------------+   | loop: dispatch,     |
+|   | 6 seam-engineering  close the CLASS at     |   | judge, loop back    |
+|   |   the shared seam, never the symptom       |   | until the gate is   |
+|   +--------------------------------------------+   | green. a lane never |
+|   | 7 clean-code-gauntlet  the fixed branch    |-->| lands its own work. |
+|   |   must DIE under mutation, or stay open    |   +---------------------+
+|   +--------------------------------------------+
+|             |
+|             | jurors pass + mutant dies
+|             v
+|   +--------------------------------------------+
+|   | LANDING GATE -- leap-protocol Score gate:  |
+|   | source truth . keep-or-revert . blind      |
+|   | review . live proof . provenance -- each   |
+|   | finding ends FIXED or REFUTED-W-EVIDENCE   |
++---| ball closed -> claim the next node         |
+    +--------------------------------------------+
+```
+
+En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce la iteración — despacha, juzga y vuelve a iterar — hasta que la puerta de aterrizaje está en verde; **LAND / LANDING GATE** = aterrizar — integrar el cambio solo cuando todo está en verde.
+
 ## La cadena
 
 1. [wayfinder](../skills/wayfinder/SKILL.md) — traza la cacería PRIMERO como un solo

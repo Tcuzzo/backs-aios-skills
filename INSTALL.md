@@ -4,8 +4,8 @@ The pack is folders of markdown. Each skill is `skills/<name>/SKILL.md`. Each pl
 `plays/<name>.md`. No binaries, no server, no build step. Installing means putting the
 markdown where your agent looks for skills.
 
-The frontmatter is deliberately the minimal 3-key subset — `name`, `description`,
-`license` — of the open Agent Skills convention (agentskills.io). The spec requires only
+The frontmatter is deliberately the minimal 3-key subset (`name`, `description`,
+`license`) of the open Agent Skills convention (agentskills.io). The spec requires only
 `name` and `description`, and compliant runtimes ignore keys they do not recognize. So
 the pack loads natively wherever the convention loads, and reads as plain markdown
 everywhere else.
@@ -79,8 +79,8 @@ You are the harness. On each loop:
 
 1. Put `skills/invariant-floor/SKILL.md` in the system prompt, always. That is the
    floor every change must clear.
-2. Pick the play that matches the ask — build → `plays/elite-build.md`, bug →
-   `plays/bughunt.md`, grading → `plays/grading-verification.md` — and append it.
+2. Pick the play that matches the ask (build → `plays/elite-build.md`, bug →
+   `plays/bughunt.md`, grading → `plays/grading-verification.md`) and append it.
 3. Match the user's words against each skill's `description` trigger words. Never
    inject the whole pack — inject the one to three skills that match. The pack is
    token-lean; keep it that way.

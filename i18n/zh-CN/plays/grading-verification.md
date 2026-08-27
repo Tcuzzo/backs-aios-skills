@@ -9,6 +9,39 @@
 - 测试套件声称全绿，但没人看着它先失败过。
 - 一个模型干了活，你需要对它的一个诚实判定。
 
+整个评审，一图看懂：
+
+```
++--------------------------------------------+
+| 1 red-first  confirm the suite failed --   |<--------------------------+
+|   non-zero exit -- BEFORE the fix existed  |  each finding -> a new    |
++--------------------------------------------+  red test -> fix ->       |
+| 2 sniper-testing  scoped runs verified;    |  re-convene               |
+|   no mock theater on the changed seam      |                           |
++--------------------------------------------+   +---------------------+ |
+| 3 cross-family grade -- a model from a     |   |  LORD OF THE LOOP   |-+
+|   DIFFERENT family than the builder        |   | one hand drives the |
++--------------------------------------------+   | loop: dispatch,     |
+| 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
+|   author-redacted envelope                 |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 5 clean-code-gauntlet  the grader re-runs  |   | lands its own work. |
+|   it -- never trust the builder's numbers  |   +---------------------+
++--------------------------------------------+
+          |
+          | all jurors pass
+          v
++--------------------------------------------+
+| LANDING GATE -- the two-sided proof:       |
+| fail-to-pass AND pass-to-pass, run         |
+| hermetically . no fake-green tell .        |
+| builder + grader families differ . the     |
+| grader re-ran the checks itself            |
++--------------------------------------------+
+```
+
+图中两个特殊标签：Lord of the Loop = 循环之主，即由一只手驱动整个迭代（派发、评判、循环回炉）、直到落地门槛转绿的循环负责人；LANDING GATE（LAND，落地门槛）= 全部条件转绿才放行落地的最终关卡。
+
 ## 链路
 
 1. [red-first](../skills/red-first/SKILL.md) —— 确认在修复存在之前，

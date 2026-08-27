@@ -58,7 +58,7 @@ capability defaults ON; the switch is loud, reversible, and the only escape.
 
 ## Fail-open, always
 
-Any script error — malformed payload, unreadable state dir, anything — prints
+Any script error (malformed payload, unreadable state dir, anything) prints
 one warning to stderr and allows the call. A broken gate must never brick a
 session.
 

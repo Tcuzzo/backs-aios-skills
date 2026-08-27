@@ -11,6 +11,39 @@ no se le pueda hacer trampa.
 - Una suite afirma verde y nadie la vio fallar primero.
 - Un modelo construyó el trabajo y necesitas un veredicto honesto sobre él.
 
+La calificación, de un vistazo:
+
+```
++--------------------------------------------+
+| 1 red-first  confirm the suite failed --   |<--------------------------+
+|   non-zero exit -- BEFORE the fix existed  |  each finding -> a new    |
++--------------------------------------------+  red test -> fix ->       |
+| 2 sniper-testing  scoped runs verified;    |  re-convene               |
+|   no mock theater on the changed seam      |                           |
++--------------------------------------------+   +---------------------+ |
+| 3 cross-family grade -- a model from a     |   |  LORD OF THE LOOP   |-+
+|   DIFFERENT family than the builder        |   | one hand drives the |
++--------------------------------------------+   | loop: dispatch,     |
+| 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
+|   author-redacted envelope                 |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 5 clean-code-gauntlet  the grader re-runs  |   | lands its own work. |
+|   it -- never trust the builder's numbers  |   +---------------------+
++--------------------------------------------+
+          |
+          | all jurors pass
+          v
++--------------------------------------------+
+| LANDING GATE -- the two-sided proof:       |
+| fail-to-pass AND pass-to-pass, run         |
+| hermetically . no fake-green tell .        |
+| builder + grader families differ . the     |
+| grader re-ran the checks itself            |
++--------------------------------------------+
+```
+
+En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce la iteración — despacha, juzga y vuelve a iterar — hasta que la puerta de aterrizaje está en verde; **LAND / LANDING GATE** = aterrizar — integrar el cambio solo cuando todo está en verde.
+
 ## La cadena
 
 1. [red-first](../skills/red-first/SKILL.md) — confirma que la suite falló con

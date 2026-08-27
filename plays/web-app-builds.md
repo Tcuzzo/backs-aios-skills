@@ -9,6 +9,44 @@ your own logic — so hygiene is the play, not an afterthought.
 Building or extending any web app, site, API, or delivered repo that someone else
 will install and run.
 
+The build, at a glance:
+
+```
++--------------------------------------------+
+| 1 intent-compiler  read the ask whole      |
++--------------------------------------------+
+| 2 understanding-gates  structure first:    |
+|   one entrypoint, manifest, lockfile       |
++--------------------------------------------+
+| 3 dependency hygiene  validate + hash-pin  |
+|   every dep, no install scripts, pin CI    |
++--------------------------------------------+
+| 4 red-first  contract tests for routes,    |<--------------------------+
+|   loaders, validation -- committed first   |  finding -> a new red     |
++--------------------------------------------+  test -> fix ->           |
+| 5 build to the doctrine; any UI runs       |  re-convene               |
+|   the design-taste method                  |                           |
++--------------------------------------------+   +---------------------+ |
+| 6 sniper-testing  never mock your own      |   |  LORD OF THE LOOP   |-+
+|   validation or serialization              |   | one hand drives the |
++--------------------------------------------+   | loop: dispatch,     |
+| 7 clean-code-gauntlet  mutate validation   |   | judge, loop back    |
+|   + auth predicates until none survive     |   | until the gate is   |
++--------------------------------------------+   | green. a lane never |
+| 8 blind-tribunal  cross-family grade       |-->| lands its own work. |
++--------------------------------------------+   +---------------------+
+          |
+          | every juror passes
+          v
++--------------------------------------------+
+| LANDING GATE -- all green or no deploy:    |
+| no unpinned dep . no committed secret .    |
+| zero mutation survivors in validation +    |
+| auth predicates . no external network      |
+| during tests (loopback is fine)            |
++--------------------------------------------+
+```
+
 ## The chain
 
 1. [intent-compiler](../skills/intent-compiler/SKILL.md) — read the ask whole
@@ -44,7 +82,8 @@ will install and run.
    whose flipped comparison still passes the suite is an open door on a public
    surface.
 8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — cross-family grade before
-   the deploy.
+   the deploy. Every juror finding becomes a new red test; re-convene until
+   every juror passes.
 
 ## The doctrine (what the build must satisfy)
 
@@ -53,11 +92,11 @@ will install and run.
 - Output handling is context-aware: parameterized queries for SQL, and the correct
   encoding before any value reaches shell, database, or DOM. Never
   string-concatenate untrusted input.
-- Emit a machine-readable SBOM — a software bill of materials (e.g. CycloneDX) —
+- Emit a machine-readable SBOM, a software bill of materials (e.g. CycloneDX),
   so the recipient can audit the full dependency tree.
 - Keep the build reproducible: pinned toolchain versions, deterministic install,
-  and no EXTERNAL network access during the test run (local loopback services —
-  databases, fixtures — are fine and expected).
+  and no EXTERNAL network access during the test run (local loopback services
+  like databases and fixtures are fine and expected).
 
 ## Hard gates
 

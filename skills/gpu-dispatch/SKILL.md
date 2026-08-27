@@ -31,7 +31,7 @@ Enforce these in the dispatcher as code — never as a rule a model must remembe
    A model that does not fit above the card's reserved floor is not dispatched
    to that card; pick a smaller model or another card.
 3. **Keep the card warm for the whole work loop.** Hold the model resident with
-   a bounded keep-alive — a floor and ceiling you configure, never unlimited —
+   a bounded keep-alive (a floor and ceiling you configure, never unlimited)
    and refresh it while the loop runs. No cold-start churn between jobs in the
    same loop.
 4. **Unload only when the loop completes.** Explicit release at loop end — not

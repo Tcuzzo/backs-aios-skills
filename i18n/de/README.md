@@ -81,7 +81,10 @@ OpenClaw, Hermes, ein nackter API-Loop — stehen in [INSTALL.md](INSTALL.md).
   `skills/<name>/SKILL.md`.
 - **Plays** sind benannte Kombinationen. Ein Play feuert Skills in einer festen
   Reihenfolge und listet die harten Gates, die eine Landung blockieren. Eine
-  Datei pro Play: `plays/<name>.md`.
+  Datei pro Play: `plays/<name>.md`. Jedes Play-Wireframe markiert einen
+  **Lord of the Loop** — den Besitzer des Loops, der die Iteration treibt, bis
+  das Landing-Gate grün ist; die Rolle ist in
+  [NAMING.md](NAMING.md#lord-of-the-loop) definiert.
 - **Commands** sind die Slash-Einträge, die das Plugin installiert — jeder lädt
   ein Play oder einen Skill und führt ihn aus. Eine Datei pro Command in
   `commands/`.
