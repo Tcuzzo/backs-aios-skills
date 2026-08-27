@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Repair Loop
+**Effort:** light — el bucle en sí es disciplina más una pasada de calificación independiente; los pasos más pesados que encadena (gauntlet, tribunal) llevan su propio sello y solo se disparan en cambios que van a entregarse. Elimina: aterrizajes verdes-pero-rotos, y el retrabajo de bug reabierto que cuestan.
 
 El loop por defecto para cualquier fix, cierre de bug o mejora. Es un
 comportamiento, no maquinaria de aprobaciones: agrega cero compuertas y cero

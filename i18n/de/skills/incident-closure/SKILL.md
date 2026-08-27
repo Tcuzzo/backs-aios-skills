@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Voller Abschluss
+**Effort:** free — Reihenfolge-Disziplin an einem Fix, den du ohnehin schuldest: Platten-Wahrheits-Proben und der fehlschlagende Test kommen zuerst, nicht obendrauf. Beseitigt: Options-Menüs und Schritt-für-Schritt-Rückfragen, die dem Menschen mitten im Ausfall zugeworfen werden.
 
 Wenn der Mensch Bruch meldet oder „fix it“ sagt, gibt es genau eine richtige
 Antwort: einen vollen, Understanding-first-Abschluss. Root Cause mit Evidenz, ein

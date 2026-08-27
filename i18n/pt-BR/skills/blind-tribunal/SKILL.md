@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Blind Tribunal
+**Effort:** heavy — três modelos jurados cross-family, reconvocados sobre envelopes novos a cada rodada até a unanimidade; gaste em mudanças autônomas que pousam sem revisão humana. Remove: pousos desgovernados guardados por nada além da palavra do próprio builder.
 
 O loop de avaliação que deixa o humano sair da sala sem o agente sair dos trilhos.
 Um painel de jurados revisa a mudança às cegas, com a autoria arrancada. Cada

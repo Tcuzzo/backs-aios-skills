@@ -72,3 +72,5 @@ persona va a instalar y correr.
 
 - [seam-engineering](../skills/seam-engineering/SKILL.md) — arregla una falla de frontera como clase
 - [bounded-loops](../skills/bounded-loops/SKILL.md) — llamadas salientes conscientes del límite de tasa
+
+**Weight:** disciplina free de higiene a lo largo del build; el gasto heavy es la mutación sobre los predicados de validación y de auth más el tribunal — se paga en cada superficie pública, donde una comparación volteada es una puerta abierta.

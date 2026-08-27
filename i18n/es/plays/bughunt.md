@@ -76,3 +76,5 @@ cacería: cada hallazgo termina ARREGLADO o REFUTADO-CON-EVIDENCIA.
 - Teatro de mocks en un test de cierre: reabre el bug en silencio mientras la
   bitácora afirma que está cerrado.
 - Un hallazgo estacionado en vez de arreglado o refutado con evidencia.
+
+**Weight:** disciplina de cacería free en el núcleo; el gasto heavy es triple — el reparto leap, el tribunal adversarial y la prueba de cierre por mutación — se paga cuando un backlog entero se cierra en paralelo con cada cierre probado bajo mutación.

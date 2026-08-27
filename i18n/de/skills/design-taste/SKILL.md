@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Design-Geschmack — Tokens zuerst, Augen drauf, Barrierefreiheit hart
+**Effort:** light — eine Token-Datei vor jeder Komponente, plus ein Screenshot → Vision-Kritiker-Durchgang pro gerenderter Oberfläche. Beseitigt: das erneute Ausliefern generischer KI-Defaults — die Restyling-Nacharbeit und das Barrierefreiheits-Nachrüsten nach der Auslieferung.
 
 Generische UI ist ein Workflow-Bug, kein Modell-Bug. Behebe ihn strukturell: Lies
 das Briefing als Spezifikation, setze exakte Design-Tokens vor jeder Komponente,

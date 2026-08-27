@@ -67,3 +67,5 @@ todo lo demás: una sola espina de escritura, muchos lectores.
 - Un revisor que compartió contexto con el autor.
 - Un carril aterrizando sobre los resultados de tests de otro carril, o mockeando la
   costura que cambió.
+
+**Weight:** heavy por diseño — descomposición leap, un gauntlet por carril y un tribunal de contexto limpio — el gasto se paga solo cuando el trabajo es lo bastante grande para partirlo, que es el único momento en que corre esta jugada.

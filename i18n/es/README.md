@@ -2,6 +2,8 @@
 
 # BACKS AIOS Skills
 
+**Léelo en:** [English](../../README.md) · [Português (BR)](../pt-BR/README.md) · [Français](../fr/README.md) · [Deutsch](../de/README.md) · [हिन्दी](../hi/README.md) · [简体中文](../zh-CN/README.md)
+
 Un harness de agentes destilado en 27 skills portables y 8 jugadas con nombre,
 sacado de una plataforma de agentes en producción y reconstruido como markdown plano
 que cualquier agente puede cargar.
@@ -83,6 +85,9 @@ equivalentes en español también disparan la misma disciplina.
   jugada o una skill y la ejecuta. Un archivo cada uno en `commands/`.
 - **La convención de nombres** — por qué las skills son frases nominales, los
   comandos son verbos y el piso es ley — está en [NAMING.md](NAMING.md).
+- **Los sellos de esfuerzo** — la afirmación de costo de una línea de cada skill
+  (free / light / heavy) y la línea **Weight:** con la que cierra cada jugada — se
+  decodifican en [NAMING.md](NAMING.md#sellos-de-esfuerzo).
 
 ## Las skills
 

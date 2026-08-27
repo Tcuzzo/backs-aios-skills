@@ -64,3 +64,5 @@ an.
 - Eines der Fake-Grün-Zeichen oben ist vorhanden.
 - Der Prüfer hat dem eigenen Bericht des Builders vertraut, statt die Checks
   selbst neu zu fahren.
+
+**Weight:** vorneweg free — die Red- und Sniper-Checks; der heavy-Einsatz ist das Tribunal plus der Prüfer, der das Gauntlet selbst noch einmal fährt — er zahlt sich bei jeder Änderung aus, die landen will, denn ein einziges falsches Grün kostet mehr als alle Benotungen zusammen.

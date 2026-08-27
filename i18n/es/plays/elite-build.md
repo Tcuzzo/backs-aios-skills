@@ -86,3 +86,5 @@ de una línea puede saltar directo a
 - [decision-bar](../skills/decision-bar/SKILL.md) — qué llega al humano y qué se ejecuta
 - [bounded-loops](../skills/bounded-loops/SKILL.md) — presupuestos y kill-switches en corridas largas
 - [session-handoff](../skills/session-handoff/SKILL.md) — sella el estado antes de parar
+
+**Weight:** el stack completo — disciplina free, puertas light y tres pasos heavy (model fusion, el gauntlet, el tribunal) — el gasto heavy se paga en todo lo que se entrega, que es exactamente para lo que existe esta jugada.

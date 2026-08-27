@@ -65,3 +65,5 @@
 
 - [seam-engineering](../skills/seam-engineering/SKILL.md) —— 把边界缺陷当作一个类来修
 - [bounded-loops](../skills/bounded-loops/SKILL.md) —— 懂限流的出站调用
+
+**Weight:** 整场构建是 free 的卫生纪律；heavy 开销在对校验和鉴权谓词的变异测试加陪审团——每个公开界面上这笔账都划算，因为一个写反的比较就是一扇敞开的门。

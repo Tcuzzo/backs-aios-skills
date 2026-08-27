@@ -63,6 +63,28 @@ para que todo hábito e todo doc que usava o nome antigo continue roteando certo
 
 Um rename que quebra um gatilho existente é uma regressão, não uma limpeza.
 
+## Selos de esforço
+
+Toda skill carrega uma linha **Effort:** sob o título, respondendo duas
+perguntas: o que rodar a skill GASTA, e que esforço desperdiçado ela REMOVE?
+Três níveis:
+
+- **free** — disciplina pura: nenhuma chamada extra de modelo, nenhuma execução
+  extra de ferramenta. Algumas skills free cortam o custo líquido na raiz, e o
+  selo delas diz isso.
+- **light** — uma passada extra: um subagente, uma execução de validador, uma
+  sonda, um teste escrito primeiro.
+- **heavy** — vários modelos ou agentes, ou computação de verdade (rodadas de
+  mutação, painéis de jurados). Um selo heavy também precisa dizer QUANDO o
+  gasto se paga.
+
+Lei da honestidade: o selo é uma afirmação que o corpo da skill precisa
+sustentar — um tribunal selado como free é uma mentira. A cláusula "Remove:"
+nomeia o desperdício específico que a skill apaga (retrabalho morto, pousos
+desgovernados mortos, re-execuções de suíte inteira mortas), nunca um genérico
+"economiza tempo". Cada play termina com uma linha **Weight:** que soma sua
+cadeia do mesmo jeito.
+
 ## Justificativa por skill
 
 | Nome | Por que esse nome |

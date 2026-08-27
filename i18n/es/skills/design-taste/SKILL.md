@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Design Taste — Tokens primero, ojos puestos, accesibilidad dura
+**Effort:** light — un archivo de tokens antes de cualquier componente, más una pasada captura de pantalla → crítico de visión por cada superficie renderizada. Elimina: volver a entregar los defaults genéricos de la IA — el retrabajo de reestilizar y el parche de accesibilidad después del envío.
 
 La UI genérica es un bug de flujo de trabajo, no un bug del modelo. Arréglalo de
 forma estructural: lee el brief como una especificación, fija tokens de diseño

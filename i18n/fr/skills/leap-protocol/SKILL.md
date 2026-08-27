@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # LEAP Protocol
+**Effort:** heavy — des builders parallèles dans des worktrees isolés plus des relecteurs inter-famille à l'aveugle par balle ; à ne dépenser que sur les coutures trop grosses pour un seul builder, là où l'éventail rembourse le temps horloge qu'une seule voie brûlerait en série. Élimine : les builders qui se percutent sur des fichiers partagés, et l'unique diff géant, impossible à relire, que personne ne peut annuler.
 
 LEAP est une méthode bornée de passation sans état. Tu découpes une couture en
 **balles**. Chaque balle part chez un builder neuf qui ne porte aucun contexte

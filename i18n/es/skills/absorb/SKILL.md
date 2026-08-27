@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Absorb — Adopta el arte previo, no lo reinventes
+**Effort:** light — una ingesta del repo (sondeo de metadatos + clon superficial) y una calificación cross-family del port. Elimina: reinventar una capacidad que el arte previo ya resolvió — el duplicado desde cero cuyos bugs cargarías todos tú.
 
 **La capacidad manda.** Un repo es un vehículo para una capacidad. Cuando necesitas
 algo que un proyecto existente ya hace, no construyas un duplicado desde cero, y

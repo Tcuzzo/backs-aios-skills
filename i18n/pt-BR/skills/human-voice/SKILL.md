@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Human Voice
+**Effort:** free — disciplina de registro em todo rascunho, nada extra roda. Remove: mensagens que o humano precisa decodificar — muros de jargão, e os sinais de slop de IA cortados antes de qualquer coisa sair.
 
 Como um agente escreve para humanos. Um teste, um registro, uma lista de corte.
 

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Red-First, inviolable
+**Effort:** free — pure discipline d'ordre : le test que tu écrirais de toute façon est écrit en premier, prouvé rouge, et scellé par un commit ; la vérification anti-falsification est un simple git diff. Élimine : les tests façonnés après le correctif pour passer, et les verdicts verts qu'un builder a tordus en éditant le test.
 
 Un test écrit après le fix ne prouve rien — il a été taillé pour passer.
 Un test que le builder peut éditer prouve encore moins — on peut le tordre

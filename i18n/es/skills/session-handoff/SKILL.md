@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Session Handoff
+**Effort:** free — un solo archivo plano escrito antes de que el contexto muera; sin llamadas a modelos, y recorta el costo neto directamente al arrancar la siguiente sesión. Elimina: que el agente fresco re-derive el estado, que re-pague trampas ya pagadas, y decisiones perdidas en una ventana de contexto muerta.
 
 Una ventana de contexto muere; el trabajo no debe morir con ella. Antes de que
 una sesión termine o se compacte, escribe un archivo plano que un agente recién

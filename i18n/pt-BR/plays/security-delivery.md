@@ -64,3 +64,5 @@ vai lembrar delas.
   por tag.
 - Um mutante sobrevivente num detector, parser ou predicado de política.
 - O artefato nunca ter rodado num sandbox antes da entrega.
+
+**Weight:** disciplina de construção em sua maior parte free mais passadas light de scanner e sandbox; o passo heavy é mutação sobre cada detector e predicado de política — ele se paga em qualquer coisa que um cliente ou outra máquina vai rodar.

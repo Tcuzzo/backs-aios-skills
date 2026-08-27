@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Wayfinder
+**Effort:** free — pura disciplina de trazado: un mapa de decisiones construido con evidencia que ya está en disco, sin llamadas extra a modelos. Elimina: preguntas estacionadas en el humano que la evidencia podía responder, y trabajo de build arrancado antes de tomar las decisiones que van delante de él.
 
 Cuando no conoces el camino, la salida barata es parar y hacerle al humano una
 pregunta que te contrató para responder. El wayfinder traza la ruta en su lugar:

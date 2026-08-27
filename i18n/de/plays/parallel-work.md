@@ -70,3 +70,5 @@ Die Regel, die alles andere bezahlt: ein Schreib-Rückgrat, viele Leser.
 - Ein Reviewer, der sich den Kontext mit dem Autor geteilt hat.
 - Eine Lane, die auf den Testergebnissen einer anderen Lane landet — oder die
   Seam mockt, die sie geändert hat.
+
+**Weight:** heavy per Design — LEAP-Zerlegung, ein Gauntlet pro Lane und ein Tribunal mit sauberem Kontext — der Einsatz zahlt sich nur aus, wenn die Arbeit groß genug zum Aufteilen ist, und nur dann gehört dieses Play überhaupt gefahren.

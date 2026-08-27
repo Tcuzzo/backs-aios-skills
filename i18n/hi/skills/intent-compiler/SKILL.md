@@ -3,7 +3,9 @@ name: intent-compiler
 description: तब इस्तेमाल करें जब इंसान की माँग ticket की जगह सहज बोलचाल में आए — रूपक, slang, शायरी, दबा-संक्षिप्त इशारा, गर्मी, या "समझ ही गए होगे"; भाषा को एक कहे हुए technical directive में बदलता है, पढ़त एक line में बताता है, फिर execute करता है। Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing, मतलब क्या था, इशारा पढ़ो, बोलचाल, रूपक, अंदाज़.
 license: MIT
 ---
+
 # Prose Is the Spec
+**Effort:** free — किसी भी build से पहले पढ़ने का अनुशासन, अलग से कुछ नहीं चलता। हटाता है: literal misread में डूबे पूरे builds — reading साफ़ बोल देने से ग़लत अंदाज़े की क़ीमत एक शब्द रह जाती है, पूरा rebuild नहीं।
 
 लोग tickets नहीं लिखते। वे बोलते हैं — तेज़, लय के साथ, रूपक और गर्मी लिए, वो
 छोड़ते हुए जो उनके ख़याल से आपको पहले से पता है। ज़्यादातर agents उसे घटिया

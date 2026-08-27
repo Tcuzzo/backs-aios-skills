@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Design Taste — पहले Tokens, नज़रें खुली, Accessibility सख़्त
+**Effort:** light — किसी भी component से पहले एक token file, साथ में हर rendered surface पर एक screenshot → vision-critic pass। हटाता है: generic AI defaults को फिर से ship करना — restyle का rework और ship के बाद की accessibility retrofit।
 
 Generic UI एक workflow bug है, model bug नहीं। इसे ढाँचे से ठीक करो: brief को
 spec की तरह पढ़ो, किसी भी component से पहले exact design tokens तय करो, defaults

@@ -71,3 +71,5 @@ states: हर finding या तो FIXED पर खत्म होती ह�
 - closure test में mock theater: ledger "बंद" बताता है जबकि bug चुपचाप फिर खुल
   जाता है।
 - कोई finding park कर दी गई — न fix हुई, न सबूत के साथ refute।
+
+**Weight:** केंद्र में free शिकार-अनुशासन; heavy खर्च तिहरा है — leap fan-out, adversarial tribunal, और mutation से closure का सबूत — यह तब वसूल होता है जब पूरा backlog parallel में बंद होता है और हर closure mutation के नीचे साबित होता है।

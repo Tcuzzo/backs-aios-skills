@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Der Invarianten-Boden
+**Effort:** free — ein Gesetz-für-Gesetz-Check am Lande-Gate; pure Disziplin. Beseitigt: falsch-grüne Landungen — Änderungen, die Tests bestehen, aber auf der eigenen Oberfläche des Menschen versagen.
 
 Ein Harness ist nur so stark wie sein Boden. Das sind die Gesetze, die jede
 autonome Änderung erfüllen muss, bevor sie landet. Sie binden den Agenten, nie

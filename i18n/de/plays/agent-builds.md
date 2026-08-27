@@ -78,3 +78,5 @@ beobachtet.
 
 - [root-cause-first](../skills/root-cause-first/SKILL.md) — wenn der Agent sich danebenbenimmt
 - [session-handoff](../skills/session-handoff/SKILL.md) — dauerhafter Zustand, richtig gemacht
+
+**Weight:** überwiegend free-Disziplin plus ein light-Design-Gate; der heavy-Einsatz sind die Mutations-Läufe des Gauntlets und das familienfremde Tribunal — er zahlt sich bei jedem Agenten aus, der handeln wird, während niemand zuschaut.

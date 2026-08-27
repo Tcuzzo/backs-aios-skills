@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Seam Engineering
+**Effort:** free — pura disciplina de reparación: un solo arreglo de clase en la primitiva compartida en vez de N parches puntuales. Elimina: el mismo bug reparado otra vez en cada sitio hermano, y el hallazgo medio aplazado que se vuelve el bug misterioso que nadie encuentra en seis meses.
 
 Un seam (la costura del sistema donde vive el defecto) se cierra correcta y
 completamente, o no está cerrado. Un parche rápido hoy es el bug que nadie puede

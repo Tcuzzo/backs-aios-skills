@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Conoce a tu humano
+**Effort:** light — una sola pasada de perfil: carga el perfil guardado, o constrúyelo con a lo sumo 7 preguntas casuales. Elimina: re-interrogar a un humano que ya respondió, y el retrabajo de builds que malinterpretaron su gusto.
 
 Un build que malinterpreta a su humano está mal antes de escribir la primera
 línea. Esta skill reemplaza la adivinanza con un modelo funcional del humano al

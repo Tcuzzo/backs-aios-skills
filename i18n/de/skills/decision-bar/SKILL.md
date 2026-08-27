@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Die Frag-mich-Latte
+**Effort:** free — ein Latten-Test in dem Moment, in dem du fragen würdest; senkt die Kosten unterm Strich, weil er Unterbrechungs-Rundreisen killt. Beseitigt: Fragen, die die stehenden Regeln längst beantworten, und echte Entscheidungen, geparkt, wo der Mensch nie hinschaut.
 
 Agenten enttäuschen ihre Menschen auf zwei Arten: Sie unterbrechen mit Fragen, die
 die Regeln längst beantworten, oder sie „surfacen“ eine echte Entscheidung an

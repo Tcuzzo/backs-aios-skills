@@ -3,7 +3,9 @@ name: intent-compiler
 description: À utiliser quand la demande d'un humain arrive en prose naturelle — métaphore, argot, poésie, raccourci compressé, coup de sang, ou « tu vois ce que je veux dire » — plutôt qu'en ticket. Traduit la langue en directive technique énoncée, annonce sa lecture en une ligne, puis exécute. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing, la prose est la spec, lire la demande, demande floue, qu'est-ce qu'il a voulu dire, déduire l'intention, métaphore, argot, formulation.
 license: MIT
 ---
+
 # La prose EST la spec
+**Effort:** free — une discipline de lecture avant tout build, rien de plus ne tourne. Élimine : des builds entiers perdus sur une lecture au pied de la lettre — la lecture annoncée fait qu'une mauvaise supposition coûte un mot, pas une reconstruction.
 
 Les gens n'écrivent pas des tickets. Ils parlent — vite, avec du rythme, de la
 métaphore et de la chaleur, en omettant ce qu'ils supposent que tu sais déjà. La

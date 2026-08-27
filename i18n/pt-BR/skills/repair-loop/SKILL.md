@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Repair Loop
+**Effort:** light — o loop em si é disciplina mais uma passada de avaliação independente; os passos mais pesados que ele encadeia (gauntlet, tribunal) carregam os próprios selos e disparam só em mudanças que vão para produção. Remove: pousos verdes-mas-quebrados, e o retrabalho de bug reaberto que eles custam.
 
 O loop padrão para qualquer conserto, fechamento de bug ou uplift. É um
 comportamento, não maquinário de aprovação: adiciona zero portões e zero

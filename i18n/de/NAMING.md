@@ -65,6 +65,27 @@ hat, weiter richtig routet:
 Eine Umbenennung, die einen bestehenden Trigger bricht, ist eine Regression, kein
 Aufräumen.
 
+## Effort-Stempel
+
+Jeder Skill trägt eine **Effort:**-Zeile unter seinem Titel, die zwei Fragen
+beantwortet: Was KOSTET sein Lauf, und welche verschwendete Arbeit BESEITIGT er?
+Drei Stufen:
+
+- **free** — pure Disziplin: keine zusätzlichen Modell-Calls, keine zusätzlichen
+  Tooling-Läufe. Manche free-Skills senken die Netto-Kosten sogar direkt, und
+  ihre Stempel sagen das.
+- **light** — ein zusätzlicher Durchgang: ein Subagent, ein Validator-Lauf, eine
+  Probe, ein Test-zuerst-Schreiben.
+- **heavy** — mehrere Modelle oder Agenten, oder echte Rechenzeit (Mutations-Läufe,
+  Juror-Panels). Ein heavy-Stempel muss auch sagen, WANN sich der Einsatz auszahlt.
+
+Ehrlichkeits-Gesetz: Der Stempel ist eine Behauptung, die der Skill-Text decken
+muss — ein Tribunal mit free-Stempel ist eine Lüge. Die „Beseitigt:“-Klausel
+benennt die konkrete Verschwendung, die der Skill streicht (gekillte Nacharbeit,
+gekillte entgleiste Landungen, gekillte Voll-Suite-Wiederholungen), nie ein
+generisches „spart Zeit“. Jedes Play endet mit einer **Weight:**-Zeile, die seine
+Kette auf dieselbe Art summiert.
+
 ## Begründung pro Skill
 
 | Name | Warum dieser Name |

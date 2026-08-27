@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Session Handoff
+**Effort:** free — um arquivo plano escrito antes de o contexto morrer; nenhuma chamada de modelo, e corta custo na raiz no início da próxima sessão. Remove: o agente novo re-derivando o estado, repagando armadilhas já pagas, e decisões perdidas numa janela de contexto morta.
 
 Uma janela de contexto morre; o trabalho não pode morrer junto. Antes de uma
 sessão terminar ou compactar, escreva um arquivo plano que um agente novo em

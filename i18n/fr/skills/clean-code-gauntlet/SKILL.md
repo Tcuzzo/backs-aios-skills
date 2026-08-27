@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Clean Code Gauntlet — le parcours d'épreuves
+**Effort:** heavy — du vrai calcul : des runs de couverture et de complexité plus une passe de mutation bornée, puis un seul modèle de goût ; à dépenser sur les changements qui livrent. Élimine : la revue humaine ligne à ligne de diffs entiers, et les tests faux-verts derrière lesquels une régression se cache.
 
 ## Pourquoi ce skill existe
 
@@ -36,6 +37,9 @@ fonction), taille des modules, mutants tués. Les humains et les modèles audite
 | --- | --- |
 | Python | coverage.py + radon + mutmut |
 | JS/TS | c8 (ou istanbul) + Stryker |
+| Go | go test -cover + gocyclo + go-mutesting |
+| Rust | cargo-tarpaulin + cargo-mutants |
+| Java | JaCoCo + PIT |
 | Autre | n'importe quel % de couverture + n'importe quel compteur de complexité cyclomatique |
 
 Une forme de commande par étape :

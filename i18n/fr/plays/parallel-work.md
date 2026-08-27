@@ -70,3 +70,5 @@ lecteurs.
 - Un relecteur qui a partagé son contexte avec l'auteur.
 - Une lane qui atterrit sur les résultats de tests d'une autre, ou qui mocke la
   couture qu'elle a changée.
+
+**Weight:** heavy par conception — la décomposition leap, un gauntlet par voie, et un tribunal au contexte propre — la dépense ne se rentabilise que quand le travail est assez gros pour être découpé, et c'est le seul moment où lancer ce play.

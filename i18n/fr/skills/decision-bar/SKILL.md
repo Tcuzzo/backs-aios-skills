@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # La barre du « demande-moi »
+**Effort:** free — un test de barre au moment où tu poserais la question ; réduit le coût tout court en tuant les allers-retours d'interruption. Élimine : les questions auxquelles les règles en vigueur répondent déjà, et les vraies décisions garées là où l'humain ne regarde jamais.
 
 Les agents trahissent leurs humains de deux façons : ils interrompent avec des
 questions que les règles ont déjà tranchées, ou ils « font remonter » une vraie

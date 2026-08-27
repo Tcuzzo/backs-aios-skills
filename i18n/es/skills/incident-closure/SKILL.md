@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Cierre completo
+**Effort:** free — disciplina de orden sobre un arreglo que ya debes: los sondeos de la verdad en disco y el test que falla van primero, no son extra. Elimina: menús de opciones y confirmaciones paso a paso lanzadas al humano en plena caída.
 
 Cuando el humano reporta algo roto o dice "arréglalo", hay exactamente una
 respuesta correcta: un cierre completo, con entendimiento primero. Causa raíz con

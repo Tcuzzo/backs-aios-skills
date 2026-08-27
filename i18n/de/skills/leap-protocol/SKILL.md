@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # LEAP Protocol
+**Effort:** heavy — parallele Builder in isolierten Worktrees plus blinde familienfremde Reviewer pro Ball; investier das nur in Nähte, die für einen Builder zu groß sind — dort zahlt der Fan-out die Wanduhr-Zeit zurück, die eine einzelne Lane seriell verbrennen würde. Beseitigt: Builder, die auf geteilten Dateien kollidieren, und den einen riesigen, unreviewbaren Diff, den niemand zurückrollen kann.
 
 LEAP ist eine begrenzte Methode für zustandslose Übergaben. Du teilst eine Naht
 in **Balls**. Jeder Ball geht an einen frischen Builder, der keinen versteckten

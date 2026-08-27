@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Clean Code Gauntlet——整洁代码闯关
+**Effort:** heavy — 真实算力：覆盖率和复杂度运行，加一轮有界变异测试，最后一个品味模型；把它花在要出厂的改动上。消除：对整个 diff 逐行的人工 review，以及回归藏身其后的假绿测试。
 
 ## 为什么有这个
 
@@ -29,6 +30,9 @@ license: MIT
 | --- | --- |
 | Python | coverage.py + radon + mutmut |
 | JS/TS | c8（或 istanbul）+ Stryker |
+| Go | go test -cover + gocyclo + go-mutesting |
+| Rust | cargo-tarpaulin + cargo-mutants |
+| Java | JaCoCo + PIT |
 | 其他 | 任意覆盖率 % + 任意圈复杂度计数器 |
 
 每关一条命令的形状：

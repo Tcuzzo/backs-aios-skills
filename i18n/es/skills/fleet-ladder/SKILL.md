@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Fleet Ladder
+**Effort:** light — un solo sondeo vivo, cacheado, del peldaño antes de cualquier despacho. Elimina: despachos a proveedores muertos, y nombres de modelo clavados en los puntos de llamada que se rompen el día que el modelo se retira.
 
 Nunca armes a mano una llamada a un proveedor, y nunca claves un nombre de modelo
 en un punto de llamada. Un solo resolutor es dueño de la pregunta "¿qué modelo

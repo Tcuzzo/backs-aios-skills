@@ -41,3 +41,5 @@
 
 - [blind-tribunal](../skills/blind-tribunal/SKILL.md) —— 给整个交付物打分
 - [sniper-testing](../skills/sniper-testing/SKILL.md) —— 圈定组件测试范围
+
+**Weight:** 整个循环是 light——校准和截图评审各多跑一次；heavy 的一步是对像素背后代码的闯关——只要这块屏幕真会有人看，这笔账就划算。

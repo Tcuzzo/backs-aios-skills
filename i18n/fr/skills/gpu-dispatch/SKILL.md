@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # La loi du dispatch GPU
+**Effort:** free — des règles imposées par le dispatcher, lues sur l'état en direct du nœud lui-même ; réduit le coût tout court. Élimine : les runs qui débordent de la VRAM, silencieusement 10x plus lents, le churn de démarrages à froid entre les jobs, et les cartes laissées oisives par des barrières supposées.
 
 Quatre règles pour faire tourner des modèles locaux sur GPU. Elles existent parce que
 les deux pannes classiques sont opposées et coûtent aussi cher l'une que l'autre :

@@ -70,3 +70,5 @@ confiance au modèle pour s'en souvenir.
 - Un mutant survivant dans un détecteur, un parseur ou un prédicat de
   politique.
 - L'artefact n'a jamais tourné en sandbox avant la livraison.
+
+**Weight:** surtout de la discipline de construction free plus des passes de scanner et de sandbox light ; l'étape heavy est la mutation sur chaque détecteur et chaque prédicat de politique — elle se rentabilise sur tout ce qu'un client ou une autre machine va exécuter.

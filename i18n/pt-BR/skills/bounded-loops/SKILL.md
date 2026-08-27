@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Bounded Loops
+**Effort:** free — tetos e checkpoints declarados antes de o loop começar; corta custo na raiz. Remove: gasto de loop descontrolado — cota queimada, rotas bloqueadas por 429 e progresso que um crash apaga.
 
 Um loop sem limite é o bug mais caro que um agente pode entregar. Ele queima
 orçamento, martela provedores até ser bloqueado, e esconde a própria falha dentro

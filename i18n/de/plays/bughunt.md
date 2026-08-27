@@ -77,3 +77,5 @@ FIXED oder REFUTED-WITH-EVIDENCE (gefixt oder mit Beweisen widerlegt).
 - Mock-Theater in einem Abschluss-Test: Es öffnet den Bug still wieder, während
   das Ledger behauptet, er sei zu.
 - Ein Fund, der geparkt wurde, statt gefixt oder mit Beweisen widerlegt.
+
+**Weight:** free-Jagd-Disziplin im Kern; der heavy-Einsatz ist dreifach — LEAP-Fan-out, das adversariale Tribunal und der Mutations-Beweis jedes Abschlusses — er zahlt sich aus, wenn ein ganzer Backlog parallel schließt und jeder Abschluss unter Mutation bewiesen ist.

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Blind Tribunal
+**Effort:** heavy — tres modelos jurados de familias distintas, reconvocados con sobres frescos en cada ronda hasta la unanimidad; gástalo en cambios autónomos que aterrizan sin revisión humana. Elimina: aterrizajes rebeldes sin más puerta que la palabra del propio constructor.
 
 El loop de calificación que deja al humano irse sin que el agente se descarrile.
 Un panel de jurados revisa el cambio a ciegas, con la autoría borrada. Cada

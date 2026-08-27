@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Session Handoff
+**Effort:** free — eine flache Datei, geschrieben bevor der Kontext stirbt; keine Modell-Calls, und beim nächsten Session-Start senkt sie die Kosten unterm Strich. Beseitigt: dass der frische Agent den Zustand neu herleitet, schon bezahlte Fallen noch einmal bezahlt und Entscheidungen in einem toten Kontextfenster verliert.
 
 Ein Kontextfenster stirbt; die Arbeit darf es nicht. Bevor eine Session endet
 oder kompaktiert, schreib eine flache Datei, die ein brandneuer Agent kalt

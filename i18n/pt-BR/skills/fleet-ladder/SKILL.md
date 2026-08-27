@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Fleet Ladder
+**Effort:** light — uma sonda viva, com cache, do degrau antes de qualquer despacho. Remove: despachos para provedores mortos, e nomes de modelo hardcoded nos pontos de chamada que quebram no dia em que o modelo se aposenta.
 
 Nunca construa na mão uma chamada de provedor, e nunca hardcode um nome de modelo
 num ponto de chamada. Um resolvedor só é dono da pergunta "qual modelo faz este

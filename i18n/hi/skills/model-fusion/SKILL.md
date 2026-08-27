@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Model Fusion
+**Effort:** heavy — parallel में draft करता पूरा panel, साथ में एक स्वतंत्र judge (और वैकल्पिक writer); इसे कठिन builds और ship होने वाले fixes पर खर्च करें, one-line बदलावों पर कभी नहीं। हटाता है: पूरा बदलाव एक अकेले model के draft पर दाँव लगाना, और वह rework जब वही draft ग़लत निकलता है।
 
 कई आज़ाद आवाज़ें एक आवाज़ से बेहतर होती हैं। Models का एक panel वही task
 parallel में draft करता है। एक judge — ऐसा model जिसने कोई draft नहीं लिखा —

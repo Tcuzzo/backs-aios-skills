@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Blind Tribunal — le tribunal à l'aveugle
+**Effort:** heavy — trois modèles jurés de familles différentes, reconvoqués sur des enveloppes fraîches à chaque tour jusqu'à l'unanimité ; à dépenser sur les changements autonomes qui atterrissent sans revue humaine. Élimine : les atterrissages sauvages que rien ne garde, sinon la parole du builder lui-même.
 
 La boucle de notation qui permet à l'humain de s'éloigner sans que l'agent parte en
 roue libre. Un panel de jurés examine le changement à l'aveugle, auteur effacé. Chaque

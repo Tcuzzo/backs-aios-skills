@@ -86,3 +86,5 @@ triviale Ein-Zeilen-Änderung darf direkt zu
 - [decision-bar](../skills/decision-bar/SKILL.md) — was den Menschen erreicht vs. was einfach ausgeführt wird
 - [bounded-loops](../skills/bounded-loops/SKILL.md) — Budgets und Kill-Switches auf langen Läufen
 - [session-handoff](../skills/session-handoff/SKILL.md) — den Zustand versiegeln, bevor du stoppst
+
+**Weight:** der volle Stapel — free-Disziplin, light-Gates und drei heavy-Schritte (Model Fusion, das Gauntlet, das Tribunal) — der heavy-Einsatz zahlt sich bei allem aus, was ausgeliefert wird, und genau dafür ist dieses Play da.

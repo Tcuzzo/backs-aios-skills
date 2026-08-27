@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Root Cause First
+**Effort:** free — pure Untersuchungs-Disziplin, die die Kosten meist unterm Strich senkt: Eine entscheidende Probe ersetzt das Abfeuern der ganzen Pipeline, nur um zu sehen, was passiert. Beseitigt: Pflaster auf der falschen Stelle — den Symptom-Fix, der den echten Bug versteckt und einen nachgelagerten Konsumenten bricht.
 
 Keine Fixes ohne Untersuchung. Ein Pflaster, geklebt bevor du das Versagen
 verstehst, fixt das Falsche, versteckt den echten Bug und bricht etwas

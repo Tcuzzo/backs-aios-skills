@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Session Handoff
+**Effort:** free — context के मरने से पहले लिखी एक flat file; कोई model call नहीं, और अगले session की शुरुआत पर लागत सीधे घटाता है। हटाता है: नए agent का state दोबारा निकालना, चुक चुकी traps की क़ीमत दोबारा चुकाना, और मरी हुई context window में खोए फ़ैसले।
 
 Context window मरती है; काम नहीं मरना चाहिए। Session ख़त्म या compact होने से
 पहले एक flat file लिखो जिसे बिल्कुल नया agent ठंडा पढ़कर आगे बढ़ा सके — क्या

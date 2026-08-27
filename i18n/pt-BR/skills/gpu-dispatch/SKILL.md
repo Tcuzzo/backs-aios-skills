@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Lei de Despacho de GPU
+**Effort:** free — regras impostas pelo despachante, lidas do estado vivo do próprio nó; corta custo na raiz. Remove: execuções derramadas da VRAM rodando 10x mais lentas em silêncio, churn de partida fria entre jobs, e placas paradas por cercas presumidas.
 
 Quatro regras para rodar modelos locais em GPUs. Elas existem porque os dois modos
 comuns de falha são opostos e igualmente caros: surrar placas com cargas e

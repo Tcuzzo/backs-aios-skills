@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Seam Engineering
+**Effort:** free — disciplina pura de reparo: um conserto de classe no primitivo compartilhado em vez de N remendos pontuais. Remove: o mesmo bug consertado de novo em cada ponto irmão, e o achado médio adiado que vira o bug misterioso que ninguém acha em seis meses.
 
 Uma costura fecha certo e completa, ou não fechou.
 Um remendo rápido hoje é o bug que ninguém acha daqui a seis meses.

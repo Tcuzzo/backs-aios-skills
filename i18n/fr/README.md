@@ -2,6 +2,8 @@
 
 # BACKS AIOS Skills
 
+**Lire ceci en :** [English](../../README.md) · [Español](../es/README.md) · [Português (BR)](../pt-BR/README.md) · [Deutsch](../de/README.md) · [हिन्दी](../hi/README.md) · [简体中文](../zh-CN/README.md)
+
 Un harnais d'agent distillé en 27 skills portables et 8 plays nommés, tirés
 d'une plateforme d'agents en production et reconstruits en markdown brut que
 n'importe quel agent peut charger.
@@ -89,6 +91,9 @@ ajoutés dans les descriptions des skills de ce miroir.
 - **La convention de nommage** — pourquoi les skills sont des groupes nominaux,
   les commandes des verbes, et le socle une loi — est dans
   [NAMING.md](NAMING.md).
+- **Les tampons d'effort** — l'affirmation de coût en une ligne de chaque skill
+  (free / light / heavy) et la ligne Weight qui clôt chaque play sont décodées
+  dans [NAMING.md](NAMING.md#tampons-deffort).
 
 ## Les skills
 

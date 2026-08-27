@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Kenne deinen Menschen
+**Effort:** light — ein Profil-Durchgang: das gespeicherte Profil laden oder es aus höchstens 7 beiläufigen Fragen bauen. Beseitigt: das erneute Verhören eines Menschen, der schon geantwortet hat, und Nacharbeit aus Builds, die seinen Geschmack falsch gelesen haben.
 
 Ein Build, der seinen Menschen falsch liest, ist falsch, bevor die erste Zeile
 geschrieben ist. Dieser Skill ersetzt Raten durch ein Arbeitsmodell des Menschen,

@@ -78,3 +78,5 @@ evidência).
 - Teatro de mock num teste de fechamento: ele reabre o bug em silêncio enquanto
   o livro-razão diz que está fechado.
 - Um achado estacionado em vez de corrigido ou refutado com evidência.
+
+**Weight:** disciplina free de caça no núcleo; o gasto heavy é triplo — fan-out do leap, o tribunal adversarial e a prova de fechamento por mutação — ele se paga quando um backlog inteiro fecha em paralelo com cada fechamento provado sob mutação.

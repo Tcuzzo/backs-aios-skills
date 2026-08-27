@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Fleet Ladder — l'échelle de la flotte
+**Effort:** light — une sonde en direct, mise en cache, du barreau avant tout dispatch. Élimine : les dispatches vers des providers morts, et les noms de modèles codés en dur aux points d'appel, qui cassent le jour où le modèle part à la retraite.
 
 Ne bricole jamais un appel fournisseur à la main, et ne code jamais un nom de modèle en
 dur sur un site d'appel. Un seul résolveur possède la question « quel modèle fait ce

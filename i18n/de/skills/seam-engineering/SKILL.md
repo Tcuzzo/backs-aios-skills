@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Seam Engineering
+**Effort:** free — pure Reparatur-Disziplin: ein Klassen-Fix am geteilten Primitiv statt N Punkt-Pflastern. Beseitigt: denselben Bug, an jeder Geschwister-Stelle noch einmal repariert, und den vertagten Medium-Befund, der zu dem Rätsel-Bug wird, den in sechs Monaten niemand mehr findet.
 
 Eine Naht (im Code: die Stelle, an der alles zusammenläuft) ist korrekt und
 vollständig geschlossen — oder sie ist nicht geschlossen. Der schnelle Patch

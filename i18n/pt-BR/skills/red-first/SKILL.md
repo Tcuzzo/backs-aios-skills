@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Red-First, à prova de adulteração
+**Effort:** free — disciplina pura de ordem: o teste que você escreveria de qualquer jeito é escrito primeiro, provado vermelho e selado com um commit; a checagem de adulteração é um único git diff. Remove: testes moldados depois do conserto para passar, e veredictos verdes que um builder entortou editando o teste.
 
 Um teste escrito depois do conserto não prova nada — foi moldado para passar.
 Um teste que o builder pode editar prova menos ainda — pode ser entortado para passar.

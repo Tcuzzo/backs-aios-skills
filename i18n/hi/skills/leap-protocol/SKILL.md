@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # LEAP Protocol
+**Effort:** heavy — isolated worktrees में parallel builders, और हर ball पर blind cross-family reviewers; इसे सिर्फ़ उन seams पर खर्च करें जो एक builder के लिए बहुत बड़ी हों — वहाँ fan-out वह wall-clock वापस कमा देता है जो अकेली lane serially जला देती। हटाता है: shared files पर builders की टक्कर, और वह एक विशाल unreviewable diff जिसे कोई roll back नहीं कर सकता।
 
 LEAP एक bounded stateless-handoff तरीक़ा है। Seam को **balls** में तोड़ो। हर
 ball एक fresh builder के पास जाती है, जिसके पास कोई छिपा context नहीं होता।

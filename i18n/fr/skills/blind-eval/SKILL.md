@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Blind Eval — l'éval à l'aveugle
+**Effort:** light — un run de juge à l'aveugle : plusieurs lectures mélangées de la paire gelée par un modèle qui n'a écrit ni l'une ni l'autre. Élimine : les atterrissages auto-notés « c'est mieux » — les régressions de goût que l'auteur laisserait passer.
 
 Une barrière de qualité garder-ou-annuler (keep or revert) pour les décisions qu'un
 test ne peut pas trancher — la qualité d'une prose, un texte d'interface, la lisibilité

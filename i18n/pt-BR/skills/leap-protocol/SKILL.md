@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Protocolo LEAP
+**Effort:** heavy — builders paralelos em worktrees isolados mais revisores cegos cross-family por ball; gaste só em costuras grandes demais para um builder, onde o fan-out devolve o tempo de relógio que uma lane única queimaria em série. Remove: builders colidindo em arquivos compartilhados, e o único diff gigante irrevisável que ninguém consegue reverter.
 
 O LEAP é um método limitado de handoff sem estado. Você divide uma costura em
 **balls**. Cada ball vai para um builder novo, que não carrega contexto

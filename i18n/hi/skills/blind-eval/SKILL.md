@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Blind Eval
+**Effort:** light — एक blind judge run: frozen जोड़ी की कई shuffled पढ़ाइयाँ, उस model से जिसने दोनों में से कोई नहीं लिखा। हटाता है: खुद को grade देकर "यह बेहतर है" वाली landings — वे taste regressions जिन्हें लेखक खुद हाथ के इशारे से पास कर देता।
 
 एक keep-or-revert quality gate उन फ़ैसलों के लिए जो कोई test तय नहीं कर सकता —
 लिखावट की quality, UI copy, किसी refactor की पठनीयता, किसी prompt का output, किसी

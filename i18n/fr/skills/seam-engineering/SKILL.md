@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Seam Engineering
+**Effort:** free — pure discipline de réparation : un correctif de classe à la primitive partagée au lieu de N rustines ponctuelles. Élimine : le même bug réparé encore et encore à chaque site frère, et la trouvaille moyenne remise à plus tard qui devient le bug mystère que personne ne trouve dans six mois.
 
 Une couture est fermée correctement et complètement, ou elle n'est pas fermée.
 Un patch rapide aujourd'hui, c'est le bug que personne ne retrouvera dans six

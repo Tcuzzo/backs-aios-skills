@@ -79,3 +79,5 @@ RÉFUTÉE-AVEC-PREUVES.
 - Du théâtre de mocks dans un test de fermeture : il rouvre le bug en silence
   pendant que le registre le dit fermé.
 - Une trouvaille mise de côté au lieu d'être corrigée ou réfutée avec preuves.
+
+**Weight:** une discipline de chasse free au cœur ; la dépense heavy est triple — l'éventail leap, le tribunal adversarial, et la preuve de clôture par mutation — elle se rentabilise quand tout un backlog se ferme en parallèle, chaque clôture prouvée sous mutation.

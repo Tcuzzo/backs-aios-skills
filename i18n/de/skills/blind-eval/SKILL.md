@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Blind Eval
+**Effort:** light — ein blinder Richter-Lauf: mehrere gemischte Lesungen des eingefrorenen Paars durch ein Modell, das keines von beiden geschrieben hat. Beseitigt: selbstbenotete „ist besser“-Landungen — Geschmacks-Regressionen, die der Autor durchwinken würde.
 
 Ein Keep-or-Revert-Qualitätsgate für Entscheidungen, die kein Test treffen kann —
 Prosaqualität, UI-Texte, die Lesbarkeit eines Refactors, der Output eines Prompts,

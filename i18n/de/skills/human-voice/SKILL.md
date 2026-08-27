@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Human Voice
+**Effort:** free — Register-Disziplin an jedem Entwurf, nichts Zusätzliches läuft. Beseitigt: Nachrichten, die der Mensch erst entschlüsseln muss — Jargon-Wände und die KI-Slop-Merkmale, die gestrichen werden, bevor irgendetwas rausgeht.
 
 Wie ein Agent an Menschen schreibt. Ein Test, ein Register, eine Streichliste.
 

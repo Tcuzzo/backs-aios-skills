@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Fleet Ladder
+**Effort:** light — किसी भी dispatch से पहले rung की एक cached live probe। हटाता है: मरे हुए providers को गए dispatches, और call sites पर hardcode हुए model नाम जो model के retire होते ही टूट जाते हैं।
 
 Provider call कभी हाथ से मत गढ़ो, और call site पर model का नाम कभी hardcode मत
 करो। "अभी यह काम कौन सा model करेगा?" — इस सवाल का मालिक एक resolver है — और

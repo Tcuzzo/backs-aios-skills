@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Understanding Gates
+**Effort:** light — una pasada de validador por etapa, puntuada contra el pedido original y re-corrida después de cada reparación. Elimina: la deriva validada contra una paráfrasis — el build que aterriza en verde pero responde una pregunta que nadie hizo.
 
 Una disciplina de validación para builds. Interroga el trabajo en cinco etapas —
 Diseño, Plan, Build, Test, Entrega — siempre contra la petición ORIGINAL, nunca

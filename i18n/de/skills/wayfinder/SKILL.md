@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Wayfinder
+**Effort:** free — pure Kartierungs-Disziplin: eine Entscheidungskarte, gebaut aus Beweisen, die schon auf der Platte liegen; keine zusätzlichen Modell-Calls. Beseitigt: Fragen, die beim Menschen geparkt werden, obwohl Beweise sie beantworten könnten, und Bauarbeit, die startet, bevor die Entscheidungen davor gefallen sind.
 
 Wenn du den Weg nicht kennst, ist der billige Zug, anzuhalten und dem Menschen
 eine Frage zu stellen, für deren Antwort er dich angeheuert hat. Der Wayfinder

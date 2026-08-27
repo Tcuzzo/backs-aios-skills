@@ -71,3 +71,5 @@ action लेती हो।
 
 - [root-cause-first](../skills/root-cause-first/SKILL.md) — जब agent बहकने लगे
 - [session-handoff](../skills/session-handoff/SKILL.md) — टिकाऊ state, सही तरीके से
+
+**Weight:** ज़्यादातर free अनुशासन और एक light design gate; heavy खर्च gauntlet के mutation runs और cross-family tribunal का है — यह हर उस agent पर वसूल होता है जो बिना किसी की निगरानी के काम करेगा।

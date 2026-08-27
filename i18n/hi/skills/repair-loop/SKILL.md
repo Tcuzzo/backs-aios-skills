@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Repair Loop
+**Effort:** light — loop खुद अनुशासन है, साथ में एक स्वतंत्र grading pass; यह जो भारी कदम जोड़ता है (gauntlet, tribunal) वे अपने stamps खुद रखते हैं और सिर्फ़ ship होने वाले बदलावों पर चलते हैं। हटाता है: green-मगर-टूटी landings, और दोबारा खुले bug का वह rework जो वे महँगा पड़वाती हैं।
 
 किसी भी fix, bug close या uplift का default loop। यह एक behavior है, approval
 की मशीनरी नहीं: इंसान पर zero gates और zero friction। यह agent को ऐसी

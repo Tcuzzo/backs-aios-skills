@@ -79,3 +79,5 @@ humain surveille chaque étape.
 
 - [root-cause-first](../skills/root-cause-first/SKILL.md) — quand l'agent déraille
 - [session-handoff](../skills/session-handoff/SKILL.md) — l'état durable, fait proprement
+
+**Weight:** surtout de la discipline free plus une porte de design light ; la dépense heavy, ce sont les runs de mutation du gauntlet et le tribunal inter-famille — elle se rentabilise sur tout agent qui agira sans personne pour regarder.

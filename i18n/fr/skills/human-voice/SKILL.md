@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Human Voice
+**Effort:** free — une discipline de registre sur chaque brouillon, rien de plus ne tourne. Élimine : les messages que l'humain doit décoder — les murs de jargon, et les tics du slop IA décapés avant toute livraison.
 
 Comment un agent écrit aux humains. Un test, un registre, une liste à purger.
 

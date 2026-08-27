@@ -68,6 +68,28 @@ route encore correctement :
 Un renommage qui casse un déclencheur existant est une régression, pas un
 nettoyage.
 
+## Tampons d'effort
+
+Chaque skill porte une ligne **Effort:** sous son titre, qui répond à deux
+questions : qu'est-ce que son exécution DÉPENSE, et quel effort gaspillé
+SUPPRIME-t-elle ? Trois niveaux :
+
+- **free** — pure discipline : aucun appel de modèle en plus, aucun outillage
+  en plus. Certains skills free réduisent le coût net tout court, et leur
+  tampon le dit.
+- **light** — une passe en plus : un sous-agent, un run de validateur, une
+  sonde, une écriture du test d'abord.
+- **heavy** — plusieurs modèles ou agents, ou du vrai calcul (runs de mutation,
+  panels de jurés). Un tampon heavy doit aussi dire QUAND la dépense se
+  rentabilise.
+
+Loi d'honnêteté : le tampon est une affirmation que le corps du skill doit
+étayer — un tribunal tamponné free est un mensonge. La clause « Élimine : »
+nomme le gaspillage précis que le skill supprime (du rework tué, des
+atterrissages sauvages tués, des relances de suite complète tuées), jamais un
+« gain de temps » générique. Chaque play se termine par une ligne **Weight:**
+qui résume sa chaîne de la même façon.
+
 ## La raison de chaque nom
 
 | Nom | Pourquoi ce nom |

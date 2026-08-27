@@ -3,7 +3,9 @@ name: intent-compiler
 description: Use quando o pedido de um humano chega como prosa natural — metáfora, gíria, poesia, atalho comprimido, calor, ou "você sabe o que eu quero dizer" — em vez de um ticket. Traduz a linguagem numa diretiva técnica declarada, declara a leitura em uma linha, e então executa. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing, a prosa é a spec, ler a prosa, traduzir o pedido, pedido ambíguo, o que ele quis dizer, deduzir intenção, metáfora, gíria, linguajar.
 license: MIT
 ---
+
 # A Prosa É a Spec
+**Effort:** free — disciplina de leitura antes de qualquer build, nada extra roda. Remove: builds inteiros perdidos por uma leitura literal errada — a leitura declarada faz um palpite errado custar uma palavra, não um rebuild.
 
 Gente não escreve ticket. Gente fala — rápido, com ritmo, metáfora e calor,
 deixando de fora o que assume que você já sabe. A maioria dos agentes trata isso

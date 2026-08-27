@@ -49,3 +49,5 @@ avant lui.
 
 - [blind-tribunal](../skills/blind-tribunal/SKILL.md) — noter le livrable entier
 - [sniper-testing](../skills/sniper-testing/SKILL.md) — cibler les tests de composants
+
+**Weight:** light tout au long de la boucle — la calibration et la passe de critique sur capture d'écran coûtent chacune un run de plus ; l'étape heavy est le gauntlet sur le code derrière les pixels — elle se rentabilise sur tout écran qu'un humain va vraiment regarder.

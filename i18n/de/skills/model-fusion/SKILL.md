@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Model Fusion
+**Effort:** heavy — ein volles Panel, das parallel entwirft, plus ein unabhängiger Richter (und optional ein Schreiber); investier das in harte Builds und Fixes, die ausgeliefert werden, nie in Einzeiler. Beseitigt: die Wette der ganzen Änderung auf den Entwurf eines einzigen Modells — und die Nacharbeit, wenn genau dieser Entwurf falsch ist.
 
 Viele unabhängige Stimmen schlagen eine. Ein Panel aus Modellen entwirft
 dieselbe Aufgabe parallel. Ein Richter — ein Modell, das keinen der Entwürfe

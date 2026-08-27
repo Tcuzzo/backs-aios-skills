@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Conheça o Seu Humano
+**Effort:** light — uma passada de perfil: carregue o perfil salvo, ou construa-o com no máximo 7 perguntas casuais. Remove: reinterrogar um humano que já respondeu, e o retrabalho de builds que leram errado o gosto dele.
 
 Um build que lê errado o seu humano está errado antes da primeira linha escrita.
 Esta skill troca o chute por um modelo funcional do humano que ela serve: padrão

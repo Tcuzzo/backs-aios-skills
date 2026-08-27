@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Wizard für menschliche Schritte
+**Effort:** free — Autoren-Disziplin plus ein statischer Syntax-Check; keine Modell-Calls. Beseitigt: denselben Nur-Mensch-Klickpfad bei jedem Lauf neu erklären zu müssen, und Secrets, die unterwegs in versionierte Dateien geklebt werden.
 
 Manche Schritte kann nur ein Mensch tun: sich durch ein Drittanbieter-Dashboard
 klicken, Credentials anlegen, einen Provisionierungs-Screen freigeben. Sie sind

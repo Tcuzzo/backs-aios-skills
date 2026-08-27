@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Live Research
+**Effort:** light — un agente de investigación en segundo plano leyendo la fuente viva mientras el carril principal sigue trabajando. Elimina: conclusiones montadas sobre la memoria del modelo que el repo real luego refuta — el retrabajo de entregar una suposición.
 
 La memoria del modelo es una suposición de cómo se veía un proyecto cuando lo
 entrenaron. La verdad viva es lo que está en disco y en los docs oficiales ahora

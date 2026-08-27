@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Bounded Loops
+**Effort:** free — Obergrenzen und Checkpoints, deklariert bevor die Schleife startet; senkt die Kosten unterm Strich. Beseitigt: davonlaufende Schleifen-Ausgaben — verbranntes Kontingent, per 429 blockierte Routen und Fortschritt, den ein Absturz auslöscht.
 
 Eine unbegrenzte Schleife ist der teuerste Bug, den ein Agent ausliefern kann. Sie
 verbrennt Budget, hämmert Provider, bis die dich sperren, und versteckt ihr eigenes

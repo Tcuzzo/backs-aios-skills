@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Blind Tribunal
+**Effort:** heavy — drei familienfremde Juror-Modelle, jede Runde auf frischen Umschlägen neu einberufen, bis sie einstimmig sind; investier das in autonome Änderungen, die ohne menschliches Review landen. Beseitigt: entgleiste Landungen, die nichts bewacht außer dem eigenen Wort des Builders.
 
 Die Bewertungsschleife, mit der der Mensch weggehen kann, ohne dass der Agent
 entgleist. Ein Panel aus Juroren prüft die Änderung blind, mit entfernter

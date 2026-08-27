@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Session Handoff
+**Effort:** free — un seul fichier plat écrit avant que le contexte meure ; aucun appel de modèle, et il réduit le coût tout court au démarrage de la session suivante. Élimine : l'agent tout neuf qui redérive l'état, repaie des pièges déjà payés, et les décisions perdues dans une fenêtre de contexte morte.
 
 Une fenêtre de contexte meurt ; le travail ne doit pas mourir avec. Avant
 qu'une session se termine ou se compacte, écris un fichier plat qu'un agent

@@ -76,3 +76,5 @@ vigiando cada passo.
 
 - [root-cause-first](../skills/root-cause-first/SKILL.md) — quando o agente se comporta mal
 - [session-handoff](../skills/session-handoff/SKILL.md) — estado durável do jeito certo
+
+**Weight:** disciplina em sua maior parte free mais um portão light de design; o gasto heavy são as rodadas de mutação do gauntlet e o tribunal cross-family — ele se paga em qualquer agente que vai agir sem ninguém olhando.

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Model Fusion
+**Effort:** heavy — un panel complet qui rédige en parallèle plus un juge indépendant (et un rédacteur en option) ; à dépenser sur les builds durs et les correctifs qui livrent, jamais sur des changements d'une ligne. Élimine : parier le changement sur le brouillon d'un seul modèle, et le rework quand ce brouillon-là est faux.
 
 Plusieurs voix indépendantes battent une seule voix. Un panel de modèles rédige
 la même tâche en parallèle. Un juge — un modèle qui n'a écrit aucun des

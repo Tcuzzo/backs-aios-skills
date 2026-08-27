@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # GPU Dispatch Law
+**Effort:** free — dispatcher से लागू नियम, node की अपनी live state से पढ़े हुए; लागत सीधे घटाता है। हटाता है: VRAM से छलके runs जो चुपचाप 10x धीमे चलते हैं, jobs के बीच cold-start की खटपट, और मान लिए गए fences से खाली बैठे cards।
 
 GPUs पर local models चलाने के चार नियम। ये इसलिए हैं क्योंकि दो आम failure
 modes एक-दूसरे के उलट हैं और बराबर महँगे: loads और spills से cards को रौंदना,

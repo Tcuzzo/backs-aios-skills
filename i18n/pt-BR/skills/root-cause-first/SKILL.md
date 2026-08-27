@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Root Cause First
+**Effort:** free — disciplina pura de investigação que em geral corta custo na raiz: uma sonda decisiva substitui disparar o pipeline inteiro para ver o que acontece. Remove: remendos na coisa errada — o conserto de sintoma que esconde o bug real e quebra um consumidor a jusante.
 
 Nada de conserto sem investigação. Um remendo feito antes de você entender a
 falha conserta a coisa errada, esconde o bug de verdade e quebra algo a

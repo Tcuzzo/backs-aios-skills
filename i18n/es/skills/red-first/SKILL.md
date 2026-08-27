@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Rojo Primero, a Prueba de Manipulación
+**Effort:** free — pura disciplina de orden: el test que igual ibas a escribir se escribe primero, se prueba en rojo y se sella con un commit; el chequeo de manipulación es un solo git diff. Elimina: tests moldeados después del arreglo para pasar, y veredictos verdes que un constructor dobló editando el test.
 
 Un test escrito después del fix no prueba nada — fue moldeado para pasar.
 Un test que el constructor puede editar prueba menos — se puede doblar para pasar.

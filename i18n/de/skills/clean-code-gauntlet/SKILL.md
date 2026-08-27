@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Clean Code Gauntlet
+**Effort:** heavy — echte Rechenzeit: Coverage- und Komplexitäts-Läufe plus ein begrenzter Mutations-Durchgang, dann ein Geschmacks-Modell; investier das in Änderungen, die ausgeliefert werden. Beseitigt: menschliches Zeile-für-Zeile-Review ganzer Diffs und die falsch-grünen Tests, hinter denen sich eine Regression versteckt.
 
 ## Warum es das gibt
 
@@ -37,6 +38,9 @@ ganze Diffs.
 | --- | --- |
 | Python | coverage.py + radon + mutmut |
 | JS/TS | c8 (oder istanbul) + Stryker |
+| Go | go test -cover + gocyclo + go-mutesting |
+| Rust | cargo-tarpaulin + cargo-mutants |
+| Java | JaCoCo + PIT |
 | Andere | irgendein Coverage-% + irgendein Zähler für zyklomatische Komplexität |
 
 Eine Befehlsform pro Stufe:

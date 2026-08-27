@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Live Research
+**Effort:** light — un agent de recherche en arrière-plan qui lit la source vivante pendant que la voie principale continue de travailler. Élimine : les conclusions bâties sur la mémoire du modèle que le vrai repo réfute ensuite — le rework d'avoir livré une supposition.
 
 La mémoire du modèle est une supposition sur l'état d'un projet au moment de
 l'entraînement. La vérité vivante, c'est ce qui est sur le disque et dans les

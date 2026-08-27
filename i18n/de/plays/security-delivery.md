@@ -66,3 +66,5 @@ zugetraut, sich zu erinnern.
 - Eine ungepinnte Dependency, ein Install-Skript oder eine tag-gepinnte CI-Action.
 - Ein überlebender Mutant in einem Detektor, Parser oder Policy-Prädikat.
 - Das Artefakt lief vor der Auslieferung nie in einer Sandbox.
+
+**Weight:** überwiegend free-Konstruktions-Disziplin plus light-Durchgänge für Scanner und Sandbox; der heavy-Schritt ist Mutation über jeden Detektor und jedes Policy-Prädikat — er zahlt sich bei allem aus, was ein Kunde oder eine andere Maschine ausführen wird.

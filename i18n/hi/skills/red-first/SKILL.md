@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Red-First, Tamper-Proof
+**Effort:** free — शुद्ध क्रम का अनुशासन: जो test आप वैसे भी लिखते वह पहले लिखा जाता है, red साबित होता है, और एक commit से seal हो जाता है; tamper check बस एक git diff है। हटाता है: fix के बाद pass होने की शक्ल में ढाले गए tests, और वे green फ़ैसले जिन्हें builder ने test बदलकर मोड़ लिया।
 
 Fix के बाद लिखा test कुछ साबित नहीं करता — वह pass होने के लिए ही गढ़ा गया
 था। जो test builder edit कर सकता है, वह और भी कम साबित करता है — उसे मोड़कर

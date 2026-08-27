@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Absorb — Adopter l'existant, pas le réinventer
+**Effort:** light — une ingestion de repo (sonde des métadonnées + clone superficiel) et une notation inter-famille du portage. Élimine : réinventer une capacité que l'existant a déjà résolue — le doublon écrit de zéro dont chaque bug serait à ta charge.
 
 **La capacité est reine.** Un repo n'est qu'un véhicule pour une capacité. Quand tu as
 besoin d'une chose qu'un projet existant fait déjà, ne construis pas un doublon à partir

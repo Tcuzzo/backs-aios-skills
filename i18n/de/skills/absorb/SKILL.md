@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Absorb — Übernimm Vorarbeit, erfinde sie nicht neu
+**Effort:** light — ein Repo-Ingest (Metadaten-Probe + Shallow Clone) und eine familienfremde Benotung der Portierung. Beseitigt: das Neuerfinden einer Fähigkeit, die Vorarbeit schon gelöst hat — das Von-null-Duplikat, für dessen sämtliche Bugs du geradestehen müsstest.
 
 **Die Fähigkeit ist König.** Ein Repo ist ein Vehikel für eine Fähigkeit. Wenn du etwas
 brauchst, das ein bestehendes Projekt schon kann, bau kein Duplikat von null, und mach

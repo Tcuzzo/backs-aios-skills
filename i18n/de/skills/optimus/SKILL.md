@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Harness Boot
+**Effort:** light — ein Boot-Durchgang pro Session, der den Boden und die Skills des Jobs lädt, plus ein deterministischer Hook, dessen Lauf nichts kostet. Beseitigt: ungeerdete Edits — Mutationen, gemacht bevor die Regeln gelesen waren, und das Nochmal-Machen, das folgt, sobald sie es sind.
 
 Eine Regel: **kein Code und kein Job, bis das Harness geladen ist.** Das Harness
 ist das Invarianten-Fundament des Packs plus die Skills, die diesen Job

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Wizard de Passos Humanos
+**Effort:** free — disciplina de autoria mais uma checagem estática de sintaxe; nenhuma chamada de modelo. Remove: reexplicar a cada execução o mesmo caminho de cliques que só um humano faz, e segredos colados em arquivos rastreados pelo caminho.
 
 Alguns passos só um humano consegue fazer: clicar por um dashboard de terceiro,
 criar credenciais, aprovar uma tela de provisionamento. São chatos de fazer na mão

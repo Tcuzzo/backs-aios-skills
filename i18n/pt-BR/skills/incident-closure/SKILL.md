@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Fechamento Completo
+**Effort:** free — disciplina de ordem num conserto que você já deve: as sondas de verdade em disco e o teste falhando vêm primeiro, não são extras. Remove: menus de opções e confirmações a cada passo jogados no humano no meio da queda.
 
 Quando o humano reporta quebra ou diz "conserta isso", existe exatamente uma
 resposta certa: um fechamento completo, entendimento primeiro. Causa raiz com

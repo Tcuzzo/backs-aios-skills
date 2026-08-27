@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Harness Boot
+**Effort:** light — una sola pasada de arranque por sesión para cargar el piso y las skills del trabajo, más un hook determinista que no cuesta nada correr. Elimina: ediciones sin fundamento — mutaciones hechas antes de leer las reglas, y el rehacer que viene después, una vez leídas.
 
 Una regla: **ni código ni trabajo hasta que el harness esté cargado.** El harness
 (el arnés: las reglas y herramientas que sujetan al agente) es el piso de

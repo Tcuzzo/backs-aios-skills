@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Human Voice
+**Effort:** free — हर draft पर register का अनुशासन, अलग से कुछ नहीं चलता। हटाता है: वे संदेश जिन्हें इंसान को decode करना पड़े — jargon की दीवारें, और AI slop के वे निशान जो ship से पहले ही छाँट दिए जाते हैं।
 
 Agent इंसानों को कैसे लिखे। एक test, एक register, एक strip list।
 

@@ -3,7 +3,9 @@ name: intent-compiler
 description: Úsala cuando el pedido de un humano llega como prosa natural — metáfora, jerga, poesía, taquigrafía comprimida, calentura, o "tú me entiendes" — en vez de un ticket. Traduce ese lenguaje a una directiva técnica declarada, enuncia la lectura en una línea, y luego ejecuta. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing. Disparadores: la prosa es la especificación, leer la prosa, traducir el pedido, prompt ambiguo, qué quiso decir, deducir la intención, metáfora, jerga, vibra.
 license: MIT
 ---
+
 # La prosa ES la especificación
+**Effort:** free — disciplina de lectura antes de cualquier build; no corre nada extra. Elimina: builds enteros perdidos por una lectura literal errada — la lectura enunciada hace que una suposición equivocada cueste una palabra, no un rebuild.
 
 La gente no escribe tickets. Habla — rápido, con ritmo, metáfora y calentura,
 omitiendo lo que asume que ya sabes. La mayoría de los agentes trata eso como un

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Blind Eval
+**Effort:** light — una sola corrida de juez ciego: varias lecturas barajadas del par congelado por un modelo que no escribió ninguno de los dos. Elimina: aterrizajes autocalificados de "quedó mejor" — regresiones de gusto que el autor dejaría pasar.
 
 Una puerta de calidad de conservar-o-revertir para decisiones que un test no puede
 tomar — la calidad de una prosa, el copy de una UI, la legibilidad de un refactor,

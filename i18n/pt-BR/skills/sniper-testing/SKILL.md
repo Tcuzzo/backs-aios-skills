@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Sniper Testing
+**Effort:** free — disciplina pura, nenhuma execução extra; corta o custo líquido na raiz ao apagar re-execuções da suíte inteira durante a iteração. Remove: inchaço de teste (rodar a suíte inteira para um diff minúsculo) e os verdes de teatro de mock sobre os quais você construiria.
 
 ## Por que isso existe
 
@@ -23,7 +24,9 @@ suíte de testes inteira.
 2. Mapeie cada arquivo tocado para os arquivos de teste que o cobrem
    diretamente (ex.: `src/payments/refund.py` → `tests/test_refund.py`).
 3. Declare seu alvo de teste específico, depois rode SÓ aqueles arquivos
-   (ex.: `pytest tests/test_refund.py`).
+   (Python: `pytest tests/test_refund.py`;
+   JS: `npx vitest run tests/refund.test.js`;
+   Go: `go test ./payments/ -run TestRefund`).
 4. Um teste que já passou não roda de novo, a menos que a próxima mudança
    toque código que ele exercita. O diff define o escopo — não o otimismo,
    não o medo.

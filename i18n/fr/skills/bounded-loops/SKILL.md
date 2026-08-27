@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Boucles bornées
+**Effort:** free — des plafonds et des checkpoints déclarés avant que la boucle démarre ; réduit le coût tout court. Élimine : la dépense des boucles en fuite — le quota brûlé, les routes bloquées à coups de 429, et le progrès qu'un crash efface.
 
 Une boucle sans borne est le bug le plus cher qu'un agent puisse livrer. Elle brûle le
 budget, martèle les fournisseurs jusqu'à ce qu'ils te bloquent, et cache son propre

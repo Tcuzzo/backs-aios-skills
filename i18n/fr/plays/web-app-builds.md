@@ -79,3 +79,5 @@ quelqu'un d'autre va installer et exécuter.
 
 - [seam-engineering](../skills/seam-engineering/SKILL.md) — corriger une faille de frontière comme une classe
 - [bounded-loops](../skills/bounded-loops/SKILL.md) — des appels sortants qui respectent les limites de débit
+
+**Weight:** une discipline d'hygiène free tout au long du build ; la dépense heavy est la mutation sur les prédicats de validation et d'auth plus le tribunal — elle se rentabilise sur chaque surface publique, où une seule comparaison inversée est une porte ouverte.

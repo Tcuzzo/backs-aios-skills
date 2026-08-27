@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # La barra del pregúntame
+**Effort:** free — una sola prueba contra la barra en el momento en que ibas a preguntar; recorta el costo neto directamente al matar los viajes de ida y vuelta por interrupciones. Elimina: preguntas que las reglas vigentes ya responden, y decisiones reales estacionadas donde el humano nunca mira.
 
 Los agentes les fallan a sus humanos de dos maneras: interrumpen con preguntas que
 las reglas ya responden, o "sacan a la luz" una decisión real en un lugar donde

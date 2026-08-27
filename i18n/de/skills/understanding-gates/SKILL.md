@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Understanding Gates
+**Effort:** light — ein Validator-Durchgang pro Stufe, gescored gegen die ursprüngliche Bitte und nach jeder Reparatur neu gefahren. Beseitigt: Drift, validiert gegen eine Paraphrase — den Build, der grün landet, aber eine Frage beantwortet, die niemand gestellt hat.
 
 Eine Validierungs-Disziplin für Builds. Sie verhört die Arbeit an fünf Stufen — Design, Plan, Build, Test, Ship — immer gegen die URSPRÜNGLICHE Bitte, nie gegen die eigene Nacherzählung der Arbeit. Jedes Gate liefert Beweise zurück: Scores, ein Urteil, benannte Fehlschläge und Reparatur-Aktionen. Es bindet den Agenten, nicht den Menschen: kein neuer Freigabe-Schritt, keine Reibung für die Person, die gefragt hat.
 

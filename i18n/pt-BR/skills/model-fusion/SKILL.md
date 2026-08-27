@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Model Fusion
+**Effort:** heavy — um painel completo rascunhando em paralelo mais um juiz independente (e um escritor opcional); gaste em builds e consertos difíceis que vão para produção, nunca em mudanças de uma linha. Remove: apostar a mudança no rascunho de um modelo só, e o retrabalho quando esse rascunho está errado.
 
 Muitas vozes independentes vencem uma voz só. Um painel de modelos rascunha a
 mesma tarefa em paralelo. Um juiz — um modelo que não escreveu nenhum dos

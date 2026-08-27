@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Root Cause First
+**Effort:** free — pura disciplina de investigación que suele recortar el costo neto directamente: un solo sondeo decisivo reemplaza disparar el pipeline entero a ver qué pasa. Elimina: parches a la cosa equivocada — el arreglo del síntoma que esconde el bug real y rompe a un consumidor río abajo.
 
 Sin fixes antes de investigar. Un parche hecho antes de entender el fallo arregla
 la cosa equivocada, esconde el bug real y rompe algo aguas abajo. Tu producto no

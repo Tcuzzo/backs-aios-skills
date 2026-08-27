@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Model Fusion
+**Effort:** heavy — un panel completo redactando en paralelo más un juez independiente (y un escritor opcional); gástalo en builds y arreglos difíciles que van a entregarse, nunca en cambios de una línea. Elimina: apostar el cambio al borrador de un solo modelo, y el retrabajo cuando ese único borrador está mal.
 
 Muchas voces independientes ganan a una sola. Un panel de modelos redacta la
 misma tarea en paralelo. Un juez — un modelo que no escribió ninguno de los

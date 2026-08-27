@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Full Close
+**Effort:** free — जिस fix का क़र्ज़ पहले से आप पर है, उसी पर क्रम का अनुशासन: disk-truth probes और failing test पहले आते हैं, अतिरिक्त नहीं। हटाता है: outage के बीच इंसान पर उछाले गए option menus और हर-कदम की confirmations।
 
 जब इंसान टूट-फूट report करे या "fix it" कहे, तो ठीक एक ही सही जवाब है: एक
 पूरा, understanding-first close। सबूत के साथ root cause, पहले एक failing test,

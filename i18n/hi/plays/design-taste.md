@@ -47,3 +47,5 @@ play चलाएँ।
 
 - [blind-tribunal](../skills/blind-tribunal/SKILL.md) — पूरे deliverable का grade
 - [sniper-testing](../skills/sniper-testing/SKILL.md) — component tests का दायरा तय करने के लिए
+
+**Weight:** पूरे loop में light — calibration और screenshot-critic pass, दोनों की क़ीमत एक-एक अतिरिक्त run है; heavy कदम pixels के पीछे के code पर gauntlet है — यह हर उस screen पर वसूल होता है जिसे कोई इंसान सचमुच देखेगा।

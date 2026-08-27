@@ -74,3 +74,5 @@ cosa que tenga herramientas, llame a la red o actúe sin un humano mirando cada 
 
 - [root-cause-first](../skills/root-cause-first/SKILL.md) — cuando el agente se porta mal
 - [session-handoff](../skills/session-handoff/SKILL.md) — el estado durable bien hecho
+
+**Weight:** mayormente disciplina free más una puerta de diseño light; el gasto heavy son las corridas de mutación del gauntlet y el tribunal cross-family — se paga en cualquier agente que va a actuar sin nadie mirando.

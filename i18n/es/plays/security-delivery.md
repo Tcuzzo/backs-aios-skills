@@ -62,3 +62,5 @@ recuerde.
   tag.
 - Un mutante sobreviviente en un detector, parser o predicado de política.
 - El artefacto nunca corrió en un sandbox antes de la entrega.
+
+**Weight:** mayormente disciplina free de construcción más pasadas light de escáner y sandbox; el paso heavy es la mutación sobre cada detector y cada predicado de política — se paga en cualquier cosa que un cliente u otra máquina va a correr.

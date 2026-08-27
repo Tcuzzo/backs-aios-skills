@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Bounded Loops
+**Effort:** free — loop शुरू होने से पहले घोषित छतें (ceilings) और checkpoints; लागत सीधे घटाता है। हटाता है: बेलगाम loop का खर्च — जला हुआ quota, 429 से block हुए routes, और वह progress जिसे crash मिटा देता है।
 
 बेलगाम loop सबसे महँगा bug है जो कोई agent ship कर सकता है। वो budget जलाता है,
 providers को तब तक ठोकता है जब तक वे आपको block न कर दें, और अपनी नाकामी अपने ही

@@ -1,5 +1,7 @@
 # BACKS AIOS Skills
 
+**其他语言版本：** [English](../../README.md) · [Español](../es/README.md) · [Português (BR)](../pt-BR/README.md) · [Français](../fr/README.md) · [Deutsch](../de/README.md) · [हिन्दी](../hi/README.md)
+
 > 本页是简体中文镜像，以英文原版为准：[English（canonical）](../../README.md)。
 
 一套从真实运行中的 agent 平台提炼出来的 agent harness（约束和驱动 agent 的
@@ -72,6 +74,8 @@ Hermes、裸 API 循环——见 [INSTALL.md](INSTALL.md)。
   一个技能并执行。每条命令在 `commands/` 里一个文件。
 - **命名规范**——为什么技能是名词短语、命令是动词、地板是法律——
   见 [NAMING.md](NAMING.md)。
+- **Effort 标记**——每个技能一行的成本承诺（free / light / heavy），加上
+  每套战术结尾的 Weight 行，其读法在 [NAMING.md](NAMING.md#effort-标记) 里解读。
 
 ## 技能清单
 

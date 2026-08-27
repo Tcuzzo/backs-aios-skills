@@ -72,3 +72,5 @@
 
 - [seam-engineering](../skills/seam-engineering/SKILL.md) — boundary की खोट को एक class की तरह ठीक करने के लिए
 - [bounded-loops](../skills/bounded-loops/SKILL.md) — rate-limit का ध्यान रखने वाली outbound calls
+
+**Weight:** पूरे build में free hygiene अनुशासन; heavy खर्च validation और auth predicates पर mutation और tribunal का है — यह हर public surface पर वसूल होता है, जहाँ एक उलटा comparison खुला दरवाज़ा है।

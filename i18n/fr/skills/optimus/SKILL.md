@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Harness Boot
+**Effort:** light — une passe de démarrage par session pour charger le socle et les skills du job, plus un hook déterministe qui ne coûte rien à exécuter. Élimine : les éditions sans ancrage — des mutations faites avant que les règles soient lues, et la reprise qui suit une fois qu'elles le sont.
 
 Une règle : **pas de code et pas de job tant que le harnais n'est pas chargé.**
 Le harnais, c'est le socle d'invariants du pack plus les skills qui couvrent ce

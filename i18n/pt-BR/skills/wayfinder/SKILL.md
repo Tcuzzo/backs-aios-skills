@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Wayfinder
+**Effort:** free — disciplina pura de traçado: um mapa de decisões montado com evidência que já está em disco, sem chamadas extras de modelo. Remove: perguntas estacionadas no humano que a evidência poderia responder, e trabalho de build começado antes de as decisões à frente dele serem tomadas.
 
 Quando você não sabe o caminho, o movimento barato é parar e fazer ao humano
 uma pergunta que ele te contratou para responder. O wayfinder traça a rota em

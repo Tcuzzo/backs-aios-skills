@@ -1,5 +1,7 @@
 # BACKS AIOS Skills
 
+**Lies das auf:** [English](../../README.md) · [Español](../es/README.md) · [Português (BR)](../pt-BR/README.md) · [Français](../fr/README.md) · [हिन्दी](../hi/README.md) · [简体中文](../zh-CN/README.md)
+
 *Deutsche Ausgabe — das englische Original ist die maßgebliche Fassung: [README (Englisch)](../../README.md)*
 
 Ein Agenten-Harness, destilliert in 27 portable Skills und 8 benannte Plays — aus
@@ -85,6 +87,9 @@ OpenClaw, Hermes, ein nackter API-Loop — stehen in [INSTALL.md](INSTALL.md).
   `commands/`.
 - **Die Namenskonvention** — warum Skills Nominalphrasen sind, Commands Verben
   und der Boden Gesetz ist — steht in [NAMING.md](NAMING.md).
+- **Effort-Stempel** — die einzeilige Kosten-Angabe jedes Skills (free / light /
+  heavy) und die abschließende Weight-Zeile jedes Plays werden in
+  [NAMING.md](NAMING.md#effort-stempel) entschlüsselt.
 
 ## Die Skills
 

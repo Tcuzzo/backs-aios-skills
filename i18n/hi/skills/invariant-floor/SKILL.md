@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # The Invariant Floor
+**Effort:** free — landing gate पर एक-एक क़ानून की जाँच; शुद्ध अनुशासन। हटाता है: fake-green landings — वे बदलाव जो tests पास कर जाते हैं पर इंसान की अपनी surface पर fail होते हैं।
 
 Harness उतना ही मज़बूत है जितनी उसकी ज़मीन (floor)। ये वे क़ानून हैं जो हर
 autonomous बदलाव को उतरने से पहले पूरे करने हैं। ये agent को बाँधते हैं, इंसान

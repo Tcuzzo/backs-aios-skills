@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # O Piso de Invariantes
+**Effort:** free — uma checagem lei a lei no portão de pouso; disciplina pura. Remove: pousos verde-falso — mudanças que passam nos testes mas falham na superfície do próprio humano.
 
 Um harness é tão forte quanto o seu piso. Estas são as leis que toda mudança
 autônoma tem que satisfazer antes de aterrissar. Elas prendem o agente, nunca o

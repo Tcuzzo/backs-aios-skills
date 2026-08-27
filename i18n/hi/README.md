@@ -1,5 +1,7 @@
 # BACKS AIOS Skills
 
+**इसे इन भाषाओं में पढ़ें:** [English](../../README.md) · [Español](../es/README.md) · [Português (BR)](../pt-BR/README.md) · [Français](../fr/README.md) · [Deutsch](../de/README.md) · [简体中文](../zh-CN/README.md)
+
 > यह English मूल संस्करण [../../README.md](../../README.md) का हिन्दी अनुवाद है — English ही canonical है।
 
 एक agent harness, 27 portable skills और 8 नामी plays में निचोड़ा हुआ — एक चलते हुए
@@ -78,6 +80,9 @@ Hermes, एक bare API loop — [INSTALL.md](INSTALL.md) में हैं।
   skill load करके चलाती है। हर एक की एक file `commands/` में।
 - **Naming convention** — skills noun phrases क्यों हैं, commands verbs क्यों, और
   floor क़ानून क्यों — [NAMING.md](NAMING.md) में है।
+- **Effort stamps** — हर skill का एक-पंक्ति लागत-दावा (free / light / heavy) और हर
+  play की आख़िरी Weight पंक्ति — दोनों की व्याख्या
+  [NAMING.md](NAMING.md#effort-stamps) में है।
 
 ## Skills
 

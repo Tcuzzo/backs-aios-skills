@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Le plancher d'invariants
+**Effort:** free — une vérification loi par loi à la porte d'atterrissage ; pure discipline. Élimine : les atterrissages faux-verts — des changements qui passent les tests mais échouent sur la propre surface de l'humain.
 
 Un harnais ne vaut que ce que vaut son plancher. Voici les lois que chaque changement
 autonome doit satisfaire avant d'être livré. Elles contraignent l'agent, jamais

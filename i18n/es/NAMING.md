@@ -64,6 +64,26 @@ bien:
 
 Un renombre que rompe un gatillo existente es una regresión, no una limpieza.
 
+## Sellos de esfuerzo
+
+Cada skill lleva una línea **Effort:** bajo su título, que responde dos preguntas:
+¿qué GASTA correrla, y qué esfuerzo desperdiciado ELIMINA? Tres niveles:
+
+- **free** — disciplina pura: sin llamadas extra a modelos, sin corridas extra de
+  herramientas. Algunas skills free recortan el costo neto directamente, y sus
+  sellos lo dicen.
+- **light** — una pasada extra: un subagente, una corrida de validador, un sondeo,
+  una escritura con el test primero.
+- **heavy** — varios modelos o agentes, o cómputo real (corridas de mutación,
+  paneles de jurados). Un sello heavy además debe decir CUÁNDO se paga el gasto.
+
+Ley de honestidad: el sello es una afirmación que el cuerpo de la skill debe
+respaldar — un tribunal sellado como free es una mentira. La cláusula "Elimina:"
+nombra el desperdicio específico que la skill borra (retrabajo matado, aterrizajes
+rebeldes matados, re-corridas de la suite completa matadas), nunca un genérico
+"ahorra tiempo". Cada jugada termina con una línea **Weight:** que suma su cadena
+de la misma manera.
+
 ## Justificación por skill
 
 | Nombre | Por qué este nombre |

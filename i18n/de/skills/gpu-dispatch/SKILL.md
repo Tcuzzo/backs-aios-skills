@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Das GPU-Dispatch-Gesetz
+**Effort:** free — vom Dispatcher erzwungene Regeln, abgelesen am eigenen Live-Zustand des Knotens; senkt die Kosten unterm Strich. Beseitigt: Läufe, die mit übergelaufenem VRAM still 10x langsamer sind, Kaltstart-Wechselei zwischen Jobs und Karten, die wegen vermuteter Zäune brachliegen.
 
 Vier Regeln für lokale Modelle auf GPUs. Es gibt sie, weil die zwei häufigen
 Fehlermodi entgegengesetzt und gleich teuer sind: Karten mit Loads und Spills zu

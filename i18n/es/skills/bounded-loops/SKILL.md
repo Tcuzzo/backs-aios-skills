@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Bounded Loops
+**Effort:** free — techos y checkpoints declarados antes de que el bucle arranque; recorta el costo neto directamente. Elimina: el gasto de bucles desbocados — cuota quemada, rutas bloqueadas por 429 y progreso que un crash borra.
 
 Un loop sin límites es el bug más caro que un agente puede publicar. Quema
 presupuesto, martilla a los proveedores hasta que te bloquean, y esconde su propio

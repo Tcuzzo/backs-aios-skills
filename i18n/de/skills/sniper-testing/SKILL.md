@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Sniper Testing
+**Effort:** free — pure Disziplin, keine zusätzlichen Läufe; senkt die Netto-Kosten unterm Strich, weil sie Voll-Suite-Wiederholungen während der Iteration streicht. Beseitigt: Test-Blähung (Läufe der ganzen Suite für einen winzigen Diff) und die Mock-Theater-Grüns, auf denen du sonst bauen würdest.
 
 ## Warum es das gibt
 
@@ -22,7 +23,9 @@ Test-Suite zu fahren.
 2. Ordne jeder angefassten Datei die Test-Dateien zu, die sie direkt abdecken
    (z. B. `src/payments/refund.py` → `tests/test_refund.py`).
 3. Benenn dein konkretes Test-Ziel, dann fahr NUR diese Dateien
-   (z. B. `pytest tests/test_refund.py`).
+   (Python: `pytest tests/test_refund.py`;
+   JS: `npx vitest run tests/refund.test.js`;
+   Go: `go test ./payments/ -run TestRefund`).
 4. Ein Test, der schon bestanden hat, wird nicht neu gefahren, außer deine
    nächste Änderung berührt Code, den er ausübt. Der Diff definiert den
    Scope — nicht Optimismus, nicht Angst.

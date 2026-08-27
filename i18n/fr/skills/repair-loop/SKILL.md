@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Repair Loop
+**Effort:** light — la boucle elle-même est de la discipline plus une passe de notation indépendante ; les étapes plus lourdes qu'elle enchaîne (gauntlet, tribunal) portent leurs propres tampons et ne se déclenchent que sur les changements qui livrent. Élimine : les atterrissages verts-mais-cassés, et le rework de bug rouvert qu'ils coûtent.
 
 La boucle par défaut pour tout fix, clôture de bug ou uplift. C'est un
 comportement, pas une machinerie d'approbation : elle n'ajoute aucune barrière

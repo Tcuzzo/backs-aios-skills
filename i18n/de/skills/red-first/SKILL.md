@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Red-First, manipulationssicher
+**Effort:** free — pure Reihenfolge-Disziplin: Der Test, den du ohnehin schreiben würdest, wird zuerst geschrieben, rot bewiesen und mit einem Commit versiegelt; der Manipulations-Check ist ein einzelnes git diff. Beseitigt: Tests, die nach dem Fix aufs Bestehen zugeschnitten wurden, und grüne Urteile, die ein Builder durchs Editieren des Tests verbogen hat.
 
 Ein Test, der nach dem Fix geschrieben wird, beweist nichts — er wurde
 passend geformt. Ein Test, den der Builder editieren kann, beweist noch

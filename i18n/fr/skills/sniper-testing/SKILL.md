@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Sniper Testing
+**Effort:** free — pure discipline, aucun run en plus ; il réduit le coût net tout court en supprimant les relances de suite complète pendant l'itération. Élimine : le gonflement de tests (des runs de suite entière pour un diff minuscule) et les verts de théâtre de mocks sur lesquels tu bâtirais sinon.
 
 ## Pourquoi ce skill existe
 
@@ -23,7 +24,9 @@ de tests entière.
 2. Associe chaque fichier touché aux fichiers de test qui le couvrent
    directement (ex. `src/payments/refund.py` → `tests/test_refund.py`).
 3. Annonce ta cible de test précise, puis lance UNIQUEMENT ces fichiers
-   (ex. `pytest tests/test_refund.py`).
+   (Python : `pytest tests/test_refund.py` ;
+   JS : `npx vitest run tests/refund.test.js` ;
+   Go : `go test ./payments/ -run TestRefund`).
 4. Un test déjà passé ne se relance pas, sauf si ton changement suivant touche
    du code qu'il exerce. Le diff définit le périmètre — pas l'optimisme, pas
    la peur.

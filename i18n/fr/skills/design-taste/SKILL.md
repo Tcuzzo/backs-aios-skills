@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Design Taste — Les tokens d'abord, les yeux ouverts, l'accessibilité dure
+**Effort:** light — un fichier de tokens avant tout composant, plus une passe capture d'écran → critique vision par surface rendue. Élimine : relivrer les réglages génériques de l'IA — le rework de restylage et la mise à niveau d'accessibilité après livraison.
 
 L'UI générique est un bug de workflow, pas un bug de modèle. Répare-le
 structurellement : lis le brief comme une spec, fixe des design tokens exacts avant

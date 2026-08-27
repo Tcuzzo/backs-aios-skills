@@ -87,3 +87,5 @@ pousar.
 - [decision-bar](../skills/decision-bar/SKILL.md) — o que chega ao humano vs. o que executa direto
 - [bounded-loops](../skills/bounded-loops/SKILL.md) — orçamentos e kill-switches em execuções longas
 - [session-handoff](../skills/session-handoff/SKILL.md) — sele o estado antes de parar
+
+**Weight:** a pilha completa — disciplina free, portões light e três passos heavy (model fusion, o gauntlet, o tribunal) — o gasto heavy se paga em qualquer coisa que vai para produção, que é exatamente para isso que este play existe.

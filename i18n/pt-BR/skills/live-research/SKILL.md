@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Live Research
+**Effort:** light — um agente de pesquisa em segundo plano lendo a fonte viva enquanto a lane principal segue trabalhando. Remove: conclusões montadas sobre memória de modelo que o repo real depois refuta — o retrabalho de entregar um palpite.
 
 Memória de modelo é um palpite sobre como um projeto era na época do treino. A
 verdade viva é o que está no disco e nos docs oficiais agora. Esta skill roda

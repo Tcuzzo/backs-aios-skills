@@ -64,3 +64,5 @@
 
 - [root-cause-first](../skills/root-cause-first/SKILL.md) —— agent 行为异常时用
 - [session-handoff](../skills/session-handoff/SKILL.md) —— 把持久状态做对
+
+**Weight:** 大部分是 free 纪律，加一道 light 设计关；heavy 开销在闯关的变异测试和跨家族陪审团——只要这个 agent 将来要在没人盯着的时候行动，这笔账就划算。

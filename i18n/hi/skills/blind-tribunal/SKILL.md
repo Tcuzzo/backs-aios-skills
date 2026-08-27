@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Blind Tribunal
+**Effort:** heavy — तीन cross-family juror models, हर round ताज़े envelopes पर दोबारा बैठते हैं जब तक फ़ैसला एकमत न हो; इसे उन autonomous बदलावों पर खर्च करें जो बिना इंसानी review के land होते हैं। हटाता है: वे rogue landings जिन पर builder की अपनी बात के सिवा कोई पहरा नहीं।
 
 वो grading loop जिसकी बदौलत इंसान उठकर जा सकता है और agent बेलगाम नहीं होता।
 Jurors का panel बदलाव को blind देखता है, authorship हटाकर। हर finding एक नया

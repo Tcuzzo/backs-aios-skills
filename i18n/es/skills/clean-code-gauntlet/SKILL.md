@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Clean Code Gauntlet
+**Effort:** heavy — cómputo real: corridas de cobertura y complejidad más una pasada de mutación acotada, y luego un solo modelo de gusto; gástalo en cambios que van a entregarse. Elimina: la revisión humana línea por línea de diffs enteros, y los tests de verde falso tras los que se esconde una regresión.
 
 ## Por qué existe
 
@@ -36,6 +37,9 @@ muestras — nunca diffs completos.
 | --- | --- |
 | Python | coverage.py + radon + mutmut |
 | JS/TS | c8 (o istanbul) + Stryker |
+| Go | go test -cover + gocyclo + go-mutesting |
+| Rust | cargo-tarpaulin + cargo-mutants |
+| Java | JaCoCo + PIT |
 | Otro | cualquier % de cobertura + cualquier contador de complejidad ciclomática |
 
 Una forma de comando por etapa:

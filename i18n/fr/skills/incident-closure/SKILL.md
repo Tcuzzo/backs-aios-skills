@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # La clôture complète
+**Effort:** free — une discipline d'ordre sur un correctif que tu dois déjà : les sondes de vérité disque et le test qui échoue viennent en premier, pas en plus. Élimine : les menus d'options et les confirmations à chaque étape balancés à l'humain en pleine panne.
 
 Quand l'humain signale de la casse ou dit « répare ça », il n'y a qu'une seule bonne
 réponse : une clôture complète, compréhension d'abord. La cause racine avec preuve, un

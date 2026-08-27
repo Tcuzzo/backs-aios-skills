@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # A Barra do Me-Pergunte
+**Effort:** free — um teste de barra no momento em que você perguntaria; corta custo na raiz matando idas e vindas de interrupção. Remove: perguntas que as regras permanentes já respondem, e decisões reais estacionadas onde o humano nunca olha.
 
 Agentes falham com seus humanos de dois jeitos: interrompem com perguntas que as
 regras já respondem, ou "expõem" uma decisão real num lugar que ninguém nunca vai

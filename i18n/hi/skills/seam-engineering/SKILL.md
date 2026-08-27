@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Seam Engineering
+**Effort:** free — शुद्ध मरम्मत का अनुशासन: N point patches की जगह shared primitive पर एक class fix। हटाता है: वही bug हर sibling site पर दोबारा सुधारना, और वह टाली हुई medium finding जो छह महीने में वह रहस्यमय bug बन जाती है जिसे कोई ढूँढ नहीं पाता।
 
 Seam या तो सही और पूरा बंद होता है, या बंद होता ही नहीं।
 आज का जल्दबाज़ patch वही bug है जो छह महीने बाद किसी को नहीं मिलता।

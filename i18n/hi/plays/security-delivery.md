@@ -59,3 +59,5 @@
 - कोई unpinned dependency, कोई install script, या tag पर pin हुआ CI action।
 - किसी detector, parser, या policy predicate में ज़िंदा बचा mutant।
 - artifact ship से पहले कभी sandbox में चलाया ही नहीं गया।
+
+**Weight:** ज़्यादातर free निर्माण-अनुशासन और light scanner व sandbox passes; heavy कदम हर detector और policy predicate पर mutation है — यह हर उस चीज़ पर वसूल होता है जिसे कोई customer या दूसरी machine चलाएगी।

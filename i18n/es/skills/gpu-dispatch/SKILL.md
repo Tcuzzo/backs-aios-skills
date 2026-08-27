@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # La ley del despacho de GPU
+**Effort:** free — reglas impuestas por el despachador, leídas del estado vivo del propio nodo; recorta el costo neto directamente. Elimina: corridas derramadas a RAM calladamente 10 veces más lentas, el vaivén de arranques en frío entre trabajos, y tarjetas ociosas por cercas asumidas.
 
 Cuatro reglas para correr modelos locales en GPUs. Existen porque los dos modos de
 fallo comunes son opuestos e igual de caros: reventar las tarjetas con cargas y

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Live Research
+**Effort:** light — एक background research agent जो live source पढ़ता है, जबकि मुख्य lane काम करती रहती है। हटाता है: model memory पर टिके निष्कर्ष जिन्हें असली repo बाद में झुठला देता है — अंदाज़ा ship करने का rework।
 
 Model की याददाश्त एक अंदाज़ा है कि training के वक़्त project कैसा दिखता था।
 Live सच वह है जो अभी disk पर और official docs में बैठा है। यह skill दोनों

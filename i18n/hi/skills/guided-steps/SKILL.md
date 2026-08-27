@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Human Steps Wizard
+**Effort:** free — लिखने का अनुशासन और एक static syntax check; कोई model call नहीं। हटाता है: वही human-only clickpath हर run पर दोबारा समझाना, और रास्ते में tracked files में चिपके secrets।
 
 कुछ steps सिर्फ इंसान कर सकता है: third-party dashboard में click करना,
 credentials बनाना, provisioning screen को approve करना। हाथ से करने में ये

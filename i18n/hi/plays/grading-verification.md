@@ -57,3 +57,5 @@ the judge" section में है — उसे पूरा लागू क�
 - graded run में fail-to-pass या pass-to-pass गायब है।
 - ऊपर वाला कोई भी fake-green सुराग़ मौजूद है।
 - grader ने checks खुद दोबारा चलाने की जगह builder की अपनी रिपोर्ट पर भरोसा कर लिया।
+
+**Weight:** शुरुआत में free red और sniper जाँचें; heavy खर्च tribunal और grader का खुद gauntlet दोबारा चलाना है — यह land होने की माँग करने वाले हर बदलाव पर वसूल होता है, क्योंकि एक fake green सारी grades की मिली-जुली लागत से ज़्यादा महँगा पड़ता है।

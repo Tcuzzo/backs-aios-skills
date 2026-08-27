@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Understanding Gates
+**Effort:** light — हर stage पर एक validator pass, जो original माँग की कसौटी पर score होता है और हर मरम्मत के बाद दोबारा चलता है। हटाता है: paraphrase पर validate हुआ drift — वह build जो green उतरती है पर ऐसा सवाल answer करती है जो किसी ने पूछा ही नहीं।
 
 Builds के लिए एक validation discipline। यह काम से पाँच stages पर जिरह करती है
 — Design, Plan, Build, Test, Ship — हमेशा ORIGINAL माँग के ख़िलाफ़, काम की

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Sniper Testing
+**Effort:** free — शुद्ध अनुशासन, कोई अतिरिक्त run नहीं; iteration के दौरान full-suite reruns मिटाकर net लागत सीधे घटाता है। हटाता है: test bloat (नन्हे-से diff पर पूरी suite के runs) और वे mock-theater greens जिन पर आप वरना आगे का काम खड़ा करते।
 
 ## यह क्यों है
 
@@ -21,7 +22,9 @@ Fix/build के iteration loop के दौरान पूरी test suite �
 2. हर छुई file को उन test files से map करो जो उसे सीधे cover करती हैं
    (जैसे `src/payments/refund.py` → `tests/test_refund.py`)।
 3. अपना specific test target बोलकर बताओ, फिर सिर्फ़ वही files चलाओ
-   (जैसे `pytest tests/test_refund.py`)।
+   (Python: `pytest tests/test_refund.py`;
+   JS: `npx vitest run tests/refund.test.js`;
+   Go: `go test ./payments/ -run TestRefund`)।
 4. जो test पहले pass हो चुका, वह दोबारा नहीं चलता — जब तक तुम्हारा अगला
    बदलाव उस code को न छुए जिसे वह exercise करता है। Scope diff तय करता है —
    न optimism, न डर।

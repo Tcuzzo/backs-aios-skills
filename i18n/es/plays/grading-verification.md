@@ -64,3 +64,5 @@ El piso de mecánica del juez vive en la sección "De-bias the judge" de
 - Cualquiera de las señales de verde falso de arriba está presente.
 - El evaluador confió en el reporte del propio constructor en vez de re-correr los
   chequeos.
+
+**Weight:** chequeos free de rojo y francotirador por delante; el gasto heavy es el tribunal más el evaluador re-corriendo el gauntlet por su cuenta — se paga en cualquier cambio que pide aterrizar, porque un verde falso cuesta más que todas las calificaciones juntas.

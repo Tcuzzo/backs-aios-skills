@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Root Cause First
+**Effort:** free — pure discipline d'enquête qui, la plupart du temps, réduit le coût tout court : une sonde décisive remplace le tir de tout le pipeline pour voir ce qui se passe. Élimine : les rustines sur la mauvaise chose — le correctif de symptôme qui cache le vrai bug et casse un consommateur en aval.
 
 Pas de fix sans enquête. Un patch fait avant de comprendre l'échec corrige la
 mauvaise chose, cache le vrai bug, et casse quelque chose en aval. Ton produit

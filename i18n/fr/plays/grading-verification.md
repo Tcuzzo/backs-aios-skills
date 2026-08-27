@@ -65,3 +65,5 @@ Le socle mécanique du juge vit dans la section « Débiaiser le juge » de
 - Un des aveux de faux vert ci-dessus est présent.
 - Le grader a cru le rapport du builder au lieu de refaire tourner les
   vérifications lui-même.
+
+**Weight:** des vérifications red et sniper free en amont ; la dépense heavy, c'est le tribunal plus le grader qui relance lui-même le gauntlet — elle se rentabilise sur tout changement qui demande à atterrir, parce qu'un seul faux vert coûte plus cher que toutes les notes réunies.

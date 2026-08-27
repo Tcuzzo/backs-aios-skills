@@ -50,3 +50,5 @@ fahre dieses Play davor.
 
 - [blind-tribunal](../skills/blind-tribunal/SKILL.md) — das ganze Ergebnis benoten lassen
 - [sniper-testing](../skills/sniper-testing/SKILL.md) — die Komponenten-Tests scopen
+
+**Weight:** light durch die ganze Schleife — die Kalibrierung und der Screenshot-Kritiker-Durchgang kosten je einen Extra-Lauf; der heavy-Schritt ist das Gauntlet über den Code hinter den Pixeln — er zahlt sich bei jedem Screen aus, den ein Mensch wirklich ansehen wird.

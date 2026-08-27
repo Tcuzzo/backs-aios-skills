@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Human Voice
+**Effort:** free — disciplina de registro en cada borrador; no corre nada extra. Elimina: mensajes que el humano debe descifrar — muros de jerga, y las señas de slop de IA que se quitan antes de que algo salga.
 
 Cómo le escribe un agente a los humanos. Una prueba, un registro, una lista de limpieza.
 

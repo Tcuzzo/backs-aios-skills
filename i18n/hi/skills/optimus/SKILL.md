@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Harness Boot
+**Effort:** light — हर session में एक boot pass जो floor और इस काम की skills load करता है, साथ में एक deterministic hook जिसे चलाने की कोई लागत नहीं। हटाता है: बिना ज़मीन पकड़े edits — नियम पढ़ने से पहले किए गए बदलाव, और नियम पढ़ते ही आने वाला उनका redo।
 
 एक नियम: **harness load होने तक न कोई code, न कोई job।** Harness = pack का
 invariant floor + वे skills जो इस job को cover करती हैं। हर session, हर

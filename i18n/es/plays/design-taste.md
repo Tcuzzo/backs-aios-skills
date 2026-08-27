@@ -50,3 +50,5 @@ ejecuta esta jugada antes de esa primera pantalla.
 
 - [blind-tribunal](../skills/blind-tribunal/SKILL.md) — califica el entregable completo
 - [sniper-testing](../skills/sniper-testing/SKILL.md) — acota los tests de componentes
+
+**Weight:** light a lo largo del bucle — la calibración y la pasada de captura → crítico cuestan una corrida extra cada una; el paso heavy es el gauntlet sobre el código detrás de los píxeles — se paga en cualquier pantalla que un humano de verdad va a mirar.

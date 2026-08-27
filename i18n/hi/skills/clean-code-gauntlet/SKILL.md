@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Clean Code Gauntlet
+**Effort:** heavy — असली compute: coverage और complexity runs, साथ में एक bounded mutation pass, फिर एक taste model; इसे ship होने वाले बदलावों पर खर्च करें। हटाता है: पूरे diffs की line-by-line इंसानी review, और वे fake-green tests जिनके पीछे regression छिप जाता है।
 
 ## यह क्यों है
 
@@ -36,6 +37,9 @@ module का size, mutation kills। इंसान और model सिर्�
 | --- | --- |
 | Python | coverage.py + radon + mutmut |
 | JS/TS | c8 (या istanbul) + Stryker |
+| Go | go test -cover + gocyclo + go-mutesting |
+| Rust | cargo-tarpaulin + cargo-mutants |
+| Java | JaCoCo + PIT |
 | बाक़ी | कोई भी coverage % + कोई भी cyclomatic-complexity counter |
 
 हर stage का एक command आकार:

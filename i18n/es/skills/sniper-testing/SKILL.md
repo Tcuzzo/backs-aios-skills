@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Sniper Testing
+**Effort:** free — pura disciplina, sin corridas extra; recorta el costo neto directamente al borrar las re-corridas de la suite completa durante la iteración. Elimina: la inflación de tests (corridas de la suite entera por un diff chiquito) y los verdes de teatro de mocks sobre los que construirías encima.
 
 ## Por qué existe
 
@@ -22,7 +23,9 @@ tests completa.
 2. Mapea cada archivo tocado a los archivos de test que lo cubren directamente
    (p. ej. `src/payments/refund.py` → `tests/test_refund.py`).
 3. Declara tu objetivo de test específico, y corre SOLO esos archivos
-   (p. ej. `pytest tests/test_refund.py`).
+   (Python: `pytest tests/test_refund.py`;
+   JS: `npx vitest run tests/refund.test.js`;
+   Go: `go test ./payments/ -run TestRefund`).
 4. Un test que ya pasó no se vuelve a correr, a menos que tu próximo cambio
    toque código que ese test ejercita. El diff define el alcance — no el
    optimismo, no el miedo.

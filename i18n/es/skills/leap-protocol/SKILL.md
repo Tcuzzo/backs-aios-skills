@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # LEAP Protocol
+**Effort:** heavy — constructores en paralelo en worktrees aislados más revisores ciegos cross-family por bola; gástalo solo en seams demasiado grandes para un solo constructor, donde el reparto en paralelo devuelve el tiempo de reloj que un solo carril quemaría en serie. Elimina: constructores chocando en archivos compartidos, y el diff gigante e irrevisable que nadie puede revertir.
 
 LEAP es un método acotado de relevo sin estado. Partes un seam (la costura del
 sistema donde vive el cambio) en **bolas**. Cada bola va a un constructor fresco

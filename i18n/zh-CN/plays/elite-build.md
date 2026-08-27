@@ -71,3 +71,5 @@
 - [decision-bar](../skills/decision-bar/SKILL.md) —— 什么该到人面前、什么直接执行
 - [bounded-loops](../skills/bounded-loops/SKILL.md) —— 长跑任务的预算和急停开关
 - [session-handoff](../skills/session-handoff/SKILL.md) —— 停下之前先封存状态
+
+**Weight:** 全套堆栈——free 纪律、light 关卡，加三步 heavy（模型融合、闯关、陪审团）——heavy 开销在任何要出厂的东西上都划算，而这套战术就是为出厂而生。

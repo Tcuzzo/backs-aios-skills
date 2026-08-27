@@ -75,3 +75,5 @@ Repos, das jemand anderes installieren und ausführen wird.
 
 - [seam-engineering](../skills/seam-engineering/SKILL.md) — einen Grenzfehler als Klasse fixen
 - [bounded-loops](../skills/bounded-loops/SKILL.md) — ausgehende Calls, die Rate-Limits respektieren
+
+**Weight:** free-Hygiene-Disziplin durch den ganzen Build; der heavy-Einsatz ist Mutation über die Validierungs- und Auth-Prädikate plus das Tribunal — er zahlt sich auf jeder öffentlichen Oberfläche aus, wo ein einziger gekippter Vergleich eine offene Tür ist.

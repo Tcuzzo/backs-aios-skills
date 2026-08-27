@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Connais ton humain
+**Effort:** light — une passe de profil : charger le profil sauvegardé, ou le construire à partir d'au plus 7 questions posées l'air de rien. Élimine : réinterroger un humain qui a déjà répondu, et le rework des builds qui ont mal lu son goût.
 
 Un build qui lit mal son humain est faux avant la première ligne écrite. Ce skill
 remplace la devinette par un modèle de travail de l'humain qu'il sert : sa façon de

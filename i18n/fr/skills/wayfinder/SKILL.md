@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Wayfinder
+**Effort:** free — pure discipline de cartographie : une carte de décision bâtie sur des preuves déjà sur le disque, aucun appel de modèle en plus. Élimine : les questions garées chez l'humain auxquelles les preuves pouvaient répondre, et le travail de build lancé avant que les décisions devant lui soient prises.
 
 Quand tu ne connais pas le chemin, le geste facile est de t'arrêter et de
 poser à l'humain une question qu'il t'a embauché pour résoudre. Le wayfinder

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Blind Eval
+**Effort:** light — uma rodada de juiz cego: várias leituras embaralhadas do par congelado por um modelo que não escreveu nenhum dos dois. Remove: pousos "ficou melhor" autoavaliados — regressões de gosto que o autor deixaria passar.
 
 Um portão de qualidade manter-ou-reverter para decisões que um teste não decide —
 qualidade de prosa, texto de UI, legibilidade de um refactor, saída de um prompt,

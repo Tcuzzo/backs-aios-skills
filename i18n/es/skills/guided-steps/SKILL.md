@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # El asistente de pasos humanos
+**Effort:** free — disciplina de autoría más un chequeo estático de sintaxis; sin llamadas a modelos. Elimina: re-explicar en cada corrida la misma ruta de clics que solo un humano puede hacer, y secretos pegados de paso en archivos rastreados.
 
 Algunos pasos solo un humano puede darlos: clickear a través del dashboard de un
 tercero, crear credenciales, aprobar una pantalla de aprovisionamiento. Son

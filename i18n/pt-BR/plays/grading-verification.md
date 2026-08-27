@@ -64,3 +64,5 @@ O piso da mecânica de julgamento vive na seção "De-bias the judge" de
 - Qualquer sinal de verde falso acima está presente.
 - O avaliador confiou no relatório do próprio builder em vez de re-rodar as
   verificações.
+
+**Weight:** checagens free de vermelho e de sniper na frente; o gasto heavy é o tribunal mais o avaliador re-rodando ele mesmo o gauntlet — ele se paga em qualquer mudança que pede pouso, porque um verde falso custa mais que todas as avaliações somadas.

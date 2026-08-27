@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Root Cause First
+**Effort:** free — शुद्ध जाँच का अनुशासन जो अक्सर लागत सीधे घटाता है: एक निर्णायक probe उस पूरी pipeline को दाग़ने की जगह लेती है जो सिर्फ़ "देखें क्या होता है" के लिए चलती। हटाता है: ग़लत चीज़ पर patch — वह symptom fix जो असली bug छिपा देता है और किसी downstream consumer को तोड़ देता है।
 
 बिना जाँच कोई fix नहीं। Failure समझे बिना बना patch ग़लत चीज़ ठीक करता है,
 असली bug छिपाता है, और downstream कुछ तोड़ देता है। तुम्हारा product patch

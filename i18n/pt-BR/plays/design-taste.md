@@ -50,3 +50,5 @@ antes dela.
 
 - [blind-tribunal](../skills/blind-tribunal/SKILL.md) — avalie a entrega inteira
 - [sniper-testing](../skills/sniper-testing/SKILL.md) — dê escopo aos testes de componente
+
+**Weight:** light ao longo do loop — a calibração e a passada do crítico de screenshot custam uma execução extra cada; o passo heavy é o gauntlet no código atrás dos pixels — ele se paga em qualquer tela que um humano vai olhar de verdade.

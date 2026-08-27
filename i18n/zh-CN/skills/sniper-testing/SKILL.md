@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Sniper Testing
+**Effort:** free — 纯纪律，不额外跑任何东西；它删掉迭代期间的全量套件重跑，净成本直接下降。消除：测试膨胀（为一点小 diff 跑整套测试），以及你原本会在其上盖楼的 mock 剧场假绿。
 
 ## 为什么有这个技能
 
@@ -18,7 +19,9 @@ license: MIT
 2. 把每个碰过的文件映射到直接覆盖它的测试文件
    （例如 `src/payments/refund.py` → `tests/test_refund.py`）。
 3. 先说出你的具体测试目标，然后只跑那些文件
-   （例如 `pytest tests/test_refund.py`）。
+   （Python：`pytest tests/test_refund.py`；
+   JS：`npx vitest run tests/refund.test.js`；
+   Go：`go test ./payments/ -run TestRefund`）。
 4. 已经通过的测试不重跑，除非你的下一个改动碰到了它覆盖的代码。范围由 diff 划定——不由乐观划定，也不由恐惧划定。
 5. 落地时——commit 关卡——对每个被碰模块的套件跑一次完整通过。这唯一的一趟恰好把间接耦合抓一次。迭代速度和一次扎实的落地，都是工作的一部分。
 

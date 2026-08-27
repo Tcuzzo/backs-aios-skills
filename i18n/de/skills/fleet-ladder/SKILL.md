@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Fleet Ladder
+**Effort:** light — eine gecachte Live-Probe der Sprosse vor jedem Dispatch. Beseitigt: Dispatches an tote Provider und an Call-Sites hartkodierte Modellnamen, die an dem Tag brechen, an dem das Modell in Rente geht.
 
 Bau nie einen Provider-Call von Hand, und codiere nie einen Modellnamen an einer
 Aufrufstelle hart. Ein Resolver besitzt die Frage „welches Modell macht diesen Job

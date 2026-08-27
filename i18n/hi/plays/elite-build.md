@@ -79,3 +79,5 @@
 - [decision-bar](../skills/decision-bar/SKILL.md) — क्या इंसान तक पहुँचता है बनाम क्या खुद execute होता है
 - [bounded-loops](../skills/bounded-loops/SKILL.md) — लंबे runs पर budget और kill-switch
 - [session-handoff](../skills/session-handoff/SKILL.md) — रुकने से पहले state सील करें
+
+**Weight:** पूरा stack — free अनुशासन, light gates, और तीन heavy कदम (model fusion, gauntlet, tribunal) — heavy खर्च हर ship होने वाली चीज़ पर वसूल होता है, और यह play है ही उसी के लिए।

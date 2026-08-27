@@ -63,6 +63,25 @@
 
 जो rename किसी मौजूदा trigger को तोड़ दे, वह सफ़ाई नहीं, regression है।
 
+## Effort stamps
+
+हर skill अपने title के नीचे एक **Effort:** पंक्ति रखती है, जो दो सवालों का जवाब
+देती है: इसे चलाने में क्या ख़र्च होता है, और यह कौन-सी बर्बाद मेहनत हटाती है?
+तीन tiers:
+
+- **free** — शुद्ध अनुशासन: कोई अतिरिक्त model call नहीं, कोई अतिरिक्त tooling
+  run नहीं। कुछ free skills net लागत सीधे घटाती हैं, और उनके stamps यह साफ़ कहते हैं।
+- **light** — एक अतिरिक्त pass: एक subagent, एक validator run, एक probe, एक
+  test-first लिखाई।
+- **heavy** — कई models या agents, या असली compute (mutation runs, juror
+  panels)। heavy stamp को यह भी बताना होगा कि खर्च कब वसूल होता है।
+
+ईमानदारी का क़ानून: stamp एक ऐसा दावा है जिसे skill का body साबित करे — free का
+ठप्पा लगा tribunal झूठ है। "हटाता है:" वाला हिस्सा उस ख़ास बर्बादी का नाम लेता है
+जिसे skill मिटाती है (ख़त्म हुआ rework, ख़त्म हुई rogue landings, ख़त्म हुए
+full-suite reruns), कभी कोई सामान्य "समय बचाता है" नहीं। हर play उसी अंदाज़ में
+अपनी chain का जोड़ बताती एक **Weight:** पंक्ति पर ख़त्म होती है।
+
 ## हर skill के नाम की वजह
 
 | नाम | यही नाम क्यों |

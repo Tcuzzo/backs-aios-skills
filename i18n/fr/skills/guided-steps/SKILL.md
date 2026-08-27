@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Le wizard des étapes humaines
+**Effort:** free — une discipline d'écriture plus une vérification statique de la syntaxe ; aucun appel de modèle. Élimine : réexpliquer à chaque run le même parcours de clics réservé à l'humain, et les secrets collés en chemin dans des fichiers suivis.
 
 Certaines étapes, seul un humain peut les faire : cliquer dans le dashboard d'un tiers,
 créer des identifiants, valider un écran de provisioning. C'est pénible à faire à la

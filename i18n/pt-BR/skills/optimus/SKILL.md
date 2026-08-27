@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Harness Boot
+**Effort:** light — uma passada de boot por sessão para carregar o piso e as skills do job, mais um hook determinístico que não custa nada para rodar. Remove: edições sem aterramento — mutações feitas antes de as regras serem lidas, e o refazer que vem depois que elas são.
 
 Uma regra: **nenhum código e nenhum job até o harness carregar.** O harness é
 o piso de invariantes do pack mais as skills que cobrem este job. Toda sessão,

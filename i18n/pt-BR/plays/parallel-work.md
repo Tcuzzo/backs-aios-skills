@@ -66,3 +66,5 @@ por todas as outras: uma só espinha de escrita, muitos leitores.
 - Um revisor que compartilhou contexto com o autor.
 - Uma lane pousando em cima dos resultados de teste de outra, ou mockando a
   costura que mudou.
+
+**Weight:** heavy por projeto — decomposição leap, um gauntlet por lane e um tribunal de contexto limpo — o gasto só se paga quando o trabalho é grande o bastante para dividir, que é a única hora de rodar este play.

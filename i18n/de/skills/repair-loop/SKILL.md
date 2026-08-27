@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Repair Loop
+**Effort:** light — die Schleife selbst ist Disziplin plus ein unabhängiger Benotungs-Durchgang; die schwereren Schritte, die sie verkettet (Gauntlet, Tribunal), tragen ihre eigenen Stempel und feuern nur bei Änderungen, die ausgeliefert werden. Beseitigt: Grün-aber-kaputt-Landungen und die Nacharbeit an wieder aufgerissenen Bugs, die sie kosten.
 
 Die Standard-Schleife für jeden Fix, jeden Bug-Abschluss, jeden Uplift. Sie ist
 ein Verhalten, keine Freigabe-Maschinerie: sie fügt dem Menschen null Gates und

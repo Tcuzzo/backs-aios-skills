@@ -89,3 +89,5 @@ d'une ligne peut filer droit vers
 - [decision-bar](../skills/decision-bar/SKILL.md) — ce qui remonte à l'humain vs. ce qui s'exécute
 - [bounded-loops](../skills/bounded-loops/SKILL.md) — budgets et kill-switchs sur les longues sessions
 - [session-handoff](../skills/session-handoff/SKILL.md) — sceller l'état avant de s'arrêter
+
+**Weight:** la pile complète — discipline free, portes light, et trois étapes heavy (la fusion de modèles, le gauntlet, le tribunal) — la dépense heavy se rentabilise sur tout ce qui livre, et c'est exactement à ça que sert ce play.

@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # El piso de invariantes
+**Effort:** free — un chequeo ley por ley en la puerta de aterrizaje; disciplina pura. Elimina: aterrizajes de verde falso — cambios que pasan los tests pero fallan en la superficie del propio humano.
 
 Un harness es tan fuerte como su piso. Estas son las leyes que todo cambio
 autónomo debe cumplir antes de aterrizar. Restringen al agente, nunca al humano.

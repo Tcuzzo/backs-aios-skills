@@ -5,6 +5,7 @@ license: MIT
 ---
 
 # Live Research
+**Effort:** light — ein Recherche-Agent im Hintergrund, der die Live-Quelle liest, während die Hauptspur weiterarbeitet. Beseitigt: Schlüsse, gebaut auf Modell-Gedächtnis, das das echte Repo dann widerlegt — die Nacharbeit, wenn eine Vermutung ausgeliefert wurde.
 
 Modell-Gedächtnis ist eine Vermutung darüber, wie ein Projekt zur Trainingszeit
 aussah. Die Live-Wahrheit ist, was jetzt gerade auf der Platte und in der

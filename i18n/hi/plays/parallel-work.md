@@ -62,3 +62,5 @@ Agents के बीच काम कैसे बाँटें कि वे 
 - कोई reviewer जिसने लेखक के साथ context साझा किया।
 - कोई lane दूसरी lane के test नतीजों पर land हुई, या जिस seam को बदला उसी को mock
   कर दिया।
+
+**Weight:** design से ही heavy — leap विभाजन, हर lane पर एक gauntlet, और एक clean-context tribunal — खर्च तभी वसूल होता है जब काम बाँटने लायक़ बड़ा हो, और यह play चलाने का बस वही एक मौक़ा है।
