@@ -92,7 +92,7 @@ ajoutés dans les descriptions des skills de ce miroir.
   ce que la barrière d'atterrissage soit verte ; le rôle est défini dans
   [NAMING.md](NAMING.md#lord-of-the-loop).
 - **Les commandes** sont les entrées slash que le plugin installe — chacune
-  charge un play ou un skill et l'exécute. Un fichier chacune dans `commands/`.
+  charge un play ou un skill et l'exécute. Un fichier chacune dans `command-adapters/`.
 - **La convention de nommage** — pourquoi les skills sont des groupes nominaux,
   les commandes des verbes, et le socle une loi — est dans
   [NAMING.md](NAMING.md).
@@ -165,6 +165,6 @@ greffent ; ils sont notés en ligne et rassemblés dans [NOTICE.md](../../NOTICE
 Sous licence [MIT](../../LICENSE). Les contributions sont les bienvenues — garde les
 crédits intacts.
 
-Note du miroir : LICENSE, NOTICE.md, CITATION.cff, `commands/`, `hooks/` et
+Note du miroir : LICENSE, NOTICE.md, CITATION.cff, `command-adapters/`, `hooks/` et
 `.claude-plugin/` restent volontairement en anglais (texte légal, citations
 factuelles, câblage exécutable) et ne sont pas dupliqués ici.

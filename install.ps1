@@ -16,7 +16,7 @@ $Runtime = Join-Path $HOME ".local/share/backs-aios/current"
 $ManagedCommandMarker = "backs-aios-managed-command"
 $PackEntries = @(
     ".claude-plugin", ".codex-plugin", ".cursor-plugin", ".gitignore",
-    "commands", "docs", "hooks", "i18n", "plays", "skills",
+    "command-adapters", "docs", "hooks", "i18n", "plays", "skills",
     "CITATION.cff", "INSTALL.md", "LICENSE", "NAMING.md", "NOTICE.md", "README.md",
     "install.sh", "install.ps1"
 )
@@ -91,7 +91,7 @@ function Install-Runtime {
 function Install-Commands([string]$Label, [string]$Destination) {
     # Native roots: ~/.config/opencode/commands and ~/.claude/commands
     New-Item -ItemType Directory -Force -Path $Destination | Out-Null
-    Get-ChildItem -File (Join-Path $Root "commands/*.md") | ForEach-Object {
+    Get-ChildItem -File (Join-Path $Root "command-adapters/*.md") | ForEach-Object {
         $Path = Join-Path $Destination $_.Name
         $Rendered = Get-Content -Raw $_.FullName
         $Rendered = $Rendered.Replace('${CLAUDE_PLUGIN_ROOT}', $Runtime)

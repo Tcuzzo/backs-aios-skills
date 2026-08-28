@@ -87,7 +87,7 @@ equivalentes en español también disparan la misma disciplina.
   aterrizaje está en verde; el rol se define en
   [NAMING.md](NAMING.md#lord-of-the-loop).
 - **Los comandos** son las entradas slash que instala el plugin — cada uno carga una
-  jugada o una skill y la ejecuta. Un archivo cada uno en `commands/`.
+  jugada o una skill y la ejecuta. Un archivo cada uno en `command-adapters/`.
 - **La convención de nombres** — por qué las skills son frases nominales, los
   comandos son verbos y el piso es ley — está en [NAMING.md](NAMING.md).
 - **Los sellos de esfuerzo** — la afirmación de costo de una línea de cada skill

@@ -72,7 +72,7 @@ For a direct GitHub clone, the portable route is:
 Codex discovers the 28 canonical skill folders plus 8 command adapters on the next
 thread. `optimus` and `design-taste` already exist as canonical skills, so all 10
 command capabilities are invocable without duplicate adapters. Codex plugins do not
-ingest `commands/`; invoke the matching namespaced skill (for example,
+ingest `command-adapters/`; invoke the matching namespaced skill (for example,
 `backs-aios:elite-build`). The richer local plugin development flow can point a Codex
 marketplace entry at this clone and run:
 

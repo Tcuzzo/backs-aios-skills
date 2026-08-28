@@ -20,7 +20,7 @@ Available: [es](es/README.md) · [pt-BR](pt-BR/README.md) · [fr](fr/README.md) 
 
 `LICENSE`, `NOTICE.md`, and `CITATION.cff` are legal text and factual citations —
 translating them could change their meaning, so they exist once, in English, at the
-repo root. `commands/` and `hooks/` are executable wiring — agents load them by
+repo root. `command-adapters/` and `hooks/` are executable wiring — agents load them by
 their English identifiers, so translating them would break the pack. The mirrors do
 not copy any of these. Skill names, play names, file names, and trigger keys also
 stay English everywhere: they are the pack's invocation keys.

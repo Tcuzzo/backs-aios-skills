@@ -9,7 +9,7 @@ RUNTIME="$HOME/.local/share/backs-aios/current"
 MANAGED_COMMAND_MARKER="backs-aios-managed-command"
 PACK_ENTRIES=(
   .claude-plugin .codex-plugin .cursor-plugin .gitignore
-  commands docs hooks i18n plays skills
+  command-adapters docs hooks i18n plays skills
   CITATION.cff INSTALL.md LICENSE NAMING.md NOTICE.md README.md
   install.sh install.ps1
 )
@@ -119,7 +119,7 @@ install_runtime() {
 install_commands() {
   local label="$1" destination="$2" source target rendered
   mkdir -p "$destination"
-  for source in "$ROOT"/commands/*.md; do
+  for source in "$ROOT"/command-adapters/*.md; do
     [[ -f "$source" ]] || continue
     target="$destination/$(basename "$source")"
     rendered="$target.tmp.$$"

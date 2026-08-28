@@ -86,7 +86,7 @@ Agent Skills, OpenClaw, Hermes, um loop de API puro — estão em
   dono do loop, que conduz a iteração até o gate de pouso ficar verde; o papel
   está definido em [NAMING.md](NAMING.md#lord-of-the-loop).
 - **Comandos** são as entradas de barra que o plugin instala — cada um carrega
-  um play ou uma skill e roda. Um arquivo cada em `commands/`.
+  um play ou uma skill e roda. Um arquivo cada em `command-adapters/`.
 - **A convenção de nomes** — por que skills são substantivos, comandos são
   verbos e o piso é lei — está em [NAMING.md](NAMING.md).
 - **Selos de esforço** — a afirmação de custo de uma linha de cada skill

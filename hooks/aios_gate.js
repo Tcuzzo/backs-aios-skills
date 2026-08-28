@@ -125,7 +125,7 @@ function sessionIdOf(payload) {
   return sid || `ppid${process.ppid}`;
 }
 
-/** Names that count as 'the floor': skills/<dir>/SKILL.md + commands/*.md.
+/** Names that count as 'the floor': skills/<dir>/SKILL.md + command-adapters/*.md.
  *
  * Fail-open: if the pack layout cannot be read, return an empty set and let
  * the caller treat ANY skill invocation as grounding.
@@ -143,7 +143,7 @@ function packSkillNames() {
         }
       }
     }
-    const commandsDir = path.join(root, "commands");
+    const commandsDir = path.join(root, "command-adapters");
     if (fs.existsSync(commandsDir) && fs.statSync(commandsDir).isDirectory()) {
       for (const entry of fs.readdirSync(commandsDir)) {
         if (entry.endsWith(".md")) names.add(entry.slice(0, -3));

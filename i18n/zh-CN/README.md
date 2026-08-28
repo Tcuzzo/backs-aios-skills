@@ -75,7 +75,7 @@ Hermes、裸 API 循环——见 [INSTALL.md](INSTALL.md)。
   线框图里都标着一位 **Lord of the Loop**——驱动迭代直到落地门槛转绿的
   循环负责人；这个角色的定义见 [NAMING.md](NAMING.md#lord-of-the-loop)。
 - **命令（Commands）** 是插件安装的斜杠入口——每条命令加载一套战术或
-  一个技能并执行。每条命令在 `commands/` 里一个文件。
+  一个技能并执行。每条命令在 `command-adapters/` 里一个文件。
 - **命名规范**——为什么技能是名词短语、命令是动词、地板是法律——
   见 [NAMING.md](NAMING.md)。
 - **Effort 标记**——每个技能一行的成本承诺（free / light / heavy），加上
@@ -143,5 +143,5 @@ agent 上都能独立成立：Claude Code、OpenClaw、Hermes、Codex、Cursor�
 [NOTICE.md](../../NOTICE.md)。许可证：[MIT](../../LICENSE)。欢迎贡献——
 请保持致谢完整。
 
-> 说明：LICENSE、NOTICE.md、CITATION.cff 以及 `commands/`、`hooks/`
+> 说明：LICENSE、NOTICE.md、CITATION.cff 以及 `command-adapters/`、`hooks/`
 > 保持英文原文，不做翻译——它们是法律文本、事实性引用和可执行接线。

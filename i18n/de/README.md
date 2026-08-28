@@ -89,7 +89,7 @@ OpenClaw, Hermes, ein nackter API-Loop — stehen in [INSTALL.md](INSTALL.md).
   [NAMING.md](NAMING.md#lord-of-the-loop) definiert.
 - **Commands** sind die Slash-Einträge, die das Plugin installiert — jeder lädt
   ein Play oder einen Skill und führt ihn aus. Eine Datei pro Command in
-  `commands/`.
+  `command-adapters/`.
 - **Die Namenskonvention** — warum Skills Nominalphrasen sind, Commands Verben
   und der Boden Gesetz ist — steht in [NAMING.md](NAMING.md).
 - **Effort-Stempel** — die einzeilige Kosten-Angabe jedes Skills (free / light /

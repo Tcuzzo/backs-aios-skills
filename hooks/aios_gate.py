@@ -110,7 +110,7 @@ def _session_id(payload: dict) -> str:
 
 
 def _pack_skill_names() -> set:
-    """Names that count as 'the floor': skills/<dir>/SKILL.md + commands/*.md.
+    """Names that count as 'the floor': skills/<dir>/SKILL.md + command-adapters/*.md.
 
     Fail-open: if the pack layout cannot be read, return an empty set and let
     the caller treat ANY skill invocation as grounding.
@@ -123,7 +123,7 @@ def _pack_skill_names() -> set:
             for entry in os.listdir(skills_dir):
                 if os.path.isfile(os.path.join(skills_dir, entry, "SKILL.md")):
                     names.add(entry)
-        commands_dir = os.path.join(root, "commands")
+        commands_dir = os.path.join(root, "command-adapters")
         if os.path.isdir(commands_dir):
             for entry in os.listdir(commands_dir):
                 if entry.endswith(".md"):

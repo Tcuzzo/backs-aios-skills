@@ -82,7 +82,7 @@ Hermes, एक bare API loop — [INSTALL.md](INSTALL.md) में हैं।
   जो iteration तब तक चलाता है जब तक landing gate green न हो जाए; इस भूमिका की
   परिभाषा [NAMING.md](NAMING.md#lord-of-the-loop) में है।
 - **Commands** वे slash entries हैं जो plugin install करता है — हर एक कोई play या
-  skill load करके चलाती है। हर एक की एक file `commands/` में।
+  skill load करके चलाती है। हर एक की एक file `command-adapters/` में।
 - **Naming convention** — skills noun phrases क्यों हैं, commands verbs क्यों, और
   floor क़ानून क्यों — [NAMING.md](NAMING.md) में है।
 - **Effort stamps** — हर skill का एक-पंक्ति लागत-दावा (free / light / heavy) और हर
