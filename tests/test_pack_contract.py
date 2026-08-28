@@ -141,7 +141,7 @@ class PackContractTest(unittest.TestCase):
         powershell = (ROOT / "install.ps1").read_text(encoding="utf-8")
         for text in (shell, powershell):
             self.assertIn(".config/opencode/commands", text)
-            self.assertIn(".claude/commands", text)
+            self.assertIn(".claude/skills", text)
             self.assertIn(".local/share/backs-aios/current", text)
 
     def test_unix_all_install_registers_real_host_commands(self) -> None:
@@ -159,7 +159,7 @@ class PackContractTest(unittest.TestCase):
 
             runtime = Path(home) / ".local" / "share" / "backs-aios" / "current"
             self.assertTrue(runtime.exists())
-            for relative in (".config/opencode/commands", ".claude/commands"):
+            for relative in (".config/opencode/commands",):
                 command_root = Path(home) / relative
                 installed = {path.stem for path in command_root.glob("*.md")}
                 self.assertEqual(COMMAND_NAMES, installed, relative)
@@ -169,6 +169,12 @@ class PackContractTest(unittest.TestCase):
                     self.assertNotIn("${CLAUDE_PLUGIN_ROOT}", body)
                     self.assertNotIn("${CURSOR_PLUGIN_ROOT}", body)
                     self.assertIn(str(runtime), body)
+
+            self.assertFalse(
+                (Path(home) / ".claude" / "commands").exists(),
+                "Claude already discovers the 36 installed skills; installing the ten "
+                "same-named legacy commands recreates command-skill collisions.",
+            )
 
             for relative in (".codex/skills", ".agents/skills"):
                 skill_root = Path(home) / relative
