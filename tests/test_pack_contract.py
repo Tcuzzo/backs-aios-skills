@@ -132,6 +132,7 @@ class PackContractTest(unittest.TestCase):
         self.assertTrue((ROOT / "install.ps1").is_file())
         shell = (ROOT / "install.sh").read_text(encoding="utf-8")
         self.assertNotIn("readlink -f", shell, "stock macOS readlink has no -f")
+        self.assertNotIn("python3", shell, "the Unix installer must not require Python")
         powershell = (ROOT / "install.ps1").read_text(encoding="utf-8")
         for text in (shell, powershell):
             self.assertIn(".config/opencode/commands", text)
