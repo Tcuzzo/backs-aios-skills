@@ -158,6 +158,29 @@ fresh directory and switch after inspection.
 For Claude Code marketplace installs, update through `/plugin`. For a Codex local
 plugin cache, reinstall from its configured marketplace and start a new thread.
 
+Cursor marketplace refreshes must be verified because an update can report success
+while retaining the previous commit. Refresh, then compare its `gitRef` with GitHub's
+current `main`:
+
+```bash
+agent plugin marketplace update backs-aios
+agent plugin marketplace list --format json
+git ls-remote https://github.com/Tcuzzo/backs-aios-skills refs/heads/main
+```
+
+If `gitRef` does not equal the SHA from `git ls-remote`, rebuild only that reversible
+marketplace pointer; an existing local plugin symlink remains available throughout:
+
+```bash
+agent plugin marketplace remove backs-aios
+agent plugin marketplace add https://github.com/Tcuzzo/backs-aios-skills
+agent plugin marketplace list --format json
+```
+
+Restart the host session after any marketplace or plugin refresh. OpenCode also loads
+configuration once per process, so quit and start a fresh OpenCode process after its
+command files change.
+
 ## Verify discovery
 
 - **Claude Code:** `/plugin list`, then `/optimus` in a fresh session.
