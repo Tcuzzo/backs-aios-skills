@@ -8,6 +8,8 @@
 agent platform से निकालकर सादे markdown में दोबारा बनाया गया, जिसे कोई भी agent
 load कर सकता है।
 
+तस्वीरों से सीखने के लिए [skills और loops का visual guide](../../docs/FLOWCHARTS.md) देखें।
+
 ## Mission
 
 यह pack उन लोगों के लिए है जो elite agent नतीजों की क़ीमत से बाहर छूट जाते —

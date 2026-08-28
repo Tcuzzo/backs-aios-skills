@@ -5,6 +5,9 @@
 An agent harness distilled into 28 portable skills and 8 named plays, taken from a
 running agent platform and rebuilt as plain markdown any agent can load.
 
+Prefer pictures? Start with the [Visual guide](docs/FLOWCHARTS.md) for the complete
+skill map and the boot, build, repair, grading, parallel-work, and decision loops.
+
 ## Mission
 
 This pack exists for the people who would otherwise be priced out of elite agent
@@ -92,6 +95,9 @@ and update steps are in [INSTALL.md](INSTALL.md).
   the floor is law) is in [NAMING.md](NAMING.md).
 - **Effort stamps** — every skill's one-line cost claim (free / light / heavy) and
   every play's closing Weight line are decoded in [NAMING.md](NAMING.md#effort-stamps).
+- **Visual guide** — the complete skill map and core loops are in
+  [FLOWCHARTS.md](docs/FLOWCHARTS.md), with text versions for terminals and screen
+  readers.
 
 ## Performance
 

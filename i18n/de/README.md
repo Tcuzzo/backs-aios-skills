@@ -8,6 +8,8 @@ Ein Agenten-Harness, destilliert in 28 portable Skills und 8 benannte Plays — 
 einer laufenden Agenten-Plattform gezogen und als schlichtes Markdown neu gebaut,
 das jeder Agent laden kann.
 
+Für visuelles Lernen gibt es einen [Leitfaden mit Skill-Maps und Abläufen](../../docs/FLOWCHARTS.md).
+
 ## Mission
 
 Dieses Pack existiert für die Menschen, die sich Elite-Agenten-Ergebnisse sonst

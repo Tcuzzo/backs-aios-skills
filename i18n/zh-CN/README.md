@@ -1,11 +1,13 @@
 # BACKS AIOS Skills
 
+先看图？这里有[技能与循环视觉指南](../../docs/FLOWCHARTS.md)。
+
 **其他语言版本：** [English](../../README.md) · [Español](../es/README.md) · [Português (BR)](../pt-BR/README.md) · [Français](../fr/README.md) · [Deutsch](../de/README.md) · [हिन्दी](../hi/README.md)
 
 > 本页是简体中文镜像，以英文原版为准：[English（canonical）](../../README.md)。
 
 一套从真实运行中的 agent 平台提炼出来的 agent harness（约束和驱动 agent 的
-执行框架），拆成 27 个可移植的技能和 8 套有名字的战术，重写成任何 agent
+执行框架），拆成 28 个可移植的技能和 8 套有名字的战术，重写成任何 agent
 都能加载的纯 markdown。
 
 ## 使命

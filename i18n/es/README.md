@@ -8,6 +8,8 @@ Un harness de agentes destilado en 28 skills portables y 8 jugadas con nombre,
 sacado de una plataforma de agentes en producción y reconstruido como markdown plano
 que cualquier agente puede cargar.
 
+Para aprender con imágenes, consulta el [mapa visual de skills y bucles](../../docs/FLOWCHARTS.md).
+
 ## Misión
 
 Este pack existe para la gente que, por precio, quedaría fuera de los resultados de

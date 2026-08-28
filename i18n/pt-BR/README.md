@@ -8,6 +8,8 @@ Um harness de agente destilado em 28 skills portáteis e 8 plays nomeados,
 extraído de uma plataforma de agentes em produção e reconstruído como markdown
 puro que qualquer agente consegue carregar.
 
+Para aprender visualmente, consulte o [guia das skills e dos loops](../../docs/FLOWCHARTS.md).
+
 ## Missão
 
 Este pacote existe para as pessoas que, sem ele, ficariam de fora dos resultados

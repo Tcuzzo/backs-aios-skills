@@ -8,6 +8,8 @@ Un harnais d'agent distillé en 28 skills portables et 8 plays nommés, tirés
 d'une plateforme d'agents en production et reconstruits en markdown brut que
 n'importe quel agent peut charger.
 
+Pour apprendre visuellement, consulte le [guide des skills et des boucles](../../docs/FLOWCHARTS.md).
+
 ## Mission
 
 Ce pack existe pour celles et ceux qui, sans lui, seraient exclus des résultats
