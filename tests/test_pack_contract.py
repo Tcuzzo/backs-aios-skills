@@ -72,8 +72,13 @@ class PackContractTest(unittest.TestCase):
             }
             self.assertEqual(translated_core, translated, locale)
 
-    def test_commands_are_valid_for_claude_and_cursor(self) -> None:
-        commands = sorted((ROOT / "commands").glob("*.md"))
+    def test_host_command_adapters_do_not_collide_with_claude_skills(self) -> None:
+        self.assertFalse(
+            (ROOT / "commands").exists(),
+            "Claude auto-discovers root commands/ as skills; same-named adapters "
+            "duplicate the canonical skills and can fail before the gate arms.",
+        )
+        commands = sorted((ROOT / "command-adapters").glob("*.md"))
         self.assertEqual(10, len(commands))
         self.assertEqual(COMMAND_NAMES, {command.stem for command in commands})
         for command in commands:
@@ -116,7 +121,7 @@ class PackContractTest(unittest.TestCase):
         self.assertNotIn("hooks", parsed[0], "Claude auto-loads hooks/hooks.json")
         cursor = parsed[2]
         self.assertEqual("./skills/", cursor["skills"])
-        self.assertEqual("./commands/", cursor["commands"])
+        self.assertEqual("./command-adapters/", cursor["commands"])
         self.assertEqual("./hooks/cursor-hooks.json", cursor["hooks"])
 
     def test_cursor_hook_config_uses_native_event_shape(self) -> None:
