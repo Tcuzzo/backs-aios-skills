@@ -201,6 +201,13 @@ class PackContractTest(unittest.TestCase):
             with self.subTest(host=host):
                 self.assertIn(host, text)
 
+    def test_install_docs_verify_cursor_marketplace_refresh(self) -> None:
+        text = (ROOT / "INSTALL.md").read_text(encoding="utf-8")
+        self.assertIn("agent plugin marketplace update backs-aios", text)
+        self.assertIn("agent plugin marketplace list --format json", text)
+        self.assertIn("agent plugin marketplace remove backs-aios", text)
+        self.assertIn("gitRef", text)
+
     def test_relative_markdown_links_resolve(self) -> None:
         link_re = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
         for path in ROOT.rglob("*.md"):
