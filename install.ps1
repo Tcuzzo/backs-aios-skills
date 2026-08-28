@@ -131,7 +131,6 @@ function Install-OpenCode {
 
 function Install-Claude {
     Install-Skills "claude" (Join-Path $HOME ".claude/skills")
-    Install-Commands "claude-cmd" (Join-Path $HOME ".claude/commands")
 }
 
 function Install-Portable {

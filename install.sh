@@ -162,7 +162,6 @@ install_opencode() {
 
 install_claude() {
   install_skills claude "$HOME/.claude/skills"
-  install_commands claude-cmd "$HOME/.claude/commands"
 }
 
 install_portable() {

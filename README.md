@@ -89,9 +89,10 @@ and update steps are in [INSTALL.md](INSTALL.md).
   wireframe marks a **Lord of the Loop** — the loop owner who drives iteration
   until the landing gate is green; the role is defined in
   [NAMING.md](NAMING.md#lord-of-the-loop).
-- **Commands** are the 10 action entries that load a play or skill and run it. Claude
-  Code, Cursor, and OpenCode receive native slash commands from `command-adapters/`. Codex
-  and Agent Skills runtimes receive the equivalent progressive adapters from
+- **Commands** are the 10 action entries that load a play or skill and run it.
+  Cursor and OpenCode receive native slash commands from `command-adapters/`.
+  Claude Code, Codex, and Agent Skills runtimes use the canonical skills and
+  receive the equivalent progressive adapters from
   the eight command-named folders in `skills/`, because Codex plugins ingest skills
   rather than command files. `optimus` and `design-taste` already serve both roles.
 - **Native manifests** preserve each host's richest supported surface:

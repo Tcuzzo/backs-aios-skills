@@ -9,7 +9,7 @@
       "name": "backs-aios",
       "source": "./",
       "description": "Agent operating system for coding sessions: harness-first boot, red-first repair, blind cross-family grading, and bounded autonomous delivery.",
-      "version": "0.7.3",
+      "version": "0.7.4",
       "author": {
         "name": "Tcuzzo"
       },

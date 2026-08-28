@@ -34,7 +34,7 @@ Supported `--target` / `-Target` values:
 | `codex` | `~/.codex/skills/<name>/SKILL.md` | Codex CLI, app, and IDE extension; 8 command adapters plus the 2 canonical command-equivalent skills |
 | `cursor` | `~/.cursor/plugins/local/backs-aios` | Cursor IDE and Cursor CLI (`agent`) |
 | `opencode` | `~/.config/opencode/skills/<name>/SKILL.md` + `commands/*.md` | OpenCode terminal and desktop, including all 10 slash commands |
-| `claude` | `~/.claude/skills/<name>/SKILL.md` + `commands/*.md` | Claude Code skills and all 10 user-level commands; the marketplace plugin adds the hook |
+| `claude` | `~/.claude/skills/<name>/SKILL.md` | Claude Code loads all 36 skills directly; no duplicate legacy commands; the marketplace plugin adds the hook |
 | `portable` | `~/.agents/skills/<name>/SKILL.md` | Agent Skills runtimes, including the 8 play adapters and 2 canonical command equivalents |
 | `all` | Every native and portable path above | Claude Code, Codex, Cursor, OpenCode, and Agent Skills runtimes |
 
