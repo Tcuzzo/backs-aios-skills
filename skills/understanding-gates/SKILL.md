@@ -1,7 +1,7 @@
 ---
-name: understanding-gates
-description: Use when a build, fix, or uplift is moving from intent toward delivery and you need proof it still matches the original ask. Interrogates Design, Plan, Build, Test, and Ship with approve/revise/reject verdicts, named failures as repair targets, and a rerun after every repair. Trigger words: understanding, stage gates, validate build, spec match, verdict, green but wrong, echo check, done means done.
-license: MIT
+name: "understanding-gates"
+description: "Use when a build, fix, or uplift is moving from intent toward delivery and you need proof it still matches the original ask. Interrogates Design, Plan, Build, Test, and Ship with approve/revise/reject verdicts, named failures as repair targets, and a rerun after every repair. Trigger words: understanding, stage gates, validate build, spec match, verdict, green but wrong, echo check, done means done."
+license: "MIT"
 ---
 
 # Understanding Gates

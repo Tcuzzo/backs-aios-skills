@@ -1,7 +1,7 @@
 ---
-name: absorb
-description: Use when you need a capability an open-source project already provides — adopt it and re-engineer it as a native skill instead of inventing a duplicate. Trigger words: absorb, adopt, port, re-engineer, ingest a repo, prior art, capability port, make this native.
-license: MIT
+name: "absorb"
+description: "Use when you need a capability an open-source project already provides — adopt it and re-engineer it as a native skill instead of inventing a duplicate. Trigger words: absorb, adopt, port, re-engineer, ingest a repo, prior art, capability port, make this native."
+license: "MIT"
 ---
 
 # Absorb — Adopt Prior Art, Don't Reinvent It

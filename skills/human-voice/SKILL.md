@@ -1,7 +1,7 @@
 ---
-name: human-voice
-description: Use on every human-facing message. The no-degree bar; kills AI slop. Trigger words: human voice, plain speech, plain language, de-slop, slop, simplify, jargon, tone, readable, rewrite this, text like a human.
-license: MIT
+name: "human-voice"
+description: "Use on every human-facing message. The no-degree bar; kills AI slop. Trigger words: human voice, plain speech, plain language, de-slop, slop, simplify, jargon, tone, readable, rewrite this, text like a human."
+license: "MIT"
 ---
 
 # Human Voice

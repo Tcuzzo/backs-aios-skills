@@ -1,7 +1,7 @@
 ---
-name: bounded-loops
-description: Use before starting any loop that can retry, poll, iterate, or call an external API — agent loops, repair loops, schedulers, watchers. Declares budget ceilings, checkpoints on exhaustion, and makes hammering structurally impossible. Trigger words: bounded loop, budget, ceiling, retry, backoff, rate limit, throttle, kill-switch, checkpoint, runaway, infinite loop, spin, budget exhaustion.
-license: MIT
+name: "bounded-loops"
+description: "Use before starting any loop that can retry, poll, iterate, or call an external API — agent loops, repair loops, schedulers, watchers. Declares budget ceilings, checkpoints on exhaustion, and makes hammering structurally impossible. Trigger words: bounded loop, budget, ceiling, retry, backoff, rate limit, throttle, kill-switch, checkpoint, runaway, infinite loop, spin, budget exhaustion."
+license: "MIT"
 ---
 
 # Bounded Loops

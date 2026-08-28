@@ -1,0 +1,44 @@
+{
+  "name": "backs-aios",
+  "version": "0.6.0",
+  "description": "Agent operating system skill pack for coding sessions: harness-first boot, red-first repair, blind grading, and bounded delivery.",
+  "author": {
+    "name": "Tcuzzo",
+    "url": "https://github.com/Tcuzzo"
+  },
+  "homepage": "https://github.com/Tcuzzo/backs-aios-skills",
+  "repository": "https://github.com/Tcuzzo/backs-aios-skills",
+  "license": "MIT",
+  "keywords": [
+    "backs",
+    "aios",
+    "skills",
+    "agent-harness",
+    "repair-loop",
+    "red-first",
+    "blind-tribunal",
+    "sniper-testing",
+    "codex"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "BACKS AIOS",
+    "shortDescription": "Portable BACKS operating floor for coding agents.",
+    "longDescription": "A portable skill pack for elite agent sessions: harness-first boot, intent compilation, red-first repair, seam engineering, sniper testing, model fusion, and blind grading.",
+    "developerName": "Tcuzzo",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/Tcuzzo/backs-aios-skills",
+    "defaultPrompt": [
+      "Load /optimus and ground this coding session.",
+      "Run the repair loop on this bug.",
+      "Grade this change with a blind tribunal."
+    ],
+    "brandColor": "#111827",
+    "screenshots": []
+  }
+}

@@ -1,7 +1,7 @@
 ---
-name: incident-closure
-description: Use when the human reports breakage or says "fix it" — especially when the normal control plane (API, CLI, service) is dead and you must reach underneath it. The answer is a full understanding-first close (root cause with evidence, failing test first, green, live proof on the human's own path, commit), never a menu of options back at them. Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore.
-license: MIT
+name: "incident-closure"
+description: "Use when the human reports breakage or says \"fix it\" — especially when the normal control plane (API, CLI, service) is dead and you must reach underneath it. The answer is a full understanding-first close (root cause with evidence, failing test first, green, live proof on the human's own path, commit), never a menu of options back at them. Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore."
+license: "MIT"
 ---
 
 # Full Close

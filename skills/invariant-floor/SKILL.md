@@ -1,7 +1,7 @@
 ---
-name: invariant-floor
-description: Use when setting up an agent harness, reviewing autonomous work, or deciding whether a change may land. The numbered floor of laws every autonomous change must satisfy — no fake green, loud failures, bounded autonomy, provenance, whole-seam closure. Trigger words: invariants, floor, landing gate, quality floor, hard rules, may this land, autonomous quality.
-license: MIT
+name: "invariant-floor"
+description: "Use when setting up an agent harness, reviewing autonomous work, or deciding whether a change may land. The numbered floor of laws every autonomous change must satisfy — no fake green, loud failures, bounded autonomy, provenance, whole-seam closure. Trigger words: invariants, floor, landing gate, quality floor, hard rules, may this land, autonomous quality."
+license: "MIT"
 ---
 
 # The Invariant Floor

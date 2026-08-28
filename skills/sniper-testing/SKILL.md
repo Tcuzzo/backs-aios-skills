@@ -1,7 +1,7 @@
 ---
-name: sniper-testing
-description: Use during any fix or build loop, and before trusting any green test. Runs only the tests that cover what you touched, and kills mock theater — tests that pass while the capability is broken. Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat.
-license: MIT
+name: "sniper-testing"
+description: "Use during any fix or build loop, and before trusting any green test. Runs only the tests that cover what you touched, and kills mock theater — tests that pass while the capability is broken. Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat."
+license: "MIT"
 ---
 
 # Sniper Testing

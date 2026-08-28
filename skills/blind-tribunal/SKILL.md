@@ -1,7 +1,7 @@
 ---
-name: blind-tribunal
-description: Use when an autonomous change needs an independent grade before landing and no human is in the loop. Convenes blind, cross-family jurors (one lens each) over an author-redacted envelope of whole files; every finding becomes a new failing test; loop until every juror passes. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing.
-license: MIT
+name: "blind-tribunal"
+description: "Use when an autonomous change needs an independent grade before landing and no human is in the loop. Convenes blind, cross-family jurors (one lens each) over an author-redacted envelope of whole files; every finding becomes a new failing test; loop until every juror passes. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing."
+license: "MIT"
 ---
 
 # Blind Tribunal

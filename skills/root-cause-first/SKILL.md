@@ -1,7 +1,7 @@
 ---
-name: root-cause-first
-description: Use when facing a hard bug, a silent failure, a regression hunt, or a risky change that could quietly break a downstream consumer. No fixes without investigation — read the error, reproduce it on demand, check recent changes, instrument component boundaries, trace data flow backward to the source. Trigger words: debug, root cause, why is this failing, silent failure, regression, works in tests but fails live, systematic debugging.
-license: MIT
+name: "root-cause-first"
+description: "Use when facing a hard bug, a silent failure, a regression hunt, or a risky change that could quietly break a downstream consumer. No fixes without investigation — read the error, reproduce it on demand, check recent changes, instrument component boundaries, trace data flow backward to the source. Trigger words: debug, root cause, why is this failing, silent failure, regression, works in tests but fails live, systematic debugging."
+license: "MIT"
 ---
 
 # Root Cause First
