@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import subprocess
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -11,6 +14,19 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 LOCALES = ("de", "es", "fr", "hi", "pt-BR", "zh-CN")
+COMMAND_NAMES = {
+    "agent-build",
+    "bughunt",
+    "design-taste",
+    "elite-build",
+    "grade",
+    "optimus",
+    "parallel-work",
+    "secure-delivery",
+    "tribunal",
+    "web-build",
+}
+COMMAND_SKILL_NAMES = COMMAND_NAMES - {"design-taste", "optimus"}
 
 
 def frontmatter(path: Path) -> dict:
@@ -57,11 +73,28 @@ class PackContractTest(unittest.TestCase):
     def test_commands_are_valid_for_claude_and_cursor(self) -> None:
         commands = sorted((ROOT / "commands").glob("*.md"))
         self.assertEqual(10, len(commands))
+        self.assertEqual(COMMAND_NAMES, {command.stem for command in commands})
         for command in commands:
             with self.subTest(command=command.name):
                 data = frontmatter(command)
                 self.assertEqual(command.stem, data.get("name"))
                 self.assertIsInstance(data.get("description"), str)
+
+    def test_codex_command_skill_adapters_cover_noncanonical_commands(self) -> None:
+        adapters = sorted((ROOT / "command-skills").glob("*/SKILL.md"))
+        self.assertEqual(COMMAND_SKILL_NAMES, {path.parent.name for path in adapters})
+        for adapter in adapters:
+            with self.subTest(adapter=adapter.parent.name):
+                data = frontmatter(adapter)
+                self.assertEqual(adapter.parent.name, data.get("name"))
+                body = adapter.read_text(encoding="utf-8")
+                self.assertIn("plays/", body)
+                self.assertIn("~/.local/share/backs-aios/current/", body)
+
+        codex = json.loads(
+            (ROOT / ".codex-plugin" / "plugin.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual("./command-skills/", codex["skills"])
 
     def test_plugin_manifests_share_one_release_version(self) -> None:
         manifests = (
@@ -97,6 +130,44 @@ class PackContractTest(unittest.TestCase):
         self.assertTrue((ROOT / "install.ps1").is_file())
         shell = (ROOT / "install.sh").read_text(encoding="utf-8")
         self.assertNotIn("readlink -f", shell, "stock macOS readlink has no -f")
+        powershell = (ROOT / "install.ps1").read_text(encoding="utf-8")
+        for text in (shell, powershell):
+            self.assertIn(".config/opencode/commands", text)
+            self.assertIn(".claude/commands", text)
+            self.assertIn(".local/share/backs-aios/current", text)
+
+    def test_unix_all_install_registers_real_host_commands(self) -> None:
+        with tempfile.TemporaryDirectory() as home:
+            env = {**os.environ, "HOME": home}
+            result = subprocess.run(
+                [str(ROOT / "install.sh"), "--target", "all"],
+                cwd=ROOT,
+                env=env,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(0, result.returncode, result.stderr)
+
+            runtime = Path(home) / ".local" / "share" / "backs-aios" / "current"
+            self.assertTrue(runtime.exists())
+            for relative in (".config/opencode/commands", ".claude/commands"):
+                command_root = Path(home) / relative
+                installed = {path.stem for path in command_root.glob("*.md")}
+                self.assertEqual(COMMAND_NAMES, installed, relative)
+                for command in command_root.glob("*.md"):
+                    body = command.read_text(encoding="utf-8")
+                    self.assertIn("backs-aios-managed-command", body)
+                    self.assertNotIn("${CLAUDE_PLUGIN_ROOT}", body)
+                    self.assertNotIn("${CURSOR_PLUGIN_ROOT}", body)
+                    self.assertIn(str(runtime), body)
+
+            for relative in (".codex/skills", ".agents/skills"):
+                skill_root = Path(home) / relative
+                installed = {
+                    path.parent.name for path in skill_root.glob("*/SKILL.md")
+                }
+                self.assertTrue(COMMAND_NAMES <= installed, relative)
 
     def test_install_docs_name_each_supported_host(self) -> None:
         text = (ROOT / "INSTALL.md").read_text(encoding="utf-8").lower()
