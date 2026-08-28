@@ -1,8 +1,8 @@
 # Install BACKS AIOS
 
-BACKS AIOS ships one canonical set of 28 Agent Skills plus native packaging for
-Claude Code, Codex, and Cursor. OpenCode loads the same skills directly. There is
-no build step and no runtime dependency for the skills themselves.
+BACKS AIOS ships one canonical set of 28 Agent Skills, 8 named plays, and 10 command
+entry points with native packaging for Claude Code, Codex, Cursor, and OpenCode.
+There is no build step and no runtime dependency for the skills themselves.
 
 ## Fast path: register every local coding agent
 
@@ -23,18 +23,19 @@ Set-Location "$HOME\backs-aios-skills"
 ```
 
 The Unix installer creates update-friendly symlinks. The PowerShell installer
-creates pinned copies. Both refuse to overwrite an existing skill or plugin.
+creates pinned copies. Both refuse to overwrite user-owned skills, commands, or
+plugins. Managed command adapters are marked and may be refreshed safely.
 Run a new agent session after installation, then invoke `optimus`.
 
 Supported `--target` / `-Target` values:
 
 | Target | Registration path | What loads it |
 | --- | --- | --- |
-| `codex` | `~/.codex/skills/<name>/SKILL.md` | Codex CLI, app, and IDE extension |
+| `codex` | `~/.codex/skills/<name>/SKILL.md` | Codex CLI, app, and IDE extension; 8 command adapters plus the 2 canonical command-equivalent skills |
 | `cursor` | `~/.cursor/plugins/local/backs-aios` | Cursor IDE and Cursor CLI (`agent`) |
-| `opencode` | `~/.config/opencode/skills/<name>/SKILL.md` | OpenCode terminal and desktop |
-| `claude` | `~/.claude/skills/<name>/SKILL.md` | Claude Code skill-only/manual mode |
-| `portable` | `~/.agents/skills/<name>/SKILL.md` | Agent Skills runtimes, including Cursor and OpenCode |
+| `opencode` | `~/.config/opencode/skills/<name>/SKILL.md` + `commands/*.md` | OpenCode terminal and desktop, including all 10 slash commands |
+| `claude` | `~/.claude/skills/<name>/SKILL.md` + `commands/*.md` | Claude Code skills and all 10 user-level commands; the marketplace plugin adds the hook |
+| `portable` | `~/.agents/skills/<name>/SKILL.md` | Agent Skills runtimes, including the 8 play adapters and 2 canonical command equivalents |
 | `all` | Every native and portable path above | Claude Code, Codex, Cursor, OpenCode, and Agent Skills runtimes |
 
 Use a translated mirror with `--locale de`, `es`, `fr`, `hi`, `pt-BR`, or
@@ -55,8 +56,9 @@ Start a fresh Claude Code session and run `/optimus`. The hook starts each sessi
 RED, leaves all read-only tools alone, and blocks mutating agent tools until a pack
 skill loads. `AIOS_GATE=off` is the human-owned, loud kill-switch.
 
-Use `./install.sh --target claude` only when you want skills without the plugin's
-commands and hook.
+Use `./install.sh --target claude` for the same skills and 10 user-level commands
+without the plugin hook. Use the marketplace plugin when you also want the grounding
+hook and namespaced plugin lifecycle.
 
 ## Codex: plugin or plain skills
 
@@ -67,8 +69,12 @@ For a direct GitHub clone, the portable route is:
 ./install.sh --target codex
 ```
 
-Codex discovers the 28 skill folders on the next thread. The richer local plugin
-development flow can point a Codex marketplace entry at this clone and run:
+Codex discovers the 28 canonical skill folders plus 8 command adapters on the next
+thread. `optimus` and `design-taste` already exist as canonical skills, so all 10
+command capabilities are invocable without duplicate adapters. Codex plugins do not
+ingest `commands/`; invoke the matching namespaced skill (for example,
+`backs-aios:elite-build`). The richer local plugin development flow can point a Codex
+marketplace entry at this clone and run:
 
 ```bash
 codex plugin add backs-aios@<marketplace-name>
@@ -97,15 +103,16 @@ When the GitHub repository is listed in a Cursor marketplace, install it from
 
 ## OpenCode terminal and desktop
 
-OpenCode discovers one `SKILL.md` per folder from
-`~/.config/opencode/skills/` and `~/.agents/skills/`:
+OpenCode discovers one `SKILL.md` per folder and native command markdown from
+`~/.config/opencode/commands/`:
 
 ```bash
 ./install.sh --target opencode
 ```
 
-Start a new OpenCode session. Use the native `skill` tool or `/optimus`; OpenCode
-loads skill bodies on demand and keeps their relative links intact.
+The installer registers all 10 commands and renders their play paths against the
+managed runtime root at `~/.local/share/backs-aios/current`. Start a new OpenCode
+session, then run `/optimus`. OpenCode loads the selected skill or play on demand.
 
 ## Project-local installation
 
@@ -154,9 +161,11 @@ plugin cache, reinstall from its configured marketplace and start a new thread.
 ## Verify discovery
 
 - **Claude Code:** `/plugin list`, then `/optimus` in a fresh session.
-- **Codex:** `codex plugin list` for plugin mode, or confirm the skills in a fresh thread.
+- **Codex:** `codex plugin list` for plugin mode, then confirm
+  `backs-aios:optimus` and `backs-aios:elite-build` in a fresh thread.
 - **Cursor:** Customize → Plugins/Skills, then `/optimus` in the IDE or `agent` CLI.
-- **OpenCode:** inspect the `skill` tool's available list or run `/optimus`.
+- **OpenCode:** `opencode debug skill`, `opencode debug config`, then `/optimus` in a
+  fresh session; the resolved config must contain all 10 command names.
 
 The canonical format is `skills/<name>/SKILL.md`. Every `name` is lowercase
 kebab-case, matches its directory, and carries a 1–1024 character description.

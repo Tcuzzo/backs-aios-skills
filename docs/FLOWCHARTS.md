@@ -53,6 +53,16 @@ Shapes carry meaning so the guide never depends on color:
 [security-delivery](../plays/security-delivery.md) ·
 [bughunt](../plays/bughunt.md)
 
+**Portable command adapters:** [agent-build](../skills/agent-build/SKILL.md) ·
+[bughunt](../skills/bughunt/SKILL.md) ·
+[elite-build](../skills/elite-build/SKILL.md) ·
+[grade](../skills/grade/SKILL.md) ·
+[parallel-work](../skills/parallel-work/SKILL.md) ·
+[secure-delivery](../skills/secure-delivery/SKILL.md) ·
+[tribunal](../skills/tribunal/SKILL.md) ·
+[web-build](../skills/web-build/SKILL.md). `optimus` and `design-taste`
+already have canonical skill forms.
+
 ## 1. Pick the play
 
 Start with the shape of the work. A play is a tested combination of skills; it does
@@ -102,11 +112,12 @@ Every route stands on invariant-floor.
 
 </details>
 
-## 2. How all 28 skills fit together
+## 2. How the 28 core skills fit together
 
-The pack has four layers. Grounding learns the real job. Delivery turns that
-understanding into a change. Scale coordinates models and lanes. Proof decides whether
-the result may land.
+The pack has 28 core disciplines plus 8 command-skill adapters for hosts that do not
+ingest native command files. The core has four layers. Grounding learns the real job.
+Delivery turns that understanding into a change. Scale coordinates models and lanes.
+Proof decides whether the result may land. Chart 9 maps the adapters.
 
 ```mermaid
 flowchart TB
@@ -435,6 +446,52 @@ Verified finding -> failing test -> decision-bar
 No findings -> live path proof
 Human-only setup -> guided-steps
 Then -> incident-closure -> land with evidence
+```
+
+</details>
+
+## 9. One capability across four coding hosts
+
+The pack keeps one source for each skill, play, and command while adapting only the
+host entry point. Native slash-command hosts receive command files. Codex receives
+progressive skill adapters because its plugin schema ingests skills, not commands.
+
+```mermaid
+flowchart TD
+  accTitle: Cross-host registration for BACKS AIOS skills and commands
+  accDescr: One source pack branches into native Claude Code, Cursor, OpenCode, and Codex registration paths, then every host converges on the same skill or play and must pass a real invocation proof.
+
+  Pack([One BACKS AIOS source pack]) --> Host{Which coding host loads it?}
+  Host --> Claude[Claude Code: plugin or user skills plus commands]
+  Host --> Cursor[Cursor: full plugin with skills, commands, and hook]
+  Host --> OpenCode[OpenCode: skills plus native command registry]
+  Host --> Codex[Codex: canonical skills plus command-skill adapters]
+  Claude --> Invoke[Invoke the named skill or command]
+  Cursor --> Invoke
+  OpenCode --> Invoke
+  Codex --> Invoke
+  Invoke --> Source{Does the entry resolve its real source?}
+  Source -->|No| Repair[Repair registration or path at the shared installer seam]
+  Repair --> Host
+  Source -->|Yes| Run[Run the complete skill or play]
+  Run --> Proof{Real host output proves it loaded?}
+  Proof -->|No| Repair
+  Proof -->|Yes| Done([Same capability on every host])
+```
+
+<details>
+<summary>Text version</summary>
+
+```text
+One source pack
+  ├─ Claude Code -> native plugin or user skills + commands
+  ├─ Cursor      -> full plugin: skills + commands + hook
+  ├─ OpenCode    -> skills + native command registry
+  └─ Codex       -> canonical skills + command-skill adapters
+
+Each host -> invoke the same named capability -> resolve the real skill/play
+  unresolved path or missing command -> repair the shared installer -> retry
+  resolved and executed -> real host output -> capability proven
 ```
 
 </details>

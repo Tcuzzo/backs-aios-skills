@@ -2,8 +2,9 @@
 
 **Read this in:** [Español](i18n/es/README.md) · [Português (BR)](i18n/pt-BR/README.md) · [Français](i18n/fr/README.md) · [Deutsch](i18n/de/README.md) · [हिन्दी](i18n/hi/README.md) · [简体中文](i18n/zh-CN/README.md)
 
-An agent harness distilled into 28 portable skills and 8 named plays, taken from a
-running agent platform and rebuilt as plain markdown any agent can load.
+An agent harness distilled into 28 portable skills, 8 named plays, and 10 command
+entry points, taken from a running agent platform and rebuilt as plain markdown any
+agent can load.
 
 Prefer pictures? Start with the [Visual guide](docs/FLOWCHARTS.md) for the complete
 skill map and the boot, build, repair, grading, parallel-work, and decision loops.
@@ -51,7 +52,9 @@ tier stops deciding the outcome.
     cd ~/backs-aios-skills && ./install.sh --target all
 
 This registers the pack for Codex, Cursor, OpenCode, and Claude Code without
-copying or rewriting any skill body. Windows uses `install.ps1 -Target all`.
+rewriting any skill body. It also installs host-native commands for Claude Code and
+OpenCode plus command-skill adapters for Codex and portable Agent Skills runtimes.
+Windows uses `install.ps1 -Target all`.
 
 ### Option 2 — Claude Code plugin
 
@@ -86,11 +89,15 @@ and update steps are in [INSTALL.md](INSTALL.md).
   wireframe marks a **Lord of the Loop** — the loop owner who drives iteration
   until the landing gate is green; the role is defined in
   [NAMING.md](NAMING.md#lord-of-the-loop).
-- **Commands** are the slash entries the plugin installs — each loads a play or
-  skill and runs it. One file each in `commands/`.
+- **Commands** are the 10 action entries that load a play or skill and run it. Claude
+  Code, Cursor, and OpenCode receive native slash commands from `commands/`. Codex
+  and Agent Skills runtimes receive the equivalent progressive adapters from
+  the eight command-named folders in `skills/`, because Codex plugins ingest skills
+  rather than command files. `optimus` and `design-taste` already serve both roles.
 - **Native manifests** preserve each host's richest supported surface:
   `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, and
-  `.cursor-plugin/plugin.json`. OpenCode reads the canonical skills directly.
+  `.cursor-plugin/plugin.json`. OpenCode reads the canonical skills and native
+  commands directly from its user configuration roots.
 - **The naming convention** (why skills are noun phrases, commands are verbs, and
   the floor is law) is in [NAMING.md](NAMING.md).
 - **Effort stamps** — every skill's one-line cost claim (free / light / heavy) and
