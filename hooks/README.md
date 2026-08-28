@@ -3,10 +3,11 @@
 The pack's floor, made structural: a rule an agent must remember fails exactly
 when the agent is busiest — so this gate is programmed, not prompted.
 
-## Two runtimes, one behavior
+## Claude Code and Cursor, one behavior
 
 The gate ships in two behavior-identical implementations: `aios_gate.js` (Node,
-the default in `hooks.json`) and `aios_gate.py` (Python, the alternate). Node is
+the default in `hooks.json` and `cursor-hooks.json`) and `aios_gate.py` (Python,
+the alternate). Node is
 the default because Claude Code itself runs on Node — so Node is guaranteed
 present wherever the plugin installs; Python is not. Same state files, same deny
 JSON, same mutating-verb pattern, same kill-switch, same fail-open.
@@ -23,8 +24,13 @@ To swap to Python, change each command line in `hooks.json` in one move:
 - Read-only tools (read, grep, search, fetch) always pass. The agent grounds
   itself freely while RED.
 - Invoking any pack skill or command via the Skill tool flips the session
-  GREEN (`PostToolUse` on `Skill` writes a session-scoped state file under
-  `~/.claude/state/`). From then on, edits pass.
+  GREEN (`PostToolUse` / `postToolUse` on `Skill` writes a session-scoped state
+  file under `~/.aios/state/`). From then on, edits pass.
+
+Claude Code uses `hooks/hooks.json` and its `PreToolUse` / `PostToolUse` JSON.
+Cursor uses `hooks/cursor-hooks.json` and its native `preToolUse` / `postToolUse`
+JSON. Both configs call the same script, which emits the response shape required
+by the event it received.
 
 ## The boundary — what it blocks, what it never blocks
 

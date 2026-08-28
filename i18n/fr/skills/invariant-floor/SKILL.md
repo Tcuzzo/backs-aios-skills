@@ -1,7 +1,7 @@
 ---
-name: invariant-floor
-description: À utiliser pour monter un harnais d'agent, relire du travail autonome, ou décider si un changement peut atterrir. Le plancher numéroté de lois que chaque changement autonome doit satisfaire — pas de faux vert, échecs bruyants, autonomie bornée, provenance, clôture de couture entière. Trigger words: invariants, floor, landing gate, quality floor, hard rules, may this land, autonomous quality, plancher, barrière de livraison, plancher de qualité, règles dures, est-ce que ça peut partir.
-license: MIT
+name: "invariant-floor"
+description: "À utiliser pour monter un harnais d'agent, relire du travail autonome, ou décider si un changement peut atterrir. Le plancher numéroté de lois que chaque changement autonome doit satisfaire — pas de faux vert, échecs bruyants, autonomie bornée, provenance, clôture de couture entière. Trigger words: invariants, floor, landing gate, quality floor, hard rules, may this land, autonomous quality, plancher, barrière de livraison, plancher de qualité, règles dures, est-ce que ça peut partir."
+license: "MIT"
 ---
 
 # Le plancher d'invariants

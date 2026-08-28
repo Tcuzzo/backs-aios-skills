@@ -4,7 +4,7 @@
 
 > Esta é a tradução em português (Brasil). O [README em inglês](../../README.md) é a versão canônica.
 
-Um harness de agente destilado em 27 skills portáteis e 8 plays nomeados,
+Um harness de agente destilado em 28 skills portáteis e 8 plays nomeados,
 extraído de uma plataforma de agentes em produção e reconstruído como markdown
 puro que qualquer agente consegue carregar.
 
@@ -116,6 +116,7 @@ Agent Skills, OpenClaw, Hermes, um loop de API puro — estão em
 | [human-voice](skills/human-voice/SKILL.md) | A régua sem-diploma: se ler exige diploma, reescreva. Mantém a ideia inteira enquanto tira os cacoetes de máquina. |
 | [red-first](skills/red-first/SKILL.md) | Commita um teste comprovadamente falhando antes de o build começar. O builder não pode tocá-lo. Um avaliador verifica que ele nunca se moveu. |
 | [repair-loop](skills/repair-loop/SKILL.md) | O ciclo de conserto completo: ancorar no piso, reproduzir, teste vermelho, consertar a classe, verificar no caminho real, avaliação independente, pousar. |
+| [repo-map](skills/repo-map/SKILL.md) | Mapeie primeiro a estrutura real do repositório, pontos de entrada, configuração e caminhos de execução antes de alterar código. |
 | [root-cause-first](skills/root-cause-first/SKILL.md) | Nenhum conserto sem investigação. Reproduza sob demanda, instrumente as fronteiras, rastreie os dados de volta até a origem. |
 | [seam-engineering](skills/seam-engineering/SKILL.md) | Conserta a classe da falha uma vez, na primitiva compartilhada, varre cada irmão, e planta uma guarda que pega o próximo infrator. |
 | [session-handoff](skills/session-handoff/SKILL.md) | Compacta uma sessão num arquivo único que um agente novo em folha lê a frio e continua. Segredos redigidos. |

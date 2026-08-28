@@ -1,7 +1,7 @@
 ---
-name: fleet-ladder
-description: Úsala antes de entregarle trabajo a un modelo — construir, calificar o un trabajo acotado de worker — o cuando un proveedor está caído y necesitas el orden de fallback. Resuelve la escalera VIVA de modelos: sondea lo que de verdad está arriba, elige el mejor disponible según un orden de fallback explícito, y falla con ruido cuando la escalera se agota. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability. Disparadores: flota, escalera, despacho, respaldo, modelo caído, proveedor caído, qué modelo, disponibilidad.
-license: MIT
+name: "fleet-ladder"
+description: "Úsala antes de entregarle trabajo a un modelo — construir, calificar o un trabajo acotado de worker — o cuando un proveedor está caído y necesitas el orden de fallback. Resuelve la escalera VIVA de modelos: sondea lo que de verdad está arriba, elige el mejor disponible según un orden de fallback explícito, y falla con ruido cuando la escalera se agota. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability. Disparadores: flota, escalera, despacho, respaldo, modelo caído, proveedor caído, qué modelo, disponibilidad."
+license: "MIT"
 ---
 
 # Fleet Ladder

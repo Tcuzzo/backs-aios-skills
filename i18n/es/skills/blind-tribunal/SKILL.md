@@ -1,7 +1,7 @@
 ---
-name: blind-tribunal
-description: Úsala cuando un cambio autónomo necesita una calificación independiente antes de aterrizar y no hay humano en el circuito. Convoca jurados ciegos de familias distintas — una lente cada uno — sobre un sobre con archivos completos y autoría borrada; cada hallazgo se vuelve un nuevo test que falla; se repite hasta que todos los jurados aprueban. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing. Disparadores: tribunal ciego, jurados, calificación entre familias, convocar, calificar a ciegas, calificación independiente, calificar antes de aterrizar.
-license: MIT
+name: "blind-tribunal"
+description: "Úsala cuando un cambio autónomo necesita una calificación independiente antes de aterrizar y no hay humano en el circuito. Convoca jurados ciegos de familias distintas — una lente cada uno — sobre un sobre con archivos completos y autoría borrada; cada hallazgo se vuelve un nuevo test que falla; se repite hasta que todos los jurados aprueban. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing. Disparadores: tribunal ciego, jurados, calificación entre familias, convocar, calificar a ciegas, calificación independiente, calificar antes de aterrizar."
+license: "MIT"
 ---
 
 # Blind Tribunal

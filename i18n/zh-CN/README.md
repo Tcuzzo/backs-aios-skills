@@ -104,6 +104,7 @@ Hermes、裸 API 循环——见 [INSTALL.md](INSTALL.md)。
 | [human-voice](skills/human-voice/SKILL.md) | 无学位门槛：如果读懂它需要一个学位，就重写。剥掉机器腔的同时保住完整的想法。 |
 | [red-first](skills/red-first/SKILL.md) | 构建开始前先提交一条被证明会失败的测试。构建者不许碰它。评审核实它从没动过。 |
 | [repair-loop](skills/repair-loop/SKILL.md) | 完整的修复循环：扎根地板、复现、红测试、修掉整个类、在真实路径上验证、独立评审、落地。 |
+| [repo-map](skills/repo-map/SKILL.md) | 改代码前，先画清仓库的真实结构、入口、配置和运行路径。 |
 | [root-cause-first](skills/root-cause-first/SKILL.md) | 没调查就没修复。按需复现、在边界埋探针、把数据一路往回追到源头。 |
 | [seam-engineering](skills/seam-engineering/SKILL.md) | 在共享原语处一次修掉整个缺陷类，横扫所有同类，再落一个能抓住下一个惯犯的守卫。 |
 | [session-handoff](skills/session-handoff/SKILL.md) | 把一个会话压缩成一个平面文件，让全新的 agent 能冷读并接着干。密钥已脱敏。 |

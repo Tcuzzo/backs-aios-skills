@@ -1,7 +1,7 @@
 ---
-name: design-taste
-description: Use antes de construir qualquer coisa visual — um site, app, dashboard, console ou deck — para que saia com gosto de verdade em vez dos defaults genéricos de IA. Trigger words: design, UI, taste, design tokens, design system, accessibility, WCAG, screenshot critique, dark mode, restyle, gosto, acessibilidade, crítica de screenshot, modo escuro, restilizar.
-license: MIT
+name: "design-taste"
+description: "Use antes de construir qualquer coisa visual — um site, app, dashboard, console ou deck — para que saia com gosto de verdade em vez dos defaults genéricos de IA. Trigger words: design, UI, taste, design tokens, design system, accessibility, WCAG, screenshot critique, dark mode, restyle, gosto, acessibilidade, crítica de screenshot, modo escuro, restilizar."
+license: "MIT"
 ---
 
 # Design Taste — Tokens Primeiro, Olhos no Resultado, Acessibilidade Dura

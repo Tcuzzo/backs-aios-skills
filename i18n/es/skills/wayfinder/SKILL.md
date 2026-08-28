@@ -1,7 +1,7 @@
 ---
-name: wayfinder
-description: Úsala cuando estás perdido, el camino adelante no está claro, o debes decidir en qué trabajar después. Traza un mapa de decisiones hacia el destino en vez de estacionar una pregunta sobre el humano. Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier, el camino, traza la ruta, mapea el trabajo, qué sigue, perdido, niebla de guerra, mapa de decisiones, frontera.
-license: MIT
+name: "wayfinder"
+description: "Úsala cuando estás perdido, el camino adelante no está claro, o debes decidir en qué trabajar después. Traza un mapa de decisiones hacia el destino en vez de estacionar una pregunta sobre el humano. Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier, el camino, traza la ruta, mapea el trabajo, qué sigue, perdido, niebla de guerra, mapa de decisiones, frontera."
+license: "MIT"
 ---
 
 # Wayfinder

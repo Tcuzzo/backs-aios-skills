@@ -1,7 +1,7 @@
 ---
-name: optimus
-description: 任何 agent 会话、任务或循环开始时用它——写任何代码之前。harness 优先的启动：先加载不变量地板和这个任务需要的技能，让 agent 先读规则再干活；内含接地关卡 hook 模式，在 harness 加载之前拦下所有会改动东西的工具。Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence. 中文触发词：先上 harness、加载 harness、启动地板、接地关卡、先读规则、没上 harness 不写代码、会话启动。
-license: MIT
+name: "optimus"
+description: "任何 agent 会话、任务或循环开始时用它——写任何代码之前。harness 优先的启动：先加载不变量地板和这个任务需要的技能，让 agent 先读规则再干活；内含接地关卡 hook 模式，在 harness 加载之前拦下所有会改动东西的工具。Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence. 中文触发词：先上 harness、加载 harness、启动地板、接地关卡、先读规则、没上 harness 不写代码、会话启动。"
+license: "MIT"
 ---
 
 # Harness Boot

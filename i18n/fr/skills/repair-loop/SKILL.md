@@ -1,7 +1,7 @@
 ---
-name: repair-loop
-description: À utiliser pour corriger un bug, clore un problème signalé, ou uplifter une couture de bout en bout. Déroule la boucle de réparation complète — s'ancrer dans le socle, reproduire sur la vérité live, test de contrat rouge, fixer la classe à la couture, vérifier sur le vrai chemin, note indépendante, atterrir — et itère jusqu'à ce que ce soit vrai. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build, boucle de réparation, corrige ça, fermer la couture, répare.
-license: MIT
+name: "repair-loop"
+description: "À utiliser pour corriger un bug, clore un problème signalé, ou uplifter une couture de bout en bout. Déroule la boucle de réparation complète — s'ancrer dans le socle, reproduire sur la vérité live, test de contrat rouge, fixer la classe à la couture, vérifier sur le vrai chemin, note indépendante, atterrir — et itère jusqu'à ce que ce soit vrai. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build, boucle de réparation, corrige ça, fermer la couture, répare."
+license: "MIT"
 ---
 
 # Repair Loop

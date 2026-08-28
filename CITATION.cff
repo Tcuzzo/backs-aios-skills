@@ -4,7 +4,7 @@ title: "BACKS AIOS Skills"
 type: software
 authors:
   - name: "Tcuzzo (BACKS AIOS)"
-date-released: "2026-08-26"
+date-released: "2026-08-28"
 license: MIT
 repository-code: "https://github.com/Tcuzzo/backs-aios-skills"
-version: 0.2.0
+version: 0.7.0

@@ -1,7 +1,7 @@
 ---
-name: clean-code-gauntlet
-description: तब इस्तेमाल करें जब कोई भी build — agent, service, library — hardened या land करनी हो और line-by-line review की जगह एक deterministic quality bar चाहिए; sniper tests, CRAP score (complexity x coverage) और bounded mutation testing चलाता है, फिर हल्का taste review. Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar, साफ़ code, गुणवत्ता की कसौटी, सख़्त जाँच.
-license: MIT
+name: "clean-code-gauntlet"
+description: "तब इस्तेमाल करें जब कोई भी build — agent, service, library — hardened या land करनी हो और line-by-line review की जगह एक deterministic quality bar चाहिए; sniper tests, CRAP score (complexity x coverage) और bounded mutation testing चलाता है, फिर हल्का taste review. Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar, साफ़ code, गुणवत्ता की कसौटी, सख़्त जाँच."
+license: "MIT"
 ---
 
 # Clean Code Gauntlet

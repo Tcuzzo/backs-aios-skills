@@ -1,7 +1,7 @@
 ---
-name: model-fusion
-description: तब लगाओ जब एक model का जवाब भरोसे लायक़ न हो — कोई कड़ा build, fix या design जहाँ तुम चाहते हो कि कई models मुक़ाबला करें और एक independent judge चुने। Panel parallel में drafts बनाता है, judge जीतने वाला merge करता है, नतीजा original intent से मिलाकर validate होता है। Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader, कई models से बनवाओ, panel बैठाओ, judge चुने, मुक़ाबला कराओ.
-license: MIT
+name: "model-fusion"
+description: "तब लगाओ जब एक model का जवाब भरोसे लायक़ न हो — कोई कड़ा build, fix या design जहाँ तुम चाहते हो कि कई models मुक़ाबला करें और एक independent judge चुने। Panel parallel में drafts बनाता है, judge जीतने वाला merge करता है, नतीजा original intent से मिलाकर validate होता है। Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader, कई models से बनवाओ, panel बैठाओ, judge चुने, मुक़ाबला कराओ."
+license: "MIT"
 ---
 
 # Model Fusion

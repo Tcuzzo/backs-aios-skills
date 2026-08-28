@@ -1,7 +1,7 @@
 ---
-name: session-handoff
-description: 会话将尽、上下文窗口即将压缩、或工作必须转到另一个 agent 或运行环境时用它。把会话压进一份平铺文件，让一个全新的 agent 冷启动就能读懂并接着干——状态、半成品、下一条确切命令、待定决策——密钥已脱敏，并发工作已核实保全。Trigger words: handoff, hand off, compact, save state, continue in another session, portable handoff, before restart. 中文触发词：交接、留档、保存状态、换个会话接着干、重启之前、交接文档。
-license: MIT
+name: "session-handoff"
+description: "会话将尽、上下文窗口即将压缩、或工作必须转到另一个 agent 或运行环境时用它。把会话压进一份平铺文件，让一个全新的 agent 冷启动就能读懂并接着干——状态、半成品、下一条确切命令、待定决策——密钥已脱敏，并发工作已核实保全。Trigger words: handoff, hand off, compact, save state, continue in another session, portable handoff, before restart. 中文触发词：交接、留档、保存状态、换个会话接着干、重启之前、交接文档。"
+license: "MIT"
 ---
 
 # Session Handoff

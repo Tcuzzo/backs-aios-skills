@@ -1,7 +1,7 @@
 ---
-name: design-taste
-description: Nutze das, bevor du irgendetwas Visuelles baust — Site, App, Dashboard, Konsole oder Deck — damit es mit echtem Geschmack shippt statt mit generischen KI-Defaults. Trigger words: design, UI, taste, design tokens, design system, accessibility, WCAG, screenshot critique, dark mode, restyle, Gestaltung, Geschmack, Designsystem, Barrierefreiheit, umgestalten.
-license: MIT
+name: "design-taste"
+description: "Nutze das, bevor du irgendetwas Visuelles baust — Site, App, Dashboard, Konsole oder Deck — damit es mit echtem Geschmack shippt statt mit generischen KI-Defaults. Trigger words: design, UI, taste, design tokens, design system, accessibility, WCAG, screenshot critique, dark mode, restyle, Gestaltung, Geschmack, Designsystem, Barrierefreiheit, umgestalten."
+license: "MIT"
 ---
 
 # Design-Geschmack — Tokens zuerst, Augen drauf, Barrierefreiheit hart

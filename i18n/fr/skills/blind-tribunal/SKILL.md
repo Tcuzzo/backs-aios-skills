@@ -1,7 +1,7 @@
 ---
-name: blind-tribunal
-description: À utiliser quand un changement autonome a besoin d'une note indépendante avant d'atterrir et qu'aucun humain n'est dans la boucle. Convoque des jurés à l'aveugle, de familles de modèles différentes — un angle chacun — sur une enveloppe de fichiers entiers expurgée de l'auteur ; chaque constat devient un nouveau test en échec ; boucle jusqu'à ce que chaque juré valide. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing, tribunal à l'aveugle, jurés, note inter-familles, convoquer, noter avant de livrer, verdict indépendant.
-license: MIT
+name: "blind-tribunal"
+description: "À utiliser quand un changement autonome a besoin d'une note indépendante avant d'atterrir et qu'aucun humain n'est dans la boucle. Convoque des jurés à l'aveugle, de familles de modèles différentes — un angle chacun — sur une enveloppe de fichiers entiers expurgée de l'auteur ; chaque constat devient un nouveau test en échec ; boucle jusqu'à ce que chaque juré valide. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing, tribunal à l'aveugle, jurés, note inter-familles, convoquer, noter avant de livrer, verdict indépendant."
+license: "MIT"
 ---
 
 # Blind Tribunal — le tribunal à l'aveugle

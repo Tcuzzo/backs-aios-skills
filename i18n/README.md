@@ -34,7 +34,7 @@ work — each translated skill keeps them and adds natural native-language trigg
 
 ## Contributing a new language
 
-Open a pull request that mirrors the tree: `i18n/<code>/` with all 38 files
+Open a pull request that mirrors the tree: `i18n/<code>/` with all 39 files
 (every skill + every play + `README.md`, `INSTALL.md`, `NAMING.md`), using the
 language's standard code (like `pt-BR` or `zh-CN`). The translation contract's
 laws apply: native register over word-for-word, full depth kept, names and links

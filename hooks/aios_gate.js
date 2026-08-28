@@ -27,7 +27,7 @@
  * Re-arm for a new job in the same session:
  *   node aios_gate.js --rearm [session_id]     (falls back to parent PID)
  *
- * State lives in ~/.claude/state/ (falls back to the system temp dir if that
+ * State lives in ~/.aios/state/ (falls back to the system temp dir if that
  * is not writable).
  */
 
@@ -38,7 +38,13 @@ const os = require("os");
 const path = require("path");
 
 const KILL_ENV = "AIOS_GATE";
-const MUTATING_TOOLS = new Set(["Edit", "Write", "NotebookEdit", "MultiEdit"]);
+const MUTATING_TOOLS = new Set([
+  "Delete",
+  "Edit",
+  "MultiEdit",
+  "NotebookEdit",
+  "Write",
+]);
 const DENY_MESSAGE =
   "Load the floor first — run /optimus. Set AIOS_GATE=off to disable.";
 
@@ -98,7 +104,7 @@ function pluginRoot() {
 }
 
 function stateDir() {
-  const preferred = path.join(os.homedir(), ".claude", "state");
+  const preferred = path.join(os.homedir(), ".aios", "state");
   try {
     fs.mkdirSync(preferred, { recursive: true });
     return preferred;
@@ -115,7 +121,7 @@ function stateFile(sessionId) {
 }
 
 function sessionIdOf(payload) {
-  const sid = String(payload.session_id || "").trim();
+  const sid = String(payload.session_id || payload.conversation_id || "").trim();
   return sid || `ppid${process.ppid}`;
 }
 
@@ -155,7 +161,17 @@ function invokedSkill(toolInput) {
   return raw.slice(raw.lastIndexOf(":") + 1);
 }
 
-function deny() {
+function deny(cursorProtocol) {
+  if (cursorProtocol) {
+    process.stdout.write(
+      JSON.stringify({
+        permission: "deny",
+        user_message: DENY_MESSAGE,
+        agent_message: DENY_MESSAGE,
+      }) + "\n",
+    );
+    return;
+  }
   // Byte-identical to the Python gate's json.dumps output (ensure_ascii,
   // ", " / ": " separators) so both runtimes emit the same deny line.
   const reason = JSON.stringify(DENY_MESSAGE).replace(
@@ -172,13 +188,24 @@ function deny() {
 function handle(payload) {
   const event = String(payload.hook_event_name || "");
   const toolName = String(payload.tool_name || "");
+  const cursorProtocol =
+    event === "sessionStart" ||
+    event === "preToolUse" ||
+    event === "postToolUse" ||
+    Boolean(payload.cursor_version);
   let toolInput = payload.tool_input || {};
   if (typeof toolInput !== "object" || toolInput === null || Array.isArray(toolInput)) {
     toolInput = {};
   }
   const sessionId = sessionIdOf(payload);
 
-  if (event === "PostToolUse") {
+  if (event === "SessionStart" || event === "sessionStart") {
+    const p = stateFile(sessionId);
+    if (fs.existsSync(p)) fs.unlinkSync(p);
+    return;
+  }
+
+  if (event === "PostToolUse" || event === "postToolUse") {
     if (toolName === "Skill") {
       const skill = invokedSkill(toolInput);
       const pack = packSkillNames();
@@ -189,11 +216,11 @@ function handle(payload) {
     return;
   }
 
-  if (event === "PreToolUse") {
+  if (event === "PreToolUse" || event === "preToolUse") {
     const red = !fs.existsSync(stateFile(sessionId));
-    if (toolName === "Bash") {
+    if (toolName === "Bash" || toolName === "Shell") {
       if (red && bashIsMutating(String(toolInput.command || ""))) {
-        deny();
+        deny(cursorProtocol);
       }
       return; // read-only shell always passes, red or green
     }
@@ -203,7 +230,7 @@ function handle(payload) {
     if (!red) {
       return; // floor loaded this session: allow
     }
-    deny();
+    deny(cursorProtocol);
     return;
   }
   // Any other event: no decision.
@@ -228,6 +255,7 @@ function main() {
   }
   const kill = String(process.env[KILL_ENV] || "").trim().toLowerCase();
   if (["off", "0", "false", "no"].includes(kill)) {
+    process.stderr.write("aios_gate: disabled by AIOS_GATE; allowing\n");
     return 0; // kill-switch: gate disabled, everything passes
   }
   const raw = fs.readFileSync(0, "utf8");

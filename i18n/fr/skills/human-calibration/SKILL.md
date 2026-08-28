@@ -1,7 +1,7 @@
 ---
-name: human-calibration
-description: À utiliser quand un build, un design ou une décision UX qui compte démarre et qu'il faut d'abord rencontrer l'humain qu'il sert. Charge ou construit un profil de session — comment cet humain pense, décide et veut qu'on lui parle — puis pilote tout le build à travers lui. Trigger words: yoke, know your human, human profile, session profile, grounding ladder, interaction model, intent, connais ton humain, profil humain, profil de session, échelle d'ancrage, intention.
-license: MIT
+name: "human-calibration"
+description: "À utiliser quand un build, un design ou une décision UX qui compte démarre et qu'il faut d'abord rencontrer l'humain qu'il sert. Charge ou construit un profil de session — comment cet humain pense, décide et veut qu'on lui parle — puis pilote tout le build à travers lui. Trigger words: yoke, know your human, human profile, session profile, grounding ladder, interaction model, intent, connais ton humain, profil humain, profil de session, échelle d'ancrage, intention."
+license: "MIT"
 ---
 
 # Connais ton humain

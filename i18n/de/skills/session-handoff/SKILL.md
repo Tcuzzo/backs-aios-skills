@@ -1,7 +1,7 @@
 ---
-name: session-handoff
-description: Wenn eine Session endet, das Kontextfenster gleich kompaktiert oder die Arbeit in einem anderen Agenten oder Harness weitergehen muss. Verdichtet die Session in eine flache Datei, die ein brandneuer Agent kalt lesen und fortsetzen kann — Zustand, Halbfertiges, das exakte nächste Kommando, offene Entscheidungen — mit geschwärzten Secrets und verifiziert gesicherter Parallel-Arbeit. Trigger words: handoff, hand off, compact, save state, continue in another session, portable handoff, before restart, Übergabe, Zustand sichern, in anderer Session weitermachen, vor dem Neustart.
-license: MIT
+name: "session-handoff"
+description: "Wenn eine Session endet, das Kontextfenster gleich kompaktiert oder die Arbeit in einem anderen Agenten oder Harness weitergehen muss. Verdichtet die Session in eine flache Datei, die ein brandneuer Agent kalt lesen und fortsetzen kann — Zustand, Halbfertiges, das exakte nächste Kommando, offene Entscheidungen — mit geschwärzten Secrets und verifiziert gesicherter Parallel-Arbeit. Trigger words: handoff, hand off, compact, save state, continue in another session, portable handoff, before restart, Übergabe, Zustand sichern, in anderer Session weitermachen, vor dem Neustart."
+license: "MIT"
 ---
 
 # Session Handoff

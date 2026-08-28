@@ -1,7 +1,7 @@
 ---
-name: incident-closure
-description: तब इस्तेमाल करें जब इंसान टूट-फूट report करे या "fix it" कहे — ख़ासकर जब सामान्य control plane (API, CLI, service) मरा पड़ा हो और आपको उसके नीचे उतरना पड़े; जवाब है एक पूरा understanding-first close — सबूत के साथ root cause, पहले failing test, green, इंसान के अपने रास्ते पर live proof, commit — कभी विकल्पों का menu वापस उनके मुँह पर नहीं। Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore, ठीक करो, टूट गया, बंद पड़ा है, चलना बंद, बहाल करो, वापस लाओ.
-license: MIT
+name: "incident-closure"
+description: "तब इस्तेमाल करें जब इंसान टूट-फूट report करे या \"fix it\" कहे — ख़ासकर जब सामान्य control plane (API, CLI, service) मरा पड़ा हो और आपको उसके नीचे उतरना पड़े; जवाब है एक पूरा understanding-first close — सबूत के साथ root cause, पहले failing test, green, इंसान के अपने रास्ते पर live proof, commit — कभी विकल्पों का menu वापस उनके मुँह पर नहीं। Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore, ठीक करो, टूट गया, बंद पड़ा है, चलना बंद, बहाल करो, वापस लाओ."
+license: "MIT"
 ---
 
 # Full Close

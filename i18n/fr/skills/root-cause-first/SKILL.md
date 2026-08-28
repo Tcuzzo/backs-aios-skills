@@ -1,7 +1,7 @@
 ---
-name: root-cause-first
-description: À utiliser face à un bug coriace, un échec silencieux, une chasse à la régression, ou un changement risqué qui pourrait casser en douce un consommateur en aval. Pas de fix sans enquête — lire l'erreur, la reproduire à la demande, vérifier les changements récents, instrumenter les frontières de composants, remonter le flux de données jusqu'à la source. Trigger words: debug, root cause, why is this failing, silent failure, regression, works in tests but fails live, systematic debugging, cause racine, pourquoi ça échoue, échec silencieux, régression, ça passe en test mais casse en live, débogage systématique.
-license: MIT
+name: "root-cause-first"
+description: "À utiliser face à un bug coriace, un échec silencieux, une chasse à la régression, ou un changement risqué qui pourrait casser en douce un consommateur en aval. Pas de fix sans enquête — lire l'erreur, la reproduire à la demande, vérifier les changements récents, instrumenter les frontières de composants, remonter le flux de données jusqu'à la source. Trigger words: debug, root cause, why is this failing, silent failure, regression, works in tests but fails live, systematic debugging, cause racine, pourquoi ça échoue, échec silencieux, régression, ça passe en test mais casse en live, débogage systématique."
+license: "MIT"
 ---
 
 # Root Cause First

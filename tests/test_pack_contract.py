@@ -72,6 +72,13 @@ class PackContractTest(unittest.TestCase):
         parsed = [json.loads(path.read_text(encoding="utf-8")) for path in manifests]
         self.assertEqual({"backs-aios"}, {manifest["name"] for manifest in parsed})
         self.assertEqual(1, len({manifest["version"] for manifest in parsed}))
+        marketplace = json.loads(
+            (ROOT / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(parsed[0]["version"], marketplace["plugins"][0]["version"])
+        citation = yaml.safe_load((ROOT / "CITATION.cff").read_text(encoding="utf-8"))
+        self.assertEqual(parsed[0]["version"], str(citation["version"]))
+        self.assertNotIn("hooks", parsed[0], "Claude auto-loads hooks/hooks.json")
         cursor = parsed[2]
         self.assertEqual("./skills/", cursor["skills"])
         self.assertEqual("./commands/", cursor["commands"])
@@ -88,6 +95,8 @@ class PackContractTest(unittest.TestCase):
     def test_installers_cover_unix_and_windows(self) -> None:
         self.assertTrue((ROOT / "install.sh").is_file())
         self.assertTrue((ROOT / "install.ps1").is_file())
+        shell = (ROOT / "install.sh").read_text(encoding="utf-8")
+        self.assertNotIn("readlink -f", shell, "stock macOS readlink has no -f")
 
     def test_install_docs_name_each_supported_host(self) -> None:
         text = (ROOT / "INSTALL.md").read_text(encoding="utf-8").lower()

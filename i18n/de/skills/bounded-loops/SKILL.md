@@ -1,7 +1,7 @@
 ---
-name: bounded-loops
-description: Nutze das vor jeder Schleife, die retrien, pollen, iterieren oder eine externe API rufen kann — Agent-Loops, Repair-Loops, Scheduler, Watcher. Deklariert Budget-Obergrenzen, checkpointet bei Erschöpfung und macht Hämmern strukturell unmöglich. Trigger words: bounded loop, budget, ceiling, retry, backoff, rate limit, throttle, kill-switch, checkpoint, runaway, infinite loop, spin, budget exhaustion, begrenzte Schleife, Obergrenze, Drosselung, Endlosschleife, Budget erschöpft.
-license: MIT
+name: "bounded-loops"
+description: "Nutze das vor jeder Schleife, die retrien, pollen, iterieren oder eine externe API rufen kann — Agent-Loops, Repair-Loops, Scheduler, Watcher. Deklariert Budget-Obergrenzen, checkpointet bei Erschöpfung und macht Hämmern strukturell unmöglich. Trigger words: bounded loop, budget, ceiling, retry, backoff, rate limit, throttle, kill-switch, checkpoint, runaway, infinite loop, spin, budget exhaustion, begrenzte Schleife, Obergrenze, Drosselung, Endlosschleife, Budget erschöpft."
+license: "MIT"
 ---
 
 # Bounded Loops

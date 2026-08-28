@@ -4,7 +4,7 @@
 
 **Lire ceci en :** [English](../../README.md) · [Español](../es/README.md) · [Português (BR)](../pt-BR/README.md) · [Deutsch](../de/README.md) · [हिन्दी](../hi/README.md) · [简体中文](../zh-CN/README.md)
 
-Un harnais d'agent distillé en 27 skills portables et 8 plays nommés, tirés
+Un harnais d'agent distillé en 28 skills portables et 8 plays nommés, tirés
 d'une plateforme d'agents en production et reconstruits en markdown brut que
 n'importe quel agent peut charger.
 
@@ -123,6 +123,7 @@ ajoutés dans les descriptions des skills de ce miroir.
 | [human-voice](skills/human-voice/SKILL.md) | La barre sans-diplôme : si la lecture exige un diplôme, réécris. Garde l'idée entière en enlevant les tics de machine. |
 | [red-first](skills/red-first/SKILL.md) | Commiter un test dont l'échec est prouvé avant que le build commence. Le builder n'a pas le droit d'y toucher. Un grader vérifie qu'il n'a jamais bougé. |
 | [repair-loop](skills/repair-loop/SKILL.md) | La boucle de correction complète : s'ancrer dans le socle, reproduire, test rouge, corriger la classe, vérifier sur le vrai chemin, notation indépendante, atterrir. |
+| [repo-map](skills/repo-map/SKILL.md) | Cartographie d’abord la structure réelle du dépôt, ses points d’entrée, sa configuration et ses chemins d’exécution avant toute modification. |
 | [root-cause-first](skills/root-cause-first/SKILL.md) | Pas de correctif sans enquête. Reproduire à la demande, instrumenter les frontières, remonter la donnée jusqu'à la source. |
 | [seam-engineering](skills/seam-engineering/SKILL.md) | Corriger la classe de faille une fois, à sa primitive partagée, balayer chaque occurrence sœur, poser un garde qui attrape le prochain contrevenant. |
 | [session-handoff](skills/session-handoff/SKILL.md) | Compacter une session en un seul fichier plat qu'un agent tout neuf peut lire à froid et continuer. Secrets caviardés. |

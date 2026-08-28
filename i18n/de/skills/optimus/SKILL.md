@@ -1,7 +1,7 @@
 ---
-name: optimus
-description: Beim Start jeder Agent-Session, jedes Jobs, jeder Schleife — bevor irgendein Code geschrieben wird. Harness-first-Boot: lade das Invarianten-Fundament und die Skills, die der Job braucht, damit der Agent die Regeln liest, bevor er arbeitet; enthält das Grounding-Gate-Hook-Muster, das mutierende Tools blockt, bis das Harness geladen ist. Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence, Harness laden, Fundament booten, lies erst die Regeln, kein Code ohne Harness, Session-Start.
-license: MIT
+name: "optimus"
+description: "Beim Start jeder Agent-Session, jedes Jobs, jeder Schleife — bevor irgendein Code geschrieben wird. Harness-first-Boot: lade das Invarianten-Fundament und die Skills, die der Job braucht, damit der Agent die Regeln liest, bevor er arbeitet; enthält das Grounding-Gate-Hook-Muster, das mutierende Tools blockt, bis das Harness geladen ist. Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence, Harness laden, Fundament booten, lies erst die Regeln, kein Code ohne Harness, Session-Start."
+license: "MIT"
 ---
 
 # Harness Boot

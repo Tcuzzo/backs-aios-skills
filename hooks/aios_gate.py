@@ -23,7 +23,7 @@ Rules this script holds structurally:
 Re-arm for a new job in the same session:
   python3 aios_gate.py --rearm [session_id]     (falls back to parent PID)
 
-Zero dependencies. Python 3 stdlib only. State lives in ~/.claude/state/
+Zero dependencies. Python 3 stdlib only. State lives in ~/.aios/state/
 (falls back to the system temp dir if that is not writable).
 """
 
@@ -36,7 +36,7 @@ import sys
 import tempfile
 
 KILL_ENV = "AIOS_GATE"
-MUTATING_TOOLS = {"Edit", "Write", "NotebookEdit", "MultiEdit"}
+MUTATING_TOOLS = {"Delete", "Edit", "MultiEdit", "NotebookEdit", "Write"}
 DENY_MESSAGE = "Load the floor first — run /optimus. Set AIOS_GATE=off to disable."
 
 # A verb counts only at a command position: line start, after ; & |, or inside
@@ -91,7 +91,7 @@ def _plugin_root() -> str:
 
 
 def _state_dir() -> str:
-    preferred = os.path.expanduser(os.path.join("~", ".claude", "state"))
+    preferred = os.path.expanduser(os.path.join("~", ".aios", "state"))
     try:
         os.makedirs(preferred, exist_ok=True)
         return preferred
@@ -105,7 +105,7 @@ def _state_file(session_id: str) -> str:
 
 
 def _session_id(payload: dict) -> str:
-    sid = str(payload.get("session_id") or "").strip()
+    sid = str(payload.get("session_id") or payload.get("conversation_id") or "").strip()
     return sid if sid else f"ppid{os.getppid()}"
 
 
@@ -139,7 +139,14 @@ def _invoked_skill(tool_input: dict) -> str:
     return raw.rsplit(":", 1)[-1]
 
 
-def _deny() -> None:
+def _deny(cursor_protocol: bool) -> None:
+    if cursor_protocol:
+        print(json.dumps({
+            "permission": "deny",
+            "user_message": DENY_MESSAGE,
+            "agent_message": DENY_MESSAGE,
+        }))
+        return
     print(json.dumps({
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",
@@ -152,12 +159,22 @@ def _deny() -> None:
 def handle(payload: dict) -> None:
     event = str(payload.get("hook_event_name") or "")
     tool_name = str(payload.get("tool_name") or "")
+    cursor_protocol = (
+        event in {"sessionStart", "preToolUse", "postToolUse"}
+        or bool(payload.get("cursor_version"))
+    )
     tool_input = payload.get("tool_input") or {}
     if not isinstance(tool_input, dict):
         tool_input = {}
     session_id = _session_id(payload)
 
-    if event == "PostToolUse":
+    if event in {"SessionStart", "sessionStart"}:
+        path = _state_file(session_id)
+        if os.path.isfile(path):
+            os.remove(path)
+        return
+
+    if event in {"PostToolUse", "postToolUse"}:
         if tool_name == "Skill":
             skill = _invoked_skill(tool_input)
             pack = _pack_skill_names()
@@ -166,17 +183,17 @@ def handle(payload: dict) -> None:
                     fh.write("floor loaded\n")
         return
 
-    if event == "PreToolUse":
+    if event in {"PreToolUse", "preToolUse"}:
         red = not os.path.isfile(_state_file(session_id))
-        if tool_name == "Bash":
+        if tool_name in {"Bash", "Shell"}:
             if red and _bash_is_mutating(str(tool_input.get("command") or "")):
-                _deny()
+                _deny(cursor_protocol)
             return  # read-only shell always passes, red or green
         if tool_name not in MUTATING_TOOLS:
             return  # read-only and unknown tools always pass
         if not red:
             return  # floor loaded this session: allow
-        _deny()
+        _deny(cursor_protocol)
         return
     # Any other event: no decision.
 
@@ -196,6 +213,7 @@ def main() -> int:
         _rearm(sys.argv[2:])
         return 0
     if os.environ.get(KILL_ENV, "").strip().lower() in {"off", "0", "false", "no"}:
+        print("aios_gate: disabled by AIOS_GATE; allowing", file=sys.stderr)
         return 0  # kill-switch: gate disabled, everything passes
     payload = json.loads(sys.stdin.read() or "{}")
     if not isinstance(payload, dict):

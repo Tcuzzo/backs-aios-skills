@@ -1,7 +1,7 @@
 ---
-name: gpu-dispatch
-description: Use ao despachar modelos locais para GPUs — agendar inferência, escolher uma placa ou gerenciar residência de modelo. Um modelo por GPU, sem derramar para a RAM do sistema, quente durante o loop, descarrega no fim do loop, admissão por verdade medida. Trigger words: gpu, vram, gpu dispatch, model loading, keep alive, resident model, local inference, spill, warm, despacho de gpu, carregar modelo, modelo residente, inferência local, derramar, aquecido.
-license: MIT
+name: "gpu-dispatch"
+description: "Use ao despachar modelos locais para GPUs — agendar inferência, escolher uma placa ou gerenciar residência de modelo. Um modelo por GPU, sem derramar para a RAM do sistema, quente durante o loop, descarrega no fim do loop, admissão por verdade medida. Trigger words: gpu, vram, gpu dispatch, model loading, keep alive, resident model, local inference, spill, warm, despacho de gpu, carregar modelo, modelo residente, inferência local, derramar, aquecido."
+license: "MIT"
 ---
 
 # Lei de Despacho de GPU

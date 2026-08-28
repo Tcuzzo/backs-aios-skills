@@ -1,7 +1,7 @@
 ---
-name: leap-protocol
-description: Wenn eine Naht zu groß für einen Builder ist und auf parallele Worker verteilt werden muss. LEAP zerlegt Arbeit in unabhängig besitzbare Balls — Ziel, volle Spec, harter Datei-Scope — wirft sie an frische Builder in isolierten Worktrees und führt alles über eine einzige Write-Spine zusammen. Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff, zerlegen, auffächern, parallele Builder, wirf den Ball, Übergabe ohne Kontext.
-license: MIT
+name: "leap-protocol"
+description: "Wenn eine Naht zu groß für einen Builder ist und auf parallele Worker verteilt werden muss. LEAP zerlegt Arbeit in unabhängig besitzbare Balls — Ziel, volle Spec, harter Datei-Scope — wirft sie an frische Builder in isolierten Worktrees und führt alles über eine einzige Write-Spine zusammen. Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff, zerlegen, auffächern, parallele Builder, wirf den Ball, Übergabe ohne Kontext."
+license: "MIT"
 ---
 
 # LEAP Protocol

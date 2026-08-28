@@ -1,7 +1,7 @@
 ---
-name: bounded-loops
-description: Úsala antes de arrancar cualquier loop que pueda reintentar, hacer polling, iterar o llamar a una API externa — loops de agente, loops de reparación, schedulers, watchers. Declara techos de presupuesto, hace checkpoint al agotarse, y vuelve estructuralmente imposible martillar a un proveedor. Trigger words: bounded loop, budget, ceiling, retry, backoff, rate limit, throttle, kill-switch, checkpoint, runaway, infinite loop, spin, budget exhaustion. Disparadores: loop acotado, presupuesto, techo, reintento, límite de tasa, loop infinito, desbocado, agotamiento de presupuesto.
-license: MIT
+name: "bounded-loops"
+description: "Úsala antes de arrancar cualquier loop que pueda reintentar, hacer polling, iterar o llamar a una API externa — loops de agente, loops de reparación, schedulers, watchers. Declara techos de presupuesto, hace checkpoint al agotarse, y vuelve estructuralmente imposible martillar a un proveedor. Trigger words: bounded loop, budget, ceiling, retry, backoff, rate limit, throttle, kill-switch, checkpoint, runaway, infinite loop, spin, budget exhaustion. Disparadores: loop acotado, presupuesto, techo, reintento, límite de tasa, loop infinito, desbocado, agotamiento de presupuesto."
+license: "MIT"
 ---
 
 # Bounded Loops

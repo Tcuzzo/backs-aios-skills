@@ -1,7 +1,7 @@
 ---
-name: clean-code-gauntlet
-description: Nutze das beim Härten oder Landen jedes Builds — Agent, Service, Library — wenn du eine deterministische Qualitätslatte willst statt eines Zeile-für-Zeile-Reviews. Fährt Sniper-Tests, den CRAP-Score (Komplexität x Coverage) und begrenztes Mutation-Testing, dann ein leichtes Geschmacks-Review. Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar, Spießrutenlauf, Qualitätslatte, Komplexität, Testabdeckung, härten.
-license: MIT
+name: "clean-code-gauntlet"
+description: "Nutze das beim Härten oder Landen jedes Builds — Agent, Service, Library — wenn du eine deterministische Qualitätslatte willst statt eines Zeile-für-Zeile-Reviews. Fährt Sniper-Tests, den CRAP-Score (Komplexität x Coverage) und begrenztes Mutation-Testing, dann ein leichtes Geschmacks-Review. Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar, Spießrutenlauf, Qualitätslatte, Komplexität, Testabdeckung, härten."
+license: "MIT"
 ---
 
 # Clean Code Gauntlet

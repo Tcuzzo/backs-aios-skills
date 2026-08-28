@@ -1,7 +1,7 @@
 ---
-name: design-taste
-description: 在构建任何视觉产物之前使用——网站、应用、仪表盘、控制台、演示稿——让它带着真正的品味出厂，而不是一股 AI 默认味。Trigger words: design, UI, taste, design tokens, design system, accessibility, WCAG, screenshot critique, dark mode, restyle. 中文触发词：设计、界面、品味、设计 token、设计系统、无障碍、截图评审、深色模式、改版。
-license: MIT
+name: "design-taste"
+description: "在构建任何视觉产物之前使用——网站、应用、仪表盘、控制台、演示稿——让它带着真正的品味出厂，而不是一股 AI 默认味。Trigger words: design, UI, taste, design tokens, design system, accessibility, WCAG, screenshot critique, dark mode, restyle. 中文触发词：设计、界面、品味、设计 token、设计系统、无障碍、截图评审、深色模式、改版。"
+license: "MIT"
 ---
 
 # Design Taste——token 先行、睁眼构建、无障碍硬门

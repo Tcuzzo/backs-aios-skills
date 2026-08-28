@@ -1,7 +1,7 @@
 ---
-name: intent-compiler
-description: Úsala cuando el pedido de un humano llega como prosa natural — metáfora, jerga, poesía, taquigrafía comprimida, calentura, o "tú me entiendes" — en vez de un ticket. Traduce ese lenguaje a una directiva técnica declarada, enuncia la lectura en una línea, y luego ejecuta. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing. Disparadores: la prosa es la especificación, leer la prosa, traducir el pedido, prompt ambiguo, qué quiso decir, deducir la intención, metáfora, jerga, vibra.
-license: MIT
+name: "intent-compiler"
+description: "Úsala cuando el pedido de un humano llega como prosa natural — metáfora, jerga, poesía, taquigrafía comprimida, calentura, o \"tú me entiendes\" — en vez de un ticket. Traduce ese lenguaje a una directiva técnica declarada, enuncia la lectura en una línea, y luego ejecuta. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing. Disparadores: la prosa es la especificación, leer la prosa, traducir el pedido, prompt ambiguo, qué quiso decir, deducir la intención, metáfora, jerga, vibra."
+license: "MIT"
 ---
 
 # La prosa ES la especificación

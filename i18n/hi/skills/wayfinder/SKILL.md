@@ -1,7 +1,7 @@
 ---
-name: wayfinder
-description: तब लगाओ जब रास्ता खो गया हो, आगे का क़दम धुँधला हो, या तय करना हो कि अगला काम क्या हो। सवाल इंसान पर टिकाने की जगह मंज़िल तक का decision map बनाता है। Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier, रास्ता बनाओ, नक्शा बनाओ, अब आगे क्या, रास्ता खो गया.
-license: MIT
+name: "wayfinder"
+description: "तब लगाओ जब रास्ता खो गया हो, आगे का क़दम धुँधला हो, या तय करना हो कि अगला काम क्या हो। सवाल इंसान पर टिकाने की जगह मंज़िल तक का decision map बनाता है। Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier, रास्ता बनाओ, नक्शा बनाओ, अब आगे क्या, रास्ता खो गया."
+license: "MIT"
 ---
 
 # Wayfinder

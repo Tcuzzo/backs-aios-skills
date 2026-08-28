@@ -1,7 +1,7 @@
 ---
-name: gpu-dispatch
-description: Nutze das beim Dispatch lokaler Modelle auf GPUs — Inferenzarbeit planen, eine Karte wählen oder Modell-Residenz verwalten. Ein Modell pro GPU, kein Spill ins System-RAM, warm halten durch die Schleife, am Schleifenende entladen, Zulassung nach gemessener Wahrheit. Trigger words: gpu, vram, gpu dispatch, model loading, keep alive, resident model, local inference, spill, warm, Grafikkarte, Modell laden, lokale Inferenz, warmhalten.
-license: MIT
+name: "gpu-dispatch"
+description: "Nutze das beim Dispatch lokaler Modelle auf GPUs — Inferenzarbeit planen, eine Karte wählen oder Modell-Residenz verwalten. Ein Modell pro GPU, kein Spill ins System-RAM, warm halten durch die Schleife, am Schleifenende entladen, Zulassung nach gemessener Wahrheit. Trigger words: gpu, vram, gpu dispatch, model loading, keep alive, resident model, local inference, spill, warm, Grafikkarte, Modell laden, lokale Inferenz, warmhalten."
+license: "MIT"
 ---
 
 # Das GPU-Dispatch-Gesetz

@@ -1,7 +1,7 @@
 ---
-name: blind-tribunal
-description: तब इस्तेमाल करें जब किसी autonomous बदलाव को उतरने से पहले स्वतंत्र grade चाहिए और loop में कोई इंसान नहीं है — author-redacted envelope में पूरी files पर blind, cross-family jurors बैठते हैं, एक-एक lens; हर finding नया failing test बनती है; हर juror pass होने तक loop चलता है। Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing, अंधी अदालत, जूरी, स्वतंत्र जाँच, उतरने से पहले परख.
-license: MIT
+name: "blind-tribunal"
+description: "तब इस्तेमाल करें जब किसी autonomous बदलाव को उतरने से पहले स्वतंत्र grade चाहिए और loop में कोई इंसान नहीं है — author-redacted envelope में पूरी files पर blind, cross-family jurors बैठते हैं, एक-एक lens; हर finding नया failing test बनती है; हर juror pass होने तक loop चलता है। Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing, अंधी अदालत, जूरी, स्वतंत्र जाँच, उतरने से पहले परख."
+license: "MIT"
 ---
 
 # Blind Tribunal

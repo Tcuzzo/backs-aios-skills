@@ -1,7 +1,7 @@
 ---
-name: seam-engineering
-description: 修一个 bug、或收尾一次审计 / bug 大扫除时用它。把缺陷类在它的共享原语上一次修掉，扫清每个同类兄弟，落一个能拦住下一例的守卫，并关掉浮出的每个发现——不许无声延后。Trigger words: seam, class fix, whole-seam closure, point patch, structural guard, do it right the first time. 中文触发词：接缝、修一类、整缝闭合、点补丁、结构性守卫、一次做对。
-license: MIT
+name: "seam-engineering"
+description: "修一个 bug、或收尾一次审计 / bug 大扫除时用它。把缺陷类在它的共享原语上一次修掉，扫清每个同类兄弟，落一个能拦住下一例的守卫，并关掉浮出的每个发现——不许无声延后。Trigger words: seam, class fix, whole-seam closure, point patch, structural guard, do it right the first time. 中文触发词：接缝、修一类、整缝闭合、点补丁、结构性守卫、一次做对。"
+license: "MIT"
 ---
 
 # Seam Engineering

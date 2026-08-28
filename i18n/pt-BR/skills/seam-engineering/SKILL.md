@@ -1,7 +1,7 @@
 ---
-name: seam-engineering
-description: Use ao reparar um bug ou fechar uma auditoria ou caça a bugs. Conserta a classe da falha uma vez no primitivo compartilhado, varre cada irmão, aterrissa um guarda que pega a próxima instância e fecha todo achado levantado — sem adiamento silencioso. Trigger words: seam, class fix, whole-seam closure, point patch, structural guard, do it right the first time, costura, conserto de classe, remendo pontual, guarda estrutural, fazer certo de primeira.
-license: MIT
+name: "seam-engineering"
+description: "Use ao reparar um bug ou fechar uma auditoria ou caça a bugs. Conserta a classe da falha uma vez no primitivo compartilhado, varre cada irmão, aterrissa um guarda que pega a próxima instância e fecha todo achado levantado — sem adiamento silencioso. Trigger words: seam, class fix, whole-seam closure, point patch, structural guard, do it right the first time, costura, conserto de classe, remendo pontual, guarda estrutural, fazer certo de primeira."
+license: "MIT"
 ---
 
 # Seam Engineering

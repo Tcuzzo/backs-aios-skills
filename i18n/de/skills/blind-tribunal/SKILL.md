@@ -1,7 +1,7 @@
 ---
-name: blind-tribunal
-description: Nutze das, wenn eine autonome Änderung vor dem Landen eine unabhängige Bewertung braucht und kein Mensch in der Schleife ist. Beruft blinde Cross-Family-Juroren ein — eine Linse pro Kopf — über einen autor-geschwärzten Umschlag ganzer Dateien; jeder Befund wird ein neuer fehlschlagender Test; Schleife, bis jeder Juror passt. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing, Tribunal, Juroren, blinde Bewertung, unabhängige Bewertung, vor dem Landen bewerten.
-license: MIT
+name: "blind-tribunal"
+description: "Nutze das, wenn eine autonome Änderung vor dem Landen eine unabhängige Bewertung braucht und kein Mensch in der Schleife ist. Beruft blinde Cross-Family-Juroren ein — eine Linse pro Kopf — über einen autor-geschwärzten Umschlag ganzer Dateien; jeder Befund wird ein neuer fehlschlagender Test; Schleife, bis jeder Juror passt. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing, Tribunal, Juroren, blinde Bewertung, unabhängige Bewertung, vor dem Landen bewerten."
+license: "MIT"
 ---
 
 # Blind Tribunal

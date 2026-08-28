@@ -42,7 +42,15 @@ tier stops deciding the outcome.
 
 ## Quick start
 
-### Option 1 — Claude Code plugin
+### Option 1 — every local coding agent
+
+    git clone https://github.com/Tcuzzo/backs-aios-skills.git ~/backs-aios-skills
+    cd ~/backs-aios-skills && ./install.sh --target all
+
+This registers the pack for Codex, Cursor, OpenCode, and Claude Code without
+copying or rewriting any skill body. Windows uses `install.ps1 -Target all`.
+
+### Option 2 — Claude Code plugin
 
     /plugin marketplace add Tcuzzo/backs-aios-skills
     /plugin install backs-aios
@@ -50,11 +58,11 @@ tier stops deciding the outcome.
 Then type `/optimus` to boot the floor. The skills load, the play commands become
 available, and the grounding hook ships enabled (kill-switch: `AIOS_GATE=off`).
 
-### Option 2 — manual
+### Option 3 — one host or a portable Agent Skills root
 
-Drop the `skills/` folders into your agent's skill directory and say the trigger
-words. Per-agent paths (Claude Code, any Agent Skills runtime, OpenClaw, Hermes, a
-bare API loop) are in [INSTALL.md](INSTALL.md).
+Use `./install.sh --target codex|cursor|opencode|claude|portable`, then say the
+trigger words. Exact discovery paths, project-local installs, Windows commands,
+and update steps are in [INSTALL.md](INSTALL.md).
 
 | When you want... | Say... |
 | --- | --- |
@@ -77,6 +85,9 @@ bare API loop) are in [INSTALL.md](INSTALL.md).
   [NAMING.md](NAMING.md#lord-of-the-loop).
 - **Commands** are the slash entries the plugin installs — each loads a play or
   skill and runs it. One file each in `commands/`.
+- **Native manifests** preserve each host's richest supported surface:
+  `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, and
+  `.cursor-plugin/plugin.json`. OpenCode reads the canonical skills directly.
 - **The naming convention** (why skills are noun phrases, commands are verbs, and
   the floor is law) is in [NAMING.md](NAMING.md).
 - **Effort stamps** — every skill's one-line cost claim (free / light / heavy) and

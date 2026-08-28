@@ -1,97 +1,162 @@
-# Install — bolt the pack onto a real agent
+# Install BACKS AIOS
 
-The pack is folders of markdown. Each skill is `skills/<name>/SKILL.md`. Each play is
-`plays/<name>.md`. No binaries, no server, no build step. Installing means putting the
-markdown where your agent looks for skills.
+BACKS AIOS ships one canonical set of 28 Agent Skills plus native packaging for
+Claude Code, Codex, and Cursor. OpenCode loads the same skills directly. There is
+no build step and no runtime dependency for the skills themselves.
 
-The frontmatter is deliberately the minimal 3-key subset (`name`, `description`,
-`license`) of the open Agent Skills convention (agentskills.io). The spec requires only
-`name` and `description`, and compliant runtimes ignore keys they do not recognize. So
-the pack loads natively wherever the convention loads, and reads as plain markdown
-everywhere else.
+## Fast path: register every local coding agent
 
-## 1. Claude Code plugin (recommended)
+Clone once, then run the installer from the clone:
 
-Two commands inside Claude Code:
+```bash
+git clone https://github.com/Tcuzzo/backs-aios-skills.git ~/backs-aios-skills
+cd ~/backs-aios-skills
+./install.sh --target all
+```
 
-    /plugin marketplace add Tcuzzo/backs-aios-skills
-    /plugin install backs-aios
+Windows PowerShell:
 
-That installs everything at once: the skills load, the slash commands become
-available (type `/optimus` to boot the floor), and the grounding hook ships enabled —
-it blocks mutating tools until the harness is loaded. The hook's kill-switch is yours:
-set `AIOS_GATE=off` in the environment to disable it, loudly. Updates flow through
-`/plugin` when the marketplace repo moves.
+```powershell
+git clone https://github.com/Tcuzzo/backs-aios-skills.git "$HOME\backs-aios-skills"
+Set-Location "$HOME\backs-aios-skills"
+.\install.ps1 -Target all
+```
 
-## 2. Claude Code, manual
+The Unix installer creates update-friendly symlinks. The PowerShell installer
+creates pinned copies. Both refuse to overwrite an existing skill or plugin.
+Run a new agent session after installation, then invoke `optimus`.
 
-Claude Code also discovers skills from two folders (confirmed against the official
-docs, 2026-08): personal `~/.claude/skills/<name>/SKILL.md` (every project on your
-machine) and project `.claude/skills/` (rides with one repo).
+Supported `--target` / `-Target` values:
 
-Personal, one line:
+| Target | Registration path | What loads it |
+| --- | --- | --- |
+| `codex` | `~/.codex/skills/<name>/SKILL.md` | Codex CLI, app, and IDE extension |
+| `cursor` | `~/.cursor/plugins/local/backs-aios` | Cursor IDE and Cursor CLI (`agent`) |
+| `opencode` | `~/.config/opencode/skills/<name>/SKILL.md` | OpenCode terminal and desktop |
+| `claude` | `~/.claude/skills/<name>/SKILL.md` | Claude Code skill-only/manual mode |
+| `portable` | `~/.agents/skills/<name>/SKILL.md` | Agent Skills runtimes, including Cursor and OpenCode |
+| `all` | Every native and portable path above | Claude Code, Codex, Cursor, OpenCode, and Agent Skills runtimes |
 
-    git clone https://github.com/Tcuzzo/backs-aios-skills.git ~/backs-aios-skills && ln -s ~/backs-aios-skills/skills/* ~/.claude/skills/
+Use a translated mirror with `--locale de`, `es`, `fr`, `hi`, `pt-BR`, or
+`zh-CN`. Cursor's full plugin remains English because its commands and hook use
+stable English invocation keys; skill-only targets use the selected language.
 
-Project: `cp -r ~/backs-aios-skills/skills/* .claude/skills/`
+## Claude Code: full plugin
 
-Symlink if you want pack updates to flow through; copy if you want the version pinned
-(or if symlinks give your runtime trouble). Start a new session. A skill fires when the
-task matches its `description` — say the trigger words and the agent loads the file.
-On the manual path, plays are not skills: keep them in the clone and tell the agent to
-read one (`read ~/backs-aios-skills/plays/elite-build.md`) at session start, or paste
-your default play into the project's CLAUDE.md.
+The full Claude Code plugin carries all 28 skills, all 10 slash commands, and the
+grounding hook:
 
-## 3. Any Agent Skills runtime (the open convention)
+```text
+/plugin marketplace add Tcuzzo/backs-aios-skills
+/plugin install backs-aios
+```
 
-The convention is adopted well beyond Claude — OpenAI Codex, Gemini CLI, Cursor,
-VS Code and more (per the spec ecosystem, 2026-08). The rules that matter here: the
-file is named exactly `SKILL.md`; the directory name equals the frontmatter `name`;
-only `name` + `description` are required. This pack satisfies all three. Install =
-copy `skills/*` into wherever your runtime keeps skills (Cursor uses
-`.cursor/skills/`, for example). We did not verify every runtime's folder — check
-your platform docs for the exact path.
+Start a fresh Claude Code session and run `/optimus`. The hook starts each session
+RED, leaves all read-only tools alone, and blocks mutating agent tools until a pack
+skill loads. `AIOS_GATE=off` is the human-owned, loud kill-switch.
 
-## 4. OpenClaw, Hermes, other agent frameworks
+Use `./install.sh --target claude` only when you want skills without the plugin's
+commands and hook.
 
-Confirmed against their current docs (2026-08):
+## Codex: plugin or plain skills
 
-- **OpenClaw** discovers any `SKILL.md` under its configured skill roots. Copy
-  `skills/*` into your workspace `skills/` folder, or into the shared global
-  `~/.openclaw/skills` folder. The `openclaw skills` CLI manages installs and updates.
-- **Hermes (Nous Research)** keeps one folder per skill in `~/.hermes/skills/`, and
-  loads a skill's SKILL.md into the system prompt when the task activates it. Copy
-  `skills/*` there.
+This repository includes `.codex-plugin/plugin.json` for Codex plugin catalogs.
+For a direct GitHub clone, the portable route is:
 
-Any other framework — the generic pattern, no code needed:
+```bash
+./install.sh --target codex
+```
 
-1. Mount or paste each `SKILL.md` as tool-invokable context (a document tool, a prompt
-   library entry, a retrieval store). Keep the `description` line intact — its trigger
-   words are the invocation contract.
-2. Load one play (`plays/*.md`) as system context for the session. A play names the
-   skills it fires, in order; the agent then pulls each skill by name.
-3. Verify the framework's current install mechanism in its own docs before trusting
-   this file — mechanisms change fast; we only state what we confirmed above.
+Codex discovers the 28 skill folders on the next thread. The richer local plugin
+development flow can point a Codex marketplace entry at this clone and run:
 
-## 5. Bare API loop (no framework)
+```bash
+codex plugin add backs-aios@<marketplace-name>
+```
 
-You are the harness. On each loop:
+The marketplace name belongs to the local catalog that references the clone; it
+is not hardcoded by this repository.
 
-1. Put `skills/invariant-floor/SKILL.md` in the system prompt, always. That is the
-   floor every change must clear.
-2. Pick the play that matches the ask (build → `plays/elite-build.md`, bug →
-   `plays/bughunt.md`, grading → `plays/grading-verification.md`) and append it.
-3. Match the user's words against each skill's `description` trigger words. Never
-   inject the whole pack — inject the one to three skills that match. The pack is
-   token-lean; keep it that way.
-4. Re-inject on every context reset. A rule that fell out of context is not loaded.
+## Cursor IDE and terminal
 
-## First session
+Cursor supports skills, commands, and hooks in a `.cursor-plugin` bundle. Register
+the full bundle with:
 
-Plugin install: type `/optimus` and give it the task. Manual install:
+```bash
+./install.sh --target cursor
+```
 
-    You:   read ~/.claude/skills/optimus/SKILL.md and boot. This session follows it.
-    You:   task — checkout total is wrong when a coupon and a gift card stack.
-    Agent: [boots: loads invariant-floor, picks plays/bughunt.md, names the skills it will fire]
-    You:   go.
-    Agent: [the play drives: reproduce, red test, fix the class, verify live, blind grade, land]
+This creates `~/.cursor/plugins/local/backs-aios` as a symlink to the clone. Restart
+Cursor or run **Developer: Reload Window**. In Cursor CLI, start a new `agent`
+session. The 28 skills appear in skill discovery, the 10 commands appear in `/`,
+and `hooks/cursor-hooks.json` drives the same grounding gate through Cursor's native
+lowercase event protocol.
+
+When the GitHub repository is listed in a Cursor marketplace, install it from
+**Customize → Plugins** instead of the local-development path.
+
+## OpenCode terminal and desktop
+
+OpenCode discovers one `SKILL.md` per folder from
+`~/.config/opencode/skills/` and `~/.agents/skills/`:
+
+```bash
+./install.sh --target opencode
+```
+
+Start a new OpenCode session. Use the native `skill` tool or `/optimus`; OpenCode
+loads skill bodies on demand and keeps their relative links intact.
+
+## Project-local installation
+
+For cloud agents, remote workers, containers, or a team repository, commit the
+skills with the project instead of relying on your home directory:
+
+```bash
+mkdir -p .agents/skills
+cp -R ~/backs-aios-skills/skills/* .agents/skills/
+```
+
+Both Cursor and OpenCode discover `.agents/skills`. Cursor also accepts
+`.cursor/skills`; OpenCode also accepts `.opencode/skills`; Claude Code accepts
+`.claude/skills`; and Codex accepts `.codex/skills`.
+
+## Bare API loops and other coding agents
+
+If a harness does not implement Agent Skills, mount each `SKILL.md` as on-demand
+context:
+
+1. Always load `skills/invariant-floor/SKILL.md`.
+2. Load one matching play from `plays/`.
+3. Match the request against skill descriptions and load only the one to three
+   relevant skill bodies.
+4. Reload after every context reset.
+
+Do not inject all skill bodies at once. Discovery metadata is cheap; full bodies
+are deliberately progressive.
+
+## Update
+
+Symlink installation:
+
+```bash
+cd ~/backs-aios-skills
+git pull --ff-only
+```
+
+Pinned PowerShell copies intentionally do not overwrite existing files. Move the
+old installed copy aside, then rerun `install.ps1`, or install the new release in a
+fresh directory and switch after inspection.
+
+For Claude Code marketplace installs, update through `/plugin`. For a Codex local
+plugin cache, reinstall from its configured marketplace and start a new thread.
+
+## Verify discovery
+
+- **Claude Code:** `/plugin list`, then `/optimus` in a fresh session.
+- **Codex:** `codex plugin list` for plugin mode, or confirm the skills in a fresh thread.
+- **Cursor:** Customize → Plugins/Skills, then `/optimus` in the IDE or `agent` CLI.
+- **OpenCode:** inspect the `skill` tool's available list or run `/optimus`.
+
+The canonical format is `skills/<name>/SKILL.md`. Every `name` is lowercase
+kebab-case, matches its directory, and carries a 1–1024 character description.

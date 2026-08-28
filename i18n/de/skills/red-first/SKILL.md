@@ -1,7 +1,7 @@
 ---
-name: red-first
-description: Beim Losschicken jedes Builders — ein Agent, ein Modell oder du selbst — für eine Änderung, die ein Test beweisen soll. Committet einen bewiesen fehlschlagenden Vertrags-Test, bevor der Build startet, verbietet dem Builder, ihn anzufassen, und lässt einen unabhängigen Bewerter prüfen, dass der Test nie editiert wurde. Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build, erst der rote Test, fehlschlagender Test zuerst, Vertrags-Test, rote Baseline, Test vor dem Build.
-license: MIT
+name: "red-first"
+description: "Beim Losschicken jedes Builders — ein Agent, ein Modell oder du selbst — für eine Änderung, die ein Test beweisen soll. Committet einen bewiesen fehlschlagenden Vertrags-Test, bevor der Build startet, verbietet dem Builder, ihn anzufassen, und lässt einen unabhängigen Bewerter prüfen, dass der Test nie editiert wurde. Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build, erst der rote Test, fehlschlagender Test zuerst, Vertrags-Test, rote Baseline, Test vor dem Build."
+license: "MIT"
 ---
 
 # Red-First, manipulationssicher

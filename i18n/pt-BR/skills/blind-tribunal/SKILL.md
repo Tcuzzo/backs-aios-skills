@@ -1,7 +1,7 @@
 ---
-name: blind-tribunal
-description: Use quando uma mudança autônoma precisa de avaliação independente antes de aterrissar e não há humano no loop. Convoca jurados cegos, cross-family — uma lente cada — sobre um envelope de arquivos inteiros com autoria removida; cada achado vira um teste novo falhando; repita até todos os jurados passarem. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing, tribunal cego, jurados, avaliação cega, avaliação independente, convocar, avaliar antes de aterrissar.
-license: MIT
+name: "blind-tribunal"
+description: "Use quando uma mudança autônoma precisa de avaliação independente antes de aterrissar e não há humano no loop. Convoca jurados cegos, cross-family — uma lente cada — sobre um envelope de arquivos inteiros com autoria removida; cada achado vira um teste novo falhando; repita até todos os jurados passarem. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing, tribunal cego, jurados, avaliação cega, avaliação independente, convocar, avaliar antes de aterrissar."
+license: "MIT"
 ---
 
 # Blind Tribunal

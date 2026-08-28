@@ -1,7 +1,7 @@
 ---
-name: guided-steps
-description: 当一次配置里有只有人能做的步骤时使用——第三方后台、凭证、CI secret、开通服务、一次性迁移、切换上线。生成一个分阶段的交互式脚本：打开每个 URL、说清点什么复制什么、接住值、写到它该在的地方。Trigger words: wizard, human-only steps, provision, credentials, dashboard setup, CI secrets, cutover. 中文触发词：向导、人工步骤、开通、凭证、后台配置、CI 密钥、切换上线。
-license: MIT
+name: "guided-steps"
+description: "当一次配置里有只有人能做的步骤时使用——第三方后台、凭证、CI secret、开通服务、一次性迁移、切换上线。生成一个分阶段的交互式脚本：打开每个 URL、说清点什么复制什么、接住值、写到它该在的地方。Trigger words: wizard, human-only steps, provision, credentials, dashboard setup, CI secrets, cutover. 中文触发词：向导、人工步骤、开通、凭证、后台配置、CI 密钥、切换上线。"
+license: "MIT"
 ---
 
 # Human Steps Wizard——人工步骤向导

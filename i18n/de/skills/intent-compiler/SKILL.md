@@ -1,7 +1,7 @@
 ---
-name: intent-compiler
-description: Nutze das, wenn die Bitte eines Menschen als natürliche Prosa ankommt — Metapher, Slang, Poesie, komprimierte Kurzform, Hitze oder "du weißt, was ich meine" — statt als Ticket. Übersetzt die Sprache in eine ausformulierte technische Direktive, nennt die Lesart in einer Zeile und führt dann aus. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing, Prosa ist die Spezifikation, unklare Anfrage, was meinte er, Absicht ableiten, Metapher, Umgangssprache.
-license: MIT
+name: "intent-compiler"
+description: "Nutze das, wenn die Bitte eines Menschen als natürliche Prosa ankommt — Metapher, Slang, Poesie, komprimierte Kurzform, Hitze oder \"du weißt, was ich meine\" — statt als Ticket. Übersetzt die Sprache in eine ausformulierte technische Direktive, nennt die Lesart in einer Zeile und führt dann aus. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing, Prosa ist die Spezifikation, unklare Anfrage, was meinte er, Absicht ableiten, Metapher, Umgangssprache."
+license: "MIT"
 ---
 
 # Die Prosa IST die Spezifikation

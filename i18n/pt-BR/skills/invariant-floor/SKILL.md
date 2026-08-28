@@ -1,7 +1,7 @@
 ---
-name: invariant-floor
-description: Use ao montar um harness de agente, revisar trabalho autônomo ou decidir se uma mudança pode aterrissar. O piso numerado de leis que toda mudança autônoma tem que satisfazer — sem falso verde, falhas barulhentas, autonomia limitada, proveniência, fechamento de costura inteira. Trigger words: invariants, floor, landing gate, quality floor, hard rules, may this land, autonomous quality, invariantes, piso, portão de aterrissagem, piso de qualidade, regras duras, pode aterrissar, qualidade autônoma.
-license: MIT
+name: "invariant-floor"
+description: "Use ao montar um harness de agente, revisar trabalho autônomo ou decidir se uma mudança pode aterrissar. O piso numerado de leis que toda mudança autônoma tem que satisfazer — sem falso verde, falhas barulhentas, autonomia limitada, proveniência, fechamento de costura inteira. Trigger words: invariants, floor, landing gate, quality floor, hard rules, may this land, autonomous quality, invariantes, piso, portão de aterrissagem, piso de qualidade, regras duras, pode aterrissar, qualidade autônoma."
+license: "MIT"
 ---
 
 # O Piso de Invariantes

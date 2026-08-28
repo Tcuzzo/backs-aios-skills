@@ -4,7 +4,7 @@
 
 *Deutsche Ausgabe — das englische Original ist die maßgebliche Fassung: [README (Englisch)](../../README.md)*
 
-Ein Agenten-Harness, destilliert in 27 portable Skills und 8 benannte Plays — aus
+Ein Agenten-Harness, destilliert in 28 portable Skills und 8 benannte Plays — aus
 einer laufenden Agenten-Plattform gezogen und als schlichtes Markdown neu gebaut,
 das jeder Agent laden kann.
 
@@ -119,6 +119,7 @@ OpenClaw, Hermes, ein nackter API-Loop — stehen in [INSTALL.md](INSTALL.md).
 | [human-voice](skills/human-voice/SKILL.md) | Die Latte ohne Studium: Wenn man zum Lesen einen Abschluss braucht, schreib es um. Behält die ganze Idee und entfernt die Maschinen-Marker. |
 | [red-first](skills/red-first/SKILL.md) | Einen bewiesen-fehlschlagenden Test committen, bevor der Build startet. Der Builder darf ihn nicht anfassen. Ein Prüfer verifiziert, dass er sich nie bewegt hat. |
 | [repair-loop](skills/repair-loop/SKILL.md) | Die volle Fix-Schleife: im Boden erden, reproduzieren, roter Test, die Klasse fixen, auf dem echten Pfad verifizieren, unabhängig benoten, landen. |
+| [repo-map](skills/repo-map/SKILL.md) | Kartiert zuerst die echte Repository-Struktur, Einstiegspunkte, Konfigurationen und Laufzeitpfade, bevor Code geändert wird. |
 | [root-cause-first](skills/root-cause-first/SKILL.md) | Keine Fixes ohne Untersuchung. Auf Abruf reproduzieren, Grenzen instrumentieren, die Daten rückwärts bis zur Quelle verfolgen. |
 | [seam-engineering](skills/seam-engineering/SKILL.md) | Die Fehlerklasse einmal am gemeinsamen Primitiv fixen, jedes Geschwister durchfegen, eine Wache landen, die den nächsten Täter fängt. |
 | [session-handoff](skills/session-handoff/SKILL.md) | Eine Session in eine flache Datei kompaktieren, die ein ganz neuer Agent kalt lesen und fortsetzen kann. Secrets geschwärzt. |

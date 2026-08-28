@@ -1,7 +1,7 @@
 ---
-name: decision-bar
-description: Use quando você está prestes a fazer uma pergunta ao seu humano, esperar aprovação ou estacionar uma decisão durante trabalho autônomo. Filtra toda decisão por uma barra só — apenas gosto, visão ou risco destrutivo chegam ao humano; todo o resto executa. Trigger words: ask-me bar, ask me, approval, permission, should I, decision, escalate, human in the loop, blocked on you, barra de decisão, aprovação, permissão, devo, decisão, escalar, humano no loop, travado em você.
-license: MIT
+name: "decision-bar"
+description: "Use quando você está prestes a fazer uma pergunta ao seu humano, esperar aprovação ou estacionar uma decisão durante trabalho autônomo. Filtra toda decisão por uma barra só — apenas gosto, visão ou risco destrutivo chegam ao humano; todo o resto executa. Trigger words: ask-me bar, ask me, approval, permission, should I, decision, escalate, human in the loop, blocked on you, barra de decisão, aprovação, permissão, devo, decisão, escalar, humano no loop, travado em você."
+license: "MIT"
 ---
 
 # A Barra do Me-Pergunte

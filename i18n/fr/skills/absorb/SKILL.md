@@ -1,7 +1,7 @@
 ---
-name: absorb
-description: À utiliser quand il te faut une capacité qu'un projet open source fournit déjà — adopte-la et réingénie-la en skill natif au lieu d'inventer un doublon. Trigger words: absorb, adopt, port, re-engineer, ingest a repo, prior art, capability port, make this native, absorber, adopter, porter, réingénier, ingérer un repo, l'existant, rendre natif.
-license: MIT
+name: "absorb"
+description: "À utiliser quand il te faut une capacité qu'un projet open source fournit déjà — adopte-la et réingénie-la en skill natif au lieu d'inventer un doublon. Trigger words: absorb, adopt, port, re-engineer, ingest a repo, prior art, capability port, make this native, absorber, adopter, porter, réingénier, ingérer un repo, l'existant, rendre natif."
+license: "MIT"
 ---
 
 # Absorb — Adopter l'existant, pas le réinventer

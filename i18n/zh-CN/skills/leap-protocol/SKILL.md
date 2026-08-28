@@ -1,7 +1,7 @@
 ---
-name: leap-protocol
-description: 当一条接缝大到一个构建者扛不动、必须拆给多个并行工作者时用它。LEAP 把工作分解成可独立认领的"球"——目标、完整 spec、硬性文件范围——扇出给隔离 worktree 里的全新构建者，再经由单一写入主干收拢合并。Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff. 中文触发词：传球、切片、拆解、扇出、并行构建、单一写入主干、无状态交接。
-license: MIT
+name: "leap-protocol"
+description: "当一条接缝大到一个构建者扛不动、必须拆给多个并行工作者时用它。LEAP 把工作分解成可独立认领的\"球\"——目标、完整 spec、硬性文件范围——扇出给隔离 worktree 里的全新构建者，再经由单一写入主干收拢合并。Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff. 中文触发词：传球、切片、拆解、扇出、并行构建、单一写入主干、无状态交接。"
+license: "MIT"
 ---
 
 # LEAP Protocol

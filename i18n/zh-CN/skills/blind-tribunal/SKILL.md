@@ -1,7 +1,7 @@
 ---
-name: blind-tribunal
-description: 当一个自主改动在合入前需要独立评审、而环节里没有人时使用。召集盲评的跨家族陪审员——每人只持一个视角——审阅一份隐去作者、装着完整文件的信封；每条发现都变成一条新的失败测试；循环到所有陪审员放行为止。Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing. 中文触发词：盲评审、陪审团、跨家族评审、独立评审、合入前评审、开庭。
-license: MIT
+name: "blind-tribunal"
+description: "当一个自主改动在合入前需要独立评审、而环节里没有人时使用。召集盲评的跨家族陪审员——每人只持一个视角——审阅一份隐去作者、装着完整文件的信封；每条发现都变成一条新的失败测试；循环到所有陪审员放行为止。Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing. 中文触发词：盲评审、陪审团、跨家族评审、独立评审、合入前评审、开庭。"
+license: "MIT"
 ---
 
 # Blind Tribunal——盲评陪审团

@@ -1,7 +1,7 @@
 ---
-name: decision-bar
-description: 当你在自主工作中正要向你的人类提问、等审批、或把一个决定搁置时使用。所有决定过同一道门槛——只有品味、愿景、毁灭性风险才找人；其余一律执行。Trigger words: ask-me bar, ask me, approval, permission, should I, decision, escalate, human in the loop, blocked on you. 中文触发词：该不该问、审批、许可、要不要、决定、上报、找人拍板、卡在你这。
-license: MIT
+name: "decision-bar"
+description: "当你在自主工作中正要向你的人类提问、等审批、或把一个决定搁置时使用。所有决定过同一道门槛——只有品味、愿景、毁灭性风险才找人；其余一律执行。Trigger words: ask-me bar, ask me, approval, permission, should I, decision, escalate, human in the loop, blocked on you. 中文触发词：该不该问、审批、许可、要不要、决定、上报、找人拍板、卡在你这。"
+license: "MIT"
 ---
 
 # The Ask-Me Bar——问人门槛

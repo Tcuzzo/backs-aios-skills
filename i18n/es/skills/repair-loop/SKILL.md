@@ -1,7 +1,7 @@
 ---
-name: repair-loop
-description: Úsala al arreglar un bug, cerrar un issue reportado o mejorar un seam de punta a punta. Corre el loop de reparación completo — anclarse en el piso, reproducir sobre la verdad viva, test de contrato en rojo, arreglar la clase en el seam, verificar en la ruta real, calificación independiente, aterrizar — e itera hasta que sea verdad. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build, loop de reparación, modo dev, arregla esto, arréglalo, mejora, cierra el seam.
-license: MIT
+name: "repair-loop"
+description: "Úsala al arreglar un bug, cerrar un issue reportado o mejorar un seam de punta a punta. Corre el loop de reparación completo — anclarse en el piso, reproducir sobre la verdad viva, test de contrato en rojo, arreglar la clase en el seam, verificar en la ruta real, calificación independiente, aterrizar — e itera hasta que sea verdad. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build, loop de reparación, modo dev, arregla esto, arréglalo, mejora, cierra el seam."
+license: "MIT"
 ---
 
 # Repair Loop

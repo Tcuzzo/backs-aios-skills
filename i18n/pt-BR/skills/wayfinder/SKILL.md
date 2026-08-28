@@ -1,7 +1,7 @@
 ---
-name: wayfinder
-description: Use quando você está perdido, o caminho à frente não está claro, ou é preciso decidir o que trabalhar em seguida. Traça um mapa de decisões até o destino em vez de estacionar uma pergunta no humano. Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier, traçar a rota, mapear o trabalho, e agora, perdido, névoa de guerra, mapa de decisões, fronteira.
-license: MIT
+name: "wayfinder"
+description: "Use quando você está perdido, o caminho à frente não está claro, ou é preciso decidir o que trabalhar em seguida. Traça um mapa de decisões até o destino em vez de estacionar uma pergunta no humano. Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier, traçar a rota, mapear o trabalho, e agora, perdido, névoa de guerra, mapa de decisões, fronteira."
+license: "MIT"
 ---
 
 # Wayfinder

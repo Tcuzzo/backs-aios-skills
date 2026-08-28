@@ -1,7 +1,7 @@
 ---
-name: bounded-loops
-description: 在启动任何会重试、轮询、迭代或调用外部 API 的循环之前使用——agent 循环、修复循环、调度器、监视器。先声明预算上限，耗尽即存档上报，让"狂敲接口"在结构上不可能发生。Trigger words: bounded loop, budget, ceiling, retry, backoff, rate limit, throttle, kill-switch, checkpoint, runaway, infinite loop, spin, budget exhaustion. 中文触发词：有界循环、预算、上限、重试、退避、限流、节流、熔断、检查点、死循环、失控、空转。
-license: MIT
+name: "bounded-loops"
+description: "在启动任何会重试、轮询、迭代或调用外部 API 的循环之前使用——agent 循环、修复循环、调度器、监视器。先声明预算上限，耗尽即存档上报，让\"狂敲接口\"在结构上不可能发生。Trigger words: bounded loop, budget, ceiling, retry, backoff, rate limit, throttle, kill-switch, checkpoint, runaway, infinite loop, spin, budget exhaustion. 中文触发词：有界循环、预算、上限、重试、退避、限流、节流、熔断、检查点、死循环、失控、空转。"
+license: "MIT"
 ---
 
 # Bounded Loops——有界循环

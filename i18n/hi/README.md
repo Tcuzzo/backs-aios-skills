@@ -4,7 +4,7 @@
 
 > यह English मूल संस्करण [../../README.md](../../README.md) का हिन्दी अनुवाद है — English ही canonical है।
 
-एक agent harness, 27 portable skills और 8 नामी plays में निचोड़ा हुआ — एक चलते हुए
+एक agent harness, 28 portable skills और 8 नामी plays में निचोड़ा हुआ — एक चलते हुए
 agent platform से निकालकर सादे markdown में दोबारा बनाया गया, जिसे कोई भी agent
 load कर सकता है।
 
@@ -112,6 +112,7 @@ Hermes, एक bare API loop — [INSTALL.md](INSTALL.md) में हैं।
 | [human-voice](skills/human-voice/SKILL.md) | no-degree bar: अगर पढ़ने के लिए degree चाहिए, तो दोबारा लिखो। पूरा विचार बचाकर machine के सुराग़ हटाती है। |
 | [red-first](skills/red-first/SKILL.md) | build शुरू होने से पहले एक साबित-failing test commit करो। builder उसे छू नहीं सकता। एक grader जाँचता है कि वह कभी हिला नहीं। |
 | [repair-loop](skills/repair-loop/SKILL.md) | पूरा fix loop: floor में ज़मीन पकड़ो, reproduce करो, red test, class ठीक करो, असली path पर verify करो, independent grade, land। |
+| [repo-map](skills/repo-map/SKILL.md) | code बदलने से पहले repository की असली संरचना, entrypoints, config और runtime paths का नक्शा बनाओ। |
 | [root-cause-first](skills/root-cause-first/SKILL.md) | बिना जाँच के कोई fix नहीं। माँगते ही reproduce करो, boundaries पर instrument लगाओ, data को पीछे source तक trace करो। |
 | [seam-engineering](skills/seam-engineering/SKILL.md) | खोट की class को उसके साझा primitive पर एक बार ठीक करो, हर भाई-बंधु को sweep करो, और एक guard बिठाओ जो अगले offender को पकड़े। |
 | [session-handoff](skills/session-handoff/SKILL.md) | session को एक flat file में निचोड़ती है जिसे एक बिल्कुल नया agent ठंडा पढ़कर आगे बढ़ा सके। secrets हटाकर। |

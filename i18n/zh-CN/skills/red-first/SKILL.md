@@ -1,7 +1,7 @@
 ---
-name: red-first
-description: 派出任何构建者——agent、模型或你自己——去做一个应由测试来证明的改动时用它。构建开始前先提交一条已被证明失败的契约测试，禁止构建者碰它，再由独立评分者核实测试从未被改过。Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build. 中文触发词：先写失败测试、红色基线、契约测试、测试先行、防篡改测试、先红后绿。
-license: MIT
+name: "red-first"
+description: "派出任何构建者——agent、模型或你自己——去做一个应由测试来证明的改动时用它。构建开始前先提交一条已被证明失败的契约测试，禁止构建者碰它，再由独立评分者核实测试从未被改过。Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build. 中文触发词：先写失败测试、红色基线、契约测试、测试先行、防篡改测试、先红后绿。"
+license: "MIT"
 ---
 
 # Red-First, Tamper-Proof

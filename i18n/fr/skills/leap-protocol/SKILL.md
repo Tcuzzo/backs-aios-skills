@@ -1,7 +1,7 @@
 ---
-name: leap-protocol
-description: À utiliser quand une couture est trop grosse pour un seul builder et doit être répartie entre des workers parallèles. LEAP découpe le travail en balles possédables indépendamment — objectif, spec complète, périmètre de fichiers strict — les lance à des builders neufs dans des worktrees isolés, et réconcilie via une unique colonne d'écriture. Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff, balle, tranche, découper, paralléliser, builders parallèles, colonne d'écriture unique, lancer la balle, passation sans état.
-license: MIT
+name: "leap-protocol"
+description: "À utiliser quand une couture est trop grosse pour un seul builder et doit être répartie entre des workers parallèles. LEAP découpe le travail en balles possédables indépendamment — objectif, spec complète, périmètre de fichiers strict — les lance à des builders neufs dans des worktrees isolés, et réconcilie via une unique colonne d'écriture. Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff, balle, tranche, découper, paralléliser, builders parallèles, colonne d'écriture unique, lancer la balle, passation sans état."
+license: "MIT"
 ---
 
 # LEAP Protocol

@@ -1,7 +1,7 @@
 ---
-name: optimus
-description: किसी भी agent session, job या loop की शुरुआत में लगाओ — कोई भी code लिखने से पहले। Harness-first boot: invariant floor और job के लिए ज़रूरी skills load करो, ताकि agent काम से पहले नियम पढ़े; इसमें grounding-gate hook pattern भी है जो harness load होने तक mutating tools को रोकता है। Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence, harness पहले, पहले नियम पढ़ो, बिना harness कोई code नहीं, session की शुरुआत.
-license: MIT
+name: "optimus"
+description: "किसी भी agent session, job या loop की शुरुआत में लगाओ — कोई भी code लिखने से पहले। Harness-first boot: invariant floor और job के लिए ज़रूरी skills load करो, ताकि agent काम से पहले नियम पढ़े; इसमें grounding-gate hook pattern भी है जो harness load होने तक mutating tools को रोकता है। Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence, harness पहले, पहले नियम पढ़ो, बिना harness कोई code नहीं, session की शुरुआत."
+license: "MIT"
 ---
 
 # Harness Boot
