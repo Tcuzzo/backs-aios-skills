@@ -20,7 +20,7 @@ class VisualDocumentationContractTest(unittest.TestCase):
         }
         plays = {path.stem for path in (ROOT / "plays").glob("*.md")}
 
-        self.assertEqual(28, len(skills))
+        self.assertEqual(36, len(skills))
         self.assertEqual(8, len(plays))
         for skill in sorted(skills):
             with self.subTest(skill=skill):
