@@ -176,6 +176,15 @@ class PackContractTest(unittest.TestCase):
                 "same-named legacy commands recreates command-skill collisions.",
             )
 
+            opencode_plugin = (
+                Path(home) / ".config" / "opencode" / "plugins" / "backs-aios.js"
+            )
+            self.assertTrue(opencode_plugin.exists())
+            self.assertIn(
+                "tool.execute.before",
+                opencode_plugin.read_text(encoding="utf-8"),
+            )
+
             for relative in (".codex/skills", ".agents/skills"):
                 skill_root = Path(home) / relative
                 installed = {
