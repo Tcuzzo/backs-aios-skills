@@ -202,19 +202,24 @@ agent from mutating files before it loads the floor.
 ```mermaid
 flowchart TD
   accTitle: Session boot and deterministic grounding gate
-  accDescr: Each session starts red, permits research, becomes green after a pack skill loads, and rearms when a new session, reset, or job begins.
+  accDescr: Claude/Cursor native sessionStart or a new OpenCode/Codex identity with no marker starts RED. An existing GREEN marker stays GREEN. From RED, research is allowed and then Optimus is invoked; native skill-event hosts arm GREEN on a successful post-skill event, while non-native hosts use the explicit gate loader --load to load Optimus and arm GREEN. Re-arm to RED happens only on a real native sessionStart or explicit --rearm; a new job, handoff, or compaction alone does not rearm.
 
-  Start([Session starts or resets]) --> Red[Gate state: RED]
+  Start([Session boundary]) --> Boundary{What changed?}
+  Boundary -->|Claude/Cursor<br/>sessionStart| Red[Gate state: RED]
+  Boundary -->|OpenCode/Codex<br/>new identity / no marker| Red
+  Boundary -->|Existing GREEN marker| Green[Gate state: GREEN]
   Red --> Read[Read-only research stays available]
   Read --> Boot[Invoke optimus]
-  Boot --> Floor[Load invariant-floor]
-  Floor --> Map[Read repo-map and live source]
-  Map --> Match[Load the skills matching this job]
-  Match --> Green[Post-tool hook sets state: GREEN]
+  Boot --> Event{Native skill-event host?}
+  Event -->|Yes| Post[Successful post-skill event]
+  Post --> Green
+  Event -->|No| Explicit[Run explicit gate loader:<br/>node hooks/aios_gate.js --load backs-aios:optimus<br/>loads optimus and arms GREEN]
+  Explicit --> Green
   Green --> Work[Mutating tools may run]
-  Work --> New{New job, handoff, or context reset?}
-  New -->|No| Work
-  New -->|Yes| Red
+  Work --> Rearm{Re-arm to RED?}
+  Rearm -->|Real native sessionStart| Red
+  Rearm -->|Explicit --rearm| Red
+  Rearm -->|New job / handoff / compaction alone| Work
   Red --> Mutate{Mutation attempted before grounding?}
   Mutate -->|Yes| Block[Block and point to optimus]
   Block --> Boot
@@ -225,11 +230,25 @@ flowchart TD
 <summary>Text version</summary>
 
 ```text
-Session start/reset -> RED
-RED -> research is allowed -> optimus -> invariant-floor -> repo map/live source
-     -> matching skills load -> GREEN -> mutations may run
-New job, handoff, or reset -> RED again
-Mutation while RED -> blocked with a direct pointer to optimus
+Session boundary
+  ├─ Claude/Cursor native sessionStart -> RED
+  ├─ OpenCode/Codex new identity / no marker -> RED
+  └─ existing GREEN marker -> GREEN
+
+RED -> research allowed
+  -> invoke optimus
+    ├─ native skill-event host (Claude/Cursor/OpenCode) -> post-skill event -> GREEN
+    └─ non-native host -> explicit gate loader --load backs-aios:optimus
+       loads optimus and arms GREEN
+
+GREEN -> mutations may run
+
+Re-arm to RED only on:
+  - real native sessionStart
+  - explicit --rearm
+A new job, handoff, or compaction alone does NOT rearm.
+
+Mutation while RED -> blocked with a direct pointer to optimus.
 ```
 
 </details>
@@ -453,19 +472,19 @@ Then -> incident-closure -> land with evidence
 ## 9. One capability across four coding hosts
 
 The pack keeps one source for each skill, play, and command while adapting only the
-host entry point. Native slash-command hosts receive command files. Codex receives
-progressive skill adapters because its plugin schema ingests skills, not commands.
+host entry point. Native slash-command hosts receive command files; Codex and other
+hosts without a native skill event use the explicit gate loader.
 
 ```mermaid
 flowchart TD
   accTitle: Cross-host registration for BACKS AIOS skills and commands
-  accDescr: One source pack branches into native Claude Code, Cursor, OpenCode, and Codex registration paths, then every host converges on the same skill or play and must pass a real invocation proof.
+  accDescr: Claude marketplace plugin has hook; Claude standalone is user skills only, with no duplicate commands and no hook; Cursor, OpenCode, Codex then converge on same capability/proof.
 
   Pack([One BACKS AIOS source pack]) --> Host{Which coding host loads it?}
-  Host --> Claude[Claude Code: plugin or user skills plus commands]
+  Host --> Claude[Claude Code: marketplace plugin (with hook) or user skills only (no hook, no duplicate commands)]
   Host --> Cursor[Cursor: full plugin with skills, commands, and hook]
-  Host --> OpenCode[OpenCode: skills plus native command registry]
-  Host --> Codex[Codex: canonical skills plus command-skill adapters]
+  Host --> OpenCode[OpenCode: skills + native commands + ESM adapter that calls the shared JS gate]
+  Host --> Codex[Codex: canonical skills + command-skill adapters + explicit gate loader]
   Claude --> Invoke[Invoke the named skill or command]
   Cursor --> Invoke
   OpenCode --> Invoke
@@ -484,10 +503,10 @@ flowchart TD
 
 ```text
 One source pack
-  ├─ Claude Code -> native plugin or user skills + commands
-  ├─ Cursor      -> full plugin: skills + commands + hook
-  ├─ OpenCode    -> skills + native command registry
-  └─ Codex       -> canonical skills + command-skill adapters
+  ├─ Claude Code -> marketplace plugin (with hook) OR user skills only (no hook, no duplicate commands)
+  ├─ Cursor      -> full plugin: skills + commands + native hook
+  ├─ OpenCode    -> skills + native commands + ESM adapter calling the shared JS gate
+  └─ Codex       -> canonical skills + command-skill adapters + explicit gate loader
 
 Each host -> invoke the same named capability -> resolve the real skill/play
   unresolved path or missing command -> repair the shared installer -> retry

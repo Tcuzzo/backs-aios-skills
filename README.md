@@ -52,8 +52,11 @@ tier stops deciding the outcome.
     cd ~/backs-aios-skills && ./install.sh --target all
 
 This registers the pack for Codex, Cursor, OpenCode, and Claude Code without
-rewriting any skill body. It also installs host-native commands for Claude Code and
-OpenCode plus command-skill adapters for Codex and portable Agent Skills runtimes.
+rewriting any skill body. It installs the Cursor full plugin and hook, the OpenCode
+commands and ESM adapter, Claude Code user skills with no duplicate commands and no
+hook, and Codex/portable skill files plus the command-skill adapters. It does not
+install the Claude Code marketplace plugin or hook. The explicit gate loader is a
+script inside the managed runtime, not a separately installed command.
 Windows uses `install.ps1 -Target all`.
 
 ### Option 2 — Claude Code plugin
@@ -67,8 +70,15 @@ available, and the grounding hook ships enabled (kill-switch: `AIOS_GATE=off`).
 ### Option 3 — one host or a portable Agent Skills root
 
 Use `./install.sh --target codex|cursor|opencode|claude|portable`, then say the
-trigger words. Exact discovery paths, project-local installs, Windows commands,
-and update steps are in [INSTALL.md](INSTALL.md).
+trigger words. On Codex or any host without a native skill event, run the explicit
+gate loader to arm the session:
+
+```bash
+node "$HOME/.local/share/backs-aios/current/hooks/aios_gate.js" --load backs-aios:optimus
+```
+
+Exact discovery paths, project-local installs, Windows commands, and update steps are
+in [INSTALL.md](INSTALL.md).
 
 | When you want... | Say... |
 | --- | --- |
@@ -90,15 +100,19 @@ and update steps are in [INSTALL.md](INSTALL.md).
   until the landing gate is green; the role is defined in
   [NAMING.md](NAMING.md#lord-of-the-loop).
 - **Commands** are the 10 action entries that load a play or skill and run it.
-  Cursor and OpenCode receive native slash commands from `command-adapters/`.
-  Claude Code, Codex, and Agent Skills runtimes use the canonical skills and
-  receive the equivalent progressive adapters from
-  the eight command-named folders in `skills/`, because Codex plugins ingest skills
-  rather than command files. `optimus` and `design-taste` already serve both roles.
+  Cursor receives native slash commands from `command-adapters/`. OpenCode receives
+  the same native commands plus the `~/.config/opencode/plugins/backs-aios.js` ESM
+  adapter, which forwards `tool.execute.before` and `tool.execute.after` events to
+  the shared JavaScript gate evaluator. Claude Code, Codex, and Agent Skills
+  runtimes use the canonical skills and receive the equivalent progressive adapters
+  from the eight command-named folders in `skills/`, because Codex plugins ingest
+  skills rather than command files. `optimus` and `design-taste` already serve both
+  roles.
 - **Native manifests** preserve each host's richest supported surface:
   `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, and
   `.cursor-plugin/plugin.json`. OpenCode reads the canonical skills and native
-  commands directly from its user configuration roots.
+  commands directly from its user configuration roots, and its adapter is installed
+  separately by `install.sh` and `install.ps1`.
 - **The naming convention** (why skills are noun phrases, commands are verbs, and
   the floor is law) is in [NAMING.md](NAMING.md).
 - **Effort stamps** — every skill's one-line cost claim (free / light / heavy) and

@@ -25,9 +25,23 @@ handoff. Loading the harness once and coasting for a week is not loading the har
    govern this specific work. If you cannot name them, you are not ready to edit.
 3. **Load the human profile** ([human-calibration](../human-calibration/SKILL.md)) when the
    job touches a human's taste, surface, or workflow.
-4. **Invoke the skills the job needs — in real time, in this session.** A skill named
+4. **Arm the session.** Claude/Cursor native `sessionStart` arms RED; OpenCode and
+   Codex start RED when the session identity is new or has no marker. A successful
+   native post-skill event arms GREEN for Claude, Cursor, and OpenCode. For hosts
+   without a native skill event (Codex, bare API loops, or any runtime without one),
+   run the explicit gate loader; it loads optimus and arms the session marker GREEN:
+   ```bash
+   node "$HOME/.local/share/backs-aios/current/hooks/aios_gate.js" --load backs-aios:optimus
+   ```
+   Python alternate:
+   ```bash
+   python3 "$HOME/.local/share/backs-aios/current/hooks/aios_gate.py" --load backs-aios:optimus
+   ```
+   The `--load` call prints the skill body and atomically arms the same session marker
+   GREEN. Unknown skills return nonzero and do not arm.
+5. **Invoke the skills the job needs — in real time, in this session.** A skill named
    but not invoked did not happen. Working "from memory of a skill" is not invoking it.
-5. Only then: write code, run mutating commands, or change anything.
+6. Only then: write code, run mutating commands, or change anything.
 
 ## The grounding-gate pattern
 
@@ -41,19 +55,32 @@ agent runtime calls before every tool call:
   mutating shell verbs (commit, push, rm, install, service restart, in-place edits).
 - Invoking any harness skill **flips the session GREEN** (caught by a post-tool-use
   hook). Then the agent may act.
-- **Re-arm:** state resets to RED at every session start. For long sessions, re-arm per
-  job or per action so a stale GREEN never carries into ungrounded work.
+- **Re-arm:** a real native `sessionStart` event re-arms the emitting host to RED.
+  `sessionStart` never arms GREEN; native post-skill success arms GREEN. For a new
+  job, handoff, context reset, or compaction that does NOT emit a real
+  `sessionStart`, re-arm explicitly with the gate loader:
+  ```bash
+  node "$HOME/.local/share/backs-aios/current/hooks/aios_gate.js" --rearm <session_id>
+  ```
+  Python alternate:
+  ```bash
+  python3 "$HOME/.local/share/backs-aios/current/hooks/aios_gate.py" --rearm <session_id>
+  ```
 
 Design rules for the hook itself:
 
 - **Deterministic and free.** No model call, no network, no dependencies. State is one
   small file per session, written atomically.
-- **It forces grounding, not a sandbox.** Match only primary mutating verbs; leave
-  dual-use wrappers and copy tools alone so grounding commands cannot get trapped.
-- **Fail open, but loud.** A crashed hook must never brick the session — and must never
-  allow silently. Print the error where the human can see it.
-- **Never trap a session.** Unknown session identity allows, with one loud warning line.
-  A session that can never be flipped GREEN must never be blocked RED.
+- **It forces grounding, not a sandbox or security boundary.** Match only primary
+  mutating verbs. Positive matching is incomplete; exotic mutations may slip
+  through. Do not claim matcher parity across hosts or complete mutation coverage.
+- **Fail open, but loud, only in native hook mode.** A crashed native hook must never
+  brick the session — and must never allow silently. Explicit `--load` and `--rearm`
+  errors are loud and nonzero.
+- **Never trap a session.** Unknown session identity resolves through explicit CLI
+  id, then payload session_id/conversation_id, supported environment variables in
+  declared order, then parent PID; parent PID is the final nonempty fallback and
+  there is no anonymous allow after it.
 - **One human-owned kill-switch** (an env var), defaults ON, logs loudly when off. The
   gate binds agents, never the human. Never add a second gate.
 
@@ -65,14 +92,31 @@ MUTATING_TOOLS = {"Edit", "Write", "Delete"}
 MUTATING_SHELL = r"^\s*(sudo\s+)?(git (commit|push|reset|checkout)|rm|pip install|" \
                  r"npm install|systemctl (restart|stop)|sed .*-i)"
 
+def resolve_session_id(args):
+    # bounded identity resolution; parent PID is the final nonempty fallback
+    if args.get("cli_session_id"):
+        return args["cli_session_id"]
+    payload = args.get("payload", {})
+    for key in ("session_id", "conversation_id"):
+        if payload.get(key):
+            return payload[key]
+    env = args.get("env", {})
+    for key in ("BACKS_BUILD_SESSION",
+                "CLAUDE_CODE_SESSION_ID", "CODEX_THREAD_ID",
+                "CURSOR_SESSION_ID", "CURSOR_CONVERSATION_ID",
+                "OPENCODE_SESSION_ID",
+                "CODEX_SESSION_ID", "CLAUDE_SESSION_ID"):
+        if env.get(key):
+            return env[key]
+    return parent_pid()                      # final nonempty fallback; one state per shell/process
+
 def handle(event, session_id, tool, args):
     if kill_switch_off():                    # human-owned env var, e.g. HARNESS_GATE=off
         return ALLOW                         # disabled loudly, never silently
     if not session_id:
-        warn("no session id — allowing; the gate never traps a session")
-        return ALLOW
+        session_id = resolve_session_id(args)
     if event == "SessionStart":
-        set_state(session_id, "RED")         # every session re-arms to RED
+        set_state(session_id, "RED")         # every real session start re-arms to RED; never arms GREEN
         return ALLOW
     if event == "PostToolUse":
         if tool == "Skill" and args.get("skill") in HARNESS_SKILLS:
