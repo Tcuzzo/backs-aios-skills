@@ -41,7 +41,9 @@ Route each tier to what the lens needs, not to the biggest model you own:
 - **deep state** (reversibility, state_continuity): your largest context + deepest
   reasoning, ideally through an agentic harness that can READ the repository (never
   write) so the juror can trace a state change from producer to consumer and run the
-  named tests. Header: *trace every state change across the whole workflow before you judge.*
+  named tests. Run harness jurors read-only (`codex exec --sandbox read-only`; a
+  read-only tool catalog on a claude harness) and void any verdict whose dispatch
+  changed repository bytes, naming the paths. Header: *trace every state change across the whole workflow before you judge.*
 - **fast structural** (boundary_condition, resource_economy): the cheapest fast route —
   a free local GPU model first, **fused with a cheap cloud verifier** that judges the
   same prompt: the lens passes only when BOTH pass; the verifier never re-seats the
@@ -51,7 +53,14 @@ Route each tier to what the lens needs, not to the biggest model you own:
   window to the prompt (`num_ctx` on Ollama — the server default is 4096 tokens and it
   truncates silently; measured 2026-09-04, a 16B juror "passed" a 124 KB diff it never
   saw, citing a file that does not exist) and refuse, before sending, a prompt the rung
-  cannot hold. Header: *work fast and literal from the code in front of you.*
+  cannot hold. The verifier never comes from the primary's FAMILY (same vendor =
+  same family), and an UNVERIFIED seat is a HOLD — never unanimity, never a pack
+  pass. After every local call read the node's own numbers: cap the answer
+  (`num_predict`), refuse an answer whose prompt filled the window
+  (`prompt_eval_count` + answer budget ≥ `num_ctx` is a measured truncation), and
+  check residency (`size_vram == size` on `/api/ps`) — a model spilled to system RAM
+  is unloaded and its answer discarded. Header: *work fast and literal from the code
+  in front of you.*
 - **operator safety** (operator_consequence, telemetry): your strongest coder with
   safety grounding. Header: *think as the human who runs this on their own machine.*
 - **generalist** (defect, proportion): a reliable large generalist. Header: *precise
@@ -132,6 +141,16 @@ Strict machine-parseable JSON, one object, no prose:
 - A fused seat records both verdicts: the primary's and the verifier's, with the
   verifier's findings prefixed `[verifier:<model>]`, plus `verified: true|false`.
   Count the unverified seats in the summary and print them on the console line.
+- An UNVERIFIED seat is a hold, not a pass: it never makes unanimity, its pack seat
+  refuses, and the command exits as a hold — never zero.
+- Every convene carries a `run_id`: sweep only the files the tribunal owns from the
+  out dir first, stamp the id on every verdict, and write `summary.json` last and
+  atomically — it is the completion marker. A config defect on a proven rung halts
+  LOUD with the finished seats' evidence on disk and the error in the summary.
+- The artifact IS the bound diff, byte for byte: the receipt hashes exactly what the
+  jurors read (`git diff --binary base...candidate`); a mismatch refuses before any
+  juror is paid. Default author aliases come from repo truth (the repo's git identity
+  and the candidate's author), never from a flag someone has to remember.
 
 ## The loop
 
@@ -157,6 +176,8 @@ Strict machine-parseable JSON, one object, no prose:
 ## Hard rules — any one broken voids the grade
 
 - The builder never grades its own work: not the same instance, not the same family.
+- The verifier never comes from the primary seat's family; a verifier that would be
+  the same family holds instead.
 - **A juror refusal is only as good as the envelope.** Before writing a test from
   a finding, verify the finding against the actual files. A finding about code the
   envelope never carried means fix the envelope, not the code.

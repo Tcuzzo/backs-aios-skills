@@ -41,7 +41,7 @@ el mayor contexto y razonamiento más profundo, idealmente por un harness que LE
 verificador de nube barato que juzga el mismo prompt: la lente pasa solo si ambos pasan;
 sin nube, el veredicto local queda marcado UNVERIFIED, nunca «verificado» en silencio; y el
 modelo local debe ver TODO el artefacto (dimensiona `num_ctx` al prompt — el valor por
-defecto de Ollama, 4096, trunca en silencio — y rechaza antes de enviar lo que no cabe);
+defecto de Ollama, 4096, trunca en silencio — y rechaza antes de enviar lo que no cabe); el verificador nunca es de la misma familia que el asiento primario, y un asiento UNVERIFIED es una retención (nunca unanimidad); los jurados por harness corren read-only, y cada convocatoria lleva un `run_id` y escribe su resumen al final;
 después los modelos de nube de baja latencia; seguridad del operador →
 tu coder más fuerte con base en seguridad; generalista → un generalista grande y fiable.
 Cada escalera termina en un peldaño local de supervivencia.

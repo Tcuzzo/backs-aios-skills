@@ -43,7 +43,7 @@ un vérificateur cloud bon marché qui juge le même prompt : la lentille ne pas
 deux passent ; sans cloud, le verdict local reste, marqué UNVERIFIED, jamais « vérifié » en
 silence ; et le modèle local doit voir TOUT l'artefact (dimensionne `num_ctx` sur le prompt
 — le défaut d'Ollama, 4096, tronque en silence — et refuse avant l'envoi ce qui ne tient
-pas) ; ensuite les modèles cloud à faible latence ; sécurité opérateur → ton
+pas) ; le vérificateur n'est jamais de la même famille que le siège primaire, et un siège UNVERIFIED est une mise en attente (jamais l'unanimité) ; les jurés par harness tournent en read-only, et chaque convocation porte un `run_id` et écrit son résumé en dernier ; ensuite les modèles cloud à faible latence ; sécurité opérateur → ton
 codeur le plus fort ancré sur la sécurité ; généraliste → un grand généraliste fiable.
 Chaque échelle finit sur un barreau local de survie.
 

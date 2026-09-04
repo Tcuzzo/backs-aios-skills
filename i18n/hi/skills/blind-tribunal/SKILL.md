@@ -40,7 +40,7 @@ fast structural → पहले free local GPU, जो एक सस्ते c
 वही prompt जाँचते हैं, lens तभी pass जब दोनों pass; cloud पूरी तरह down हो तो local verdict
 रहता है पर UNVERIFIED मार्क होकर, कभी चुपचाप "verified" नहीं; और local model को पूरा artifact
 दिखना चाहिए (`num_ctx` को prompt के हिसाब से set करो — Ollama का default 4096 चुपचाप काट
-देता है — जो नहीं समाता उसे भेजने से पहले ही refuse करो); फिर low-latency cloud models;
+देता है — जो नहीं समाता उसे भेजने से पहले ही refuse करो); verifier कभी primary seat की family से नहीं होता, और UNVERIFIED seat एक hold है (कभी unanimity नहीं); harness jurors read-only चलते हैं, और हर convene एक `run_id` रखता है और summary सबसे आख़िर में लिखता है; फिर low-latency cloud models;
 operator safety → safety grounding वाला आपका सबसे मज़बूत coder; generalist → एक
 बड़ा भरोसेमंद generalist। हर ladder एक local survival rung पर ख़त्म होती है।
 

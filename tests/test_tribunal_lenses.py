@@ -54,6 +54,17 @@ class TribunalLensesTest(unittest.TestCase):
                 self.assertIn("UNVERIFIED", text)
                 self.assertIn("num_ctx", text)
 
+    def test_every_surface_holds_an_unverified_seat_reads_only_and_carries_a_run_id(self) -> None:
+        """0.8.2 (the tribunal graded its own build): an UNVERIFIED seat is a hold, never a
+        pass; harness jurors run read-only; every convene carries a run_id and writes its
+        summary last — the machine tokens ride every language unchanged."""
+        for path in self.surfaces():
+            text = path.read_text(encoding="utf-8")
+            with self.subTest(surface=str(path.relative_to(ROOT))):
+                self.assertIn("read-only", text)
+                self.assertIn("run_id", text)
+                self.assertIn("UNVERIFIED", text)
+
     def test_no_surface_still_seats_three_jurors(self) -> None:
         stale = ("Three jurors", "three jurors", "Tres jurados", "Trois jurés", "Drei Juroren", "Três jurados", "तीन jurors", "三位陪审员")
         for path in self.surfaces():

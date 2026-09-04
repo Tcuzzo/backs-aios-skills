@@ -43,7 +43,7 @@ billigen Cloud-Verifizierer, der denselben Prompt beurteilt: die Linse besteht n
 beide bestehen; ohne Cloud bleibt das lokale Urteil, markiert UNVERIFIED, nie stillschweigend
 „verifiziert"; und das lokale Modell muss das GANZE Artefakt sehen (`num_ctx` auf den
 Prompt dimensionieren — Ollamas Default 4096 kürzt stillschweigend — und vor dem Senden
-ablehnen, was nicht passt); danach die Cloud-Modelle mit niedriger Latenz; Operator-Sicherheit →
+ablehnen, was nicht passt); der Verifizierer stammt nie aus der Familie des Primärsitzes, und ein UNVERIFIED-Sitz ist ein Halt (nie Einstimmigkeit); Harness-Juroren laufen read-only, und jede Einberufung trägt eine `run_id` und schreibt ihre Zusammenfassung zuletzt; danach die Cloud-Modelle mit niedriger Latenz; Operator-Sicherheit →
 dein stärkster Coder mit Sicherheits-Grounding; Generalist → ein großer, zuverlässiger
 Generalist. Jede Leiter endet auf einer lokalen Überlebens-Sprosse.
 

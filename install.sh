@@ -8,7 +8,7 @@ LOCALE="en"
 RUNTIME="$HOME/.local/share/backs-aios/current"
 MANAGED_COMMAND_MARKER="backs-aios-managed-command"
 MANAGED_ROOT_MARKER_FILE="backs-aios-managed"
-MANAGED_ROOT_MARKER_CONTENT="backs-aios-managed 0.8.1"
+MANAGED_ROOT_MARKER_CONTENT="backs-aios-managed 0.8.2"
 LAST_HOLDER=""
 PACK_ENTRIES=(
   .claude-plugin .codex-plugin .cursor-plugin .gitignore
