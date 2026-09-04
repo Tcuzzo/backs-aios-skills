@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # Blind Tribunal
-**Effort:** heavy — drei familienfremde Juror-Modelle, jede Runde auf frischen Umschlägen neu einberufen, bis sie einstimmig sind; investier das in autonome Änderungen, die ohne menschliches Review landen. Beseitigt: entgleiste Landungen, die nichts bewacht außer dem eigenen Wort des Builders.
+**Effort:** heavy — acht Juroren, eine Linse pro Kopf, nach Stufe an die günstigste ausreichende Modellfamilie geroutet, jede Runde auf frischen Umschlägen neu einberufen, bis sie einstimmig sind; investier das in autonome Änderungen, die ohne menschliches Review landen. Beseitigt: entgleiste Landungen, die nichts bewacht außer dem eigenen Wort des Builders.
 
 Die Bewertungsschleife, mit der der Mensch weggehen kann, ohne dass der Agent
 entgleist. Ein Panel aus Juroren prüft die Änderung blind, mit entfernter
@@ -21,14 +21,27 @@ bis jeder Juror passt. Nichts landet allein auf das Wort des Builders.
 
 ## Die Sitze
 
-Drei Juroren. Jeder ist ein Modell aus einer ANDEREN Familie als der Builder.
-Jeder hält genau EINE Linse — ein Juror, der alles prüfen soll, prüft nichts richtig.
+Acht Juroren, eine Linse pro Kopf. Jeder ist ein Modell aus einer ANDEREN Familie als
+der Builder (gleicher Hersteller = gleiche Familie). Ein Juror, der alles prüfen soll,
+prüft nichts richtig.
 
-| Juror | Linse | Die Frage, die er stellt |
-| --- | --- | --- |
-| Defekt | Defektjagd | Was geht wirklich kaputt? Escapes, Randfälle, gebrochene Contracts. |
-| Proportion | Maßhalten | Ist das die richtige Größe? Überbaut, oder ein Pflaster auf einem Symptom? |
-| Konsequenz | menschliche Wirkung | Wenn das falsch ist — was passiert dem Menschen, der sich darauf verlässt? |
+| Juror | Linsen-Id | Stufe | Die Frage, die er stellt |
+| --- | --- | --- | --- |
+| Defekt | `defect` | Generalist | Was geht wirklich kaputt? Logikfehler, Syntaxfehler, neue Defekte. |
+| Proportion | `proportion` | Generalist | Ist das die richtige Größe? Überbaut, oder passend zur Absicht? |
+| Konsequenz | `operator_consequence` | Operator-Sicherheit | Wenn ein Mensch das auf seiner Maschine ausführt — was ist zerstörerisch, unsicher oder schädlich? |
+| Reversibilität | `reversibility` | Deep State | Bleiben irreversible Nebeneffekte? Stirbt es mittendrin — rollt das System sauber zurück? |
+| Kontinuität | `state_continuity` | Deep State | Verwaiste Variablen, überschriebener globaler Zustand, verlorener Kontext für nachgelagerte Knoten? |
+| Ökonomie | `resource_economy` | schnell-strukturell | Unoptimierte Schleifen, redundante Netz-/API-Aufrufe, Speicher-Bloat? |
+| Grenzfall | `boundary_condition` | schnell-strukturell | Null, leer, falscher Typ, absichtlich kaputt — fällt es sauber aus? |
+| Telemetrie | `telemetry` | Operator-Sicherheit | Lässt sich ein Fehler hier aus Logs und Fehlerbehandlung diagnostizieren? |
+
+**Routing-Stufen (die günstigste ausreichende Route zuerst):** Deep State → größter
+Kontext und tiefstes Reasoning, idealerweise durch einen Harness, der das Repo LIEST
+(nie schreibt); schnell-strukturell → erst eine freie lokale GPU, dann ein Cloud-Modell
+mit niedriger Latenz, zuletzt ein billiger Cloud-Verifizierer; Operator-Sicherheit →
+dein stärkster Coder mit Sicherheits-Grounding; Generalist → ein großer, zuverlässiger
+Generalist. Jede Leiter endet auf einer lokalen Überlebens-Sprosse.
 
 **Solo-Rig.** Wenn nur eine Modellfamilie verfügbar ist, degradiere EXPLIZIT: Ein
 frischer Kontext oder eine frische Session, die die Konversation des Autors nie
@@ -80,7 +93,7 @@ Striktes, maschinenlesbares JSON, ein Objekt, keine Prosa:
    ([red-first](../red-first/SKILL.md)).
 2. Baue bis grün.
 3. Baue den Umschlag aus den AKTUELLEN Dateien.
-4. Besetze die drei Juroren — andere Familien als der Builder
+4. Besetze die acht Juroren, nach Stufe, — andere Familien als der Builder
    ([fleet-ladder](../fleet-ladder/SKILL.md) klärt, was live ist).
 5. Jeder Juror verifiziert auch, statt nur zu lesen: Die neuen Tests bestehen; die
    Regressions-Suite ist nicht schlechter als die Baseline; und ein

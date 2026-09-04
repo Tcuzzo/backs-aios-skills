@@ -168,9 +168,14 @@ are deliberately progressive.
 Symlink installation:
 
 ```bash
-cd ~/backs-aios-skills
+cd ~/backs-aios-skills          # or wherever your clone lives, e.g. ~/plugins/backs-aios
 git pull --ff-only
+./install.sh --target all       # idempotent: refreshes the symlinks and the runtime marker
 ```
+
+A running IDE session keeps the skills it already loaded; the refreshed files are
+picked up by the next session (or the next `/plugin` update for marketplace
+installs) — nothing reloads underneath you.
 
 Pinned copies (Unix `./install.sh --copy` and PowerShell) intentionally do not
 overwrite existing user-owned or unmarked files. Identical reruns are OK; a valid

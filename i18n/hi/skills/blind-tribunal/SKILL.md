@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # Blind Tribunal
-**Effort:** heavy — तीन cross-family juror models, हर round ताज़े envelopes पर दोबारा बैठते हैं जब तक फ़ैसला एकमत न हो; इसे उन autonomous बदलावों पर खर्च करें जो बिना इंसानी review के land होते हैं। हटाता है: वे rogue landings जिन पर builder की अपनी बात के सिवा कोई पहरा नहीं।
+**Effort:** heavy — आठ jurors, एक-एक lens, tier के हिसाब से सबसे सस्ती काफ़ी model family पर routed, हर round ताज़े envelopes पर दोबारा बैठते हैं जब तक फ़ैसला एकमत न हो; इसे उन autonomous बदलावों पर खर्च करें जो बिना इंसानी review के land होते हैं। हटाता है: वे rogue landings जिन पर builder की अपनी बात के सिवा कोई पहरा नहीं।
 
 वो grading loop जिसकी बदौलत इंसान उठकर जा सकता है और agent बेलगाम नहीं होता।
 Jurors का panel बदलाव को blind देखता है, authorship हटाकर। हर finding एक नया
@@ -20,14 +20,25 @@ failing test बनती है। Loop तब तक दोहराता ह
 
 ## कुर्सियाँ
 
-तीन jurors। हर एक builder से ALAG family का model।
-हर एक के पास ठीक EK lens — जिस juror से सब कुछ जाँचने को कहा जाए, वो कुछ भी ठीक से नहीं जाँचता।
+आठ jurors, एक-एक lens। हर एक builder से ALAG family का model (एक ही vendor = एक ही family)।
+जिस juror से सब कुछ जाँचने को कहा जाए, वो कुछ भी ठीक से नहीं जाँचता।
 
-| Juror | Lens | वो कौन सा सवाल पूछता है |
-| --- | --- | --- |
-| Defect | defect का शिकार | असल में टूटता क्या है? Escapes, edge cases, टूटे contracts. |
-| Proportion | सही नाप | क्या यह सही size है? ज़रूरत से ज़्यादा बना, या symptom पर band-aid? |
-| Consequence | इंसानी असर | यह ग़लत निकला तो उस इंसान का क्या होगा जो इस पर टिका है? |
+| Juror | Lens id | Tier | वो कौन सा सवाल पूछता है |
+| --- | --- | --- | --- |
+| Defect | `defect` | generalist | असल में टूटता क्या है? Logic की ग़लतियाँ, syntax errors, नए defects. |
+| Proportion | `proportion` | generalist | क्या size सही है? ज़रूरत से ज़्यादा बना, या intent के नाप का? |
+| Consequence | `operator_consequence` | operator safety | कोई इंसान operator इसे चलाए तो क्या destructive, unsafe या नुक़सानदेह है? |
+| Reversibility | `reversibility` | deep state | क्या irreversible असर छोड़ता है? बीच में मरे तो system साफ़ rollback कर पाएगा? |
+| Continuity | `state_continuity` | deep state | Variables orphan, global state clobber, या आगे के nodes का ज़रूरी context drop? |
+| Economy | `resource_economy` | fast structural | Un-optimized loops, बेकार network/API calls, memory bloat? |
+| Boundary | `boundary_condition` | fast structural | Null, empty, ग़लत type या malformed input पर — क्या gracefully fail होता है? |
+| Telemetry | `telemetry` | operator safety | यहाँ की failure logs और error handling से पकड़ी जा सकती है? |
+
+**Routing tiers (पहले सबसे सस्ता जो काफ़ी हो):** deep state → सबसे बड़ा context और
+सबसे गहरा reasoning, बेहतर हो तो ऐसे harness से जो repo को READ करे (कभी write नहीं);
+fast structural → पहले free local GPU, फिर low-latency cloud model, आख़िर में सस्ता cloud
+verifier; operator safety → safety grounding वाला आपका सबसे मज़बूत coder; generalist → एक
+बड़ा भरोसेमंद generalist। हर ladder एक local survival rung पर ख़त्म होती है।
 
 **Solo rig.** जब सिर्फ एक model family उपलब्ध हो, तो SAAF-SAAF degrade करो: एक
 ताज़ा context या session जो author की बातचीत ने कभी नहीं देखी, blind grader बनता
@@ -71,7 +82,7 @@ Jurors को repo, builder या बातचीत कभी नहीं द
    करो। Builder test को छू नहीं सकता ([red-first](../red-first/SKILL.md))।
 2. Green होने तक बनाओ।
 3. CURRENT files से envelope बनाओ।
-4. तीनों jurors बिठाओ — builder से अलग families
+4. आठों jurors tier के हिसाब से बिठाओ — builder से अलग families
    ([fleet-ladder](../fleet-ladder/SKILL.md) बताता है कौन live है)।
 5. हर juror सिर्फ पढ़ता नहीं, verify भी करता है: नए tests pass होते हैं; regression
    suite baseline से बदतर नहीं; और एक fake-green जाँच — जिस test को fail होना

@@ -13,6 +13,16 @@ GATES = (
     ("node", str(ROOT / "hooks" / "aios_gate.js")),
     ("python3", str(ROOT / "hooks" / "aios_gate.py")),
 )
+SESSION_IDENTITY_KEYS = (
+    "BACKS_BUILD_SESSION",
+    "CLAUDE_CODE_SESSION_ID",
+    "CODEX_THREAD_ID",
+    "CURSOR_SESSION_ID",
+    "CURSOR_CONVERSATION_ID",
+    "OPENCODE_SESSION_ID",
+    "CODEX_SESSION_ID",
+    "CLAUDE_SESSION_ID",
+)
 
 
 class GateCompatibilityTest(unittest.TestCase):
@@ -29,6 +39,13 @@ class GateCompatibilityTest(unittest.TestCase):
     ) -> subprocess.CompletedProcess:
         value = payload if isinstance(payload, str) else json.dumps(payload)
         merged_env = os.environ.copy()
+        # The gate resolves the session identity from the host's own variables in a
+        # declared order; a test run from inside a live agent session inherits that
+        # host's id (e.g. CLAUDE_CODE_SESSION_ID) and the state file lands under it
+        # instead of the id the test declares. Scrub every identity source so only
+        # the test's own **env wins — the gate under test is unchanged.
+        for key in SESSION_IDENTITY_KEYS:
+            merged_env.pop(key, None)
         merged_env.update({"HOME": self.home.name, **env})
         return subprocess.run(
             (*gate, *arguments),

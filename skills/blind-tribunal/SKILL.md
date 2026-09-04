@@ -1,11 +1,11 @@
 ---
 name: "blind-tribunal"
-description: "Use when an autonomous change needs an independent grade before landing and no human is in the loop. Convenes blind, cross-family jurors (one lens each) over an author-redacted envelope of whole files; every finding becomes a new failing test; loop until every juror passes. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing."
+description: "Use when an autonomous change needs an independent grade before landing and no human is in the loop. Convenes eight blind, cross-family jurors (one lens each — defect, proportion, operator consequence, reversibility, state continuity, resource economy, boundary condition, telemetry), each routed by tier to the cheapest model family that is sufficient, over an author-redacted envelope of whole files; every finding becomes a new failing test; loop until every juror passes. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, eight lenses, cross-family grade, convene, blind grade, independent grade, grade before landing."
 license: "MIT"
 ---
 
 # Blind Tribunal
-**Effort:** heavy — three cross-family juror models, re-convened on fresh envelopes every round until unanimous; spend it on autonomous changes that land with no human review. Removes: rogue landings gated by nothing but the builder's own word.
+**Effort:** heavy — eight juror seats, one lens each, routed by tier to the cheapest sufficient model family and re-convened on fresh envelopes every round until unanimous; spend it on autonomous changes that land with no human review. Removes: rogue landings gated by nothing but the builder's own word.
 
 The grading loop that lets the human walk away without the agent going rogue.
 A panel of jurors reviews the change blind, with authorship stripped. Every
@@ -20,14 +20,40 @@ Nothing lands on the builder's word alone.
 
 ## The seats
 
-Three jurors. Each is a model from a DIFFERENT family than the builder.
-Each holds exactly ONE lens — a juror asked to check everything checks nothing well.
+Eight jurors, one lens each. Each is a model from a DIFFERENT family than the builder
+(same vendor = same family). A juror asked to check everything checks nothing well.
 
-| Juror | Lens | The question it asks |
-| --- | --- | --- |
-| Defect | defect hunting | What actually breaks? Escapes, edge cases, broken contracts. |
-| Proportion | right-sizing | Is this the right size? Over-built, or a band-aid on a symptom? |
-| Consequence | human impact | If this is wrong, what happens to the person who depends on it? |
+| Juror | Lens id | Tier | The question it asks |
+| --- | --- | --- | --- |
+| Defect | `defect` | generalist | What actually breaks? Logic flaws, syntax errors, new defects. |
+| Proportion | `proportion` | generalist | Is this the right size? Over-engineered, or scaled to the intent? |
+| Consequence | `operator_consequence` | operator safety | If a human operator runs this, what is destructive, unsafe, or harmful? |
+| Reversibility | `reversibility` | deep state | Irreversible side effects? If it dies mid-run, can the system roll back cleanly? |
+| Continuity | `state_continuity` | deep state | Orphaned variables, clobbered global state, dropped context downstream nodes need? |
+| Economy | `resource_economy` | fast structural | Unoptimized loops, redundant network/API calls, memory bloat? |
+| Boundary | `boundary_condition` | fast structural | Null, empty, wrong-typed, or malformed inputs — does it fail gracefully? |
+| Telemetry | `telemetry` | operator safety | Can a failure here be diagnosed from the logs and error handling? |
+
+## The routing tiers (cheapest sufficient route first)
+
+Route each tier to what the lens needs, not to the biggest model you own:
+
+- **deep state** (reversibility, state_continuity): your largest context + deepest
+  reasoning, ideally through an agentic harness that can READ the repository (never
+  write) so the juror can trace a state change from producer to consumer and run the
+  named tests. Header: *trace every state change across the whole workflow before you judge.*
+- **fast structural** (boundary_condition, resource_economy): the cheapest fast route —
+  a free local GPU model first, then a low-latency cloud model, then a cheap cloud
+  verifier as the last rung. Header: *work fast and literal from the code in front of you.*
+- **operator safety** (operator_consequence, telemetry): your strongest coder with
+  safety grounding. Header: *think as the human who runs this on their own machine.*
+- **generalist** (defect, proportion): a reliable large generalist. Header: *precise
+  findings, no invented context.*
+
+Every tier's ladder ends on a local survival rung, so the tribunal still convenes with
+zero cloud. The premium accounts an IDE session holds (Claude Opus/Sonnet, Codex) are an
+IDE-only lane for the deep-state seats: render the prompt files, pipe them in, drop the
+verdicts into the same shape.
 
 **Solo rig.** When only one model family is available, degrade EXPLICITLY: a
 fresh context or session that never saw the author's conversation acts as the
@@ -37,7 +63,7 @@ silently pretend the cross-family gate held.
 
 ## The envelope
 
-Jurors never see the repo, the builder, or the conversation. They see one envelope:
+Jurors never see the builder or the conversation. They see one envelope:
 
 - **Whole current files** for every file the change touched, plus its test files.
   Never bare diff hunks — a hunk hides the surrounding contract and induces false findings.
@@ -46,24 +72,55 @@ Jurors never see the repo, the builder, or the conversation. They see one envelo
   If identity leaks through, the envelope build fails loud — never grade un-blind.
 - **No prose about the old behavior.** Describing what the code "used to do" plants
   phantom defects. The files speak for themselves.
+- **Prior adjudications ride along.** A finding refuted with evidence in an earlier
+  round is appended as `PRIOR_ADJUDICATIONS`; jurors judge it honestly. Never re-seat
+  a juror to launder a refusal — fix the envelope or the code.
+
+## Rendering the eight prompts (portable)
+
+One prompt per lens: `<tier header>` + `<lens preamble>` + `<envelope>` + `<output protocol>`.
+Any runtime can do it with a dozen lines; keep the lens text in ONE file your tests read.
+
+```python
+lenses = {  # lens id -> (tier, preamble)
+  "defect": ("generalist", "LENS: DEFECT. Blind juror. Check the code for logic flaws, syntax errors, and verify no new defects exist."),
+  "proportion": ("generalist", "LENS: PROPORTION. Blind juror. Evaluate if this solution is over-engineered or appropriately scaled for the intent."),
+  "operator_consequence": ("operator_safety", "LENS: OPERATOR CONSEQUENCE. Blind juror. Assess safety, destructive potential, and negative impacts if a human operator executes this code."),
+  "reversibility": ("deep_state", "LENS: REVERSIBILITY. Blind juror. Evaluate if this execution leaves irreversible side effects. If it fails mid-execution, can the system cleanly rollback?"),
+  "state_continuity": ("deep_state", "LENS: STATE CONTINUITY. Blind juror. Verify this slice does not orphan existing variables, clobber global state, or drop required context for downstream nodes."),
+  "resource_economy": ("fast_structural", "LENS: RESOURCE ECONOMY. Blind juror. Check for unoptimized loops, redundant network/API calls, or unnecessary memory bloat."),
+  "boundary_condition": ("fast_structural", "LENS: BOUNDARY CONDITION. Blind juror. Assume the inputs to this function are null, empty, unexpected types, or intentionally malformed. Does it fail gracefully?"),
+  "telemetry": ("operator_safety", "LENS: TELEMETRY. Blind juror. Evaluate the observability of this slice. Are there sufficient logs or try/except blocks to easily diagnose a failure?"),
+}
+protocol = ('CRITICAL OUTPUT PROTOCOL: You are a strict deterministic evaluator in an autonomous fail-closed loop. '
+  'Return exactly ONE valid JSON object as your ENTIRE response, no markdown fences, no preamble, no postscript: '
+  '{"verdict": "pass" | "refuse", "lens": "<your lens>", "findings": ["[severity] file:line claim"], "reasoning": "<concise>"}. '
+  'At most 10 findings; cite locations, do not quote code. Judge PRIOR_ADJUDICATIONS honestly. A refuse halts the pipeline.')
+body = open("envelope.txt", encoding="utf-8").read()   # the author-redacted envelope
+for lens, (tier, preamble) in lenses.items():
+    open(f"prompt_{lens}.txt", "w", encoding="utf-8").write(f"{headers[tier]}\n\n{preamble}\n\n{body}\n\n{protocol}\n")
+```
 
 ## The verdict
 
 Strict machine-parseable JSON, one object, no prose:
 
 ```json
-{"verdict": "pass" | "refuse",
- "findings": [{"severity": "blocker|major|minor|info",
-               "claim": "...", "evidence": "..."}]}
+{"verdict": "pass" | "refuse", "lens": "<lens>",
+ "findings": ["[blocker|major|minor|info] file:line claim"], "reasoning": "..."}
 ```
 
-- A juror that ANSWERED badly (garbage, non-JSON, refusal text) counts as
-  **refuse**; a juror that NEVER answered (transport failure, unreachable) is a
-  **hold**: re-seat it via [fleet-ladder](../fleet-ladder/SKILL.md), never a
-  silent pass. One shot per answering juror per round — no retries.
-- A bare pass with zero findings and no evidence is a **low-information vote**.
-  It counts, but never as the only proof — two bare passes do not outrank one
-  detailed refuse. A strong pass names what it checked.
+- A juror that ANSWERED badly (garbage, non-JSON, refusal text, a verdict that is not
+  exactly pass or refuse) counts as **refuse**; a juror that NEVER answered on any rung
+  (transport failure, unreachable) is a **hold**: re-seat it via
+  [fleet-ladder](../fleet-ladder/SKILL.md), never a silent pass. One shot per answering
+  juror per round — no retries. A harness juror whose run changed repository bytes is
+  voided (a hold).
+- A bare pass with zero findings and no evidence is a **low-information vote**. It
+  counts, but never as the only proof — two bare passes do not outrank one detailed
+  refuse. A strong pass names what it checked.
+- Take the LAST JSON object in the reply that carries a `verdict`; strip code fences;
+  anything else fails closed to refuse.
 
 ## The loop
 
@@ -71,17 +128,18 @@ Strict machine-parseable JSON, one object, no prose:
    that commit. The builder may not touch the test ([red-first](../red-first/SKILL.md)).
 2. Build to green.
 3. Build the envelope from the CURRENT files.
-4. Seat the three jurors — different families than the builder
-   ([fleet-ladder](../fleet-ladder/SKILL.md) resolves what is live).
-5. Each juror also verifies, not just reads: the new tests pass; the regression
-   suite is no worse than baseline; and a fake-green check — a test that SHOULD
-   fail (the bug re-introduced) does fail. A fake green is a refuse.
-6. On any refuse: EVERY finding (blocker, major, and minor) becomes a NEW
-   failing test that fails for the finding's real reason. Fix it. Rebuild the
-   envelope on the revised files. Re-convene ALL jurors. A verdict on stale files
-   is no verdict.
-7. Land only on unanimous pass. Minor findings raised in the final round are
-   closed too, never deferred — "fixed the blockers, minors later" is the exact
+4. Seat the eight jurors by tier — different families than the builder
+   ([fleet-ladder](../fleet-ladder/SKILL.md) resolves what is live). Seat them in
+   parallel; local cards serialize themselves.
+5. The deep-state jurors also verify, not just read: the new tests pass; the regression
+   suite is no worse than baseline; and a fake-green check — a test that SHOULD fail
+   (the bug re-introduced) does fail. A fake green is a refuse.
+6. On any refuse: EVERY finding (blocker, major, and minor) becomes a NEW failing
+   test that fails for the finding's real reason. Fix it. Rebuild the envelope on the
+   revised files, carrying the adjudications. Re-convene ALL jurors. A verdict on stale
+   files is no verdict.
+7. Land only on unanimous pass — all eight. Minor findings raised in the final round
+   are closed too, never deferred — "fixed the blockers, minors later" is the exact
    leak this skill exists to stop. A finding ends FIXED or refuted with recorded
    evidence, never parked.
 
@@ -104,7 +162,9 @@ Strict machine-parseable JSON, one object, no prose:
 - [sniper-testing](../sniper-testing/SKILL.md) — real side-effects, scoped runs, no mock theater.
 - [seam-engineering](../seam-engineering/SKILL.md) — fix the class, sweep siblings, land a guard.
 - [repair-loop](../repair-loop/SKILL.md) — the build loop this tribunal grades.
+- [fleet-ladder](../fleet-ladder/SKILL.md) — resolves each tier to a live rung, cheapest first.
 - [blind-eval](../blind-eval/SKILL.md) — the lighter keep-or-revert gate when the question is taste, not defects.
 
 > Scaffold credit: Matt Pocock, grill-me / grilling (mattpocock/skills, MIT). The
-> cross-family blind adversarial tribunal design is BACKS AIOS.
+> cross-family blind adversarial tribunal design, the eight lenses, and the per-lens
+> routing are BACKS AIOS.

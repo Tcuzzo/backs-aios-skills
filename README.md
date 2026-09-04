@@ -147,7 +147,7 @@ real latency is wasted iteration, not a 30ms hook.
 | --- | --- |
 | [absorb](skills/absorb/SKILL.md) | Adopt an existing open-source capability and re-engineer it as a native skill, instead of building a duplicate. |
 | [blind-eval](skills/blind-eval/SKILL.md) | Judge a change on its merits with authorship hidden, then keep or revert. Only proven uplift lands. |
-| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Blind jurors from different model families grade the change, one lens each. Every finding becomes a failing test. Loop until all pass. |
+| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Eight blind jurors from different model families grade the change, one lens each, routed by tier to the cheapest sufficient model. Every finding becomes a failing test. Loop until all pass. |
 | [bounded-loops](skills/bounded-loops/SKILL.md) | Budget ceilings, checkpoints, and kill-switches on every loop. Makes hammering an API structurally impossible. |
 | [clean-code-gauntlet](skills/clean-code-gauntlet/SKILL.md) | A deterministic quality bar: sniper tests, the CRAP score (complexity x coverage), bounded mutation testing, then a light taste review. |
 | [decision-bar](skills/decision-bar/SKILL.md) | One bar for every decision: only taste, vision, or destructive risk reach the human. Everything else executes. |

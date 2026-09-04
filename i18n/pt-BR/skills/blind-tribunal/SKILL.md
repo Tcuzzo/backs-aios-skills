@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # Blind Tribunal
-**Effort:** heavy — três modelos jurados cross-family, reconvocados sobre envelopes novos a cada rodada até a unanimidade; gaste em mudanças autônomas que pousam sem revisão humana. Remove: pousos desgovernados guardados por nada além da palavra do próprio builder.
+**Effort:** heavy — oito jurados, uma lente cada, roteados por camada para a família de modelo mais barata que basta, reconvocados sobre envelopes novos a cada rodada até a unanimidade; gaste em mudanças autônomas que pousam sem revisão humana. Remove: pousos desgovernados guardados por nada além da palavra do próprio builder.
 
 O loop de avaliação que deixa o humano sair da sala sem o agente sair dos trilhos.
 Um painel de jurados revisa a mudança às cegas, com a autoria arrancada. Cada
@@ -20,14 +20,26 @@ Nada aterrissa só na palavra do builder.
 
 ## As cadeiras
 
-Três jurados. Cada um é um modelo de uma família DIFERENTE da do builder.
-Cada um segura exatamente UMA lente — jurado mandado checar tudo não checa nada direito.
+Oito jurados, uma lente cada. Cada um é um modelo de uma família DIFERENTE da do builder
+(mesmo fornecedor = mesma família). Jurado mandado checar tudo não checa nada direito.
 
-| Jurado | Lente | A pergunta que ele faz |
-| --- | --- | --- |
-| Defeito | caça a defeito | O que quebra de verdade? Escapes, casos de borda, contratos quebrados. |
-| Proporção | tamanho certo | Isto tem o tamanho certo? Superconstruído, ou band-aid em sintoma? |
-| Consequência | impacto humano | Se isto estiver errado, o que acontece com a pessoa que depende disso? |
+| Jurado | Id da lente | Camada | A pergunta que ele faz |
+| --- | --- | --- | --- |
+| Defeito | `defect` | generalista | O que quebra de verdade? Falhas de lógica, erros de sintaxe, defeitos novos. |
+| Proporção | `proportion` | generalista | Tem o tamanho certo? Superconstruído, ou na medida da intenção? |
+| Consequência | `operator_consequence` | segurança do operador | Se um operador humano rodar isto, o que é destrutivo, inseguro ou danoso? |
+| Reversibilidade | `reversibility` | estado profundo | Deixa efeitos irreversíveis? Se morre no meio, o sistema volta atrás limpo? |
+| Continuidade | `state_continuity` | estado profundo | Órfãos, estado global sobrescrito, contexto perdido para os nós seguintes? |
+| Economia | `resource_economy` | estrutural rápido | Loops sem otimizar, chamadas de rede/API redundantes, memória inchada? |
+| Borda | `boundary_condition` | estrutural rápido | Com entrada nula, vazia, de tipo errado ou malformada — falha com graça? |
+| Telemetria | `telemetry` | segurança do operador | Uma falha aqui se diagnostica pelos logs e pelo tratamento de erro? |
+
+**Camadas de roteamento (primeiro a rota mais barata que basta):** estado profundo →
+maior contexto e raciocínio mais fundo, de preferência por um harness que LÊ o repo
+(nunca escreve); estrutural rápido → primeiro uma GPU local grátis, depois um modelo de
+nuvem de baixa latência, por último um verificador de nuvem barato; segurança do operador →
+seu coder mais forte com base em segurança; generalista → um generalista grande e confiável.
+Toda escada termina num degrau local de sobrevivência.
 
 **Rig solo.** Quando só uma família de modelo está disponível, degrade
 EXPLICITAMENTE: um contexto ou sessão nova que nunca viu a conversa do autor age
@@ -73,7 +85,7 @@ JSON estrito, parseável por máquina, um objeto, sem prosa:
    registre esse commit. O builder não pode tocar no teste ([red-first](../red-first/SKILL.md)).
 2. Construa até o verde.
 3. Monte o envelope a partir dos arquivos ATUAIS.
-4. Sente os três jurados — famílias diferentes da do builder
+4. Sente os oito jurados, por camada, — famílias diferentes da do builder
    ([fleet-ladder](../fleet-ladder/SKILL.md) resolve o que está vivo).
 5. Cada jurado também verifica, não só lê: os testes novos passam; a suite de
    regressão não está pior que a baseline; e um cheque de falso verde — um teste que

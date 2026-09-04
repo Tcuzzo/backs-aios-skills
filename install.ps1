@@ -15,7 +15,7 @@ $Skills = if ($Locale -eq "en") {
 $Runtime = Join-Path $HOME ".local/share/backs-aios/current"
 $ManagedCommandMarker = "backs-aios-managed-command"
 $ManagedMarkerFile = "backs-aios-managed"
-$ManagedMarkerContent = "backs-aios-managed 0.7.5"
+$ManagedMarkerContent = "backs-aios-managed 0.8.0"
 $PackEntries = @(
     ".claude-plugin", ".codex-plugin", ".cursor-plugin", ".gitignore",
     "command-adapters", "docs", "hooks", "i18n", "plays", "skills",

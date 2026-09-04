@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # Blind Tribunal
-**Effort:** heavy — tres modelos jurados de familias distintas, reconvocados con sobres frescos en cada ronda hasta la unanimidad; gástalo en cambios autónomos que aterrizan sin revisión humana. Elimina: aterrizajes rebeldes sin más puerta que la palabra del propio constructor.
+**Effort:** heavy — ocho jurados, una lente cada uno, enrutados por nivel a la familia de modelos más barata que basta, reconvocados con sobres frescos en cada ronda hasta la unanimidad; gástalo en cambios autónomos que aterrizan sin revisión humana. Elimina: aterrizajes rebeldes sin más puerta que la palabra del propio constructor.
 
 El loop de calificación que deja al humano irse sin que el agente se descarrile.
 Un panel de jurados revisa el cambio a ciegas, con la autoría borrada. Cada
@@ -20,15 +20,27 @@ todos los jurados aprueban. Nada aterriza solo con la palabra del constructor.
 
 ## Los asientos
 
-Tres jurados. Cada uno es un modelo de una familia DISTINTA a la del constructor.
-Cada uno sostiene exactamente UNA lente — un jurado al que le piden revisar todo
+Ocho jurados, una lente cada uno. Cada uno es un modelo de una familia DISTINTA a la
+del constructor (misma marca = misma familia). Un jurado al que le piden revisar todo
 no revisa nada bien.
 
-| Jurado | Lente | La pregunta que hace |
-| --- | --- | --- |
-| Defecto | caza de defectos | ¿Qué se rompe de verdad? Escapes, casos borde, contratos rotos. |
-| Proporción | tamaño justo | ¿Es este el tamaño correcto? ¿Sobreconstruido, o un parche sobre un síntoma? |
-| Consecuencia | impacto humano | Si esto está mal, ¿qué le pasa a la persona que depende de ello? |
+| Jurado | Id de lente | Nivel | La pregunta que hace |
+| --- | --- | --- | --- |
+| Defecto | `defect` | generalista | ¿Qué se rompe de verdad? Fallos de lógica, errores de sintaxis, defectos nuevos. |
+| Proporción | `proportion` | generalista | ¿Es el tamaño correcto? ¿Sobreconstruido, o a la medida de la intención? |
+| Consecuencia | `operator_consequence` | seguridad del operador | Si un operador humano ejecuta esto, ¿qué es destructivo, inseguro o dañino? |
+| Reversibilidad | `reversibility` | estado profundo | ¿Deja efectos irreversibles? Si muere a medio camino, ¿el sistema vuelve atrás limpio? |
+| Continuidad | `state_continuity` | estado profundo | ¿Huérfana variables, pisa estado global o pierde contexto que los nodos siguientes necesitan? |
+| Economía | `resource_economy` | estructural rápido | ¿Bucles sin optimizar, llamadas de red/API redundantes, memoria de más? |
+| Frontera | `boundary_condition` | estructural rápido | Con entradas nulas, vacías, de tipo inesperado o malformadas, ¿falla con gracia? |
+| Telemetría | `telemetry` | seguridad del operador | ¿Un fallo aquí se diagnostica desde los logs y el manejo de errores? |
+
+**Niveles de enrutamiento (primero la ruta más barata que basta):** estado profundo →
+el mayor contexto y razonamiento más profundo, idealmente por un harness que LEA el repo
+(nunca escriba); estructural rápido → primero una GPU local gratis, luego un modelo de
+nube de baja latencia, y un verificador de nube barato al final; seguridad del operador →
+tu coder más fuerte con base en seguridad; generalista → un generalista grande y fiable.
+Cada escalera termina en un peldaño local de supervivencia.
 
 **Equipo solo.** Cuando solo hay una familia de modelos disponible, degrada
 EXPLÍCITAMENTE: un contexto o sesión fresca que nunca vio la conversación del
@@ -78,7 +90,7 @@ JSON estricto y parseable por máquina, un solo objeto, sin prosa:
    ([red-first](../red-first/SKILL.md)).
 2. Construye hasta el verde.
 3. Arma el sobre con los archivos ACTUALES.
-4. Sienta a los tres jurados — de familias distintas a la del constructor
+4. Sienta a los ocho jurados, por nivel, — de familias distintas a la del constructor
    ([fleet-ladder](../fleet-ladder/SKILL.md) resuelve cuáles están vivos).
 5. Cada jurado además verifica, no solo lee: los tests nuevos pasan; la suite de
    regresión no está peor que la línea base; y un chequeo de verde falso — un test

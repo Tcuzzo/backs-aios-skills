@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # Blind Tribunal — le tribunal à l'aveugle
-**Effort:** heavy — trois modèles jurés de familles différentes, reconvoqués sur des enveloppes fraîches à chaque tour jusqu'à l'unanimité ; à dépenser sur les changements autonomes qui atterrissent sans revue humaine. Élimine : les atterrissages sauvages que rien ne garde, sinon la parole du builder lui-même.
+**Effort:** heavy — huit jurés, un angle chacun, routés par palier vers la famille de modèles la moins chère qui suffit, reconvoqués sur des enveloppes fraîches à chaque tour jusqu'à l'unanimité ; à dépenser sur les changements autonomes qui atterrissent sans revue humaine. Élimine : les atterrissages sauvages que rien ne garde, sinon la parole du builder lui-même.
 
 La boucle de notation qui permet à l'humain de s'éloigner sans que l'agent parte en
 roue libre. Un panel de jurés examine le changement à l'aveugle, auteur effacé. Chaque
@@ -21,15 +21,27 @@ juré valide. Rien n'est livré sur la seule parole du builder.
 
 ## Les sièges
 
-Trois jurés. Chacun est un modèle d'une famille DIFFÉRENTE de celle du builder.
-Chacun tient exactement UN angle — un juré à qui on demande de tout vérifier ne
+Huit jurés, un angle chacun. Chacun est un modèle d'une famille DIFFÉRENTE de celle du
+builder (même éditeur = même famille). Un juré à qui on demande de tout vérifier ne
 vérifie rien correctement.
 
-| Juré | Angle | La question qu'il pose |
-| --- | --- | --- |
-| Défaut | chasse aux défauts | Qu'est-ce qui casse vraiment ? Fuites, cas limites, contrats rompus. |
-| Proportion | juste taille | Est-ce la bonne taille ? Sur-construit, ou pansement sur un symptôme ? |
-| Conséquence | impact humain | Si c'est faux, qu'arrive-t-il à la personne qui en dépend ? |
+| Juré | Id d'angle | Palier | La question qu'il pose |
+| --- | --- | --- | --- |
+| Défaut | `defect` | généraliste | Qu'est-ce qui casse vraiment ? Erreurs de logique, de syntaxe, défauts nouveaux. |
+| Proportion | `proportion` | généraliste | Est-ce la bonne taille ? Sur-construit, ou à la mesure de l'intention ? |
+| Conséquence | `operator_consequence` | sécurité opérateur | Si un opérateur humain exécute ceci, qu'est-ce qui est destructeur, dangereux ou nuisible ? |
+| Réversibilité | `reversibility` | état profond | Effets irréversibles ? S'il meurt en plein vol, le système revient-il en arrière proprement ? |
+| Continuité | `state_continuity` | état profond | Variables orphelines, état global écrasé, contexte perdu pour les nœuds en aval ? |
+| Économie | `resource_economy` | structurel rapide | Boucles non optimisées, appels réseau/API redondants, mémoire gonflée ? |
+| Bornes | `boundary_condition` | structurel rapide | Entrées nulles, vides, mal typées ou malformées — échoue-t-il proprement ? |
+| Télémétrie | `telemetry` | sécurité opérateur | Une panne ici se diagnostique-t-elle depuis les logs et la gestion d'erreurs ? |
+
+**Paliers de routage (la route la moins chère qui suffit d'abord) :** état profond → le
+plus grand contexte et le raisonnement le plus profond, idéalement via un harness qui LIT
+le repo (n'écrit jamais) ; structurel rapide → d'abord un GPU local gratuit, puis un modèle
+cloud à faible latence, enfin un vérificateur cloud bon marché ; sécurité opérateur → ton
+codeur le plus fort ancré sur la sécurité ; généraliste → un grand généraliste fiable.
+Chaque échelle finit sur un barreau local de survie.
 
 **Montage solo.** Quand une seule famille de modèles est disponible, dégrade
 EXPLICITEMENT : un contexte ou une session vierge qui n'a jamais vu la conversation de
@@ -79,7 +91,7 @@ Du JSON strict, lisible par une machine, un seul objet, pas de prose :
    ([red-first](../red-first/SKILL.md)).
 2. Construis jusqu'au vert.
 3. Construis l'enveloppe à partir des fichiers COURANTS.
-4. Assieds les trois jurés — des familles différentes de celle du builder
+4. Assieds les huit jurés, par palier, — des familles différentes de celle du builder
    ([fleet-ladder](../fleet-ladder/SKILL.md) résout ce qui est en vie).
 5. Chaque juré vérifie aussi, il ne se contente pas de lire : les nouveaux tests
    passent ; la suite de régression n'est pas pire que la base ; et un contrôle
