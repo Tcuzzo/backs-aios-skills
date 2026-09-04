@@ -44,6 +44,16 @@ class TribunalLensesTest(unittest.TestCase):
         self.assertIn("PRIOR_ADJUDICATIONS", text)
         self.assertIn("hold", text)
 
+    def test_every_surface_fuses_the_local_seat_with_a_verifier_and_sizes_its_context(self) -> None:
+        """0.8.1: a free local juror is never trusted alone (cloud verifier, UNVERIFIED on
+        outage) and never judges a truncated artifact (size num_ctx to the prompt) — the
+        two machine tokens ride every language unchanged."""
+        for path in self.surfaces():
+            text = path.read_text(encoding="utf-8")
+            with self.subTest(surface=str(path.relative_to(ROOT))):
+                self.assertIn("UNVERIFIED", text)
+                self.assertIn("num_ctx", text)
+
     def test_no_surface_still_seats_three_jurors(self) -> None:
         stale = ("Three jurors", "three jurors", "Tres jurados", "Trois jurés", "Drei Juroren", "Três jurados", "तीन jurors", "三位陪审员")
         for path in self.surfaces():

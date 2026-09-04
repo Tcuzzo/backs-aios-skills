@@ -36,8 +36,12 @@ Oito jurados, uma lente cada. Cada um é um modelo de uma família DIFERENTE da 
 
 **Camadas de roteamento (primeiro a rota mais barata que basta):** estado profundo →
 maior contexto e raciocínio mais fundo, de preferência por um harness que LÊ o repo
-(nunca escreve); estrutural rápido → primeiro uma GPU local grátis, depois um modelo de
-nuvem de baixa latência, por último um verificador de nuvem barato; segurança do operador →
+(nunca escreve); estrutural rápido → primeiro uma GPU local grátis, FUNDIDA com um
+verificador de nuvem barato que julga o mesmo prompt: a lente passa só se os dois passam;
+sem nuvem, o veredito local fica, marcado UNVERIFIED, nunca "verificado" em silêncio; e o
+modelo local precisa ver TODO o artefato (dimensione `num_ctx` pelo prompt — o padrão do
+Ollama, 4096, trunca em silêncio — e recuse antes de enviar o que não cabe); depois os
+modelos de nuvem de baixa latência; segurança do operador →
 seu coder mais forte com base em segurança; generalista → um generalista grande e confiável.
 Toda escada termina num degrau local de sobrevivência.
 

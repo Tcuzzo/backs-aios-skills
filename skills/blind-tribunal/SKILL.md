@@ -43,8 +43,15 @@ Route each tier to what the lens needs, not to the biggest model you own:
   write) so the juror can trace a state change from producer to consumer and run the
   named tests. Header: *trace every state change across the whole workflow before you judge.*
 - **fast structural** (boundary_condition, resource_economy): the cheapest fast route —
-  a free local GPU model first, then a low-latency cloud model, then a cheap cloud
-  verifier as the last rung. Header: *work fast and literal from the code in front of you.*
+  a free local GPU model first, **fused with a cheap cloud verifier** that judges the
+  same prompt: the lens passes only when BOTH pass; the verifier never re-seats the
+  primary's model; when every cloud rung is down the local verdict stands, flagged
+  **UNVERIFIED** in the review and the summary — never silently "verified". A local
+  model must see the WHOLE artifact or it does not judge: size the request's context
+  window to the prompt (`num_ctx` on Ollama — the server default is 4096 tokens and it
+  truncates silently; measured 2026-09-04, a 16B juror "passed" a 124 KB diff it never
+  saw, citing a file that does not exist) and refuse, before sending, a prompt the rung
+  cannot hold. Header: *work fast and literal from the code in front of you.*
 - **operator safety** (operator_consequence, telemetry): your strongest coder with
   safety grounding. Header: *think as the human who runs this on their own machine.*
 - **generalist** (defect, proportion): a reliable large generalist. Header: *precise
@@ -120,7 +127,11 @@ Strict machine-parseable JSON, one object, no prose:
   counts, but never as the only proof — two bare passes do not outrank one detailed
   refuse. A strong pass names what it checked.
 - Take the LAST JSON object in the reply that carries a `verdict`; strip code fences;
-  anything else fails closed to refuse.
+  anything else fails closed to refuse — including a reply that is not text and a
+  `findings` value that is not a list of strings (a malformed pass is not a pass).
+- A fused seat records both verdicts: the primary's and the verifier's, with the
+  verifier's findings prefixed `[verifier:<model>]`, plus `verified: true|false`.
+  Count the unverified seats in the summary and print them on the console line.
 
 ## The loop
 

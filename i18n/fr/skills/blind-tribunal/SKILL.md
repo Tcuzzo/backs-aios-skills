@@ -38,8 +38,12 @@ vérifie rien correctement.
 
 **Paliers de routage (la route la moins chère qui suffit d'abord) :** état profond → le
 plus grand contexte et le raisonnement le plus profond, idéalement via un harness qui LIT
-le repo (n'écrit jamais) ; structurel rapide → d'abord un GPU local gratuit, puis un modèle
-cloud à faible latence, enfin un vérificateur cloud bon marché ; sécurité opérateur → ton
+le repo (n'écrit jamais) ; structurel rapide → d'abord un GPU local gratuit, FUSIONNÉ avec
+un vérificateur cloud bon marché qui juge le même prompt : la lentille ne passe que si les
+deux passent ; sans cloud, le verdict local reste, marqué UNVERIFIED, jamais « vérifié » en
+silence ; et le modèle local doit voir TOUT l'artefact (dimensionne `num_ctx` sur le prompt
+— le défaut d'Ollama, 4096, tronque en silence — et refuse avant l'envoi ce qui ne tient
+pas) ; ensuite les modèles cloud à faible latence ; sécurité opérateur → ton
 codeur le plus fort ancré sur la sécurité ; généraliste → un grand généraliste fiable.
 Chaque échelle finit sur un barreau local de survie.
 

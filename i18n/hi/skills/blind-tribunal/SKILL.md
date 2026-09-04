@@ -36,8 +36,12 @@ failing test बनती है। Loop तब तक दोहराता ह
 
 **Routing tiers (पहले सबसे सस्ता जो काफ़ी हो):** deep state → सबसे बड़ा context और
 सबसे गहरा reasoning, बेहतर हो तो ऐसे harness से जो repo को READ करे (कभी write नहीं);
-fast structural → पहले free local GPU, फिर low-latency cloud model, आख़िर में सस्ता cloud
-verifier; operator safety → safety grounding वाला आपका सबसे मज़बूत coder; generalist → एक
+fast structural → पहले free local GPU, जो एक सस्ते cloud verifier के साथ FUSED है — दोनों
+वही prompt जाँचते हैं, lens तभी pass जब दोनों pass; cloud पूरी तरह down हो तो local verdict
+रहता है पर UNVERIFIED मार्क होकर, कभी चुपचाप "verified" नहीं; और local model को पूरा artifact
+दिखना चाहिए (`num_ctx` को prompt के हिसाब से set करो — Ollama का default 4096 चुपचाप काट
+देता है — जो नहीं समाता उसे भेजने से पहले ही refuse करो); फिर low-latency cloud models;
+operator safety → safety grounding वाला आपका सबसे मज़बूत coder; generalist → एक
 बड़ा भरोसेमंद generalist। हर ladder एक local survival rung पर ख़त्म होती है।
 
 **Solo rig.** जब सिर्फ एक model family उपलब्ध हो, तो SAAF-SAAF degrade करो: एक

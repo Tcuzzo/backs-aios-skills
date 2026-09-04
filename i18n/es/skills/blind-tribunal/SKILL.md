@@ -37,8 +37,12 @@ no revisa nada bien.
 
 **Niveles de enrutamiento (primero la ruta más barata que basta):** estado profundo →
 el mayor contexto y razonamiento más profundo, idealmente por un harness que LEA el repo
-(nunca escriba); estructural rápido → primero una GPU local gratis, luego un modelo de
-nube de baja latencia, y un verificador de nube barato al final; seguridad del operador →
+(nunca escriba); estructural rápido → primero una GPU local gratis, FUSIONADA con un
+verificador de nube barato que juzga el mismo prompt: la lente pasa solo si ambos pasan;
+sin nube, el veredicto local queda marcado UNVERIFIED, nunca «verificado» en silencio; y el
+modelo local debe ver TODO el artefacto (dimensiona `num_ctx` al prompt — el valor por
+defecto de Ollama, 4096, trunca en silencio — y rechaza antes de enviar lo que no cabe);
+después los modelos de nube de baja latencia; seguridad del operador →
 tu coder más fuerte con base en seguridad; generalista → un generalista grande y fiable.
 Cada escalera termina en un peldaño local de supervivencia.
 

@@ -38,8 +38,12 @@ prüft nichts richtig.
 
 **Routing-Stufen (die günstigste ausreichende Route zuerst):** Deep State → größter
 Kontext und tiefstes Reasoning, idealerweise durch einen Harness, der das Repo LIEST
-(nie schreibt); schnell-strukturell → erst eine freie lokale GPU, dann ein Cloud-Modell
-mit niedriger Latenz, zuletzt ein billiger Cloud-Verifizierer; Operator-Sicherheit →
+(nie schreibt); schnell-strukturell → erst eine freie lokale GPU, FUSIONIERT mit einem
+billigen Cloud-Verifizierer, der denselben Prompt beurteilt: die Linse besteht nur, wenn
+beide bestehen; ohne Cloud bleibt das lokale Urteil, markiert UNVERIFIED, nie stillschweigend
+„verifiziert"; und das lokale Modell muss das GANZE Artefakt sehen (`num_ctx` auf den
+Prompt dimensionieren — Ollamas Default 4096 kürzt stillschweigend — und vor dem Senden
+ablehnen, was nicht passt); danach die Cloud-Modelle mit niedriger Latenz; Operator-Sicherheit →
 dein stärkster Coder mit Sicherheits-Grounding; Generalist → ein großer, zuverlässiger
 Generalist. Jede Leiter endet auf einer lokalen Überlebens-Sprosse.
 
