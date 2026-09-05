@@ -54,6 +54,20 @@ Umschlag. Der Bericht muss das geschwächte Gate benennen — „same-family-bli
 bewertet, nicht cross-family" — und nie still so tun, als hätte das
 Cross-Family-Gate gehalten.
 
+## Der Builder wird deklariert, und der Ausschluss ist strukturell
+
+„Andere Familie als der Builder" war eine Regel, die sich Juroren merken sollten. Im eigenen Test
+des Tribunals führte den Operator-Sicherheitssitz genau das Modell an, das den Kandidaten gebaut
+hatte, und nichts hat es erfasst oder ausgeschlossen: Der Autor hat zwei Runden lang seine eigene
+Arbeit benotet. Also:
+
+- **Einberufen mit benanntem Builder** (`--builder <modell-oder-familie>`). Der Lauf trägt
+  `builder_family`. Jede Sprosse dieser Familie wird laut abgelehnt, vor jedem Versand, auf jeder
+  Leiter. Eine Linse ohne Sprosse HÄLT — fällt nie auf den Builder zurück.
+- **Gleicher Anbieter = gleiche Familie.** Eine Deklaration schließt den ganzen Anbieter aus.
+- **Beweise es auf der lebenden Leiter, nicht im Test:** Die Routing-Tabelle muss zeigen, dass seine
+  Sitze an eine andere Familie gefallen sind. Sonst ist der Ausschluss Dekoration.
+
 ## Der Umschlag
 
 Juroren sehen nie das Repo, den Builder oder die Konversation. Sie sehen einen
@@ -80,6 +94,23 @@ Striktes, maschinenlesbares JSON, ein Objekt, keine Prosa:
                "claim": "...", "evidence": "..."}]}
 ```
 
+- **Ein Pass, der einen `[blocker]`- oder `[major]`-Befund listet, ist kein Pass.** Widersprüchlich;
+  fällt geschlossen auf refuse, mit der Schwere benannt.
+- **Ein Urteil für eine andere Linse als die besetzte** ist eine abgelehnte Sprosse, kein Urteil:
+  mit beiden Linsen vermerkt, der Gang geht zur nächsten Sprosse; nur wenn alle daneben antworten,
+  hält die Linse. Nie ein Pass.
+- **Das Ausgabeverzeichnis wird besessen, bevor es gefegt wird.** Das Organ stempelt (stamp) ein
+  beanspruchtes Verzeichnis; eines mit diesen Dateiformen OHNE Stempel wird abgelehnt — Dateien und
+  Abhilfe benannt, nichts gelöscht. Ein Verzeichnis nur mit fremden Dateien war nie in Gefahr und
+  wird nicht blockiert.
+- **Eine explodierende Linse verwirft nie die schon bezahlten Urteile.** Jeder Sitzfehler wird pro
+  Linse erfasst; Urteile und Zusammenfassung werden VOR dem Fehler geschrieben.
+- **Der Mutationsbeweis nennt eine überschriebene Datei** (`changed_paths`).
+- **Alles, was das Organ schreibt, ist nur für den Eigentümer lesbar (0600).**
+- **Ein übergelaufenes lokales Modell entlädt nur sein LETZTER Halter.** Zwei Linsen können eine
+  Karte teilen; die erste fertige zieht der anderen nicht mitten im Aufruf das Modell weg.
+- **Eine Sprosse, die das Artefakt nicht fassen kann, wird vor dem Aufruf übersprungen**, Grund
+  vermerkt; eine Kapazitätsablehnung ist ein TYP und der Gang geht weiter — nie ein Halt.
 - Ein Juror, der SCHLECHT geantwortet hat — Müll, kein JSON, Verweigerungstext —
   zählt als **refuse**; ein Juror, der NIE geantwortet hat (Transportfehler,
   unerreichbar), ist ein **hold**: neu besetzen via
@@ -126,6 +157,11 @@ Striktes, maschinenlesbares JSON, ein Objekt, keine Prosa:
 - Schwäche oder editiere die fehlschlagenden Tests nie, um einen Pass zu
   erreichen. Juroren verifizieren, dass die Testdateien seit dem Rot-Commit
   unverändert sind.
+- **Ein Überlebender ist eine Behauptung; ein grüner Beweis ist eine Behauptung.** Jeden gemeldeten
+  Mutanten von Hand neu laufen lassen, im isolierten Baum, mit einer Obergrenze, die die Last
+  überlebt. Ein Timeout ist kein Überlebender; ein Sammelfehler ist kein Kill. Jeder Urteilspfad
+  muss INVALID sagen können, und ein Harness, dessen mutationsfreie Baseline nicht sauber grün ist,
+  verweigert jedes Urteil.
 - Ein einstimmiger Pass öffnet das Tor; er ist nicht das Ziel. Lande, dann beweise
   die Fähigkeit live auf der echten Oberfläche. Grün ohne Live-Beweis ist nicht
   fertig.

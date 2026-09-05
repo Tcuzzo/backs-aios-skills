@@ -50,6 +50,17 @@ operator safety → safety grounding वाला आपका सबसे म�
 नाम लेना ही होगा — "graded same-family-blind, not cross-family" — कभी चुपचाप यह
 नाटक नहीं कि cross-family gate क़ायम रहा।
 
+## builder घोषित होता है, और बहिष्कार संरचनात्मक है
+
+"builder से अलग परिवार" एक नियम था जिसे jurors को याद रखना था। tribunal के अपने ही परीक्षण में operator-safety
+सीट का नेतृत्व उसी model ने किया जिसने candidate बनाया था, और किसी ने उसे दर्ज या बाहर नहीं किया: लेखक ने दो
+round तक अपना ही काम grade किया। इसलिए:
+
+- **builder का नाम लेकर convene करें** (`--builder <model-या-परिवार>`)। run record में `builder_family` रहता है।
+  उस परिवार की हर rung हर ladder पर, dispatch से पहले, ज़ोर से अस्वीकार होती है। बिना rung वाला lens HOLD पर जाता है — कभी builder पर नहीं लौटता।
+- **एक ही vendor = एक ही परिवार।** एक घोषणा पूरे vendor को बाहर करती है।
+- **इसे live ladder पर साबित करें, test में नहीं:** routing table दिखाए कि उसकी सीटें दूसरे परिवार को चली गईं। वरना बहिष्कार सजावट है।
+
 ## Envelope
 
 Jurors को repo, builder या बातचीत कभी नहीं दिखती। उन्हें एक envelope दिखता है:
@@ -72,6 +83,14 @@ Jurors को repo, builder या बातचीत कभी नहीं द
                "claim": "...", "evidence": "..."}]}
 ```
 
+- **`[blocker]` या `[major]` finding सूचीबद्ध करने वाला pass, pass नहीं है।** आत्म-विरोधी; severity का नाम लेकर refuse पर fail-closed।
+- **बैठाए गए lens से अलग lens का verdict** अस्वीकृत rung है, verdict नहीं: दोनों lens दर्ज, walk अगली rung पर; सब गलत जवाब दें तभी lens HOLD। कभी pass नहीं।
+- **output directory पहले अपनाई जाती है, फिर साफ़ होती है।** organ अपनी directory पर मुहर (stamp) लगाता है; उन file-आकारों वाली पर बिना मुहर के अस्वीकार — files और उपाय का नाम, कुछ delete नहीं। केवल पराई files वाली directory कभी ख़तरे में नहीं थी, रोकी नहीं जाती।
+- **एक lens के फटने से चुकाए गए verdict कभी नहीं खोते।** हर seat failure lens-वार दर्ज; verdict और summary error से पहले लिखे जाते हैं।
+- **mutation evidence दोबारा लिखी गई file का नाम लेती है** (`changed_paths`)।
+- **organ जो भी लिखता है वह केवल owner-पठनीय है (0600)।**
+- **छलका हुआ local model केवल आख़िरी holder ही unload करता है।** दो lens एक card साझा कर सकते हैं; पहले ख़त्म होने वाला दूसरे के बीच-call में model नहीं छीनता।
+- **जिस rung में artifact नहीं समाता वह call से पहले छोड़ दी जाती है**, कारण दर्ज; capacity refusal एक TYPE है और walk जारी रहता है — कभी halt नहीं।
 - जिस juror ने BURA जवाब दिया — कचरा, non-JSON, इनकार का text — वो **refuse**
   गिना जाता है; जिस juror ने जवाब ही NAHIN दिया (transport failure, unreachable)
   वो **hold** है: उसे [fleet-ladder](../fleet-ladder/SKILL.md) से दोबारा बिठाओ,
@@ -110,6 +129,7 @@ Jurors को repo, builder या बातचीत कभी नहीं द
   round लगातार जस की तस या बढ़ती हुई: रुको और इंसान तक escalate करो। कभी घिसते मत रहो।
 - Pass तक पहुँचने के लिए failing tests को कमज़ोर या edit कभी मत करो। Jurors जाँचते
   हैं कि red commit के बाद से test files बदली नहीं।
+- **survivor एक दावा है; हरा proof एक दावा है।** हर बताए गए mutant survivor को अलग tree में, load से बचने वाली सीमा के साथ, हाथ से दोबारा चलाएँ। timeout survivor नहीं; collection error kill नहीं। proof harness का हर verdict path INVALID कह सके, और जिसकी बिना-mutation baseline साफ़ हरी न हो वह कोई verdict न दे।
 - सर्वसम्मत pass gate खोलता है; वो अंत नहीं है। उतारो, फिर capability को असली
   surface पर live साबित करो। Live proof के बिना green, done नहीं है।
 

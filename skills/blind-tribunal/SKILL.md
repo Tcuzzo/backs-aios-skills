@@ -77,6 +77,23 @@ blind grader, or the human reviews the redacted envelope. The report must name
 the weakened gate ("graded same-family-blind, not cross-family"), never
 silently pretend the cross-family gate held.
 
+## The builder is declared, and the exclusion is structural
+
+"Different family than the builder" was a rule jurors were asked to remember. In the
+tribunal's own dogfood the operator-safety seat led with the very model that had built
+the candidate, and nothing recorded or excluded it — the author graded its own work for
+two rounds and every builder-is-not-grader claim on those rounds was unfounded. So:
+
+- **Convene with the builder named** (`--builder <model-or-family>`). The run record
+  carries `builder_family`. Every rung of that family is refused out loud, before any
+  dispatch, on every ladder. A lens left with no rung HOLDS — it never falls back to the
+  builder because the builder was the only seat left.
+- **Same vendor = same family** (`gpt-6-astra`, `gpt-5.6-sol`, `gpt-5.5` are one family).
+  One declaration excludes the vendor.
+- **Prove it on the live ladder, not in a test:** after the first convene with the builder
+  declared, the routing table must show the builder's seats fell through to another
+  family. If it did not, the exclusion is decoration.
+
 ## The envelope
 
 Jurors never see the builder or the conversation. They see one envelope:
@@ -135,6 +152,13 @@ Strict machine-parseable JSON, one object, no prose:
 - A bare pass with zero findings and no evidence is a **low-information vote**. It
   counts, but never as the only proof — two bare passes do not outrank one detailed
   refuse. A strong pass names what it checked.
+- **A pass that lists a `[blocker]` or `[major]` finding is not a pass.** It is
+  self-contradictory and fails closed to refuse, naming the severity that contradicted
+  it. A juror that says "pass" while reporting a deployment-halting failure was reaching
+  the lander as a clean seat before this rule.
+- **A verdict for a lens other than the one seated is refused**, naming both lenses.
+  Filing a juror's answer under the question it was asked — instead of the one it
+  answered — hid the mismatch in a raw field nobody read.
 - Take the LAST JSON object in the reply that carries a `verdict`; strip code fences;
   anything else fails closed to refuse — including a reply that is not text and a
   `findings` value that is not a list of strings (a malformed pass is not a pass).
@@ -143,6 +167,22 @@ Strict machine-parseable JSON, one object, no prose:
   Count the unverified seats in the summary and print them on the console line.
 - An UNVERIFIED seat is a hold, not a pass: it never makes unanimity, its pack seat
   refuses, and the command exits as a hold — never zero.
+- **The out directory is owned before it is swept.** A filename shape (`summary.json`,
+  `verdict_*.json`) is not ownership. The organ stamps a directory it claims; a directory
+  holding those shapes WITHOUT the stamp is refused — the files and the remedy named,
+  nothing deleted. A directory holding only someone else's unrelated files was never at
+  risk and is not blocked: friction bought with nothing.
+- **One lens blowing up never discards the verdicts already paid for.** Every seat failure
+  — not only a ladder error — is recorded per lens, and verdicts, seats, and the summary
+  are written BEFORE the run raises.
+- **Mutation evidence names a rewritten file.** A juror that writes into an ALREADY-dirty
+  file must appear in `changed_paths`; a set difference of dirty paths leaves that list
+  empty while the fingerprint still voids the verdict — the guard bites, the evidence lies.
+- **Everything the organ writes is owner-only (0600).** Prompts carry the whole candidate
+  diff; verdicts carry raw model output.
+- **A spilled local model is unloaded only by its LAST holder.** Lenses seat concurrently
+  and two can share a card; the first to finish must not pull the model out from under a
+  seat still mid-call. Hold a lease per (host, model); report the spill either way.
 - Every convene carries a `run_id`: sweep only the files the tribunal owns from the
   out dir first, stamp the id on every verdict, and write `summary.json` last and
   atomically — it is the completion marker. A config defect on a proven rung halts
@@ -185,6 +225,13 @@ Strict machine-parseable JSON, one object, no prose:
   flat or growing two rounds running: stop and escalate to the human. Never grind.
 - Never weaken or edit the failing tests to reach a pass. Jurors verify the test
   files are unchanged since the red commit.
+- **A survivor is a claim; a green proof is a claim.** Re-run every reported mutation
+  survivor by hand, in an isolated tree, with a ceiling that outlives the box's load. A
+  timed-out run is not a survivor; a collection error is not a kill; a summary grep that
+  matches nothing is not a pass. Every verdict path in a proof harness must be able to
+  say INVALID, and a harness whose no-mutation baseline is not clean green refuses to
+  emit verdicts at all. Five different harness lies were caught in one night; each one
+  made the work look more finished than it was.
 - A unanimous pass opens the gate; it is not the finish. Land, then prove the
   capability live on the real surface. Green without live proof is not done.
 

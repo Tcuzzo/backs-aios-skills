@@ -54,6 +54,20 @@ doit nommer la barrière affaiblie — « noté même-famille-à-l'aveugle, pas
 inter-familles » — jamais faire semblant, en silence, que la barrière inter-familles a
 tenu.
 
+## Le constructeur est déclaré, et l'exclusion est structurelle
+
+« Famille différente du constructeur » était une règle que les jurés devaient retenir. Lors du
+propre test du tribunal, le siège de sécurité opérateur était mené par le modèle même qui avait
+construit le candidat, et rien ne l'a enregistré ni exclu : l'auteur a noté son propre travail
+pendant deux tours. Donc :
+
+- **Convoquez avec le constructeur nommé** (`--builder <modèle-ou-famille>`). Le registre porte
+  `builder_family`. Chaque barreau de cette famille est refusé à voix haute, avant tout envoi, sur
+  chaque échelle. Une lentille sans barreau est EN ATTENTE — jamais renvoyée au constructeur.
+- **Même fournisseur = même famille.** Une déclaration exclut tout le fournisseur.
+- **Prouvez-le sur l'échelle vivante, pas dans un test :** la table de routage doit montrer que
+  ses sièges sont passés à une autre famille. Sinon l'exclusion est décorative.
+
 ## L'enveloppe
 
 Les jurés ne voient jamais le repo, le builder, ni la conversation. Ils voient une
@@ -80,6 +94,23 @@ Du JSON strict, lisible par une machine, un seul objet, pas de prose :
                "claim": "...", "evidence": "..."}]}
 ```
 
+- **Un pass qui liste un constat `[blocker]` ou `[major]` n'est pas un pass.** Contradictoire, il
+  échoue fermé en refuse, en nommant la sévérité.
+- **Un verdict pour une autre lentille que celle siégée** est un barreau rejeté, pas un verdict :
+  noté avec les deux lentilles, la marche passe au barreau suivant ; seulement si tous répondent à
+  côté, la lentille est en attente. Jamais un pass.
+- **Le répertoire de sortie est possédé avant d'être balayé.** L'organe appose un sceau (stamp) sur
+  le répertoire qu'il revendique ; un répertoire portant ces formes de fichiers SANS le sceau est
+  refusé, fichiers et remède nommés, rien supprimé. Un répertoire de fichiers étrangers n'a jamais
+  été en danger et n'est pas bloqué.
+- **Une lentille qui explose ne jette jamais les verdicts déjà payés.** Chaque échec est enregistré
+  par lentille ; verdicts et résumé sont écrits AVANT de lever l'erreur.
+- **La preuve de mutation nomme un fichier réécrit** (`changed_paths`).
+- **Tout ce que l'organe écrit est réservé au propriétaire (0600).**
+- **Un modèle local débordé n'est déchargé que par son DERNIER détenteur.** Deux lentilles peuvent
+  partager une carte ; la première finie ne retire pas le modèle à l'autre en plein appel.
+- **Un barreau qui ne peut pas contenir l'artefact est sauté avant l'appel**, raison notée ; un
+  refus de capacité est un TYPE et la marche continue — jamais un arrêt.
 - Un juré qui a MAL répondu — du déchet, du non-JSON, un texte de refus — compte comme
   **refuse** ; un juré qui n'a JAMAIS répondu (panne de transport, injoignable) est un
   **hold** : re-siège-le via [fleet-ladder](../fleet-ladder/SKILL.md), jamais un pass
@@ -122,6 +153,11 @@ Du JSON strict, lisible par une machine, un seul objet, pas de prose :
   l'humain. Ne t'acharne jamais.
 - N'affaiblis ni ne modifie jamais les tests en échec pour arracher un pass. Les jurés
   vérifient que les fichiers de test n'ont pas bougé depuis le commit rouge.
+- **Un survivant est une affirmation ; une preuve verte est une affirmation.** Relancez à la main
+  chaque mutant survivant, dans un arbre isolé, avec un plafond qui survit à la charge. Un timeout
+  n'est pas un survivant ; une erreur de collecte n'est pas une mort. Chaque chemin de verdict doit
+  pouvoir dire INVALID, et un harnais dont la ligne de base sans mutation n'est pas vert propre
+  refuse d'émettre des verdicts.
 - Un pass unanime ouvre la porte ; ce n'est pas l'arrivée. Livre, puis prouve la
   capacité en vif sur la vraie surface. Vert sans preuve en vif, ce n'est pas fini.
 

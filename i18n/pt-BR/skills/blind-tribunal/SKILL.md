@@ -51,6 +51,20 @@ como avaliador cego, ou o humano revisa o envelope com autoria removida. O
 relatório tem que nomear o portão enfraquecido — "avaliado cego-mesma-família, não
 cross-family" — nunca fingir em silêncio que o portão cross-family segurou.
 
+## O construtor é declarado, e a exclusão é estrutural
+
+"Família diferente do construtor" era uma regra que os jurados deviam lembrar. No próprio teste
+do tribunal, o assento de segurança do operador foi liderado pelo mesmo modelo que construiu o
+candidato, e nada o registrou ou excluiu: o autor avaliou o próprio trabalho por duas rodadas.
+Então:
+
+- **Convoque com o construtor nomeado** (`--builder <modelo-ou-família>`). O registro carrega
+  `builder_family`. Cada degrau dessa família é recusado em voz alta, antes de despachar, em cada
+  escada. Uma lente sem degrau FICA EM ESPERA — nunca volta ao construtor.
+- **Mesmo fornecedor = mesma família.** Uma declaração exclui o fornecedor inteiro.
+- **Prove na escada viva, não num teste:** a tabela de rotas deve mostrar que seus assentos caíram
+  para outra família. Senão a exclusão é enfeite.
+
 ## O envelope
 
 Jurados nunca veem o repo, o builder ou a conversa. Eles veem um envelope:
@@ -75,6 +89,22 @@ JSON estrito, parseável por máquina, um objeto, sem prosa:
                "claim": "...", "evidence": "..."}]}
 ```
 
+- **Um pass que lista um achado `[blocker]` ou `[major]` não é um pass.** Contraditório; falha
+  fechado em refuse, nomeando a severidade.
+- **Um veredito para uma lente diferente da sentada** é um degrau recusado, não um veredito: anotado
+  com as duas lentes, a marcha segue ao próximo degrau; só se todos responderem errado a lente
+  fica em espera. Nunca um pass.
+- **O diretório de saída é possuído antes de ser varrido.** O órgão carimba (stamp) o diretório que
+  reivindica; um com essas formas de arquivo SEM o carimbo é recusado, arquivos e remédio nomeados,
+  nada apagado. Um só com arquivos alheios nunca correu risco e não é bloqueado.
+- **Uma lente que explode nunca descarta os vereditos já pagos.** Cada falha é registrada por
+  lente; vereditos e resumo são escritos ANTES de lançar o erro.
+- **A evidência de mutação nomeia um arquivo reescrito** (`changed_paths`).
+- **Tudo que o órgão escreve é só do dono (0600).**
+- **Um modelo local derramado só é descarregado pelo ÚLTIMO detentor.** Duas lentes podem
+  compartilhar uma placa; a primeira a terminar não tira o modelo da outra no meio da chamada.
+- **Um degrau que não cabe o artefato é pulado antes da chamada**, razão anotada; uma recusa por
+  capacidade é um TIPO e a marcha continua — nunca um halt.
 - Jurado que RESPONDEU mal — lixo, não-JSON, texto de recusa — conta como
   **refuse**; jurado que NUNCA respondeu (falha de transporte, inalcançável) é um
   **hold**: sente outro no lugar via [fleet-ladder](../fleet-ladder/SKILL.md),
@@ -114,6 +144,10 @@ JSON estrito, parseável por máquina, um objeto, sem prosa:
   humano. Nunca fique moendo.
 - Nunca enfraqueça ou edite os testes falhando para alcançar um pass. Jurados
   verificam que os arquivos de teste estão intocados desde o commit red.
+- **Um sobrevivente é uma alegação; uma prova verde é uma alegação.** Rode de novo à mão cada
+  mutante sobrevivente, numa árvore isolada, com um teto que sobreviva à carga. Um timeout não é
+  sobrevivente; um erro de coleta não é kill. Todo caminho de veredito deve poder dizer INVALID, e
+  um harness cuja linha de base sem mutação não esteja verde limpo se recusa a emitir vereditos.
 - Pass unânime abre o portão; não é a chegada. Aterrisse, depois prove a capacidade
   ao vivo na superfície real. Verde sem prova ao vivo não é pronto.
 

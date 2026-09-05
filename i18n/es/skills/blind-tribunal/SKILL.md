@@ -53,6 +53,20 @@ borrada. El reporte debe nombrar la puerta debilitada — "calificado a ciegas
 misma-familia, no entre familias" — nunca fingir en silencio que la puerta entre
 familias se sostuvo.
 
+## El constructor se declara, y la exclusión es estructural
+
+"Distinta familia que el constructor" era una regla que se pedía a los jurados recordar. En la
+propia prueba del tribunal, el asiento de seguridad del operador lo encabezó el mismo modelo que
+había construido el candidato, y nada lo registró ni lo excluyó: el autor calificó su propio
+trabajo durante dos rondas. Así que:
+
+- **Convoca con el constructor nombrado** (`--builder <modelo-o-familia>`). El registro lleva
+  `builder_family`. Cada peldaño de esa familia se rechaza en voz alta, antes de despachar, en
+  cada escalera. Una lente sin peldaño QUEDA EN ESPERA — nunca vuelve al constructor.
+- **Mismo proveedor = misma familia.** Una declaración excluye al proveedor entero.
+- **Pruébalo en la escalera viva, no en un test:** la tabla de rutas debe mostrar que sus
+  asientos pasaron a otra familia. Si no, la exclusión es decoración.
+
 ## El sobre
 
 Los jurados nunca ven el repo, al constructor ni la conversación. Ven un solo sobre:
@@ -78,6 +92,23 @@ JSON estricto y parseable por máquina, un solo objeto, sin prosa:
                "claim": "...", "evidence": "..."}]}
 ```
 
+- **Un pass que lista un hallazgo `[blocker]` o `[major]` no es un pass.** Es contradictorio y
+  falla cerrado a refuse, nombrando la severidad que lo contradijo.
+- **Un veredicto para una lente distinta de la sentada** es un peldaño rechazado, no un veredicto:
+  se anota con ambas lentes y la marcha sigue al siguiente peldaño; solo si todos responden mal la
+  lente queda en espera. Nunca un pass.
+- **El directorio de salida se posee antes de barrerse.** El órgano sella (stamp) el directorio que
+  reclama; uno con esas formas de archivo SIN el sello se rechaza, nombrando archivos y remedio,
+  sin borrar nada. Uno con solo archivos ajenos nunca corrió peligro y no se bloquea.
+- **Una lente que explota nunca descarta los veredictos ya pagados.** Cada fallo se registra por
+  lente; veredictos y resumen se escriben ANTES de lanzar el error.
+- **La evidencia de mutación nombra un archivo reescrito** (`changed_paths`), no solo los que
+  aparecen o desaparecen.
+- **Todo lo que escribe el órgano es solo del propietario (0600).**
+- **Un modelo local derramado lo descarga solo su ÚLTIMO poseedor.** Dos lentes pueden compartir
+  una tarjeta; la primera en terminar no le quita el modelo a la otra a mitad de llamada.
+- **Un peldaño que no cabe el artefacto se salta antes de llamar**, con la razón anotada; un
+  rechazo por capacidad es un TIPO y la marcha sigue — nunca un halt.
 - Un jurado que RESPONDIÓ mal — basura, texto que no es JSON, texto de rechazo —
   cuenta como **refuse**; un jurado que NUNCA respondió (falla de transporte,
   inalcanzable) es una **espera**: vuelve a sentarlo vía
@@ -122,6 +153,11 @@ JSON estricto y parseable por máquina, un solo objeto, sin prosa:
 - Nunca debilites ni edites los tests que fallan para alcanzar un pase. Los
   jurados verifican que los archivos de test siguen sin cambios desde el commit
   rojo.
+- **Un superviviente es una afirmación; una prueba en verde es una afirmación.** Vuelve a correr a
+  mano cada mutante superviviente, en un árbol aislado, con un tope que sobreviva la carga. Un
+  timeout no es un superviviente; un error de colección no es una muerte. Toda ruta de veredicto
+  del arnés debe poder decir INVALID, y un arnés cuya línea base sin mutación no esté en verde
+  limpio se niega a emitir veredictos.
 - Un pase unánime abre la puerta; no es la meta. Aterriza, y luego prueba la
   capacidad en vivo sobre la superficie real. Verde sin prueba en vivo no es
   estar terminado.

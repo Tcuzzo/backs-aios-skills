@@ -65,6 +65,18 @@ class TribunalLensesTest(unittest.TestCase):
                 self.assertIn("run_id", text)
                 self.assertIn("UNVERIFIED", text)
 
+    def test_every_surface_declares_the_builder_and_owns_what_it_sweeps(self) -> None:
+        """0.8.3 (the tribunal graded its own build, rounds 9-12): builder != grader is
+        declared and structural (--builder, builder_family); a pass carrying a [blocker]
+        is refused; the out dir is owned (stamp) before it is swept; evidence is 0600;
+        a rewritten already-dirty file is named (changed_paths); a proof harness must be
+        able to say INVALID. Machine tokens ride every language unchanged."""
+        for path in self.surfaces():
+            text = path.read_text(encoding="utf-8")
+            with self.subTest(surface=str(path.relative_to(ROOT))):
+                for token in ("--builder", "builder_family", "[blocker]", "0600", "changed_paths", "INVALID"):
+                    self.assertIn(token, text, f"{token} missing")
+
     def test_no_surface_still_seats_three_jurors(self) -> None:
         stale = ("Three jurors", "three jurors", "Tres jurados", "Trois jurés", "Drei Juroren", "Três jurados", "तीन jurors", "三位陪审员")
         for path in self.surfaces():
