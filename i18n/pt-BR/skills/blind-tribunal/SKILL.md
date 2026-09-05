@@ -133,6 +133,15 @@ JSON estrito, parseável por máquina, um objeto, sem prosa:
    exatamente o vazamento que esta skill existe para parar. Um achado termina
    CONSERTADO ou refutado com evidência registrada, nunca estacionado.
 
+## O rodapé nomeia a lente, um degrau rejeitado guarda suas palavras, e o piso tem três degraus
+
+A rodada 4 deixou duas lentes em espera com zero recusas, e cada elo ficou no registro. Três leis saíram dela:
+
+- **Declare a forma da resposta ao lado da resposta.** O rodapé do protocolo carrega o nome literal da lente (`"lens": "defect"`), nunca o marcador `<your lens>`. Um jurado que devia lembrar a lente declarada 350 KB antes, dentro de um artefato que nomeia as oito lentes, respondeu a lente errada três vezes em duas rodadas. Preencha o marcador ao renderizar.
+- **Um degrau rejeitado deixa suas palavras no registro.** Uma resposta com lente errada ou um veredito anulado carrega um `raw_tail` limitado na entrada rejeitada, para a próxima rodada ler a causa em vez de inferi-la.
+- **Dois degraus de nuvem não são um piso.** Cada nível tem pelo menos três degraus sem `context_tokens` declarado (eles carregam um artefato de 120k tokens) antes da cauda local. Uma lente errada mais uma anulação nunca devem deixar uma lente em espera.
+- **Nada mais escreve no repo do tribunal enquanto ele se reúne.** O arquivo de estado de um avaliador concorrente dentro do checkout mudou bytes sob um assento, e o órgão anulou aquele veredito com honestidade: ele não consegue atribuir uma mudança. Serialize os escritores, ou reúna em um worktree separado do mesmo commit.
+
 ## Regras duras — qualquer uma quebrada anula a avaliação
 
 - O builder nunca avalia o próprio trabalho: nem a mesma instância, nem a mesma família.

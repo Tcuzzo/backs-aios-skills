@@ -119,6 +119,15 @@ Jurors को repo, builder या बातचीत कभी नहीं द
    जिसे रोकने के लिए यह skill बनी है। Finding का अंत FIXED होता है या दर्ज सबूत के
    साथ खंडित — कभी parked नहीं।
 
+## Footer lens का नाम लेता है, rejected rung अपने शब्द रखता है, और floor तीन rung गहरा है
+
+Round 4 में zero refusal के साथ दो lens hold पर रह गए, और हर कड़ी record पर थी। उससे तीन नियम निकले:
+
+- **जवाब का shape जवाब के बगल में लिखो।** Protocol footer में lens का literal नाम होता है (`"lens": "defect"`), कभी `<your lens>` placeholder नहीं। एक juror से 350 KB पहले बताया गया lens याद रखने को कहा गया, ऐसे artifact के अंदर जो आठों lens के नाम लेता है — उसने दो round में तीन बार गलत lens जवाब दिया। Placeholder render के समय भरो।
+- **Rejected rung अपने शब्द record पर छोड़ता है।** गलत lens का जवाब या void हुआ verdict rejected entry पर एक bounded `raw_tail` रखता है, ताकि अगला round कारण पढ़े, अंदाज़ा न लगाए।
+- **दो cloud rung floor नहीं हैं।** हर tier अपनी local tail से पहले कम से कम तीन ऐसे rung रखता है जिनमें `context_tokens` declared नहीं है (वे 120k-token artifact उठा सकते हैं)। एक गलत lens और एक void मिलकर कभी lens को hold पर न रखें।
+- **Tribunal जब बैठा हो, उसके repo में और कोई कुछ न लिखे।** Checkout के अंदर एक साथ चल रहे grader की status file ने एक seat के नीचे bytes बदल दिए, और organ ने वह verdict ईमानदारी से void किया: वह बदलाव को किसी को attribute नहीं कर सकता। Writers को serialize करो, या उसी commit के अलग worktree पर बैठो।
+
 ## सख़्त नियम — कोई एक टूटा तो grade रद्द
 
 - Builder अपना काम खुद कभी grade नहीं करता: न वही instance, न वही family।

@@ -94,6 +94,15 @@ two rounds and every builder-is-not-grader claim on those rounds was unfounded. 
   declared, the routing table must show the builder's seats fell through to another
   family. If it did not, the exclusion is decoration.
 
+## The footer names the lens, a rejected rung keeps its words, and the floor is three rungs deep
+
+Round 4 held two lenses with zero refusals, and every link was on the record. Three laws came out of it:
+
+- **State the answer shape next to the answer.** The protocol footer carries the literal lens name (`"lens": "defect"`), never the `<your lens>` placeholder. A juror asked to recall the lens from 350 KB earlier, inside an artifact that names all eight lenses, answered the wrong lens three times in two rounds. Fill the placeholder at render time.
+- **A rejected rung leaves its words on the record.** A wrong-lens answer or a voided verdict carries a bounded `raw_tail` on the rejected entry, so the next round reads the cause instead of inferring it.
+- **Two cloud rungs is not a floor.** Every tier holds at least three rungs with no declared `context_tokens` (they can carry a 120k-token artifact) before its local tail. One wrong lens plus one void must never hold a lens.
+- **Nothing else writes into the tribunal's repo while it convenes.** A concurrent grader's status file inside the checkout changed bytes under a seat, and the organ voided that verdict honestly: it cannot attribute a change. Serialize writers, or convene on a separate worktree of the same commit.
+
 ## The envelope
 
 Jurors never see the builder or the conversation. They see one envelope:
@@ -131,7 +140,8 @@ protocol = ('CRITICAL OUTPUT PROTOCOL: You are a strict deterministic evaluator 
   'At most 10 findings; cite locations, do not quote code. Judge PRIOR_ADJUDICATIONS honestly. A refuse halts the pipeline.')
 body = open("envelope.txt", encoding="utf-8").read()   # the author-redacted envelope
 for lens, (tier, preamble) in lenses.items():
-    open(f"prompt_{lens}.txt", "w", encoding="utf-8").write(f"{headers[tier]}\n\n{preamble}\n\n{body}\n\n{protocol}\n")
+    footer = protocol.replace("<your lens>", lens)   # the footer names the lens; the placeholder never reaches a model
+    open(f"prompt_{lens}.txt", "w", encoding="utf-8").write(f"{headers[tier]}\n\n{preamble}\n\n{body}\n\n{footer}\n")
 ```
 
 ## The verdict

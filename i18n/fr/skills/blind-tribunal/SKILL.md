@@ -141,6 +141,15 @@ Du JSON strict, lisible par une machine, un seul objet, pas de prose :
    exactement la fuite que ce skill existe pour stopper. Un constat finit CORRIGÉ ou
    réfuté avec preuve consignée, jamais garé.
 
+## Le pied nomme la lentille, un barreau rejeté garde ses mots, et le plancher a trois barreaux
+
+Le tour 4 a mis deux lentilles en attente avec zéro refus, et chaque maillon était au dossier. Trois lois en sont sorties :
+
+- **Énonce la forme de la réponse à côté de la réponse.** Le pied du protocole porte le nom littéral de la lentille (`"lens": "defect"`), jamais le marqueur `<your lens>`. Un juré à qui l'on demandait de se rappeler la lentille énoncée 350 KB plus haut, dans un artefact qui nomme les huit lentilles, a répondu la mauvaise lentille trois fois en deux tours. Remplis le marqueur au rendu.
+- **Un barreau rejeté laisse ses mots au dossier.** Une réponse à la mauvaise lentille ou un verdict annulé porte un `raw_tail` borné sur l'entrée rejetée, pour que le tour suivant lise la cause au lieu de la deviner.
+- **Deux barreaux cloud ne font pas un plancher.** Chaque niveau tient au moins trois barreaux sans `context_tokens` déclaré (ils portent un artefact de 120k tokens) avant sa queue locale. Une mauvaise lentille plus une annulation ne doivent jamais mettre une lentille en attente.
+- **Rien d'autre n'écrit dans le dépôt du tribunal pendant qu'il siège.** Le fichier d'état d'un correcteur concurrent, dans le checkout, a changé des octets sous un siège, et l'organe a annulé ce verdict honnêtement : il ne peut pas attribuer un changement. Sérialise les écrivains, ou siège sur un worktree séparé du même commit.
+
 ## Règles dures — une seule enfreinte annule la note
 
 - Le builder ne note jamais son propre travail : ni la même instance, ni la même

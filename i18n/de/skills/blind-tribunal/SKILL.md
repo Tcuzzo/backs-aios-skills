@@ -143,6 +143,15 @@ Striktes, maschinenlesbares JSON, ein Objekt, keine Prosa:
    Leck, das dieser Skill stopfen soll. Ein Befund endet GEFIXT oder mit
    dokumentierter Evidenz widerlegt, nie geparkt.
 
+## Die Fußzeile nennt die Linse, eine abgelehnte Sprosse behält ihre Worte, und der Boden ist drei Sprossen tief
+
+Runde 4 hielt zwei Linsen mit null Ablehnungen, und jedes Glied stand im Protokoll. Drei Gesetze kamen heraus:
+
+- **Nenne die Antwortform neben der Antwort.** Die Protokoll-Fußzeile trägt den wörtlichen Linsennamen (`"lens": "defect"`), nie den Platzhalter `<your lens>`. Ein Juror, der die Linse aus 350 KB Abstand erinnern sollte, in einem Artefakt, das alle acht Linsen nennt, antwortete dreimal in zwei Runden mit der falschen Linse. Fülle den Platzhalter beim Rendern.
+- **Eine abgelehnte Sprosse hinterlässt ihre Worte im Protokoll.** Eine Antwort mit falscher Linse oder ein annulliertes Urteil trägt ein begrenztes `raw_tail` am abgelehnten Eintrag, damit die nächste Runde die Ursache liest statt sie zu erraten.
+- **Zwei Cloud-Sprossen sind kein Boden.** Jede Stufe hält mindestens drei Sprossen ohne deklarierte `context_tokens` (sie tragen ein 120k-Token-Artefakt) vor ihrem lokalen Ende. Eine falsche Linse plus eine Annullierung dürfen nie eine Linse aufhalten.
+- **Nichts anderes schreibt in das Repo des Tribunals, während es tagt.** Die Statusdatei eines gleichzeitigen Bewerters im Checkout änderte Bytes unter einem Sitz, und das Organ annullierte dieses Urteil ehrlich: es kann eine Änderung nicht zuordnen. Serialisiere Schreiber, oder tage auf einem separaten Worktree desselben Commits.
+
 ## Harte Regeln — eine gebrochen, und die Bewertung ist nichtig
 
 - Der Builder bewertet nie die eigene Arbeit: nicht dieselbe Instanz, nicht

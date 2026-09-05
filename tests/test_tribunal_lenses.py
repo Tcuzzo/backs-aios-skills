@@ -77,6 +77,19 @@ class TribunalLensesTest(unittest.TestCase):
                 for token in ("--builder", "builder_family", "[blocker]", "0600", "changed_paths", "INVALID"):
                     self.assertIn(token, text, f"{token} missing")
 
+    def test_every_surface_names_the_lens_in_the_footer_and_keeps_a_rejected_rungs_words(self) -> None:
+        """0.8.4 (tribunal round 4 held two lenses with zero refusals): the footer carries the
+        literal lens, never the placeholder; a rejected rung keeps a bounded raw_tail; every
+        tier holds three rungs with no declared context_tokens before its local tail. The
+        canonical recipe fills the placeholder at render time. Tokens ride every language."""
+        for path in self.surfaces():
+            text = path.read_text(encoding="utf-8")
+            with self.subTest(surface=str(path.relative_to(ROOT))):
+                for token in ('"lens": "defect"', "<your lens>", "raw_tail", "context_tokens"):
+                    self.assertIn(token, text, f"{token} missing")
+        canonical = (ROOT / "skills" / "blind-tribunal" / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn('protocol.replace("<your lens>", lens)', canonical)
+
     def test_no_surface_still_seats_three_jurors(self) -> None:
         stale = ("Three jurors", "three jurors", "Tres jurados", "Trois jurés", "Drei Juroren", "Três jurados", "तीन jurors", "三位陪审员")
         for path in self.surfaces():

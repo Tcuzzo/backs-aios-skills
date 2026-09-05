@@ -140,6 +140,15 @@ JSON estricto y parseable por máquina, un solo objeto, sin prosa:
    después" es exactamente la fuga que esta skill existe para frenar. Un hallazgo
    termina ARREGLADO o refutado con evidencia registrada, nunca estacionado.
 
+## El pie nombra el lente, un peldaño rechazado conserva sus palabras y el piso tiene tres peldaños
+
+La ronda 4 dejó dos lentes en espera con cero rechazos, y cada eslabón quedó en el registro. Salieron tres leyes:
+
+- **Declara la forma de la respuesta junto a la respuesta.** El pie del protocolo lleva el nombre literal del lente (`"lens": "defect"`), nunca el marcador `<your lens>`. Un jurado al que se le pidió recordar el lente desde 350 KB antes, dentro de un artefacto que nombra los ocho lentes, respondió el lente equivocado tres veces en dos rondas. Rellena el marcador al renderizar.
+- **Un peldaño rechazado deja sus palabras en el registro.** Una respuesta con lente equivocado o un veredicto anulado lleva un `raw_tail` acotado en la entrada rechazada, para que la siguiente ronda lea la causa en vez de inferirla.
+- **Dos peldaños de nube no son un piso.** Cada nivel tiene al menos tres peldaños sin `context_tokens` declarado (pueden cargar un artefacto de 120k tokens) antes de su cola local. Un lente equivocado más una anulación nunca deben dejar un lente en espera.
+- **Nada más escribe en el repo del tribunal mientras sesiona.** El archivo de estado de un calificador concurrente dentro del checkout cambió bytes bajo un asiento, y el órgano anuló ese veredicto con honestidad: no puede atribuir un cambio. Serializa los escritores, o sesiona en un worktree aparte del mismo commit.
+
 ## Reglas duras — romper una anula la calificación
 
 - El constructor nunca califica su propio trabajo: ni la misma instancia, ni la misma familia.
