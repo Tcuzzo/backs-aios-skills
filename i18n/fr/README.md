@@ -1,8 +1,28 @@
 > Version canonique en anglais : [README.md](../../README.md) — l'anglais fait foi ; cette traduction peut avoir un temps de retard.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../../assets/reflex-seam-dark.svg">
+  <img alt="La couture réflexe. À gauche, un runtime déterministe possède l'état, les fichiers, les règles et les tests. À droite, un noyau de jugement du modèle possède l'inférence, la politique, la réversibilité et la priorité. Entre les deux court une couture dentelée. Les signaux de décision passent du modèle au runtime, et les mises à jour d'état repassent en sens inverse. Un changement d'état non autorisé est refusé à voix haute." src="../../assets/reflex-seam-light.svg">
+</picture>
+
 # BACKS AIOS Skills
 
 **Lire ceci en :** [English](../../README.md) · [Español](../es/README.md) · [Português (BR)](../pt-BR/README.md) · [Deutsch](../de/README.md) · [हिन्दी](../hi/README.md) · [简体中文](../zh-CN/README.md)
+
+**Le modèle décide. Le runtime possède l'état, les fichiers et les règles — et si le
+modèle cherche un état qui ne lui appartient pas, le système échoue à voix haute au lieu
+de deviner.**
+
+Cette ligne, c'est le **Reflex Seam**, et ce pack sert à l'installer sur un agent que vous
+utilisez déjà. Voici le moment où il paie : l'agent s'apprête à lancer une commande avant
+d'avoir lu les règles. Un hook vérifie. L'outil ne s'exécute pas, et on dit à l'agent
+pourquoi. Ce n'est pas une consigne qui lui demande d'être sage — c'est une barrière avec
+laquelle il ne peut pas discuter.
+
+Deux règles l'accompagnent. **Pas de théâtre de mocks :** un test qui passe alors que la
+chose est cassée est un mensonge, donc les tests vérifient des effets réels. **Celui qui
+construit ne note pas :** le test qui échoue s'écrit en premier, et quelque chose qui n'a
+pas écrit le code doit le valider.
 
 Un harnais d'agent distillé en 28 skills portables et 8 plays nommés, tirés
 d'une plateforme d'agents en production et reconstruits en markdown brut que

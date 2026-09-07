@@ -1,6 +1,26 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../../assets/reflex-seam-dark.svg">
+  <img alt="Die Reflexnaht. Links besitzt eine deterministische Runtime den Zustand, die Dateien, die Regeln und die Tests. Rechts besitzt ein Urteilskern des Modells die Inferenz, die Richtlinien, die Umkehrbarkeit und die Priorität. Dazwischen verläuft eine gezackte Naht. Entscheidungssignale laufen vom Modell zur Runtime, Zustandsänderungen laufen zurück. Eine nicht erlaubte Zustandsänderung wird laut abgelehnt." src="../../assets/reflex-seam-light.svg">
+</picture>
+
 # BACKS AIOS Skills
 
 **Lies das auf:** [English](../../README.md) · [Español](../es/README.md) · [Português (BR)](../pt-BR/README.md) · [Français](../fr/README.md) · [हिन्दी](../hi/README.md) · [简体中文](../zh-CN/README.md)
+
+**Das Modell entscheidet. Die Runtime besitzt den Zustand, die Dateien und die Regeln —
+und wenn das Modell nach einem Zustand greift, der ihm nicht gehört, scheitert das System
+laut, statt zu raten.**
+
+Diese Linie ist der **Reflex Seam**, und dieses Pack installiert sie auf einem Agenten,
+den du schon benutzt. Hier zahlt sie sich aus: Der Agent will einen Befehl ausführen,
+bevor er die Regeln gelesen hat. Ein Hook prüft das. Das Werkzeug läuft nicht, und dem
+Agenten wird gesagt, warum. Kein Prompt, der um gutes Benehmen bittet — ein Gatter, mit
+dem er nicht diskutieren kann.
+
+Zwei Regeln fahren mit. **Kein Mock-Theater:** Ein Test, der grün ist, während die Sache
+kaputt ist, ist eine Lüge — also prüfen Tests echte Wirkungen. **Wer baut, bewertet
+nicht:** Der fehlschlagende Test wird zuerst geschrieben, und etwas, das den Code nicht
+geschrieben hat, muss ihn durchwinken.
 
 *Deutsche Ausgabe — das englische Original ist die maßgebliche Fassung: [README (Englisch)](../../README.md)*
 

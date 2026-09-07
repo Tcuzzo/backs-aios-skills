@@ -1,6 +1,23 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../../assets/reflex-seam-dark.svg">
+  <img alt="O Reflex Seam. À esquerda, um runtime determinístico é dono do estado, dos arquivos, das regras e dos testes. À direita, um kernel de julgamento do modelo é dono da inferência, da política, da reversibilidade e da prioridade. Entre eles corre uma costura serrilhada. Os sinais de decisão cruzam do modelo para o runtime, e as atualizações de estado cruzam de volta. Uma mudança de estado sem permissão é recusada em voz alta." src="../../assets/reflex-seam-light.svg">
+</picture>
+
 # BACKS AIOS Skills
 
 **Leia isto em:** [English](../../README.md) · [Español](../es/README.md) · [Français](../fr/README.md) · [Deutsch](../de/README.md) · [हिन्दी](../hi/README.md) · [简体中文](../zh-CN/README.md)
+
+**O modelo decide. O runtime é dono do estado, dos arquivos e das regras — e se o modelo
+tentar pegar um estado que não é dele, o sistema falha em voz alta em vez de adivinhar.**
+
+Essa linha é o **Reflex Seam**, e este pack é como você o instala em um agente que já
+usa. Eis o momento em que ele se paga: o agente vai rodar um comando antes de ter lido as
+regras. Um hook confere. A ferramenta não roda, e o agente é informado do porquê. Não é
+um prompt pedindo bom comportamento — é uma trava com a qual ele não pode discutir.
+
+Duas regras vêm junto. **Sem teatro de mocks:** um teste que passa enquanto a coisa está
+quebrada é mentira, então os testes afirmam efeitos reais. **Quem constrói não avalia:** o
+teste que falha é escrito primeiro, e algo que não escreveu o código precisa aprová-lo.
 
 > Esta é a tradução em português (Brasil). O [README em inglês](../../README.md) é a versão canônica.
 

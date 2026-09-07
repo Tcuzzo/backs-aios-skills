@@ -1,8 +1,24 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../../assets/reflex-seam-dark.svg">
+  <img alt="反射缝。左侧是确定性运行时，掌管状态、文件、规则和测试。右侧是模型判断内核，掌管推理、策略、可回滚性和优先级。两者之间是一道锯齿状的缝。决策信号从模型穿过缝走向运行时，状态更新再穿回来。未经许可的状态改动会被大声拒绝。" src="../../assets/reflex-seam-light.svg">
+</picture>
+
 # BACKS AIOS Skills
 
 先看图？这里有[技能与循环视觉指南](../../docs/FLOWCHARTS.md)。
 
 **其他语言版本：** [English](../../README.md) · [Español](../es/README.md) · [Português (BR)](../pt-BR/README.md) · [Français](../fr/README.md) · [Deutsch](../de/README.md) · [हिन्दी](../hi/README.md)
+
+**模型负责判断。运行时掌管状态、文件和规则——如果模型去动它无权触碰的状态，系统会大声报错，
+而不是自己去猜。**
+
+这条线就是 **Reflex Seam**（反射缝），而这个技能包就是把它装到你已经在用的智能体上的办法。
+它值回票价的时刻是这样的：智能体还没读规则，就要去执行一条命令。一个 hook 拦下检查。工具没有
+运行，并且智能体被告知原因。这不是一句请它守规矩的提示词——这是一道它没法争辩的闸门。
+
+两条规则一起过来。**不搞假测试：** 东西已经坏了测试却还是绿的，那就是撒谎，所以这里的测试断言
+的是真实的副作用。**写代码的人不给自己打分：** 先写会失败的测试，再由没写这段代码的一方来判定
+它是否通过。
 
 > 本页是简体中文镜像，以英文原版为准：[English（canonical）](../../README.md)。
 

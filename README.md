@@ -1,48 +1,83 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/reflex-seam-dark.svg">
+  <img alt="The Reflex Seam. On the left, a deterministic runtime owns state, files, rules and tests. On the right, a model judgment kernel owns inference, policy, reversibility and priority. A jagged seam runs between them. Decision signals cross from the model to the runtime, and state updates cross back. An unpermitted state change is refused out loud." src="assets/reflex-seam-light.svg">
+</picture>
+
 # BACKS AIOS Skills
 
-**Read this in:** [Español](i18n/es/README.md) · [Português (BR)](i18n/pt-BR/README.md) · [Français](i18n/fr/README.md) · [Deutsch](i18n/de/README.md) · [हिन्दी](i18n/hi/README.md) · [简体中文](i18n/zh-CN/README.md)
+**Read this in:** [Espanol](i18n/es/README.md) · [Portugues (BR)](i18n/pt-BR/README.md) · [Francais](i18n/fr/README.md) · [Deutsch](i18n/de/README.md) · [Hindi](i18n/hi/README.md) · [Simplified Chinese](i18n/zh-CN/README.md)
 
-An agent harness distilled into 28 portable skills, 8 named plays, and 10 command
-entry points, taken from a running agent platform and rebuilt as plain markdown any
-agent can load.
+**The model decides. The runtime owns state, files, and rules — and if the model
+reaches for state it does not own, the system fails loud instead of guessing.**
+
+That line is the **Reflex Seam**, and this pack is how you install it on an agent you
+already use. Here is the moment it earns its keep: the agent goes to run a command
+before it has read the rules. A hook checks. The tool does not run, and the agent is
+told why. Not a prompt asking it to behave — a gate it cannot argue with.
+
+This pack is that discipline pulled out of a running agent platform and rebuilt as
+plain markdown: **28 skills, 8 named plays, 10 command entry points.** Any agent can
+load them. Claude Code, Codex, Cursor, OpenCode, or a bare API loop.
+
+Two of the skills are the load-bearing ones. **No mock theater** — a test that passes
+while the thing is broken is a lie, so tests assert real side effects. **Builder is not
+grader** — the failing test comes first, and something that did not write the code has
+to pass it. Both are in here as skills you can fire by name.
 
 Prefer pictures? Start with the [Visual guide](docs/FLOWCHARTS.md) for the complete
 skill map and the boot, build, repair, grading, parallel-work, and decision loops.
 
-## Mission
+## What this does
+
+It gives an agent a floor. You say a trigger word, the matching discipline loads, and
+the agent follows numbered steps with hard rules that fail the skill if broken. You do
+not have to know how any of it was built. You say "repair loop" and the loop runs.
+
+## Why it exists
 
 This pack exists for the people who would otherwise be priced out of elite agent
-results — coders, designers, and builders who are not platform engineers. The harness
-and the skills are the equalizer: they carry the humans who cannot afford the biggest
-models, and they make the model tier matter less. That is the bet this pack makes: a
-small model inside a strong harness can beat a big model running loose. You do not
-need to know how the harness was built to use it — you say the trigger words, and the
-discipline fires.
+results — coders, designers, and builders who are not platform engineers.
 
-## Philosophy
+The bet is simple: **a small model inside a strong harness beats a big model running
+loose.** Everything deterministic belongs to the harness — gates, tests, hooks,
+budgets. The model's reasoning gets spent only where reasoning is the only tool that
+works: judgment, design, reading what a human actually meant.
 
-Three beliefs run through every file in this pack.
+That split is what makes the pack model-equalizing. The harness does the heavy lifting,
+so the model tier stops deciding the outcome.
 
-**Programmed, not prompted.** The agent behind this pack communicates plainly and
-refuses bad moves because those properties are engineered into the harness as
-structural rules (hooks, gates, tests), not suggested in a prompt. A rule an agent
-must remember fails exactly when the agent is busiest. So the rules that matter are
-enforced where forgetting is impossible: in the harness, not in the model's memory.
+Three beliefs run through every file here.
 
-**Machines do not think — they distill.** Give a model nothing real to work from and
-it compresses thin air — a confident wrong answer. Give the same model the right
-context and it gets it right. What we call reasoning is distillation over
-context: the model compresses what it was given into an answer. Reasoning without
-research is hallucination. That is why skills exist. A skill is the context an agent
-reasons WITH while reasoning ABOUT a thing — it carries the agent from high-level
-understanding down to subject-matter depth, so the distillation has something real to
-distill.
+**Programmed, not prompted.** The agent communicates plainly and refuses bad moves
+because those properties are engineered in as structural rules — hooks, gates, tests —
+not suggested in a prompt. A rule an agent must remember fails exactly when the agent is
+busiest. So the rules that matter live where forgetting is impossible.
 
-**Reason only where reasoning is the only tool that works.** Everything deterministic
-belongs to the harness — gates, tests, hooks, budgets. The model's reasoning is spent
-only where it earns its cost: judgment, design, reading intent. That split is what
-makes the pack model-equalizing: the harness does the heavy lifting, so the model
-tier stops deciding the outcome.
+**Machines do not think — they distill.** Give a model nothing real to work from and it
+compresses thin air into a confident wrong answer. Give it the right context and it gets
+it right. What we call reasoning is distillation over context. That is why skills exist:
+a skill is the context an agent reasons *with* while reasoning *about* a thing.
+Reasoning without research is hallucination.
+
+**Reason only where reasoning is the only tool that works.** Everything else is the
+harness's job.
+
+## How it fits
+
+These skills are the portable layer of **BACKS AIOS**, an agent platform built by
+[Tcuzzo](https://github.com/Tcuzzo) — a graph-indexed, gate-enforced system where the
+harness, not the model, holds the discipline. The full system (its memory design, its
+model-behavior profiles, its code graph) is not in this pack.
+
+Two agents built on the same seam, both public:
+
+- **[HydraAgent_public](https://github.com/Tcuzzo/HydraAgent_public)** — a local coding
+  and ops agent.
+- **[bucks](https://github.com/Tcuzzo/bucks)** — a paper-first trading agent, where the
+  seam is the difference between a bad answer and a real loss.
+
+The skills stand alone on any agent. The bigger your agent's autonomy, the more the
+floor pays for itself.
 
 ## Quick start
 
@@ -88,7 +123,6 @@ in [INSTALL.md](INSTALL.md).
 | Check my work, blind | "blind tribunal" |
 | I'm lost — what next? | "wayfinder" |
 | The ask is vague prose | "prose is the spec" |
-
 ## How it works
 
 - **Skills** are single disciplines. Each one has trigger words in its description,
@@ -120,26 +154,47 @@ in [INSTALL.md](INSTALL.md).
 - **Visual guide** — the complete skill map and core loops are in
   [FLOWCHARTS.md](docs/FLOWCHARTS.md), with text versions for terminals and screen
   readers.
+## Proof it works
 
-## Performance
+Run the pack's own suite:
 
-Real numbers, measured on one Linux dev box — spawn cost varies by machine, so
-treat the shape, not the digits. Armed, the grounding hook costs about
-28ms per tool call on Node (39ms in Python); a read-only Bash call pays about
-32ms. Even the `AIOS_GATE=off` kill-switch pays ~35ms, because spawning the hook
-process is most of the cost. True zero hook overhead means disabling the hook in
-`/hooks` or disabling the plugin — the env var cannot get you there.
+```bash
+git clone https://github.com/Tcuzzo/backs-aios-skills.git
+cd backs-aios-skills
+python3 -m pytest tests -q
+```
 
-The always-on token cost is the skill descriptions: about 4.1k tokens per
-session. Full skill bodies load only when a skill is invoked. The cost map is
-already in the pack: every skill's Effort stamp and every play's Weight line say
-what a discipline spends before you fire it.
+No number is quoted here on purpose. A test count in a README is a thing you cannot
+check, and this file does not ask you to trust it. The command above is the check — it
+runs in about three seconds and needs nothing but `pytest`.
 
-On a plain repo the big lever is [repo-map](skills/repo-map/SKILL.md): with no
-index, agents re-derive the repo's shape every session. Pay the walk once, then
-read the map. The rest is argument, not measurement — but we will make it
-plainly: the discipline removes more latency than the harness adds, because the
-real latency is wasted iteration, not a 30ms hook.
+The tests are not decoration: `tests/test_pack_contract.py` reads every real `SKILL.md` on disk and
+fails if a skill is missing its trigger words, steps, or hard rules.
+`tests/test_gate_compatibility.py` exercises the actual gate evaluator.
+`tests/test_visual_docs.py` checks the flowcharts against the skills they claim to draw.
+
+**No mock theater.** These tests read real files and run the real evaluator. That is
+the same bar [sniper-testing](skills/sniper-testing/SKILL.md) sets for your work: run
+only the tests covering what you touched, and never trust a green that mocks the thing
+it claims to prove.
+
+**Builder is not grader.** [red-first](skills/red-first/SKILL.md) commits a
+proven-failing test before the build starts, and the builder may not touch it.
+[blind-tribunal](skills/blind-tribunal/SKILL.md) puts the change in front of eight
+blind jurors from different model families, one lens each. Nothing here grades its own
+homework.
+
+## What breaks it
+
+- **The hook is the enforcement, and it costs something.** See Performance below. If
+  you disable the hook, you are back to a prompt asking an agent to behave.
+- **`AIOS_GATE=off` is a kill-switch, not a zero-cost path.** It still spawns the hook
+  process. True zero overhead means disabling the hook in `/hooks` or disabling the
+  plugin.
+- **A skill named is not a skill invoked.** Pasting a skill's text into a prompt is not
+  running it. The trigger word loads the file; that is the mechanism.
+- **Not every host has a native skill event.** On Codex and similar, you arm the
+  session with the explicit gate loader — the command is in Quick start.
 
 ## The skills
 
@@ -173,7 +228,6 @@ real latency is wasted iteration, not a 30ms hook.
 | [sniper-testing](skills/sniper-testing/SKILL.md) | Run only the tests that cover what you touched. Kill mock theater — tests that pass while the capability is broken. |
 | [understanding-gates](skills/understanding-gates/SKILL.md) | Gate Design, Plan, Build, Test, and Ship with approve/revise/reject verdicts, so the build still matches the ask. |
 | [wayfinder](skills/wayfinder/SKILL.md) | When lost, chart a decision map to the destination instead of parking a question on the human. |
-
 ## The plays
 
 | Play | What it runs |
@@ -186,15 +240,50 @@ real latency is wasted iteration, not a 30ms hook.
 | [parallel-work](plays/parallel-work.md) | Fan work across agents without them trampling each other: one write spine, many readers. |
 | [security-delivery](plays/security-delivery.md) | The ship gate for anything a customer or another machine will run. Safe by construction, not by memory. |
 | [bughunt](plays/bughunt.md) | A bounded, parallel bug hunt: chart the map, fan out finders, verify every finding adversarially, close whole seams. |
+## Performance
 
-## Works best with
+Do not take a millisecond figure in a README on faith. Measure it on your own machine:
 
-These skills are the portable layer of **BACKS AIOS**, an agent platform built by
-[Tcuzzo](https://github.com/Tcuzzo) — a graph-indexed, gate-enforced system where the
-harness, not the model, holds the discipline. The full system (its memory design, its
-model-behavior profiles, its code graph) is not in this pack. The skills still stand
-alone on any agent: Claude Code, OpenClaw, Hermes, Codex, Cursor, or a bare API loop.
-The bigger your agent's autonomy, the more the floor pays for itself.
+```bash
+bash tools/bench_gate.sh
+```
+
+That feeds the gate a real `PreToolUse` payload on stdin, the same way a host runtime
+does, and prints the median wall time per call for three cases: armed on a file-edit
+tool, armed on a read-only shell call, and with the `AIOS_GATE=off` kill-switch on. It
+writes nothing outside a temporary directory.
+
+Two things that benchmark will show you, and they are the point:
+
+**The kill-switch is not free.** `AIOS_GATE=off` costs about the same as armed, because
+spawning the hook process is most of the cost. True zero overhead means removing the
+hook in `/hooks` or disabling the plugin — the environment variable cannot get you
+there.
+
+**The always-on token cost is the skill descriptions, not the skill bodies.** Full
+bodies load only when a skill is invoked. Every skill carries an Effort stamp and every
+play a Weight line, so the cost of a discipline is written down before you fire it.
+
+On a plain repo the big lever is [repo-map](skills/repo-map/SKILL.md): with no index,
+agents re-derive the repo's shape every session. Pay the walk once, then read the map.
+
+The rest is argument, not measurement, and we will say so plainly: the discipline
+removes more latency than the harness adds, because the real latency is wasted
+iteration, not a hook that costs a few tens of milliseconds.
+
+## Contributing
+
+Same rules the pack teaches.
+
+1. **Write the failing test first.** It has to fail for the reason you say.
+2. **Then the change.** Smallest edit that turns it green.
+3. **Do not grade your own work.** Something that did not write the change has to pass
+   it. If a model reviews, use a different family than the one that wrote it.
+4. **No mock theater.** Assert the real side effect — a real file, a real evaluator run.
+5. **Keep the credits intact.** Scaffold credits are not optional.
+
+New skill? Read [NAMING.md](NAMING.md) first: skills are noun phrases, commands are
+verbs, and the floor is law.
 
 ## Credit
 
