@@ -161,6 +161,7 @@ Run the pack's own suite:
 ```bash
 git clone https://github.com/Tcuzzo/backs-aios-skills.git
 cd backs-aios-skills
+python3 -m pip install -r tests/requirements.txt
 python3 -m pytest tests -q
 ```
 
