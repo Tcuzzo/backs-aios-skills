@@ -1,0 +1,54 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pack-contract:
+    name: pack contract (${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: install pytest
+        run: python -m pip install --upgrade pip pytest
+      - name: tests
+        run: python -m pytest tests -q
+
+  installers:
+    name: installers parse clean
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shell installer syntax
+        run: bash -n install.sh
+      - name: benchmark script syntax
+        run: bash -n tools/bench_gate.sh
+      - name: powershell installer syntax
+        shell: pwsh
+        run: |
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            "$PWD/install.ps1", [ref]$null, [ref]$errors) | Out-Null
+          if ($errors.Count -gt 0) { $errors; exit 1 }
+
+  gate-evaluator:
+    name: gate evaluator runs on node
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: node syntax check on the shipped hooks
+        run: for f in hooks/*.js; do node --check "$f"; done

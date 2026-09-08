@@ -165,8 +165,11 @@ python3 -m pytest tests -q
 ```
 
 No number is quoted here on purpose. A test count in a README is a thing you cannot
-check, and this file does not ask you to trust it. The command above is the check — it
-runs in about three seconds and needs nothing but `pytest`.
+check, and this file does not ask you to trust it. Two things you *can* check: the command
+above, on your own machine, and [`.github/workflows/ci.yml`](.github/workflows/ci.yml) —
+every push runs that exact command on two Python versions, plus a parse check on both
+installers and the benchmark, and `node --check` on both shipped hooks. Read the
+workflow, then look at the Actions tab.
 
 The tests are not decoration: `tests/test_pack_contract.py` reads every real `SKILL.md` on disk and
 fails if a skill is missing its trigger words, steps, or hard rules.
