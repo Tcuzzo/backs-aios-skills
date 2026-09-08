@@ -16,8 +16,8 @@ jobs:
       matrix:
         python: ["3.11", "3.12"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python }}
       - name: install test dependencies
@@ -29,7 +29,7 @@ jobs:
     name: installers parse clean
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: shell installer syntax
         run: bash -n install.sh
       - name: benchmark script syntax
@@ -46,8 +46,8 @@ jobs:
     name: gate evaluator runs on node
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: "20"
       - name: node syntax check on the shipped hooks
