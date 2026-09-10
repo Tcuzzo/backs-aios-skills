@@ -1,6 +1,6 @@
 ---
 name: provider
-description: Switch the entire Claude Code provider lineup between native Claude OAuth and the BACKS Ollama model pool, inspect status, show resolved fallbacks, or update BACKS.
+description: Switch the entire Claude Code provider lineup between native Claude OAuth and the BACKS Ollama model pool, inspect status, show resolved fallbacks, or update provider control.
 argument-hint: "[claude|ollama|status|models|update]"
 disable-model-invocation: true
 allowed-tools: Bash(python3 *)
@@ -12,7 +12,7 @@ If it is empty, use `status`. Reject any other value.
 Execute the BACKS provider controller:
 
 ```bash
-python3 "$HOME/.local/share/backs-aios/current/provider/backs_provider.py" "$ARGUMENTS"
+python3 "$HOME/.local/share/backs-aios/provider-control/current/provider/backs_provider.py" "$ARGUMENTS"
 ```
 
 Semantics:
@@ -21,7 +21,7 @@ Semantics:
 - `claude` restores only BACKS-managed provider settings and returns Claude Code to the user's existing Anthropic/Claude OAuth path. Never log out, inspect, print, copy, or modify Claude OAuth credentials.
 - `status` reports the active provider and selected role mappings without exposing custom/private endpoint hostnames.
 - `models` shows the currently discovered Ollama selections and ordered fallbacks. It does not change provider state.
-- `update` fast-forwards the managed BACKS source from GitHub, reruns installation, and executes provider safety tests.
+- `update` fast-forwards only the provider-control source from GitHub, refreshes its links, and executes provider safety tests. It does not replace the host's existing BACKS runtime deployment.
 
 Do not perform per-model provider switching here. `/provider` is the control plane for the whole lineup.
 Never print `OLLAMA_API_KEY`, Claude credentials, key-file contents, or secret-bearing environment values.
