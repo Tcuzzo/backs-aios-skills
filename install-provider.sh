@@ -7,11 +7,8 @@ PROVIDER_RUNTIME="$PROVIDER_ROOT/current"
 CLAUDE_SKILLS="$HOME/.claude/skills"
 PROVIDER_SKILL="$CLAUDE_SKILLS/provider"
 BIN_DIR="$HOME/.local/bin"
-KEY_DIR="$HOME/.config/backs-aios/secrets"
-KEY_FILE="$KEY_DIR/ollama-api-key"
 
-mkdir -p "$PROVIDER_ROOT" "$CLAUDE_SKILLS" "$BIN_DIR" "$KEY_DIR"
-chmod 700 "$KEY_DIR"
+mkdir -p "$PROVIDER_ROOT" "$CLAUDE_SKILLS" "$BIN_DIR"
 
 # Provider control is an additive layer. It deliberately does not touch
 # ~/.local/share/backs-aios/current or any existing Codex/Cursor/OpenCode/Claude
@@ -45,21 +42,11 @@ ln -sfn "$PROVIDER_RUNTIME/provider/ollama-key-helper.sh" "$BIN_DIR/backs-ollama
 ln -sfn "$PROVIDER_RUNTIME/bin/backs-aios-update" "$BIN_DIR/backs-aios-update"
 chmod +x "$ROOT/provider/backs_provider.py" "$ROOT/provider/ollama-key-helper.sh" "$ROOT/bin/backs-aios-update" 2>/dev/null || true
 
-if [[ -n "${OLLAMA_API_KEY:-}" ]]; then
-  umask 077
-  printf '%s' "$OLLAMA_API_KEY" > "$KEY_FILE"
-  chmod 600 "$KEY_FILE"
-fi
-
 printf '\nBACKS provider control installed.\n'
 printf 'Source  : %s\n' "$ROOT"
 printf 'Runtime : %s\n' "$PROVIDER_RUNTIME"
 printf 'Command : /provider [claude|ollama|status|models|update]\n'
 printf 'Updater : backs-aios-update\n'
-if [[ -f "$KEY_FILE" ]]; then
-  printf 'Ollama  : API key helper ready (secret not displayed)\n'
-else
-  printf 'Ollama  : export OLLAMA_API_KEY once and rerun install-provider.sh\n'
-fi
+printf 'Ollama  : uses the active BACKS runtime env/secret resolver; no duplicate key store\n'
 printf '\nExisting BACKS runtime and host skill links were left untouched.\n'
 printf 'Start a fresh Claude Code session once so /provider is discovered.\n'

@@ -3,7 +3,8 @@
 
 Switches Claude Code between the user's existing Anthropic/OAuth path and an
 Ollama-compatible provider. Ollama models are resolved from the live catalog
-against ordered role preferences; credentials never live in this repository.
+against ordered role preferences. Credentials are resolved through the active
+BACKS runtime's existing env/secret loader and are never copied into this repo.
 """
 from __future__ import annotations
 
@@ -24,7 +25,6 @@ CLAUDE_SETTINGS = HOME / ".claude" / "settings.json"
 STATE_DIR = HOME / ".config" / "backs-aios"
 STATE_FILE = STATE_DIR / "provider-state.json"
 LOCK_FILE = STATE_DIR / "provider.lock"
-KEY_FILE = Path(os.environ.get("BACKS_OLLAMA_KEY_FILE", STATE_DIR / "secrets" / "ollama-api-key"))
 PROFILE_FILE = Path(__file__).resolve().parent / "profiles" / "ollama.json"
 KEY_HELPER = HOME / ".local" / "bin" / "backs-ollama-key"
 
@@ -46,6 +46,11 @@ ROLE_ENV = {
     "sonnet": "ANTHROPIC_DEFAULT_SONNET_MODEL",
     "haiku": "ANTHROPIC_DEFAULT_HAIKU_MODEL",
 }
+OLLAMA_KEY_ALIASES = (
+    "OLLAMA_API_KEY",
+    "LOCAL_OLLAMA_API_KEY",
+    "OLLAMA_CLOUD_API_KEY",
+)
 
 
 def load_json(path: Path, default: Any) -> Any:
@@ -123,17 +128,65 @@ def restore_snapshot(settings: dict[str, Any], baseline: dict[str, Any]) -> dict
     return settings
 
 
+def find_backs_project_root() -> Path:
+    override = os.environ.get("BACKS_PROJECT_ROOT", "").strip()
+    candidates: list[Path] = []
+    if override:
+        candidates.append(Path(override).expanduser())
+    cwd = Path.cwd().resolve()
+    candidates.extend([cwd, *cwd.parents])
+
+    seen: set[Path] = set()
+    for candidate in candidates:
+        try:
+            root = candidate.resolve()
+        except OSError:
+            continue
+        if root in seen:
+            continue
+        seen.add(root)
+        if (
+            (root / "backend" / "core" / "env_loader.py").is_file()
+            and (root / "backend" / "core" / "env_utils.py").is_file()
+        ):
+            return root
+
+    raise SystemExit(
+        "ERROR: active BACKS project was not found from the current working directory. "
+        "Run Claude Code from the BACKS repo root or set BACKS_PROJECT_ROOT."
+    )
+
+
 def read_api_key() -> str:
-    value = os.environ.get("OLLAMA_API_KEY", "").strip()
+    """Resolve Ollama credentials through BACKS' canonical runtime secret path."""
+    root = find_backs_project_root()
+    backend = root / "backend"
+    backend_text = str(backend)
+    added = False
+    if backend_text not in sys.path:
+        sys.path.insert(0, backend_text)
+        added = True
+    try:
+        from core.env_loader import load_runtime_env
+        from core.env_utils import env_secret_text
+
+        load_runtime_env(repo_root=root, override=False)
+        value = env_secret_text(
+            "CLOUD_OLLAMA_API_KEY",
+            aliases=OLLAMA_KEY_ALIASES,
+            file_aliases=("OLLAMA_API_KEY_FILE",),
+            credential_names=("cloud_ollama_api_key", "ollama_api_key"),
+        ).strip()
+    except Exception as exc:
+        raise SystemExit(f"ERROR: BACKS runtime secret resolution failed: {exc}") from exc
+    finally:
+        if added and sys.path and sys.path[0] == backend_text:
+            sys.path.pop(0)
+
     if value:
         return value
-    if KEY_FILE.is_file():
-        value = KEY_FILE.read_text(encoding="utf-8").strip()
-        if value:
-            return value
     raise SystemExit(
-        "ERROR: Ollama API key not found. Export OLLAMA_API_KEY before installing "
-        "or provide BACKS_OLLAMA_KEY_FILE pointing to a local 0600 key file."
+        "ERROR: BACKS did not resolve an Ollama API key from its runtime environment."
     )
 
 
@@ -319,6 +372,12 @@ def list_models() -> int:
 
 def main() -> int:
     action = (sys.argv[1] if len(sys.argv) > 1 else "status").strip().lower()
+
+    # Internal apiKeyHelper action. It intentionally prints only the credential.
+    if action == "__key":
+        sys.stdout.write(read_api_key())
+        return 0
+
     if action not in {"claude", "ollama", "status", "models", "update"}:
         print("usage: /provider [claude|ollama|status|models|update]", file=sys.stderr)
         return 2
