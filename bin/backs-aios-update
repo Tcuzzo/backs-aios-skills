@@ -1,26 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-RUNTIME="${BACKS_AIOS_RUNTIME:-$HOME/.local/share/backs-aios/current}"
+PROVIDER_RUNTIME="${BACKS_AIOS_PROVIDER_RUNTIME:-$HOME/.local/share/backs-aios/provider-control/current}"
 
-if [[ ! -L "$RUNTIME" ]]; then
-  printf 'ERROR: %s is not an updateable symlink install.\n' "$RUNTIME" >&2
-  printf 'Pinned --copy installs must be refreshed from their source clone.\n' >&2
+if [[ ! -L "$PROVIDER_RUNTIME" ]]; then
+  printf 'ERROR: %s is not an updateable provider-control symlink.\n' "$PROVIDER_RUNTIME" >&2
   exit 1
 fi
 
-SOURCE="$(readlink "$RUNTIME")"
+SOURCE="$(readlink "$PROVIDER_RUNTIME")"
 if [[ "$SOURCE" != /* ]]; then
-  SOURCE="$(cd "$(dirname "$RUNTIME")" && cd "$SOURCE" && pwd -P)"
+  SOURCE="$(cd "$(dirname "$PROVIDER_RUNTIME")" && cd "$SOURCE" && pwd -P)"
 fi
 
 if [[ ! -d "$SOURCE/.git" ]]; then
-  printf 'ERROR: BACKS runtime source is not a git checkout.\n' >&2
+  printf 'ERROR: provider-control source is not a git checkout: %s\n' "$SOURCE" >&2
   exit 1
 fi
 
 if [[ -n "$(git -C "$SOURCE" status --porcelain --untracked-files=no)" ]]; then
-  printf 'ERROR: BACKS source has tracked local changes; refusing to overwrite them.\n' >&2
+  printf 'ERROR: provider-control source has tracked local changes; refusing to overwrite them.\n' >&2
   exit 1
 fi
 
@@ -29,12 +28,12 @@ BRANCH="${BACKS_AIOS_CHANNEL:-main}"
 git -C "$SOURCE" fetch --prune origin "$BRANCH"
 git -C "$SOURCE" merge --ff-only "origin/$BRANCH"
 
-"$SOURCE/install.sh" --target all
 "$SOURCE/install-provider.sh"
 
 python3 -m unittest discover -s "$SOURCE/tests" -p 'test_provider_control.py' -q
 python3 -m unittest discover -s "$SOURCE/tests" -p 'test_provider_public_safety.py' -q
 
-printf '\nBACKS AIOS updated successfully.\n'
+printf '\nBACKS provider control updated successfully.\n'
 printf 'Branch : %s\n' "$BRANCH"
 printf 'Commit : %s\n' "$(git -C "$SOURCE" rev-parse --short HEAD)"
+printf 'Main BACKS runtime was not modified.\n'
