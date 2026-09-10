@@ -2,46 +2,47 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-RUNTIME_ROOT="$HOME/.local/share/backs-aios"
-RUNTIME="$RUNTIME_ROOT/current"
+PROVIDER_ROOT="${BACKS_AIOS_PROVIDER_ROOT:-$HOME/.local/share/backs-aios/provider-control}"
+PROVIDER_RUNTIME="$PROVIDER_ROOT/current"
 CLAUDE_SKILLS="$HOME/.claude/skills"
 PROVIDER_SKILL="$CLAUDE_SKILLS/provider"
 BIN_DIR="$HOME/.local/bin"
 KEY_DIR="$HOME/.config/backs-aios/secrets"
 KEY_FILE="$KEY_DIR/ollama-api-key"
 
-mkdir -p "$RUNTIME_ROOT" "$CLAUDE_SKILLS" "$BIN_DIR" "$KEY_DIR"
+mkdir -p "$PROVIDER_ROOT" "$CLAUDE_SKILLS" "$BIN_DIR" "$KEY_DIR"
 chmod 700 "$KEY_DIR"
 
-if [[ -L "$RUNTIME" ]]; then
-  current="$(readlink "$RUNTIME")"
-  if [[ "$current" != "$ROOT" ]]; then
-    printf 'ERROR: BACKS runtime already points to another source checkout.\n' >&2
-    printf 'Run that checkout'\''s install/update path instead of replacing it silently.\n' >&2
-    exit 1
-  fi
-elif [[ -e "$RUNTIME" ]]; then
-  printf 'ERROR: BACKS runtime exists as a pinned/non-symlink install.\n' >&2
+# Provider control is an additive layer. It deliberately does not touch
+# ~/.local/share/backs-aios/current or any existing Codex/Cursor/OpenCode/Claude
+# skill installation owned by another BACKS deployment mechanism.
+if [[ -e "$PROVIDER_RUNTIME" && ! -L "$PROVIDER_RUNTIME" ]]; then
+  printf 'ERROR: provider runtime path exists and is not a symlink: %s\n' "$PROVIDER_RUNTIME" >&2
   exit 1
-else
-  ln -s "$ROOT" "$RUNTIME"
 fi
+ln -sfn "$ROOT" "$PROVIDER_RUNTIME"
 
+expected_skill="$PROVIDER_RUNTIME/claude-skills/provider"
 if [[ -L "$PROVIDER_SKILL" ]]; then
   current="$(readlink "$PROVIDER_SKILL")"
-  if [[ "$current" != "$ROOT/claude-skills/provider" ]]; then
-    printf 'ERROR: existing /provider skill is not BACKS-managed; refusing to overwrite.\n' >&2
-    exit 1
-  fi
+  case "$current" in
+    "$expected_skill"|*/claude-skills/provider)
+      ln -sfn "$expected_skill" "$PROVIDER_SKILL"
+      ;;
+    *)
+      printf 'ERROR: existing /provider skill is not BACKS provider-managed; refusing to overwrite.\n' >&2
+      exit 1
+      ;;
+  esac
 elif [[ -e "$PROVIDER_SKILL" ]]; then
   printf 'ERROR: existing /provider skill is user-owned; refusing to overwrite.\n' >&2
   exit 1
 else
-  ln -s "$ROOT/claude-skills/provider" "$PROVIDER_SKILL"
+  ln -s "$expected_skill" "$PROVIDER_SKILL"
 fi
 
-ln -sfn "$ROOT/provider/ollama-key-helper.sh" "$BIN_DIR/backs-ollama-key"
-ln -sfn "$ROOT/bin/backs-aios-update" "$BIN_DIR/backs-aios-update"
+ln -sfn "$PROVIDER_RUNTIME/provider/ollama-key-helper.sh" "$BIN_DIR/backs-ollama-key"
+ln -sfn "$PROVIDER_RUNTIME/bin/backs-aios-update" "$BIN_DIR/backs-aios-update"
 chmod +x "$ROOT/provider/backs_provider.py" "$ROOT/provider/ollama-key-helper.sh" "$ROOT/bin/backs-aios-update" 2>/dev/null || true
 
 if [[ -n "${OLLAMA_API_KEY:-}" ]]; then
@@ -51,11 +52,14 @@ if [[ -n "${OLLAMA_API_KEY:-}" ]]; then
 fi
 
 printf '\nBACKS provider control installed.\n'
+printf 'Source  : %s\n' "$ROOT"
+printf 'Runtime : %s\n' "$PROVIDER_RUNTIME"
 printf 'Command : /provider [claude|ollama|status|models|update]\n'
 printf 'Updater : backs-aios-update\n'
 if [[ -f "$KEY_FILE" ]]; then
   printf 'Ollama  : API key helper ready (secret not displayed)\n'
 else
-  printf 'Ollama  : export OLLAMA_API_KEY once before /provider ollama\n'
+  printf 'Ollama  : export OLLAMA_API_KEY once and rerun install-provider.sh\n'
 fi
-printf '\nStart a fresh Claude Code session once so /provider is discovered.\n'
+printf '\nExisting BACKS runtime and host skill links were left untouched.\n'
+printf 'Start a fresh Claude Code session once so /provider is discovered.\n'
