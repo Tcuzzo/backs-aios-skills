@@ -29,15 +29,23 @@ CATALOG = {
 
 
 class ProviderControlTest(unittest.TestCase):
-    def run_provider(self, home: Path, action: str, *, catalog: dict | None = CATALOG) -> subprocess.CompletedProcess[str]:
-        env = {**os.environ, "HOME": str(home)}
+    def run_provider(
+        self,
+        home: Path,
+        action: str,
+        *,
+        catalog: dict | None = CATALOG,
+        cwd: Path = ROOT,
+        extra_env: dict[str, str] | None = None,
+    ) -> subprocess.CompletedProcess[str]:
+        env = {**os.environ, "HOME": str(home), **(extra_env or {})}
         if catalog is not None:
             catalog_path = home / "catalog.json"
             catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
             env["BACKS_OLLAMA_CATALOG_FILE"] = str(catalog_path)
         return subprocess.run(
             ["python3", str(CONTROLLER), action],
-            cwd=ROOT,
+            cwd=cwd,
             env=env,
             text=True,
             capture_output=True,
@@ -128,6 +136,41 @@ class ProviderControlTest(unittest.TestCase):
             self.assertEqual(0, result.returncode, result.stderr)
             self.assertIn("provider: claude", result.stdout)
             self.assertFalse((home / ".claude" / "settings.json").exists())
+
+    def test_internal_key_helper_reuses_backs_runtime_env(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_home, tempfile.TemporaryDirectory() as raw_project:
+            home = Path(raw_home)
+            project = Path(raw_project)
+            core = project / "backend" / "core"
+            core.mkdir(parents=True)
+            (core / "__init__.py").write_text("", encoding="utf-8")
+            (core / "env_loader.py").write_text(
+                "import os\n"
+                "def load_runtime_env(*, override=False, repo_root=None):\n"
+                "    p = repo_root / '.env'\n"
+                "    for line in p.read_text().splitlines():\n"
+                "        if '=' in line:\n"
+                "            k, v = line.split('=', 1)\n"
+                "            os.environ.setdefault(k.strip(), v.strip())\n"
+                "    return [p]\n",
+                encoding="utf-8",
+            )
+            (core / "env_utils.py").write_text(
+                "import os\n"
+                "def env_secret_text(name, default='', *, aliases=(), **kwargs):\n"
+                "    for key in (name, *aliases):\n"
+                "        value = os.getenv(key, '').strip()\n"
+                "        if value:\n"
+                "            return value\n"
+                "    return default\n",
+                encoding="utf-8",
+            )
+            (project / ".env").write_text("OLLAMA_API_KEY=test-runtime-key\n", encoding="utf-8")
+
+            result = self.run_provider(home, "__key", catalog=None, cwd=project)
+            self.assertEqual(0, result.returncode, result.stderr)
+            self.assertEqual("test-runtime-key", result.stdout)
+            self.assertFalse((home / ".config" / "backs-aios" / "secrets").exists())
 
     def test_invalid_action_is_rejected_without_mutation(self) -> None:
         with tempfile.TemporaryDirectory() as raw_home:
