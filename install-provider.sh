@@ -7,9 +7,12 @@ PROVIDER_RUNTIME="$PROVIDER_ROOT/current"
 GLOBAL_CLAUDE_SKILLS="$HOME/.claude/skills"
 GLOBAL_PROVIDER_SKILL="$GLOBAL_CLAUDE_SKILLS/provider"
 BIN_DIR="$HOME/.local/bin"
+CONFIG_DIR="$HOME/.config/backs-aios/provider-control"
+PROJECT_FILE="$CONFIG_DIR/project-root"
 PROJECT_ROOT="${BACKS_PROJECT_ROOT:-${1:-}}"
 
-mkdir -p "$PROVIDER_ROOT" "$GLOBAL_CLAUDE_SKILLS" "$BIN_DIR"
+mkdir -p "$PROVIDER_ROOT" "$GLOBAL_CLAUDE_SKILLS" "$BIN_DIR" "$CONFIG_DIR"
+chmod 700 "$CONFIG_DIR"
 
 # Provider control is additive and does not replace the primary BACKS runtime.
 if [[ -e "$PROVIDER_RUNTIME" && ! -L "$PROVIDER_RUNTIME" ]]; then
@@ -21,7 +24,7 @@ ln -sfn "$ROOT" "$PROVIDER_RUNTIME"
 expected_skill="$PROVIDER_RUNTIME/claude-skills/provider"
 
 link_provider_skill() {
-  local target="$1"
+  local target="$1" current
   mkdir -p "$(dirname "$target")"
   if [[ -L "$target" ]]; then
     current="$(readlink "$target")"
@@ -50,12 +53,18 @@ link_provider_skill "$GLOBAL_PROVIDER_SKILL"
 if [[ -n "$PROJECT_ROOT" ]]; then
   PROJECT_ROOT="$(cd "$PROJECT_ROOT" && pwd -P)"
   link_provider_skill "$PROJECT_ROOT/.claude/skills/provider"
+  umask 077
+  printf '%s\n' "$PROJECT_ROOT" > "$PROJECT_FILE"
+elif [[ -r "$PROJECT_FILE" ]]; then
+  IFS= read -r PROJECT_ROOT < "$PROJECT_FILE" || true
 fi
 
-ln -sfn "$PROVIDER_RUNTIME/provider/ollama-key-helper.sh" "$BIN_DIR/backs-ollama-key"
-ln -sfn "$PROVIDER_RUNTIME/bin/backs-aios-update" "$BIN_DIR/backs-aios-update"
-ln -sfn "$PROVIDER_RUNTIME/bin/backs-provider" "$BIN_DIR/backs-provider"
-chmod +x "$ROOT/provider/backs_provider.py" "$ROOT/provider/ollama-key-helper.sh" "$ROOT/bin/backs-aios-update" "$ROOT/bin/backs-provider" 2>/dev/null || true
+# Install executable copies into ~/.local/bin instead of chmod'ing files in the
+# Git checkout. This keeps the provider source clean so /provider update can
+# fast-forward safely.
+install -m 0755 "$PROVIDER_RUNTIME/provider/ollama-key-helper.sh" "$BIN_DIR/backs-ollama-key"
+install -m 0755 "$PROVIDER_RUNTIME/bin/backs-aios-update" "$BIN_DIR/backs-aios-update"
+install -m 0755 "$PROVIDER_RUNTIME/bin/backs-provider" "$BIN_DIR/backs-provider"
 
 printf '\nBACKS provider control installed.\n'
 printf 'Source  : %s\n' "$ROOT"
@@ -63,6 +72,7 @@ printf 'Runtime : %s\n' "$PROVIDER_RUNTIME"
 printf 'Global  : %s\n' "$GLOBAL_PROVIDER_SKILL"
 if [[ -n "$PROJECT_ROOT" ]]; then
   printf 'Project : %s\n' "$PROJECT_ROOT/.claude/skills/provider"
+  printf 'Default : %s\n' "$PROJECT_ROOT"
 fi
 printf 'Command : /provider [claude|ollama|status|models|update]\n'
 printf 'CLI     : backs-provider [claude|ollama|status|models|update]\n'
