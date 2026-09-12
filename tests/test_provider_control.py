@@ -1,174 +1,266 @@
 from __future__ import annotations
 
+import contextlib
+import copy
 import hmac
+import importlib.util
+import io
 import json
 import os
+from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import unittest
-from pathlib import Path
+import urllib.error
 from unittest import mock
 
-
 ROOT = Path(__file__).resolve().parents[1]
-CONTROLLER = ROOT / "provider" / "backs_provider.py"
-CATALOG = {"models": [{"model": name} for name in (
-    "kimi-k3", "kimi-k2.7-code", "deepseek-v4-pro", "deepseek-v4-flash",
-    "glm-5.3", "glm-5.3-flash", "qwen3.5", "nemotron-3-ultra",
-    "minimax-m3", "minimax-m2.7", "mistral-large-3",
-)]}
+CONTROLLER = ROOT / "provider/backs_provider.py"
 
 
 def fixture_env(home: Path) -> dict[str, str]:
-    """Allowlist, not an inherited environment with a few keys removed."""
-    return {
-        "HOME": str(home),
-        "PATH": str(Path(sys.executable).parent) + os.pathsep + os.defpath,
-        "LANG": "C.UTF-8",
-        "XDG_CONFIG_HOME": str(home / ".config"),
-        "TMPDIR": str(home),
-        "PYTHONNOUSERSITE": "1",
-        "PYTHONDONTWRITEBYTECODE": "1",
-    }
+    return {"HOME": str(home), "PATH": os.defpath, "LANG": "C.UTF-8",
+            "TMPDIR": str(home), "PYTHONDONTWRITEBYTECODE": "1", "PYTHONNOUSERSITE": "1"}
+
+
+def fixture_project(path: Path) -> None:
+    core = path / "backend/core"
+    core.mkdir(parents=True)
+    (core / "__init__.py").write_text("")
+    (core / "env_loader.py").write_text(
+        "import os\n"
+        "def load_runtime_env(*, override=False, repo_root=None):\n"
+        "    for file in (repo_root / 'backend/.env', repo_root / '.env'):\n"
+        "        if file.is_file():\n"
+        "            for line in file.read_text().splitlines():\n"
+        "                if '=' in line:\n"
+        "                    k, v = line.split('=', 1)\n"
+        "                    os.environ.setdefault(k, v)\n")
+    (core / "env_utils.py").write_text(
+        "import os\n"
+        "def env_secret_text(name, default='', *, aliases=(), **kwargs):\n"
+        "    return next((os.environ[k] for k in (name, *aliases) if os.environ.get(k)), default)\n")
+    (path / ".env").write_text("OLLAMA_API_KEY=fixture-only-key\n")
 
 
 class ProviderControlTest(unittest.TestCase):
-    def run_provider(self, home: Path, action: str, *, catalog: dict | None = CATALOG,
-                     cwd: Path = ROOT, extra_env: dict[str, str] | None = None
-                     ) -> subprocess.CompletedProcess[str]:
-        env = {**fixture_env(home), **(extra_env or {})}
-        if catalog is not None:
-            catalog_path = home / "catalog.json"
-            catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
-            env["BACKS_OLLAMA_CATALOG_FILE"] = str(catalog_path)
-        return subprocess.run(
-            [sys.executable, "-I", "-B", str(CONTROLLER), action],
-            cwd=cwd, env=env, text=True, capture_output=True, check=False, timeout=20,
-        )
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.home = Path(self.temp.name)
+        self.project = self.home / "project"
+        fixture_project(self.project)
+        env = fixture_env(self.home)
+        env["BACKS_PROJECT_ROOT"] = str(self.project)
+        patch = mock.patch.dict(os.environ, env, clear=True)
+        patch.start()
+        self.addCleanup(patch.stop)
+        spec = importlib.util.spec_from_file_location("fixture_provider", CONTROLLER)
+        self.p = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.p)
+        self.profile = self.p.load_profile()
+        self.catalog = sorted({m for row in self.profile["roles"].values() for m in row})
+        self.selected, _ = self.p.resolve_lineup(self.profile, self.catalog)
+        self.local_path = self.project / ".claude/settings.local.json"
 
-    def assert_success(self, result: subprocess.CompletedProcess[str]) -> None:
-        # Never include captured output in assertion messages: __key writes a secret.
-        self.assertEqual(0, result.returncode, "Controller failed; output withheld")
+    def patch_requests(self, fail=False):
+        stack = contextlib.ExitStack()
+        stack.enter_context(mock.patch.object(self.p, "helper_key", return_value="fixture-only-key"))
+        stack.enter_context(mock.patch.object(self.p, "fetch_catalog", return_value=self.catalog))
+        self.verify = stack.enter_context(mock.patch.object(self.p, "verify_messages",
+            side_effect=self.p.ProviderError("Fixture auth failure") if fail else None))
+        return stack
 
-    def test_ollama_switch_resolves_entire_lineup_from_catalog(self) -> None:
-        with tempfile.TemporaryDirectory() as raw_home:
-            home = Path(raw_home)
-            path = home / ".claude" / "settings.json"
-            path.parent.mkdir(parents=True)
-            path.write_text(json.dumps({"env": {"KEEP_ME": "yes"}}))
-            self.assert_success(self.run_provider(home, "ollama"))
-            settings = json.loads(path.read_text())
-            env = settings["env"]
-            self.assertEqual("yes", env["KEEP_ME"])
-            self.assertEqual("https://ollama.com", env["ANTHROPIC_BASE_URL"])
-            self.assertEqual("kimi-k3", env["ANTHROPIC_MODEL"])
-            self.assertEqual("deepseek-v4-pro", env["ANTHROPIC_DEFAULT_OPUS_MODEL"])
-            self.assertEqual("kimi-k2.7-code", env["ANTHROPIC_DEFAULT_SONNET_MODEL"])
-            self.assertEqual("glm-5.3-flash", env["ANTHROPIC_DEFAULT_HAIKU_MODEL"])
-            self.assertNotIn("ANTHROPIC_AUTH_TOKEN", env)
-            self.assertNotIn("ANTHROPIC_API_KEY", env)
-            self.assertTrue(settings["apiKeyHelper"].endswith("/.local/bin/backs-ollama-key"))
-            state = json.loads((home / ".config/backs-aios/provider-state.json").read_text())
-            self.assertGreaterEqual(len(state["fallbacks"]["default"]), 5)
-            self.assertIn("nemotron-3-ultra", state["fallbacks"]["default"])
-            self.assertNotIn("OLLAMA_API_KEY", json.dumps(state))
+    def test_activation_neutralizes_stale_auth_in_both_settings_scopes(self):
+        settings = {"env": {"KEEP": "yes", "ANTHROPIC_AUTH_TOKEN": "stale-placeholder"}, "hooks": {"kept": []}}
+        state = {}
+        self.local_path.parent.mkdir(parents=True)
+        self.local_path.write_text(json.dumps({"env": {"CUSTOM": "yes", "ANTHROPIC_API_KEY": "stale-placeholder"}}))
+        with self.patch_requests():
+            self.p.activate_ollama(settings, state)
+        for path in (self.p.CLAUDE_SETTINGS, self.local_path):
+            value = json.loads(path.read_text())
+            for key in ("ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_API_KEY", "CLAUDE_CODE_OAUTH_TOKEN"):
+                self.assertEqual("", value["env"][key])
+            self.assertIn("backs-ollama-key", value["apiKeyHelper"])
+            self.assertFalse("fixture-only-key" in path.read_text())
+        self.assertTrue(settings["hooks"] == {"kept": []})
+        self.assertEqual(len(self.catalog), state["catalog_size"])
+        self.verify.assert_called_once()
 
-    def test_role_fallback_activates_when_preferred_model_is_absent(self) -> None:
-        catalog = {"models": [{"model": name} for name in
-                               ("kimi-k2.7-code", "nemotron-3-ultra", "glm-5.3", "qwen3.5")]}
-        with tempfile.TemporaryDirectory() as raw_home:
-            home = Path(raw_home)
-            self.assert_success(self.run_provider(home, "ollama", catalog=catalog))
-            state = json.loads((home / ".config/backs-aios/provider-state.json").read_text())
-            self.assertEqual("nemotron-3-ultra", state["selected"]["opus"])
-            self.assertIn(state["selected"]["default"], {m["model"] for m in catalog["models"]})
+    def test_401_preflight_leaves_all_settings_and_state_untouched(self):
+        self.p.CLAUDE_SETTINGS.parent.mkdir()
+        self.p.CLAUDE_SETTINGS.write_text('{"env":{"KEEP":"yes"}}\n')
+        before = self.p.CLAUDE_SETTINGS.read_bytes()
+        with self.patch_requests(fail=True), self.assertRaises(self.p.ProviderError):
+            self.p.activate_ollama({"env": {"KEEP": "yes"}}, {})
+        self.assertTrue(self.p.CLAUDE_SETTINGS.read_bytes() == before)
+        self.assertFalse(self.p.STATE_FILE.exists())
+        self.assertFalse(self.local_path.exists())
 
-    def test_round_trip_restores_preexisting_claude_settings(self) -> None:
-        with tempfile.TemporaryDirectory() as raw_home:
-            home = Path(raw_home)
-            path = home / ".claude/settings.json"
-            path.parent.mkdir(parents=True)
-            original = {"env": {"KEEP_ME": "yes", "ANTHROPIC_MODEL": "preexisting-user-model",
-                                "ANTHROPIC_AUTH_TOKEN": "preexisting-token-placeholder"},
-                        "apiKeyHelper": "/existing/helper", "permissions": {"allow": ["Read"]}}
-            path.write_text(json.dumps(original))
-            self.assert_success(self.run_provider(home, "ollama"))
-            self.assert_success(self.run_provider(home, "claude"))
-            self.assertTrue(original == json.loads(path.read_text()), "Settings not restored")
+    def test_round_trip_restores_owned_keys_but_preserves_other_edits(self):
+        settings = {"env": {"KEEP": "yes", "ANTHROPIC_AUTH_TOKEN": "prior-placeholder"}, "apiKeyHelper": "prior-helper"}
+        original = copy.deepcopy(settings)
+        state = {}
+        self.local_path.parent.mkdir(parents=True)
+        local_original = {"env": {"CUSTOM": "yes", "ANTHROPIC_BASE_URL": "prior-placeholder"}}
+        self.local_path.write_text(json.dumps(local_original))
+        credentials = self.home / ".claude/.credentials.json"
+        credentials.parent.mkdir(exist_ok=True)
+        credentials.write_text("fixture-oauth-must-not-change")
+        with self.patch_requests():
+            self.p.activate_ollama(settings, state)
+        settings["new_preference"] = 5
+        self.p.activate_claude(settings, state)
+        original["new_preference"] = 5
+        self.assertTrue(original == json.loads(self.p.CLAUDE_SETTINGS.read_text()))
+        self.assertTrue(local_original == json.loads(self.local_path.read_text()))
+        self.assertTrue(credentials.read_text() == "fixture-oauth-must-not-change")
+        self.assertTrue((self.project / ".env").read_text() == "OLLAMA_API_KEY=fixture-only-key\n")
 
-    def test_models_reports_pool_without_mutating_settings(self) -> None:
-        with tempfile.TemporaryDirectory() as raw_home:
-            home = Path(raw_home)
-            result = self.run_provider(home, "models")
-            self.assert_success(result)
-            self.assertTrue("nemotron-3-ultra" in result.stdout)
-            self.assertTrue("fallback:" in result.stdout)
-            self.assertFalse((home / ".claude/settings.json").exists())
+    def test_second_activation_does_not_replace_native_baseline(self):
+        settings = {"env": {"KEEP": "yes"}}
+        state = {}
+        with self.patch_requests():
+            self.p.activate_ollama(settings, state)
+            before = copy.deepcopy(state["baseline"])
+            self.p.activate_ollama(settings, state)
+        self.assertTrue(before == state["baseline"])
 
-    def test_status_defaults_to_claude_without_touching_settings(self) -> None:
-        with tempfile.TemporaryDirectory() as raw_home:
-            home = Path(raw_home)
-            result = self.run_provider(home, "status")
-            self.assert_success(result)
-            self.assertTrue("provider: claude" in result.stdout)
-            self.assertFalse((home / ".claude/settings.json").exists())
+    def test_old_baseline_does_not_delete_a_newer_unowned_key(self):
+        settings = {"env": {"CLAUDE_CODE_OAUTH_TOKEN": "fixture-prior"}}
+        self.p.restore_snapshot(settings, {"env": {}, "top": {}})
+        self.assertTrue(settings["env"]["CLAUDE_CODE_OAUTH_TOKEN"] == "fixture-prior")
 
-    def test_internal_key_helper_reuses_backs_runtime_env(self) -> None:
-        with tempfile.TemporaryDirectory() as raw_home:
-            home = Path(raw_home)
-            project = home / "fixture-project"
-            core = project / "backend/core"
-            core.mkdir(parents=True)
-            (core / "__init__.py").write_text("")
-            (core / "env_loader.py").write_text(
-                "import os\n"
-                "def load_runtime_env(*, override=False, repo_root=None):\n"
-                "    p = repo_root / '.env'\n"
-                "    for line in p.read_text().splitlines():\n"
-                "        if '=' in line:\n"
-                "            k, v = line.split('=', 1)\n"
-                "            os.environ.setdefault(k.strip(), v.strip())\n"
-                "    return [p]\n")
-            (core / "env_utils.py").write_text(
-                "import os\n"
-                "def env_secret_text(name, default='', *, aliases=(), **kwargs):\n"
-                "    for key in (name, *aliases):\n"
-                "        value = os.getenv(key, '').strip()\n"
-                "        if value:\n"
-                "            return value\n"
-                "    return default\n")
-            (project / ".env").write_text("OLLAMA_API_KEY=test-runtime-key\n")
-            result = self.run_provider(home, "__key", catalog=None, cwd=project,
-                                       extra_env={"BACKS_PROJECT_ROOT": str(project)})
-            self.assert_success(result)
-            self.assertTrue(hmac.compare_digest(b"test-runtime-key", result.stdout.encode()),
-                            "Fixture credential mismatch; values redacted")
-            self.assertFalse((home / ".config/backs-aios/secrets").exists())
+    def test_claude_without_baseline_does_not_delete_authentication(self):
+        settings = {"env": {"ANTHROPIC_API_KEY": "prior-placeholder"}}
+        original = copy.deepcopy(settings)
+        self.p.activate_claude(settings, {})
+        self.assertTrue(settings == original)
 
-    def test_parent_credentials_and_project_do_not_enter_fixture_environment(self) -> None:
-        with tempfile.TemporaryDirectory() as raw_home:
-            home = Path(raw_home)
-            poison = {name: "fixture-parent-value" for name in (
-                "BACKS_PROJECT_ROOT", "CLOUD_OLLAMA_API_KEY", "OLLAMA_API_KEY",
-                "LOCAL_OLLAMA_API_KEY", "OLLAMA_CLOUD_API_KEY", "OLLAMA_API_KEY_FILE",
-                "CREDENTIALS_DIRECTORY", "PYTHONPATH", "ANTHROPIC_API_KEY",
-                "BACKS_OLLAMA_CATALOG_FILE", "BACKS_PROVIDER_CONTROLLER")}
-            with mock.patch.dict(os.environ, poison):
-                self.assertFalse(set(poison).intersection(fixture_env(home)))
-                self.test_internal_key_helper_reuses_backs_runtime_env()
+    def test_saved_project_is_found_without_a_shell_override(self):
+        self.p.PROJECT_FILE.parent.mkdir(parents=True)
+        self.p.PROJECT_FILE.write_text(str(self.project))
+        with mock.patch.dict(os.environ, fixture_env(self.home), clear=True), mock.patch.object(Path, "cwd", return_value=self.home):
+            self.assertEqual(self.project, self.p.find_backs_project_root())
 
-    def test_invalid_action_is_rejected_without_mutation(self) -> None:
-        with tempfile.TemporaryDirectory() as raw_home:
-            home = Path(raw_home)
-            path = home / ".claude/settings.json"
-            path.parent.mkdir(parents=True)
-            path.write_text('{"env":{"KEEP_ME":"yes"}}\n')
-            before = path.read_bytes()
-            result = self.run_provider(home, "bad-provider")
-            self.assertEqual(2, result.returncode)
-            self.assertTrue(before == path.read_bytes(), "Settings unexpectedly modified")
+    def test_bad_explicit_project_does_not_silently_load_other_keys(self):
+        with mock.patch.dict(os.environ, {"BACKS_PROJECT_ROOT": str(self.home / "absent")}), self.assertRaises(self.p.ProviderError):
+            self.p.find_backs_project_root()
 
+    def test_http_401_body_and_credential_are_never_in_error_text(self):
+        error = urllib.error.HTTPError("https://ollama.com/v1/messages", 401, "fixture-sensitive-text", {}, io.BytesIO(b"fixture-sensitive-text"))
+        with mock.patch.object(self.p.urllib.request, "build_opener") as build:
+            build.return_value.open.side_effect = error
+            with self.assertRaises(self.p.ProviderError) as caught:
+                self.p.request_json("https://ollama.com/v1/messages", "fixture-sensitive-text", {})
+        self.assertNotIn("fixture-sensitive-text", str(caught.exception))
+        self.assertIn("401", str(caught.exception))
+
+    def test_messages_check_uses_post_messages_not_catalog(self):
+        payload = {"type": "message", "role": "assistant", "content": [{"type": "text", "text": "OK"}]}
+        with mock.patch.object(self.p, "request_json", return_value=payload) as request:
+            self.p.verify_messages(self.profile, self.selected, "fixture-key")
+        self.assertEqual(len(set(self.selected.values())), request.call_count)
+        for call in request.call_args_list:
+            self.assertTrue(call.args[0].endswith("/v1/messages"))
+            self.assertFalse(call.args[2]["stream"])
+            self.assertEqual(64, call.args[2]["max_tokens"])
+
+    def test_empty_assistant_content_does_not_pass_inference_check(self):
+        with mock.patch.object(self.p, "request_json", return_value={"type": "message", "role": "assistant", "content": []}), self.assertRaises(self.p.ProviderError):
+            self.p.verify_messages(self.profile, self.selected, "fixture-key")
+
+    def test_nonofficial_credential_destination_is_rejected(self):
+        with mock.patch.dict(os.environ, {"BACKS_OLLAMA_BASE_URL": "https://example.invalid"}), self.assertRaises(self.p.ProviderError):
+            self.p.endpoint(self.profile)
+
+    def test_endpoint_with_embedded_credentials_is_rejected(self):
+        with mock.patch.dict(os.environ, {"BACKS_OLLAMA_BASE_URL": "https://fixture:fixture@ollama.com"}), self.assertRaises(self.p.ProviderError):
+            self.p.endpoint(self.profile)
+
+    def test_cloud_policy_is_not_overridden(self):
+        with mock.patch.dict(os.environ, {"CLAUDE_CODE_USE_VERTEX": "1"}), self.assertRaises(self.p.ProviderError):
+            self.p.check_policy(self.project)
+
+    def test_partial_config_write_failure_rolls_back_previous_writes(self):
+        first, second = self.home / "first.json", self.home / "second.json"
+        first.write_text('{"keep":1}')
+        original = self.p.atomic_json_write
+        def fail(path, payload, mode=0o600):
+            if path == second:
+                raise OSError("fixture-write-error")
+            return original(path, payload, mode)
+        with mock.patch.object(self.p, "atomic_json_write", side_effect=fail), self.assertRaises(OSError):
+            self.p.commit_changes({first: {"changed": 2}, second: {"new": 3}})
+        self.assertTrue(json.loads(first.read_text()) == {"keep": 1})
+        self.assertFalse(second.exists())
+
+    def test_fallbacks_are_resolved_from_available_catalog(self):
+        available = ["kimi-k2.7-code", "nemotron-3-ultra", "glm-5.3", "qwen3.5"]
+        selected, fallbacks = self.p.resolve_lineup(self.profile, available)
+        self.assertTrue(set(selected.values()) <= set(available))
+        self.assertEqual("nemotron-3-ultra", selected["opus"])
+
+    def test_catalog_fixture_cannot_bypass_messages_preflight(self):
+        with self.patch_requests():
+            with mock.patch.dict(os.environ, {"BACKS_OLLAMA_CATALOG_FILE": "fixture"}):
+                self.p.activate_ollama({}, {})
+        self.verify.assert_called_once()
+
+
+    def test_actual_http_request_carries_bearer_and_messages_payload(self):
+        from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+        import threading
+        seen = []
+        class Handler(BaseHTTPRequestHandler):
+            def do_POST(inner):
+                body = json.loads(inner.rfile.read(int(inner.headers["Content-Length"])))
+                seen.append((inner.path, inner.headers.get("Authorization"), inner.headers.get("X-Api-Key"), body))
+                payload = json.dumps({"type": "message", "role": "assistant", "content": [{"type": "text", "text": "OK"}]}).encode()
+                inner.send_response(200)
+                inner.send_header("Content-Type", "application/json")
+                inner.send_header("Content-Length", str(len(payload)))
+                inner.end_headers()
+                inner.wfile.write(payload)
+            def log_message(inner, *args):
+                pass
+        server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            result = self.p.request_json(f"http://127.0.0.1:{server.server_port}/v1/messages", "fixture-only-key", {"model": "fixture-model"})
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join()
+        self.assertEqual("assistant", result["role"])
+        self.assertTrue(seen == [("/v1/messages", "Bearer fixture-only-key", "fixture-only-key", {"model": "fixture-model"})])
+
+    def test_http_redirect_is_not_followed_with_a_credential(self):
+        from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+        import threading
+        seen = []
+        class Handler(BaseHTTPRequestHandler):
+            def do_GET(inner):
+                seen.append(inner.path)
+                inner.send_response(302)
+                inner.send_header("Location", "/other")
+                inner.end_headers()
+            def log_message(inner, *args):
+                pass
+        server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            with self.assertRaises(self.p.ProviderError):
+                self.p.request_json(f"http://127.0.0.1:{server.server_port}/api/tags", "fixture-only-key")
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join()
+        self.assertEqual(["/api/tags"], seen)
 
 if __name__ == "__main__":
     unittest.main()
