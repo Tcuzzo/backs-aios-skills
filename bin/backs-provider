@@ -2,6 +2,7 @@
 set -euo pipefail
 
 CONTROLLER="${BACKS_PROVIDER_CONTROLLER:-$HOME/.local/share/backs-aios/provider-control/current/provider/backs_provider.py}"
+PROJECT_FILE="$HOME/.config/backs-aios/provider-control/project-root"
 
 if [[ ! -f "$CONTROLLER" ]]; then
   printf 'ERROR: BACKS provider controller not found: %s\n' "$CONTROLLER" >&2
@@ -9,6 +10,14 @@ if [[ ! -f "$CONTROLLER" ]]; then
   exit 1
 fi
 
-# Preserve the caller's working directory. The controller uses it to discover
-# the active BACKS project and load that project's existing runtime environment.
+# Prefer an explicit caller override. Otherwise reuse the project root recorded
+# when install-provider.sh was run for the IDE workspace. This lets the CLI work
+# from any directory while preserving BACKS' existing env/secret discovery.
+if [[ -z "${BACKS_PROJECT_ROOT:-}" && -r "$PROJECT_FILE" ]]; then
+  IFS= read -r BACKS_PROJECT_ROOT < "$PROJECT_FILE" || true
+  if [[ -n "${BACKS_PROJECT_ROOT:-}" ]]; then
+    export BACKS_PROJECT_ROOT
+  fi
+fi
+
 exec python3 "$CONTROLLER" "$@"
