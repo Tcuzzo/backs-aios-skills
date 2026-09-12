@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CONTROLLER="${BACKS_PROVIDER_CONTROLLER:-$HOME/.local/share/backs-aios/provider-control/current/provider/backs_provider.py}"
+
+if [[ ! -f "$CONTROLLER" ]]; then
+  printf 'ERROR: BACKS provider controller not found: %s\n' "$CONTROLLER" >&2
+  printf 'Run install-provider.sh from the backs-aios-skills checkout first.\n' >&2
+  exit 1
+fi
+
+# Preserve the caller's working directory. The controller uses it to discover
+# the active BACKS project and load that project's existing runtime environment.
+exec python3 "$CONTROLLER" "$@"
