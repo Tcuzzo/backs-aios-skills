@@ -2,6 +2,7 @@
 set -euo pipefail
 
 PROVIDER_RUNTIME="${BACKS_AIOS_PROVIDER_RUNTIME:-$HOME/.local/share/backs-aios/provider-control/current}"
+PROJECT_FILE="$HOME/.config/backs-aios/provider-control/project-root"
 
 if [[ ! -L "$PROVIDER_RUNTIME" ]]; then
   printf 'ERROR: %s is not an updateable provider-control symlink.\n' "$PROVIDER_RUNTIME" >&2
@@ -20,6 +21,7 @@ fi
 
 if [[ -n "$(git -C "$SOURCE" status --porcelain --untracked-files=no)" ]]; then
   printf 'ERROR: provider-control source has tracked local changes; refusing to overwrite them.\n' >&2
+  printf 'Run git -C "%s" status --short to inspect them.\n' "$SOURCE" >&2
   exit 1
 fi
 
@@ -28,7 +30,16 @@ BRANCH="${BACKS_AIOS_CHANNEL:-main}"
 git -C "$SOURCE" fetch --prune origin "$BRANCH"
 git -C "$SOURCE" merge --ff-only "origin/$BRANCH"
 
-"$SOURCE/install-provider.sh"
+PROJECT_ROOT=""
+if [[ -r "$PROJECT_FILE" ]]; then
+  IFS= read -r PROJECT_ROOT < "$PROJECT_FILE" || true
+fi
+
+if [[ -n "$PROJECT_ROOT" && -d "$PROJECT_ROOT" ]]; then
+  bash "$SOURCE/install-provider.sh" "$PROJECT_ROOT"
+else
+  bash "$SOURCE/install-provider.sh"
+fi
 
 python3 -m unittest discover -s "$SOURCE/tests" -p 'test_provider_control.py' -q
 python3 -m unittest discover -s "$SOURCE/tests" -p 'test_provider_public_safety.py' -q
