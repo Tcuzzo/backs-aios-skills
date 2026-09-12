@@ -42,7 +42,9 @@ ROLE_ENV = {
     "default": "ANTHROPIC_MODEL", "opus": "ANTHROPIC_DEFAULT_OPUS_MODEL",
     "sonnet": "ANTHROPIC_DEFAULT_SONNET_MODEL", "haiku": "ANTHROPIC_DEFAULT_HAIKU_MODEL",
 }
-OLLAMA_KEY_ALIASES = ("OLLAMA_API_KEY", "LOCAL_OLLAMA_API_KEY", "OLLAMA_CLOUD_API_KEY")
+# This controller targets ollama.com. A local daemon/proxy credential must
+# never be selected or sent to the cloud. Prefer explicit cloud names.
+OLLAMA_KEY_ALIASES = ("OLLAMA_CLOUD_API_KEY", "OLLAMA_API_KEY")
 
 
 class ProviderError(Exception):
