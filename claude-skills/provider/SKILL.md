@@ -1,27 +1,35 @@
 ---
 name: provider
-description: Switch the entire Claude Code provider lineup between native Claude OAuth and the BACKS Ollama model pool, inspect status, show resolved fallbacks, or update provider control.
-argument-hint: "[claude|ollama|status|models|update]"
+description: Configure Claude or Ollama for the next local Claude Code session, verify real API requests, list models, or update provider control.
+argument-hint: "[claude|ollama|status|models|doctor|update]"
 disable-model-invocation: true
-allowed-tools: Bash(python3 *)
+allowed-tools: Bash
 ---
 
-Treat `$ARGUMENTS` as exactly one provider action: `claude`, `ollama`, `status`, `models`, or `update`.
-If it is empty, use `status`. Reject any other value.
+Validate the argument as exactly one of `claude`, `ollama`, `status`, `models`,
+`doctor`, or `update`. Empty means `status`. Reject other arguments, especially
+internal credential actions. Do not interpolate arbitrary text into a shell.
 
-Execute the BACKS provider controller:
+Execute the installed launcher with that validated literal argument:
 
 ```bash
-python3 "$HOME/.local/share/backs-aios/provider-control/current/provider/backs_provider.py" "$ARGUMENTS"
+"$HOME/.local/bin/backs-provider" status
 ```
 
-Semantics:
+Replace `status` above only with the validated action. The launcher supplies the
+saved BACKS project and Python interpreter used by the IDE credential helper.
 
-- `ollama` discovers the current Ollama catalog and resolves the whole Claude model-family lineup from ordered role preferences in one atomic settings transaction.
-- `claude` restores only BACKS-managed provider settings and returns Claude Code to the user's existing Anthropic/Claude OAuth path. Never log out, inspect, print, copy, or modify Claude OAuth credentials.
-- `status` reports the active provider and selected role mappings without exposing custom/private endpoint hostnames.
-- `models` shows the currently discovered Ollama selections and ordered fallbacks. It does not change provider state.
-- `update` fast-forwards only the provider-control source from GitHub, refreshes its links, and executes provider safety tests. It does not replace the host's existing BACKS runtime deployment.
+- `ollama` checks the installed credential helper and makes minimal real Messages
+  API requests to selected models before saving the complete profile. These
+  checks use Ollama inference quota. A failing check must not be called success.
+- `claude` restores saved provider configuration, not an authentication guarantee.
+- `status` reports saved configuration, not the running model's transport.
+- `models` lists catalog alternatives; they are not automatic request-time retry.
+- `doctor` tests the installed helper and real Messages API without changing settings.
+- `update` refreshes provider code without replacing the primary BACKS runtime.
 
-Do not perform per-model provider switching here. `/provider` is the control plane for the whole lineup.
-Never print `OLLAMA_API_KEY`, Claude credentials, key-file contents, or secret-bearing environment values.
+A new local Claude Code process is required after a provider change. This skill
+cannot repair an already unauthenticated session or convert a cloud/Remote
+Control subscription session to Ollama. Use the terminal launcher in that case.
+Never run `__key`, print credentials, read a key file aloud, or copy `.env` values.
+Never change managed organization policy or the Claude OAuth credential store.
