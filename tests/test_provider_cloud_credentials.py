@@ -104,7 +104,7 @@ class CloudCredentialSelectionTest(unittest.TestCase):
         self.assertEqual(0, result.returncode, "Helper failed; output withheld")
         self.assertTrue(hmac.compare_digest(value.encode(), result.stdout),
                         "Wrong credential selected; values withheld")
-        self.assertFalse(result.stderr, "Helper emitted stderr; output withheld")
+        self.assertEqual(0, len(result.stderr), "Helper emitted stderr; output withheld")
 
     def test_cloud_alias_wins_over_local_key_in_both_runtime_env_files(self):
         text = "LOCAL_OLLAMA_API_KEY=fixture-local\nOLLAMA_CLOUD_API_KEY=fixture-cloud\n"
@@ -131,7 +131,7 @@ class CloudCredentialSelectionTest(unittest.TestCase):
         self.dotenv.write_text("LOCAL_OLLAMA_API_KEY=fixture-local-only\n")
         result = self.invoke()
         self.assertNotEqual(0, result.returncode)
-        self.assertFalse(result.stdout, "Local credential must not be emitted for cloud use")
+        self.assertEqual(0, len(result.stdout), "Local credential must not be emitted for cloud use")
         self.assertFalse(b"fixture-local-only" in result.stderr, "Credential appeared in stderr")
 
     def test_credential_directory_is_reached_instead_of_local_key(self):
