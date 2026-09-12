@@ -54,7 +54,8 @@ fi
 
 ln -sfn "$PROVIDER_RUNTIME/provider/ollama-key-helper.sh" "$BIN_DIR/backs-ollama-key"
 ln -sfn "$PROVIDER_RUNTIME/bin/backs-aios-update" "$BIN_DIR/backs-aios-update"
-chmod +x "$ROOT/provider/backs_provider.py" "$ROOT/provider/ollama-key-helper.sh" "$ROOT/bin/backs-aios-update" 2>/dev/null || true
+ln -sfn "$PROVIDER_RUNTIME/bin/backs-provider" "$BIN_DIR/backs-provider"
+chmod +x "$ROOT/provider/backs_provider.py" "$ROOT/provider/ollama-key-helper.sh" "$ROOT/bin/backs-aios-update" "$ROOT/bin/backs-provider" 2>/dev/null || true
 
 printf '\nBACKS provider control installed.\n'
 printf 'Source  : %s\n' "$ROOT"
@@ -64,6 +65,7 @@ if [[ -n "$PROJECT_ROOT" ]]; then
   printf 'Project : %s\n' "$PROJECT_ROOT/.claude/skills/provider"
 fi
 printf 'Command : /provider [claude|ollama|status|models|update]\n'
+printf 'CLI     : backs-provider [claude|ollama|status|models|update]\n'
 printf 'Updater : backs-aios-update\n'
 printf 'Ollama  : uses the active BACKS runtime env/secret resolver; no duplicate key store\n'
 printf '\nExisting BACKS runtime and host skill links were left untouched.\n'
