@@ -33,7 +33,9 @@ _PRIVATE_IP = re.compile(
     r"\b(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|"
     r"172\.(?:1[6-9]|2\d|3[01])\.\d+\.\d+)\b"
 )
-_HOME_PATH = re.compile(r"(/home/[A-Za-z][\w.-]*|/mnt/[\w.-]+|/opt/[A-Za-z][\w.-]*)")
+# First char after the slash must be a word char, so prose shapes like
+# "/mnt/..." or "/opt/..." in documentation do not false-fire.
+_HOME_PATH = re.compile(r"(/home/[A-Za-z][\w.-]*|/mnt/[\w-][\w.-]*|/opt/[A-Za-z][\w.-]*)")
 _EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 _COAUTHOR = re.compile(r"Co-Authored-By:\s*", re.I)
 _GENERATED_WITH = re.compile(r"Generated with\s+\[?[A-Za-z]", re.I)
