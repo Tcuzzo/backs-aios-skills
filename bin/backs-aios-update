@@ -1,40 +1,70 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-RUNTIME="${BACKS_AIOS_RUNTIME:-$HOME/.local/share/backs-aios/current}"
+PROVIDER_RUNTIME="${BACKS_AIOS_PROVIDER_RUNTIME:-$HOME/.local/share/backs-aios/provider-control/current}"
+PROJECT_FILE="$HOME/.config/backs-aios/provider-control/project-root"
 
-if [[ ! -L "$RUNTIME" ]]; then
-  printf 'ERROR: %s is not an updateable symlink install.\n' "$RUNTIME" >&2
-  printf 'Pinned --copy installs must be refreshed from their source clone.\n' >&2
+if [[ ! -L "$PROVIDER_RUNTIME" ]]; then
+  printf 'ERROR: provider-control runtime is not an updateable symlink.\n' >&2
   exit 1
 fi
-
-SOURCE="$(readlink "$RUNTIME")"
-if [[ "$SOURCE" != /* ]]; then
-  SOURCE="$(cd "$(dirname "$RUNTIME")" && cd "$SOURCE" && pwd -P)"
-fi
-
+SOURCE="$(cd "$PROVIDER_RUNTIME" && pwd -P)"
 if [[ ! -d "$SOURCE/.git" ]]; then
-  printf 'ERROR: BACKS runtime source is not a git checkout.\n' >&2
+  printf 'ERROR: provider-control source is not a git checkout.\n' >&2
   exit 1
 fi
 
-if [[ -n "$(git -C "$SOURCE" status --porcelain --untracked-files=no)" ]]; then
-  printf 'ERROR: BACKS source has tracked local changes; refusing to overwrite them.\n' >&2
-  exit 1
-fi
+# Serialize updater calls. Do not alter the primary BACKS runtime or credentials.
+command -v flock >/dev/null || { printf 'ERROR: flock is required.\n' >&2; exit 1; }
+exec 9>"$SOURCE/.git/backs-provider-update.lock"
+flock -n 9 || { printf 'ERROR: a provider update is already running.\n' >&2; exit 1; }
 
+clean_source() {
+  [[ -z "$(git -C "$SOURCE" status --porcelain --untracked-files=no)" ]]
+}
+clean_source || { printf 'ERROR: tracked local changes; nothing overwritten.\n' >&2; exit 1; }
 BRANCH="${BACKS_AIOS_CHANNEL:-main}"
+git check-ref-format --branch "$BRANCH" >/dev/null
+if [[ "$(git -C "$SOURCE" branch --show-current)" != "$BRANCH" ]]; then
+  printf 'ERROR: checkout is not on the configured update branch.\n' >&2
+  exit 1
+fi
+BEFORE="$(git -C "$SOURCE" rev-parse HEAD)"
+git -C "$SOURCE" fetch origin "refs/heads/$BRANCH"
+CANDIDATE="$(git -C "$SOURCE" rev-parse --verify 'FETCH_HEAD^{commit}')"
+git -C "$SOURCE" merge-base --is-ancestor "$BEFORE" "$CANDIDATE" || {
+  printf 'ERROR: update is not a fast-forward.\n' >&2; exit 1;
+}
 
-git -C "$SOURCE" fetch --prune origin "$BRANCH"
-git -C "$SOURCE" merge --ff-only "origin/$BRANCH"
+# Validate an archive of the exact candidate BEFORE changing the live checkout.
+# A clean HOME/environment is established by the runner; only fixtures supply keys.
+STAGING="$(mktemp -d)"
+trap 'rm -rf -- "$STAGING"' EXIT
+mkdir "$STAGING/source"
+git -C "$SOURCE" archive "$CANDIDATE" | tar -xf - -C "$STAGING/source"
+if [[ ! -f "$STAGING/source/provider/run_provider_tests.py" ]]; then
+  printf 'ERROR: candidate lacks isolated provider validation; update refused.\n' >&2
+  exit 1
+fi
+if ! python3 -I -B "$STAGING/source/provider/run_provider_tests.py" "$STAGING/source"; then
+  printf 'ERROR: validation failed. Live checkout and installed wrappers were not changed.\n' >&2
+  exit 1
+fi
+clean_source && [[ "$(git -C "$SOURCE" rev-parse HEAD)" == "$BEFORE" ]] || {
+  printf 'ERROR: checkout changed during validation; update refused.\n' >&2; exit 1;
+}
+git -C "$SOURCE" merge --ff-only "$CANDIDATE"
 
-"$SOURCE/install.sh" --target all
-"$SOURCE/install-provider.sh"
-
-python3 -m unittest discover -s "$SOURCE/tests" -p 'test_provider_control.py' -q
-python3 -m unittest discover -s "$SOURCE/tests" -p 'test_provider_public_safety.py' -q
-
-printf '\nBACKS AIOS updated successfully.\n'
+PROJECT_ROOT="${BACKS_PROJECT_ROOT:-}"
+if [[ -z "$PROJECT_ROOT" && -r "$PROJECT_FILE" ]]; then
+  IFS= read -r PROJECT_ROOT < "$PROJECT_FILE" || true
+fi
+if [[ -n "$PROJECT_ROOT" && -d "$PROJECT_ROOT" ]]; then
+  bash "$SOURCE/install-provider.sh" "$PROJECT_ROOT"
+else
+  bash "$SOURCE/install-provider.sh"
+fi
+printf '\nBACKS provider control updated successfully.\n'
 printf 'Branch : %s\n' "$BRANCH"
-printf 'Commit : %s\n' "$(git -C "$SOURCE" rev-parse --short HEAD)"
+printf 'Commit : %s\n' "$CANDIDATE"
+printf 'Main BACKS runtime was not modified.\n'
