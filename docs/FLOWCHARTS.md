@@ -481,7 +481,7 @@ flowchart TD
   accDescr: Claude marketplace plugin has hook; Claude standalone is user skills only, with no duplicate commands and no hook; Cursor, OpenCode, Codex then converge on same capability/proof.
 
   Pack([One BACKS AIOS source pack]) --> Host{Which coding host loads it?}
-  Host --> Claude[Claude Code: marketplace plugin (with hook) or user skills only (no hook, no duplicate commands)]
+  Host --> Claude["Claude Code: marketplace plugin (with hook) or user skills only (no hook, no duplicate commands)"]
   Host --> Cursor[Cursor: full plugin with skills, commands, and hook]
   Host --> OpenCode[OpenCode: skills + native commands + ESM adapter that calls the shared JS gate]
   Host --> Codex[Codex: canonical skills + command-skill adapters + explicit gate loader]
