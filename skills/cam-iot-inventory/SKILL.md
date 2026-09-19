@@ -40,9 +40,9 @@ Stream attach / Sentry wrap is a **separate** seam — out of scope for this ski
 
 | id | MAC | host (LAN) |
 |----|-----|------------|
-| camera-1 | `<camera-mac-1>` | `192.168.1.89` |
-| camera-2 | `<camera-mac-2>` | `192.168.1.81` |
-| camera-3 | `<camera-mac-3>` | `192.168.1.206` |
+| camera-1 | `<camera-mac-1>` | `<camera-lan-host-1>` |
+| camera-2 | `<camera-mac-2>` | `<camera-lan-host-2>` |
+| camera-3 | `<camera-mac-3>` | `<camera-lan-host-3>` |
 
 Sticky law: after host remap, **same MAC → same camera id** via `apply_host_remap_for_mac` / `resolve_camera_sticky`.
 
