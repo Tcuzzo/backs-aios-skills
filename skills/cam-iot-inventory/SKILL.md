@@ -24,7 +24,7 @@ Live deploy tree: `<BACKS_DEPLOY_ROOT>`
 | cameras API | `GET /api/security/cameras` | Inventory rows: `id`, `host`, `mac`/`mac_address`, snapshot honesty fields |
 | snapshot | `GET /api/security/cameras/{id}/snapshot` | Picture path = **serving tree**, never `/opt/JarvisAI/...` |
 | wifi-scan | `POST /api/security/wifi-scan` | Via `BACKS_AI_WIFI_SCAN_IFACE` / router host only — honest error if unset |
-| FE chrome | `frontend/components/security/camera-grid.tsx` | `data-camera-mac`, loud `data-camera-mac-missing` |
+| FE chrome | `frontend/components/security/camera-grid.tsx` | **AMBER** — Secure eye 2026-09-19: API missing-mac is honest; FE does **not** yet emit `data-camera-mac` / `data-camera-mac-missing` (skill doc was ahead of chrome) |
 
 **Tip pairing (LOCKED — Security refine 2026-09-19):**
 - Proven / Secure #3 tip: `<proven-tip-sha>` (full tip SHA when resolved on deploy: `<proven-tip-sha>`)
@@ -57,7 +57,7 @@ Sticky law: after host remap, **same MAC → same camera id** via `apply_host_re
 ## Red cases (must fail loud until serving proves otherwise)
 
 1. **DHCP churn same MAC** — host for camera-1 changes; `resolve_camera_sticky` / `apply_host_remap_for_mac` keep `id=camera-1`.
-2. **Missing mac loud** — camera without mac → FE `data-camera-mac-missing` / API does not invent.
+2. **Missing mac loud** — API `_normalize_mac` → `""` (no invent) = PASS. FE `data-camera-mac-missing` = **AMBER not live yet** (Secure eye).
 3. **Unreachable :554** — RTSP down → snapshot honesty fails soft; inventory row may still exist (LO5).
 4. **Concurrent snapshot stampede** — parallel `/snapshot` for camera-1/camera-2/camera-3 must not wedge or invent green frames.
 5. **Wifi no-iface honest error** — unset `BACKS_AI_WIFI_SCAN_IFACE` (and no router host) → `ok=false` + clear error; no wlan0 invent.
@@ -73,3 +73,6 @@ Sticky law: after host remap, **same MAC → same camera id** via `apply_host_re
 ## Non-goals
 
 Foreign skill install; production pack land; wolf_pack_land; MFA/Act-fold; inventing RTSP green; hardcoding model IDs.
+
+## Secure eye (2026-09-19)
+**CLEARED** — five red cases PASS (R2 FE attrs AMBER). Receipt: `observe/<review-receipt>.md`. No install/land from Secure.
