@@ -294,6 +294,40 @@ function deny(cursorProtocol) {
   );
 }
 
+
+function wakeLoadContext() {
+  return (
+    "BACKS wake-load: invoke operator_intent_deduction before handing the " +
+    "operator a decision, and invoke context_engineer when compiling task " +
+    "context. context-compiler is a context_engineer alias; intent-compiler is a " +
+    "separate skill. Load skill bodies through the skill runtime only when needed."
+  );
+}
+
+function sessionStartOutput(cursorProtocol, sessionId) {
+  removeState(sessionId);
+  const ctx = wakeLoadContext();
+  if (cursorProtocol) {
+    process.stdout.write(
+      JSON.stringify({
+        additional_context: ctx,
+        agent_message:
+          "BACKS wake-load: operator_intent_deduction + context_engineer armed.",
+      }) + "\n",
+    );
+    return;
+  }
+  process.stdout.write(
+    JSON.stringify({
+      hookSpecificOutput: {
+        hookEventName: "SessionStart",
+        additionalContext: ctx,
+      },
+    }) + "\n",
+  );
+}
+
+
 function evaluate(payload, options = {}) {
   const kill = String(process.env[KILL_ENV] || "").trim().toLowerCase();
   if (["off", "0", "false", "no"].includes(kill)) {
@@ -317,8 +351,8 @@ function evaluate(payload, options = {}) {
   const sessionId = sessionIdOf(payload);
 
   if (event === "SessionStart" || event === "sessionStart") {
-    removeState(sessionId);
-    return { decision: "allow" };
+    if (options.emit !== false) sessionStartOutput(cursorProtocol, sessionId);
+    return { decision: "allow", wake_load: true };
   }
 
   if (event === "PostToolUse" || event === "postToolUse") {
@@ -380,7 +414,7 @@ function load(argv) {
     } else {
       canonical = skillArg;
     }
-    if (!canonical || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(canonical)) {
+    if (!canonical || !/^[a-z0-9]+([_-][a-z0-9]+)*$/.test(canonical)) {
       process.stderr.write("aios_gate: skill not found\n");
       return 2;
     }
