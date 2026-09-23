@@ -126,6 +126,23 @@ class GateCompatibilityTest(unittest.TestCase):
                 self.assertEqual("", result.stdout)
                 self.assertIn("disabled", result.stderr.lower())
 
+    def test_session_start_context_is_compact_and_never_embeds_skill_bodies(self) -> None:
+        for gate in GATES:
+            with self.subTest(gate=gate[1]):
+                result = self.run_gate(gate, {
+                    "conversation_id": f"compact-{Path(gate[1]).suffix.lstrip('.')}",
+                    "cursor_version": "3.17",
+                    "hook_event_name": "sessionStart",
+                })
+                self.assertEqual(0, result.returncode, result.stderr)
+                self.assertLessEqual(len(result.stdout.encode()), 2048)
+                output = json.loads(result.stdout)
+                context = output["additional_context"]
+                self.assertIn("operator_intent_deduction", context)
+                self.assertIn("context_engineer", context)
+                self.assertNotIn("## WAKE_SKILL", context)
+                self.assertNotIn("# Operator Intent Deduction", context)
+
     def test_malformed_input_fails_open_loudly(self) -> None:
         for gate in GATES:
             with self.subTest(gate=gate[1]):
