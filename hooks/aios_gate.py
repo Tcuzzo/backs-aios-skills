@@ -263,6 +263,35 @@ def _deny(cursor_protocol: bool) -> None:
     }))
 
 
+def _wake_load_context() -> str:
+    """Name wake skills without copying their full bodies into every session."""
+    return (
+        "BACKS wake-load: invoke operator_intent_deduction before handing the "
+        "operator a decision, and invoke context_engineer when compiling task "
+        "context. context-compiler is a context_engineer alias; intent-compiler is a "
+        "separate skill. Load skill bodies through the skill runtime only when needed."
+    )
+
+
+def _session_start_output(cursor_protocol: bool, session_id: str) -> None:
+    """Rearm floor RED, then inject wake-load compilers into agent context."""
+    _remove_state(session_id)
+    ctx = _wake_load_context()
+    if cursor_protocol:
+        # Cursor sessionStart: additional_context field (best-effort)
+        print(json.dumps({
+            "additional_context": ctx,
+            "agent_message": "BACKS wake-load: operator_intent_deduction + context_engineer armed.",
+        }))
+        return
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "SessionStart",
+            "additionalContext": ctx,
+        }
+    }))
+
+
 def handle(payload: dict) -> None:
     event = str(payload.get("hook_event_name") or "")
     tool_name = str(payload.get("tool_name") or "")
@@ -276,7 +305,7 @@ def handle(payload: dict) -> None:
     session_id = _session_id(payload)
 
     if event in {"SessionStart", "sessionStart"}:
-        _remove_state(session_id)
+        _session_start_output(cursor_protocol, session_id)
         return
 
     if event in {"PostToolUse", "postToolUse"}:
@@ -323,7 +352,7 @@ def _load(argv: list) -> int:
             canonical = skill_arg[len("backs-aios:"):]
         else:
             canonical = skill_arg
-        if not canonical or not re.match(r"^[a-z0-9]+(-[a-z0-9]+)*$", canonical):
+        if not canonical or not re.match(r"^[a-z0-9]+([_-][a-z0-9]+)*$", canonical):
             sys.stderr.write("aios_gate: skill not found\n")
             return 2
         resolved = _resolve_skill_path(canonical)

@@ -58,9 +58,20 @@ class SessionStartContractTest(unittest.TestCase):
                 context = json.loads(started.stdout)["hookSpecificOutput"]["additionalContext"]
                 self.assertIn("operator_intent_deduction", context)
                 self.assertIn("context_engineer", context)
+                self.assertIn("context-compiler is a context_engineer alias", context)
                 self.assertIn("intent-compiler is a separate skill", context)
                 self.assertNotIn("## WAKE_SKILL", context)
                 self.assertFalse(state.exists())
+                denied = self.run_gate(gate, home, {
+                    "session_id": session,
+                    "hook_event_name": "PreToolUse",
+                    "tool_name": "Write",
+                })
+                self.assertEqual(0, denied.returncode, denied.stderr)
+                self.assertEqual(
+                    "deny",
+                    json.loads(denied.stdout)["hookSpecificOutput"]["permissionDecision"],
+                )
 
     def test_alias_copies_stay_byte_identical(self) -> None:
         groups = (
