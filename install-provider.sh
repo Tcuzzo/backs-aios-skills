@@ -61,7 +61,7 @@ for target in "$GLOBAL_SKILL" "$LOCAL_SKILL"; do
         echo 'ERROR: user-owned provider skill; not changed.' >&2; exit 1
     fi
 done
-for pair in 'backs-provider:bin/backs-provider' 'backs-ollama-key:provider/ollama-key-helper.sh' 'backs-aios-update:bin/backs-aios-update'; do
+for pair in 'backs-provider:bin/backs-provider' 'backs-ollama-key:provider/ollama-key-helper.sh' 'backs-minimax-key:provider/minimax-key-helper.sh' 'backs-aios-update:bin/backs-aios-update'; do
     name="${pair%%:*}"
     source="$ROOT/${pair#*:}"
     [[ -f "$source" ]] || { echo 'ERROR: incomplete provider package.' >&2; exit 1; }
@@ -81,7 +81,7 @@ for target in "$GLOBAL_SKILL" "$LOCAL_SKILL"; do
     mkdir -p "$(dirname "$target")"
     ln -sfn "$EXPECTED" "$target"
 done
-for pair in 'backs-provider:bin/backs-provider' 'backs-ollama-key:provider/ollama-key-helper.sh' 'backs-aios-update:bin/backs-aios-update'; do
+for pair in 'backs-provider:bin/backs-provider' 'backs-ollama-key:provider/ollama-key-helper.sh' 'backs-minimax-key:provider/minimax-key-helper.sh' 'backs-aios-update:bin/backs-aios-update'; do
     name="${pair%%:*}"
     tmp="$(mktemp "$BIN/.backs-install.XXXXXX")"
     install -m 0755 "$ROOT/${pair#*:}" "$tmp"
@@ -89,5 +89,5 @@ for pair in 'backs-provider:bin/backs-provider' 'backs-ollama-key:provider/ollam
 done
 printf '\n%s\n' 'BACKS provider installed: shared project and Python context for CLI + IDE credential helper.'
 printf '%s\n' 'Existing BACKS runtime, .env, and OAuth credential store were not changed.'
-printf '%s\n' 'Run backs-provider ollama to validate real Messages requests and activate the profile.'
+printf '%s\n' 'Run backs-provider minimax or backs-provider ollama to validate real API requests and activate the profile.'
 printf '%s\n' 'Then reload the IDE window and open a NEW LOCAL Claude Code chat.'
