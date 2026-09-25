@@ -15,9 +15,12 @@ from the content scan (a guard that greps itself lies).
 """
 from __future__ import annotations
 
+import hashlib
 import re
 import subprocess
 import unittest
+import tempfile
+from unittest import mock
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -42,6 +45,15 @@ _GENERATED_WITH = re.compile(r"Generated with\s+\[?[A-Za-z]", re.I)
 
 # Public, test-only, or bot identities that are allowed to appear.
 _ALLOWED_EMAIL_EXACT = {"noreply@github.com"}
+
+# The operator reapproved one legacy school identity for public GitHub commit
+# metadata on 2026-09-25. Keep only its exact fingerprint here rather than
+# duplicating the address in source. This is not a domain-wide exception and
+# does not apply to tracked file contents. Prefer GitHub noreply for new commits
+# whenever the publishing client supports choosing the identity.
+_APPROVED_COMMIT_EMAIL_SHA256 = {
+    "2eef99602960f76ffa6972bbe188baad0da6a42b0110137c0f04ca7bb0135d5e",
+}
 
 _ALLOWED_EMAIL_SUFFIXES = (
     ".example.invalid",
@@ -148,11 +160,52 @@ class PublicHygieneTest(unittest.TestCase):
             if addr
             and not addr.endswith(".invalid")
             and addr not in _ALLOWED_EMAIL_EXACT
+            and hashlib.sha256(addr.encode("utf-8")).hexdigest() not in _APPROVED_COMMIT_EMAIL_SHA256
             and not any(addr.endswith(sfx) for sfx in _ALLOWED_EMAIL_SUFFIXES)
         ]
         self.assertEqual(
             [], bad, "non-public commit author/committer emails:\n" + "\n".join(sorted(set(bad)))
         )
+
+
+class CommitIdentityApprovalTest(unittest.TestCase):
+    """Approval applies to one exact metadata identity, never a whole domain."""
+
+    def setUp(self) -> None:
+        self.approved = "operator@school.test"
+        digest = hashlib.sha256(self.approved.encode("utf-8")).hexdigest()
+        patch = mock.patch.dict(globals(), {"_APPROVED_COMMIT_EMAIL_SHA256": {digest}})
+        patch.start()
+        self.addCleanup(patch.stop)
+
+    def check_history(self, author: str, committer: str) -> None:
+        with mock.patch.dict(globals(), {"_git_log": lambda *args: author + "|" + committer}):
+            PublicHygieneTest().test_commit_identities_use_public_safe_emails()
+
+    def test_exact_approved_account_passes_for_author_and_committer(self) -> None:
+        for author, committer in ((self.approved, self.approved),
+                                  (self.approved, "noreply@github.com"),
+                                  ("noreply@github.com", self.approved)):
+            with self.subTest(position=(author == self.approved, committer == self.approved)):
+                self.check_history(author, committer)
+
+    def test_other_school_outlook_and_lookalike_identities_still_fail(self) -> None:
+        for other in ("someone@school.test", "operator@school.edu", "operator@outlook.com",
+                      self.approved + ".attacker.test", "prefix-" + self.approved):
+            for author, committer in ((other, self.approved), (self.approved, other)):
+                with self.subTest(position=(author == other, committer == other)):
+                    with self.assertRaises(AssertionError):
+                        self.check_history(author, committer)
+
+    def test_commit_exception_does_not_allow_an_address_in_tracked_content(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            (root / "fixture.txt").write_text(self.approved, encoding="utf-8")
+            with mock.patch.dict(globals(), {
+                "REPO_ROOT": root, "_tracked_files": lambda: ["fixture.txt"],
+            }):
+                with self.assertRaises(AssertionError):
+                    PublicHygieneTest().test_no_real_emails_in_tracked_files()
 
 
 if __name__ == "__main__":
