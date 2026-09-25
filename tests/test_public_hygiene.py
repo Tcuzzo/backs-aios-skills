@@ -46,6 +46,15 @@ _GENERATED_WITH = re.compile(r"Generated with\s+\[?[A-Za-z]", re.I)
 # Public, test-only, or bot identities that are allowed to appear.
 _ALLOWED_EMAIL_EXACT = {"noreply@github.com"}
 
+# The operator reapproved one legacy school identity for public GitHub commit
+# metadata on 2026-09-25. Keep only its exact fingerprint here rather than
+# duplicating the address in source. This is not a domain-wide exception and
+# does not apply to tracked file contents. Prefer GitHub noreply for new commits
+# whenever the publishing client supports choosing the identity.
+_APPROVED_COMMIT_EMAIL_SHA256 = {
+    "2eef99602960f76ffa6972bbe188baad0da6a42b0110137c0f04ca7bb0135d5e",
+}
+
 _ALLOWED_EMAIL_SUFFIXES = (
     ".example.invalid",
     "example.com",
@@ -151,6 +160,7 @@ class PublicHygieneTest(unittest.TestCase):
             if addr
             and not addr.endswith(".invalid")
             and addr not in _ALLOWED_EMAIL_EXACT
+            and hashlib.sha256(addr.encode("utf-8")).hexdigest() not in _APPROVED_COMMIT_EMAIL_SHA256
             and not any(addr.endswith(sfx) for sfx in _ALLOWED_EMAIL_SUFFIXES)
         ]
         self.assertEqual(
