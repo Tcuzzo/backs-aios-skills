@@ -137,7 +137,7 @@ class MiniMaxProviderTest(unittest.TestCase):
         profile = self.profile()
         for url in ("https://example.invalid/anthropic", "http://api.minimax.io/anthropic",
                     "https://api.minimax.io/other", "https://api.minimax.io/anthropic?key=fixture",
-                    "https://fixture:fixture@api.minimax.io/anthropic", "https://api.minimax.io:bad/anthropic",
+                    "https://fixture:@api.minimax.io/anthropic", "https://api.minimax.io:bad/anthropic",
                     "https://api.minimax.io.evil.invalid/anthropic"):
             with self.subTest(url=url), mock.patch.dict(os.environ, {"BACKS_MINIMAX_BASE_URL": url}):
                 with self.assertRaises(self.p.ProviderError):
