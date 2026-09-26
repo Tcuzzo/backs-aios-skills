@@ -135,6 +135,10 @@ def handle(event, session_id, tool, args):
 
 - Any mutation before the harness is loaded.
 - A skill named in a report that was never invoked in the session.
+- Grounding in session memory, LLM priors, or "I remember" instead of the BACKS
+  harness. BACKS is model- and context-agnostic with robust memory lanes — the
+  harness (memory files, playbooks, ledgers, ladder yaml) carries the knowledge;
+  the model's head does not (operator ruling 2026-09-26).
 - A hook that blocks read-only tools, traps a session in RED, or fails silently.
 - A second gate, or any new friction placed on the human. The kill-switch stays theirs.
 
