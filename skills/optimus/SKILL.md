@@ -145,3 +145,15 @@ def handle(event, session_id, tool, args):
 - [repair-loop](../repair-loop/SKILL.md) — what a fix job runs after boot.
 - [bounded-loops](../bounded-loops/SKILL.md) — budgets for every loop boot starts.
 - [wayfinder](../wayfinder/SKILL.md) — when boot shows you do not know the route.
+
+
+## Fleet ladder rung policy (thin pointer)
+
+Before any model dispatch or frontier design/reason lift, invoke
+[fleet-ladder](../fleet-ladder/SKILL.md). It forces agents to **read**
+`config/fleet_ladder.yaml` + `config/gpu_nodes.yaml` (deploy paths), honor the live
+builder seat, and HARD-gate realtime research seams (web + GitHub + Reddit + papers)
+when the rung marks frontier / `research_seams`. Never hardcode model IDs; Patch owns yaml.
+Cite: `observe/SECURITY_OPERATOR_BUILDER_SEAT_ORDER_20260926.md`.
+
+Honor [fleet-ladder](../fleet-ladder/SKILL.md) thinking floor (medium FLOOR; ultra???medium; research???token_efficiency before MiniMax/5.6 heavy lift; no truncation hacks).
