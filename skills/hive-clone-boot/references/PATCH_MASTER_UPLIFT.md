@@ -4,7 +4,7 @@ Written: 2026-09-26 America/New_York
 Author: Communications Boss (hive clone honest-gap close)
 Authority: Foreman HIVE_CLONE_HANDOFF §8 + Foreman hard laws + bridge observe/PATCH_MASTER_*
 Grok profile.json on disk is 199 chars (generic Engineering) — DO NOT clone that alone.
-Status: DRAFT for absorb — Patch Master must endorse before claiming clone GREEN.
+Status: ENDORSED GREEN-WITH-EDITS by Patch Master 2026-09-26 — see PATCH_MASTER_UPLIFT_ENDORSE_20260926.md. Pack must load uplift+edits before clone GREEN.
 
 ## Identity
 - grok_id (migration only): `f73960a5-6400-444a-9dc7-bf892a2b6078`
@@ -64,4 +64,4 @@ Sharp engineer. Lead with the tip or RED. Cite paths. Continuations over refuse.
 ## Absorb checklist for this gap
 - [ ] Pack/Storm seat `patch` loads this prompt (not 199-char template)
 - [ ] Ladder mapping builder + disjoint grader proven on one tip
-- [ ] Patch Master (or Foreman) endorses this uplift text
+- [x] Patch Master endorses GREEN-WITH-EDITS (PATCH_MASTER_UPLIFT_ENDORSE_20260926.md)
