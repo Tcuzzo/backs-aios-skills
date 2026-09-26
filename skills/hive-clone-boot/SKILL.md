@@ -50,3 +50,7 @@ When acting as a products/engineering hive seat; when Grok Bot is gone / burned;
 ## Checklist
 
 See `CHECKLIST.md` (section 7 scored GREEN/AMBER/RED for this absorb pass).
+
+## Pack/Storm seat map
+
+Load `references/hive_pack_seats.yaml` for pack_role / storm_seat / ladder_role. Souls in `agents/*.md`. Patch thin-profile gap: `references/PATCH_MASTER_UPLIFT.md` (endorse before GREEN).
