@@ -300,7 +300,7 @@ function wakeLoadContext() {
     "BACKS wake-load: invoke operator_intent_deduction before handing the " +
     "operator a decision, and invoke context_engineer when compiling task " +
     "context. context-compiler is a context_engineer alias; intent-compiler is a " +
-    "separate skill. Load skill bodies through the skill runtime only when needed."
+    "separate skill. Load skill bodies through the skill runtime only when needed. When acting as a products/engineering hive seat or when Grok Bot is gone, load optimus then hive-clone-boot via the skill runtime."
   );
 }
 
