@@ -81,6 +81,28 @@ has broken this.
   [intent-compiler](../intent-compiler/SKILL.md), then chart from what it
   actually says.
 
+## Known route — "land work in production" (already charted, do not improvise)
+
+When the question is "how do I land this in prod?", that is NOT a fog ticket.
+It is a sharp ticket with one cleared answer. Charting a fresh route for it is
+the exact churn this skill exists to kill. The cleared route lives at
+`docs/BACKS_OPS_MANUAL.md` §6 and `memory/feedback_ide_to_prod_promotion_seam_20260927.md`;
+the building-with-backs skill teaches it as the standing pattern; the
+path skill carries it as a named route. Five steps:
+
+1. Commit on `/opt` (your branch). Topology guard stays on.
+2. `git push origin <branch>` — branch lands on the shared remote.
+3. `bash scripts/sync_github_main.sh --source-ref <branch>` — the operator's
+   promotion organ. Scrubs, publishes, advances `refs/backs/proven/production`.
+4. Rebuild + restart: `npm run build` + `systemctl restart jarvis-frontend.service`
+   for FE; `bash scripts/restart_jarvis_services.sh backend` for BE.
+5. Live-prove on the operator's own surface.
+
+Forbidden paths the harness guard refuses (do not pursue): `git update-ref HEAD`,
+`git checkout <sha>`, `git pull origin/<branch>` on `/mnt`. The reason is
+structural — raw ref rewrite on the deploy tree is the exact path that ships
+real topology to GitHub main. The only cleared path is `sync_github_main.sh`.
+
 ## Works well with
 
 - [live-research](../live-research/SKILL.md) — resolves the agent-alone research tickets.
