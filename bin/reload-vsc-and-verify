@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# reload-vsc-and-verify
+# Reloads the VS Code window so the Claude Code extension re-scans
+# ~/.claude/skills/ (symlinked to ~/backs-aios-skills/skills/), then
+# prints the discovery result so the CO family is provably loaded.
+#
+# Usage: bash ~/backs-aios-skills/bin/reload-vsc-and-verify
+
+set -euo pipefail
+
+PLUGIN_ROOT="$HOME/backs-aios-skills"
+CLAUDE_SKILLS="$HOME/.claude/skills"
+CO_FAMILY=(conscientious-objector osha-bot co-health)
+
+red()   { printf '\033[31m%s\033[0m\n' "$*"; }
+green() { printf '\033[32m%s\033[0m\n' "$*"; }
+cyan()  { printf '\033[36m%s\033[0m\n' "$*"; }
+yel()   { printf '\033[33m%s\033[0m\n' "$*"; }
+bold()  { printf '\033[1m%s\033[0m\n' "$*"; }
+
+cyan "=== STEP 1: plugin pack on disk ==="
+if [[ ! -d "$PLUGIN_ROOT" ]]; then
+  red "FATAL: $PLUGIN_ROOT does not exist"; exit 1
+fi
+git -C "$PLUGIN_ROOT" rev-parse --is-inside-work-tree >/dev/null
+green "  plugin pack:  $PLUGIN_ROOT"
+printf '  HEAD:         %s\n' "$(git -C "$PLUGIN_ROOT" rev-parse --short HEAD)"
+printf '  version:      %s\n' "$(jq -r .version "$PLUGIN_ROOT/.claude-plugin/plugin.json")"
+
+cyan "=== STEP 2: ~/.claude/skills symlink check ==="
+if [[ -L "$CLAUDE_SKILLS" ]]; then
+  green "  ~/.claude/skills -> $(readlink -f "$CLAUDE_SKILLS")"
+elif [[ -d "$CLAUDE_SKILLS" ]]; then
+  green "  ~/.claude/skills is a real directory"
+else
+  red "  ~/.claude/skills missing — run: bash $PLUGIN_ROOT/install.sh --target claude"
+  exit 1
+fi
+
+cyan "=== STEP 3: CO family present on disk ==="
+all_ok=1
+for s in "${CO_FAMILY[@]}"; do
+  f="$PLUGIN_ROOT/skills/$s/SKILL.md"
+  if [[ -f "$f" ]]; then
+    name=$(awk -F'"' '/^name:/ {print $2; exit}' "$f")
+    desc_len=$(awk -F'"' '/^description:/ {print length($2)}' "$f")
+    green "  [OK] $s/SKILL.md  name=\"$name\"  desc=${desc_len}chars"
+  else
+    red "  [MISSING] $s/SKILL.md"; all_ok=0
+  fi
+done
+(( all_ok == 1 )) || { red "FATAL: CO family not on disk"; exit 1; }
+
+cyan "=== STEP 4: reload VS Code window ==="
+if command -v code >/dev/null 2>&1; then
+  bold "  issuing: code --command workbench.action.reloadWindow"
+  code --command workbench.action.reloadWindow >/dev/null 2>&1 || true
+  green "  reload command issued. VS Code re-scans ~/.claude/skills/ in ~2s."
+else
+  yel "  'code' CLI not on PATH in this shell."
+  yel "  From VS Code Command Palette (Ctrl+Shift+P), run:"
+  bold "      > Developer: Reload Window"
+fi
+
+cyan "=== STEP 5: live verification (after reload) ==="
+bold "  In the reloaded VS Code chat, run any of:"
+for s in "${CO_FAMILY[@]}"; do
+  printf '    /%-26s  -> skills/%s/SKILL.md\n' "$s" "$s"
+done
+bold "  All three resolve (not 'unknown skill') = LIVE LOAD OK."
