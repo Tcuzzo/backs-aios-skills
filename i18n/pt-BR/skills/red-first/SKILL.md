@@ -1,7 +1,7 @@
 ---
-name: red-first
-description: Use ao despachar qualquer builder — um agente, um modelo ou você mesmo — para uma mudança que um teste deve provar. Commita um teste de contrato provado-falhando antes de o build começar, proíbe o builder de tocá-lo e põe um avaliador independente para verificar que o teste nunca foi editado. Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build, teste falhando primeiro, teste de contrato, vermelho primeiro, linha de base vermelha, teste antes do build.
-license: MIT
+name: "red-first"
+description: "Use ao despachar qualquer builder — um agente, um modelo ou você mesmo — para uma mudança que um teste deve provar. Commita um teste de contrato provado-falhando antes de o build começar, proíbe o builder de tocá-lo e põe um avaliador independente para verificar que o teste nunca foi editado. Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build, teste falhando primeiro, teste de contrato, vermelho primeiro, linha de base vermelha, teste antes do build."
+license: "MIT"
 ---
 
 # Red-First, à prova de adulteração

@@ -1,7 +1,7 @@
 ---
-name: session-handoff
-description: तब लगाओ जब session ख़त्म हो रहा हो, context window compact होने वाली हो, या काम किसी और agent या harness में जारी रहना हो। Session को एक flat file में समेटता है जिसे बिल्कुल नया agent ठंडा पढ़कर आगे बढ़ा सके — state, अधूरा काम, ठीक-ठीक अगला command, खुले फ़ैसले — secrets redact करके और साथ चल रहे काम को बचा हुआ verify करके। Trigger words: handoff, hand off, compact, save state, continue in another session, portable handoff, before restart, session सौंपो, state बचाओ, आगे के लिए लिखो, restart से पहले.
-license: MIT
+name: "session-handoff"
+description: "तब लगाओ जब session ख़त्म हो रहा हो, context window compact होने वाली हो, या काम किसी और agent या harness में जारी रहना हो। Session को एक flat file में समेटता है जिसे बिल्कुल नया agent ठंडा पढ़कर आगे बढ़ा सके — state, अधूरा काम, ठीक-ठीक अगला command, खुले फ़ैसले — secrets redact करके और साथ चल रहे काम को बचा हुआ verify करके। Trigger words: handoff, hand off, compact, save state, continue in another session, portable handoff, before restart, session सौंपो, state बचाओ, आगे के लिए लिखो, restart से पहले."
+license: "MIT"
 ---
 
 # Session Handoff

@@ -1,7 +1,7 @@
 ---
-name: human-voice
-description: हर human-facing message पर लगाओ। No-degree bar; AI slop को मारता है। Trigger words: human voice, plain speech, plain language, de-slop, slop, simplify, jargon, tone, readable, rewrite this, text like a human, सादी भाषा, आसान भाषा, इंसानी लहजा, slop हटाओ, jargon हटाओ, इंसान की तरह लिखो.
-license: MIT
+name: "human-voice"
+description: "हर human-facing message पर लगाओ। No-degree bar; AI slop को मारता है। Trigger words: human voice, plain speech, plain language, de-slop, slop, simplify, jargon, tone, readable, rewrite this, text like a human, सादी भाषा, आसान भाषा, इंसानी लहजा, slop हटाओ, jargon हटाओ, इंसान की तरह लिखो."
+license: "MIT"
 ---
 
 # Human Voice

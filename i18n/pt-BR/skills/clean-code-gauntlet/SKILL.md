@@ -1,7 +1,7 @@
 ---
-name: clean-code-gauntlet
-description: Use ao endurecer ou aterrissar qualquer build — um agente, um serviço, uma biblioteca — quando você quer uma barra de qualidade determinística em vez de review linha a linha. Roda sniper tests, o score CRAP (complexidade x cobertura) e mutation testing limitado, depois um review leve de gosto. Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar, código limpo, teste de mutação, endurecer, complexidade, cobertura, barra de qualidade.
-license: MIT
+name: "clean-code-gauntlet"
+description: "Use ao endurecer ou aterrissar qualquer build — um agente, um serviço, uma biblioteca — quando você quer uma barra de qualidade determinística em vez de review linha a linha. Roda sniper tests, o score CRAP (complexidade x cobertura) e mutation testing limitado, depois um review leve de gosto. Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar, código limpo, teste de mutação, endurecer, complexidade, cobertura, barra de qualidade."
+license: "MIT"
 ---
 
 # Clean Code Gauntlet

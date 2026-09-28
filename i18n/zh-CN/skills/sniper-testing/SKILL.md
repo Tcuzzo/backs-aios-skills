@@ -1,7 +1,7 @@
 ---
-name: sniper-testing
-description: 任何修复或构建循环期间用它，以及在相信任何一个绿色测试之前。只跑覆盖你所改动内容的测试，并干掉 mock 剧场——那种能力已经坏了、测试还在通过的戏。Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat. 中文触发词：狙击测试、只跑相关测试、测试范围、mock 剧场、假绿、全量测试、测试膨胀。
-license: MIT
+name: "sniper-testing"
+description: "任何修复或构建循环期间用它，以及在相信任何一个绿色测试之前。只跑覆盖你所改动内容的测试，并干掉 mock 剧场——那种能力已经坏了、测试还在通过的戏。Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat. 中文触发词：狙击测试、只跑相关测试、测试范围、mock 剧场、假绿、全量测试、测试膨胀。"
+license: "MIT"
 ---
 
 # Sniper Testing

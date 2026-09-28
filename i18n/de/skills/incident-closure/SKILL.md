@@ -1,7 +1,7 @@
 ---
-name: incident-closure
-description: Nutze das, wenn der Mensch Bruch meldet oder "fix it" sagt — besonders wenn die normale Steuerungsebene (API, CLI, Service) tot ist und du darunter greifen musst. Die Antwort ist ein voller Understanding-first-Abschluss — Root Cause mit Evidenz, fehlschlagender Test zuerst, grün, Live-Beweis auf dem eigenen Pfad des Menschen, Commit — nie ein Optionsmenü zurück an ihn. Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore, kaputt, reparieren, wiederherstellen, ausgefallen, geht nicht mehr.
-license: MIT
+name: "incident-closure"
+description: "Nutze das, wenn der Mensch Bruch meldet oder \"fix it\" sagt — besonders wenn die normale Steuerungsebene (API, CLI, Service) tot ist und du darunter greifen musst. Die Antwort ist ein voller Understanding-first-Abschluss — Root Cause mit Evidenz, fehlschlagender Test zuerst, grün, Live-Beweis auf dem eigenen Pfad des Menschen, Commit — nie ein Optionsmenü zurück an ihn. Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore, kaputt, reparieren, wiederherstellen, ausgefallen, geht nicht mehr."
+license: "MIT"
 ---
 
 # Voller Abschluss

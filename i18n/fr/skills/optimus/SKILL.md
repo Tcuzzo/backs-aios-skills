@@ -1,7 +1,7 @@
 ---
-name: optimus
-description: À utiliser au démarrage de toute session, job ou boucle d'agent — avant d'écrire la moindre ligne de code. Boot harnais-d'abord : charge le socle d'invariants et les skills que le job exige, pour que l'agent lise les règles avant de travailler ; inclut le patron de hook grounding-gate qui bloque les outils mutants tant que le harnais n'est pas chargé. Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence, harnais d'abord, charger le harnais, booter le socle, lire le socle, pas de code sans harnais, démarrage de session, séquence de boot.
-license: MIT
+name: "optimus"
+description: "À utiliser au démarrage de toute session, job ou boucle d'agent — avant d'écrire la moindre ligne de code. Boot harnais-d'abord : charge le socle d'invariants et les skills que le job exige, pour que l'agent lise les règles avant de travailler ; inclut le patron de hook grounding-gate qui bloque les outils mutants tant que le harnais n'est pas chargé. Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence, harnais d'abord, charger le harnais, booter le socle, lire le socle, pas de code sans harnais, démarrage de session, séquence de boot."
+license: "MIT"
 ---
 
 # Harness Boot

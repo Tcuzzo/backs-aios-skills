@@ -1,7 +1,7 @@
 ---
-name: design-taste
-description: À utiliser avant de construire quoi que ce soit de visuel — un site, une app, un dashboard, une console ou un deck — pour livrer avec du vrai goût au lieu des réglages génériques de l'IA. Trigger words: design, UI, taste, design tokens, design system, accessibility, WCAG, screenshot critique, dark mode, restyle, goût, maquette, interface, accessibilité, critique de capture d'écran, mode sombre, refonte visuelle.
-license: MIT
+name: "design-taste"
+description: "À utiliser avant de construire quoi que ce soit de visuel — un site, une app, un dashboard, une console ou un deck — pour livrer avec du vrai goût au lieu des réglages génériques de l'IA. Trigger words: design, UI, taste, design tokens, design system, accessibility, WCAG, screenshot critique, dark mode, restyle, goût, maquette, interface, accessibilité, critique de capture d'écran, mode sombre, refonte visuelle."
+license: "MIT"
 ---
 
 # Design Taste — Les tokens d'abord, les yeux ouverts, l'accessibilité dure

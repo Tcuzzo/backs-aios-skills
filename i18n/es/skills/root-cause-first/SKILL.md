@@ -1,7 +1,7 @@
 ---
-name: root-cause-first
-description: Úsala frente a un bug difícil, un fallo silencioso, una cacería de regresiones o un cambio riesgoso que podría romper calladamente a un consumidor aguas abajo. Sin fixes antes de investigar — lee el error, reprodúcelo a demanda, revisa los cambios recientes, instrumenta las fronteras entre componentes, rastrea el flujo de datos hacia atrás hasta la fuente. Trigger words: debug, root cause, why is this failing, silent failure, regression, works in tests but fails live, systematic debugging, causa raíz, por qué falla esto, fallo silencioso, regresión, pasa en tests pero falla en vivo, depuración sistemática.
-license: MIT
+name: "root-cause-first"
+description: "Úsala frente a un bug difícil, un fallo silencioso, una cacería de regresiones o un cambio riesgoso que podría romper calladamente a un consumidor aguas abajo. Sin fixes antes de investigar — lee el error, reprodúcelo a demanda, revisa los cambios recientes, instrumenta las fronteras entre componentes, rastrea el flujo de datos hacia atrás hasta la fuente. Trigger words: debug, root cause, why is this failing, silent failure, regression, works in tests but fails live, systematic debugging, causa raíz, por qué falla esto, fallo silencioso, regresión, pasa en tests pero falla en vivo, depuración sistemática."
+license: "MIT"
 ---
 
 # Root Cause First

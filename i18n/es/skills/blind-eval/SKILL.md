@@ -1,7 +1,7 @@
 ---
-name: blind-eval
-description: Úsala antes de aterrizar cualquier cambio donde la pregunta es de gusto o de calidad y un test no puede decidirla. Juzga el cambio por sus méritos con la autoría oculta, y luego lo conserva o lo revierte — un empate revierte; solo aterriza la mejora probada. Trigger words: blind eval, karpathy, keep or revert, quality gate, taste call, blind judge, A/B judge, prove uplift. Disparadores: evaluación ciega, conservar o revertir, puerta de calidad, juicio a ciegas, juez A/B, probar la mejora.
-license: MIT
+name: "blind-eval"
+description: "Úsala antes de aterrizar cualquier cambio donde la pregunta es de gusto o de calidad y un test no puede decidirla. Juzga el cambio por sus méritos con la autoría oculta, y luego lo conserva o lo revierte — un empate revierte; solo aterriza la mejora probada. Trigger words: blind eval, karpathy, keep or revert, quality gate, taste call, blind judge, A/B judge, prove uplift. Disparadores: evaluación ciega, conservar o revertir, puerta de calidad, juicio a ciegas, juez A/B, probar la mejora."
+license: "MIT"
 ---
 
 # Blind Eval

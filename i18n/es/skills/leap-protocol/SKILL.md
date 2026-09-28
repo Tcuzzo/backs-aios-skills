@@ -1,7 +1,7 @@
 ---
-name: leap-protocol
-description: Úsala cuando un seam es demasiado grande para un solo constructor y hay que repartirlo entre workers paralelos. LEAP descompone el trabajo en bolas con dueño independiente — meta, spec completa, alcance duro de archivos —, las lanza a constructores frescos en worktrees aislados y reconcilia por una espina de escritura única. Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff, bola, descomponer, repartir en paralelo, constructores paralelos, espina de escritura única, lanza la bola, relevo sin estado.
-license: MIT
+name: "leap-protocol"
+description: "Úsala cuando un seam es demasiado grande para un solo constructor y hay que repartirlo entre workers paralelos. LEAP descompone el trabajo en bolas con dueño independiente — meta, spec completa, alcance duro de archivos —, las lanza a constructores frescos en worktrees aislados y reconcilia por una espina de escritura única. Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff, bola, descomponer, repartir en paralelo, constructores paralelos, espina de escritura única, lanza la bola, relevo sin estado."
+license: "MIT"
 ---
 
 # LEAP Protocol

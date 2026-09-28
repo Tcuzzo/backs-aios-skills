@@ -1,7 +1,7 @@
 ---
-name: red-first
-description: À utiliser avant d'envoyer n'importe quel builder — un agent, un modèle, ou toi-même — faire un changement qu'un test doit prouver. Committe un test de contrat prouvé en échec avant le début du build, interdit au builder d'y toucher, et fait vérifier par un correcteur indépendant que le test n'a jamais été édité. Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build, rouge d'abord, test en échec d'abord, test de contrat, base rouge, test inviolable, test avant build.
-license: MIT
+name: "red-first"
+description: "À utiliser avant d'envoyer n'importe quel builder — un agent, un modèle, ou toi-même — faire un changement qu'un test doit prouver. Committe un test de contrat prouvé en échec avant le début du build, interdit au builder d'y toucher, et fait vérifier par un correcteur indépendant que le test n'a jamais été édité. Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build, rouge d'abord, test en échec d'abord, test de contrat, base rouge, test inviolable, test avant build."
+license: "MIT"
 ---
 
 # Red-First, inviolable

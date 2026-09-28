@@ -1,7 +1,7 @@
 ---
-name: invariant-floor
-description: Nutze das beim Aufsetzen eines Agent-Harness, beim Review autonomer Arbeit oder bei der Entscheidung, ob eine Änderung landen darf. Der nummerierte Boden aus Gesetzen, die jede autonome Änderung erfüllen muss — kein Fake Green, laute Fehler, begrenzte Autonomie, Provenienz, ganze Nähte schließen. Trigger words: invariants, floor, landing gate, quality floor, hard rules, may this land, autonomous quality, Invarianten, Boden, Qualitätsboden, harte Regeln, darf das landen.
-license: MIT
+name: "invariant-floor"
+description: "Nutze das beim Aufsetzen eines Agent-Harness, beim Review autonomer Arbeit oder bei der Entscheidung, ob eine Änderung landen darf. Der nummerierte Boden aus Gesetzen, die jede autonome Änderung erfüllen muss — kein Fake Green, laute Fehler, begrenzte Autonomie, Provenienz, ganze Nähte schließen. Trigger words: invariants, floor, landing gate, quality floor, hard rules, may this land, autonomous quality, Invarianten, Boden, Qualitätsboden, harte Regeln, darf das landen."
+license: "MIT"
 ---
 
 # Der Invarianten-Boden

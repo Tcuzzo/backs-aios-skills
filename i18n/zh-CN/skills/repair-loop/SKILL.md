@@ -1,7 +1,7 @@
 ---
-name: repair-loop
-description: 修 bug、关掉上报的问题、或者端到端升级一条接缝时用它。跑完整的修复循环——扎根地板、在实况真相上复现、红色契约测试、在接缝处修掉整类、在真实路径上验证、独立评分、落地——并且一直迭代到全部成真。Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build. 中文触发词：修复循环、修一下、把问题关掉、闭合接缝、升级、开发模式。
-license: MIT
+name: "repair-loop"
+description: "修 bug、关掉上报的问题、或者端到端升级一条接缝时用它。跑完整的修复循环——扎根地板、在实况真相上复现、红色契约测试、在接缝处修掉整类、在真实路径上验证、独立评分、落地——并且一直迭代到全部成真。Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build. 中文触发词：修复循环、修一下、把问题关掉、闭合接缝、升级、开发模式。"
+license: "MIT"
 ---
 
 # Repair Loop

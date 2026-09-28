@@ -1,7 +1,7 @@
 ---
-name: seam-engineering
-description: तब लगाओ जब कोई bug ठीक करना हो या किसी audit या bug hunt को बंद करना हो। Flaw की class को एक बार, उसके shared primitive पर ठीक करता है, हर sibling को sweep करता है, अगली instance पकड़ने वाला guard लगाता है, और सामने आई हर finding बंद करता है — कोई चुपचाप टालना नहीं। Trigger words: seam, class fix, whole-seam closure, point patch, structural guard, do it right the first time, पूरी class ठीक करो, जड़ से बंद करो, पहली बार में सही, पूरा seam बंद करो.
-license: MIT
+name: "seam-engineering"
+description: "तब लगाओ जब कोई bug ठीक करना हो या किसी audit या bug hunt को बंद करना हो। Flaw की class को एक बार, उसके shared primitive पर ठीक करता है, हर sibling को sweep करता है, अगली instance पकड़ने वाला guard लगाता है, और सामने आई हर finding बंद करता है — कोई चुपचाप टालना नहीं। Trigger words: seam, class fix, whole-seam closure, point patch, structural guard, do it right the first time, पूरी class ठीक करो, जड़ से बंद करो, पहली बार में सही, पूरा seam बंद करो."
+license: "MIT"
 ---
 
 # Seam Engineering

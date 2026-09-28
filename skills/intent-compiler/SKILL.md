@@ -1,7 +1,7 @@
 ---
-name: intent-compiler
-description: Use when a human's ask arrives as natural prose (metaphor, slang, poetry, compressed shorthand, heat, or "you know what I mean") instead of a ticket. Translates the language into a stated technical directive, states the reading in one line, then executes. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing.
-license: MIT
+name: "intent-compiler"
+description: "Use when a human's ask arrives as natural prose (metaphor, slang, poetry, compressed shorthand, heat, or \"you know what I mean\") instead of a ticket. Translates the language into a stated technical directive, states the reading in one line, then executes. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing."
+license: "MIT"
 ---
 
 # Prose Is the Spec

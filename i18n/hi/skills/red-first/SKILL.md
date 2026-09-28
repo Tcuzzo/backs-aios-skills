@@ -1,7 +1,7 @@
 ---
-name: red-first
-description: तब लगाओ जब कोई भी builder — agent, model, या ख़ुद तुम — ऐसा बदलाव करने भेजा जाए जिसे कोई test साबित कर सके। Build शुरू होने से पहले साबित-failing contract test commit करता है, builder को उसे छूने से रोकता है, और एक independent grader से verify कराता है कि test कभी edit नहीं हुआ। Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build, पहले failing test, पहले test लिखो, test को लॉक करो, build से पहले test.
-license: MIT
+name: "red-first"
+description: "तब लगाओ जब कोई भी builder — agent, model, या ख़ुद तुम — ऐसा बदलाव करने भेजा जाए जिसे कोई test साबित कर सके। Build शुरू होने से पहले साबित-failing contract test commit करता है, builder को उसे छूने से रोकता है, और एक independent grader से verify कराता है कि test कभी edit नहीं हुआ। Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build, पहले failing test, पहले test लिखो, test को लॉक करो, build से पहले test."
+license: "MIT"
 ---
 
 # Red-First, Tamper-Proof

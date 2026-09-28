@@ -1,7 +1,7 @@
 ---
-name: human-calibration
-description: 当一次构建、设计或有分量的 UX 决策启动、你必须先认识它服务的那个人时使用。加载或建立一份会话画像——这个人怎么思考、怎么拍板、想被怎样对话——然后让整个构建顺着它走。Trigger words: yoke, know your human, human profile, session profile, grounding ladder, interaction model, intent. 中文触发词：了解你的人类、人类画像、会话画像、接地阶梯、交互模型、意图。
-license: MIT
+name: "human-calibration"
+description: "当一次构建、设计或有分量的 UX 决策启动、你必须先认识它服务的那个人时使用。加载或建立一份会话画像——这个人怎么思考、怎么拍板、想被怎样对话——然后让整个构建顺着它走。Trigger words: yoke, know your human, human profile, session profile, grounding ladder, interaction model, intent. 中文触发词：了解你的人类、人类画像、会话画像、接地阶梯、交互模型、意图。"
+license: "MIT"
 ---
 
 # Know Your Human——了解你的人类

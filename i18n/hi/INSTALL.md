@@ -1,5 +1,7 @@
 # Install — pack को किसी असली agent पर कसें
 
+> **v0.7 portable installer:** Claude Code, Codex, Cursor, OpenCode और portable agents के लिए मौजूदा one-step registration: `./install.sh --target all --locale hi`। script किसी मौजूदा path को overwrite नहीं करती; PowerShell पर `./install.ps1` चलाएँ। पूरी current path matrix [canonical install guide](../../INSTALL.md) में है।
+
 यह pack markdown के folders है। हर skill है `skills/<name>/SKILL.md`। हर play है
 `plays/<name>.md`। कोई binaries नहीं, कोई server नहीं, कोई build step नहीं।
 install करने का मतलब है markdown को वहाँ रखना जहाँ आपका agent skills ढूँढता है।

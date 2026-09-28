@@ -1,5 +1,7 @@
 # Install — das Pack an einen echten Agenten schrauben
 
+> **v0.7 portable installer:** Aktuelle Ein-Schritt-Registrierung für Claude Code, Codex, Cursor, OpenCode und portable Agenten: `./install.sh --target all --locale de`. Das Skript überschreibt nichts; PowerShell-Nutzer verwenden `./install.ps1`. Die vollständige aktuelle Pfadmatrix steht in [der kanonischen Installationsanleitung](../../INSTALL.md).
+
 Das Pack ist Ordner voller Markdown. Jeder Skill ist `skills/<name>/SKILL.md`. Jedes
 Play ist `plays/<name>.md`. Keine Binaries, kein Server, kein Build-Schritt.
 Installieren heißt: das Markdown dorthin legen, wo dein Agent nach Skills sucht.

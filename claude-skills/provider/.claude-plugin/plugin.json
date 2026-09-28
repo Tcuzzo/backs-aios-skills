@@ -1,0 +1,8 @@
+{
+  "name": "provider",
+  "description": "BACKS Claude Code provider control for switching the full model lineup between native Claude OAuth and Ollama.",
+  "author": {
+    "name": "Tcuzzo"
+  },
+  "license": "MIT"
+}

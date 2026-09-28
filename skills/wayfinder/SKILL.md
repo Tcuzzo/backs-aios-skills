@@ -1,7 +1,7 @@
 ---
-name: wayfinder
-description: Use when you are lost, the way forward is unclear, or you must decide what to work on next. Charts a decision map to the destination instead of parking a question on the human. Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier.
-license: MIT
+name: "wayfinder"
+description: "Use when you are lost, the way forward is unclear, or you must decide what to work on next. Charts a decision map to the destination instead of parking a question on the human. Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier."
+license: "MIT"
 ---
 
 # Wayfinder

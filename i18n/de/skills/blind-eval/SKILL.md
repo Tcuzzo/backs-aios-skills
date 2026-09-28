@@ -1,7 +1,7 @@
 ---
-name: blind-eval
-description: Nutze das vor dem Landen von allem, wo Geschmack oder Output-Qualität die Frage ist und kein Test entscheiden kann. Bewertet eine Änderung nach Substanz mit verdeckter Autorschaft, dann keep oder revert — ein Unentschieden wird verworfen, nur bewiesener Uplift landet. Trigger words: blind eval, karpathy, keep or revert, quality gate, taste call, blind judge, A/B judge, prove uplift, Blindbewertung, behalten oder verwerfen, Qualitätsgate, Geschmacksfrage, Uplift beweisen.
-license: MIT
+name: "blind-eval"
+description: "Nutze das vor dem Landen von allem, wo Geschmack oder Output-Qualität die Frage ist und kein Test entscheiden kann. Bewertet eine Änderung nach Substanz mit verdeckter Autorschaft, dann keep oder revert — ein Unentschieden wird verworfen, nur bewiesener Uplift landet. Trigger words: blind eval, karpathy, keep or revert, quality gate, taste call, blind judge, A/B judge, prove uplift, Blindbewertung, behalten oder verwerfen, Qualitätsgate, Geschmacksfrage, Uplift beweisen."
+license: "MIT"
 ---
 
 # Blind Eval

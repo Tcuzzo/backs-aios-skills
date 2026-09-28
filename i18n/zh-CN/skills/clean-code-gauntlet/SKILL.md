@@ -1,7 +1,7 @@
 ---
-name: clean-code-gauntlet
-description: 在加固或合入任何构建时使用——agent、服务、库——你要的是一条确定性的质量线，而不是逐行 review。依次跑狙击测试、CRAP 分数（复杂度 x 覆盖率）、有界变异测试，最后一轮轻量品味评审。Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar. 中文触发词：整洁代码、代码质量、闯关、CRAP 分数、变异测试、加固、圈复杂度、覆盖率、质量线。
-license: MIT
+name: "clean-code-gauntlet"
+description: "在加固或合入任何构建时使用——agent、服务、库——你要的是一条确定性的质量线，而不是逐行 review。依次跑狙击测试、CRAP 分数（复杂度 x 覆盖率）、有界变异测试，最后一轮轻量品味评审。Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar. 中文触发词：整洁代码、代码质量、闯关、CRAP 分数、变异测试、加固、圈复杂度、覆盖率、质量线。"
+license: "MIT"
 ---
 
 # Clean Code Gauntlet——整洁代码闯关
