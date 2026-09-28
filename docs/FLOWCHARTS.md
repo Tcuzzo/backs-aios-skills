@@ -42,7 +42,19 @@ Shapes carry meaning so the guide never depends on color:
 [session-handoff](../skills/session-handoff/SKILL.md) ·
 [sniper-testing](../skills/sniper-testing/SKILL.md) ·
 [understanding-gates](../skills/understanding-gates/SKILL.md) ·
-[wayfinder](../skills/wayfinder/SKILL.md)
+[wayfinder](../skills/wayfinder/SKILL.md) ·
+[architecture-engineer](../skills/architecture-engineer/SKILL.md) ·
+[cam-iot-inventory](../skills/cam-iot-inventory/SKILL.md) ·
+[co-health](../skills/co-health/SKILL.md) ·
+[conscientious-objector](../skills/conscientious-objector/SKILL.md) ·
+[hive-clone-boot](../skills/hive-clone-boot/SKILL.md) ·
+[osha-bot](../skills/osha-bot/SKILL.md) ·
+[turn-and-burn](../skills/turn-and-burn/SKILL.md) ·
+[context-engineer](../skills/context-engineer/SKILL.md) ·
+[context-compiler](../skills/context-compiler/SKILL.md) ·
+[context_engineer](../skills/context_engineer/SKILL.md) ·
+[operator-intent-deduction](../skills/operator-intent-deduction/SKILL.md) ·
+[operator_intent_deduction](../skills/operator_intent_deduction/SKILL.md)
 
 **Plays:** [elite-build](../plays/elite-build.md) ·
 [agent-builds](../plays/agent-builds.md) ·
