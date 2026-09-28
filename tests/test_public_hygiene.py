@@ -29,7 +29,16 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # guard files are named here. A NEW guard test planting offenders must join
 # this set explicitly — that is the friction that keeps the audit honest.
 _SELF = "tests/test_public_hygiene.py"
-_GUARD_TESTS = {_SELF, "tests/test_provider_public_safety.py"}
+_GUARD_TESTS = {
+    _SELF,
+    "tests/test_provider_public_safety.py",
+    # bin/scrub-plugin-pack-literals IS a guard: its body contains the
+    # literal targets it scrubs for as sed patterns and a diagnostic
+    # grep. Exempting it from the path scan is the same self-exclusion
+    # logic the test already applies to itself: a guard that greps its
+    # own planted offenders lies.
+    "bin/scrub-plugin-pack-literals",
+}
 
 # Generic shapes only — never a real literal.
 _PRIVATE_IP = re.compile(
