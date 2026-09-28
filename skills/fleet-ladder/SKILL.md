@@ -28,7 +28,7 @@ Resolution lives only in deploy ladder files. Skills teach agents to **honor** t
 | GPU nodes | `<BACKS_DEPLOY_ROOT>/config/gpu_nodes.yaml` |
 
 Cite (operator / Security order — policy intent, not a second ladder):
-`/mnt/jarvis_data/backs_coordination/grokbot-bridge/observe/SECURITY_OPERATOR_BUILDER_SEAT_ORDER_20260926.md`
+`<placeholder-mount>/backs_coordination/grokbot-bridge/observe/SECURITY_OPERATOR_BUILDER_SEAT_ORDER_20260926.md`
 
 Also cite when present:
 `observe/FOREMAN_FLEET_LADDER_TERRA_FRONTIER_RESEARCH_20260926.md`
@@ -184,4 +184,3 @@ If keys are **absent** on live deploy: skill still teaches this policy and board
 - Also look for harness ids `premium_codex_builder` / `cursor_native_worker` when present
 
 Do **not** declare Sol MISSING solely because `roles.sol` is absent. Gap only if no candidate/model string matches sol after full ladder walk.
-

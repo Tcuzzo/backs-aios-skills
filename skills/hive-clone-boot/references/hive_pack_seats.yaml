@@ -18,7 +18,7 @@ wolfpack:
 
 # A2A rails for hive (Communications Boss owned)
 a2a_rails:
-  bridge: /mnt/jarvis_data/backs_coordination/grokbot-bridge/{inbox,outbox,observe,status}
+  bridge: <placeholder-mount>/backs_coordination/grokbot-bridge/{inbox,outbox,observe,status}
   pack_den: [/packden, /api/pack/comms]
   squad_telegram: services.telegram.squad_feed.post_agent_message  # high-signal only
   forbidden: [fourth_chat, ack_spam_loops, fanout_every_boss]

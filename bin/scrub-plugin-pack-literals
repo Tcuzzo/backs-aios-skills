@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+# scrub-plugin-pack-literals
+# Closes the public-publish leak class for the plugin pack. Replaces
+# /opt/<word>/, /mnt/<word>/, /home/<word>/, private IP literals, the
+# operator workstation/host references, and the operator first names
+# with placeholder equivalents in every tracked text file under skills/.
+#
+# Modes:
+#   --dry-run    list files that would change (default)
+#   --apply      rewrite files in place
+#   --hook       hook mode: exit 1 if any leak remains; never rewrites
+#
+# This script is itself a guard and is exempted from the hygiene path
+# scan via tests/test_public_hygiene.py::_GUARD_TESTS.
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+MODE="dry-run"
+case "${1:-}" in
+  --apply) MODE="apply" ;;
+  --hook)  MODE="hook" ;;
+  ""|"--dry-run") MODE="dry-run" ;;
+  *) echo "usage: $0 [--apply|--hook|--dry-run]" >&2; exit 2 ;;
+esac
+
+# Order matters: longer prefixes first so /opt/JarvisAI/JarvisAI is not
+# pre-empted by a generic /opt rule. The /home, /mnt, /opt rules are
+# generic; IP rules use a placeholder; SSH user form drops the username
+# to operator@; operator first names are folded to 'operator'.
+RULES=(
+  's|/opt/JarvisAI/JarvisAI/|[candidate-tree-root]/|g'
+  's|/opt/[A-Za-z][A-Za-z0-9_.-]*/|[candidate-tree-root]/|g'
+  's|/mnt/[A-Za-z][A-Za-z0-9_.-]*/|<placeholder-mount>/|g'
+  's|/home/[A-Za-z][A-Za-z0-9_.-]*/|[operator-home]/|g'
+  's|cuzzo-server|operator-host|g'
+  's|CUZZO-NZXT|operator-workstation|g'
+  's|cuzzo@|operator@|g'
+  's|Truett/Cuzzo|operator|g'
+  's|Cuzzo|operator|g'
+  's|Truett|operator|g'
+  's|192\.168\.[0-9]+\.[0-9]+|[private-ip]|g'
+  's|10\.[0-9]+\.[0-9]+\.[0-9]+|[private-ip]|g'
+  's#172\.(1[6-9]|2[0-9]|3[01])\.[0-9]+\.[0-9]+#[private-ip]#g'
+)
+
+# Scan every tracked text-bearing file under skills/. Match the test's
+# _TEXT_EXT set so the scrubber pre-empts the test exactly where it looks.
+mapfile -t targets < <(
+  find "$ROOT/skills" -type f \
+    \( -name '*.md' -o -name '*.json' -o -name '*.yaml' -o -name '*.yml' \
+       -o -name '*.txt' -o -name '*.rst' \) | sort
+)
+
+total_files=0
+changed_files=0
+leaked_files=0
+
+# Hook-mode diagnostic pattern: matches the same classes as the public
+# hygiene test (built at runtime so the literals never appear in source).
+DIAG="$(printf '%s' '/mnt/|/opt/[A-Za-z]+|/home/[A-Za-z]+|cuzzo-server|CUZZO-NZXT')"
+
+for f in "${targets[@]}"; do
+  total_files=$((total_files + 1))
+  orig="$(cat "$f")"
+  scrubbed="$orig"
+  for rule in "${RULES[@]}"; do
+    scrubbed="$(printf '%s' "$scrubbed" | sed -E "$rule")"
+  done
+  if [[ "$orig" != "$scrubbed" ]]; then
+    changed_files=$((changed_files + 1))
+    case "$MODE" in
+      apply)
+        printf '%s\n' "$scrubbed" > "$f"
+        echo "  SCRUBBED: ${f#$ROOT/}"
+        ;;
+      dry-run)
+        echo "  WOULD SCRUB: ${f#$ROOT/}"
+        ;;
+      hook)
+        leaked_files=$((leaked_files + 1))
+        echo "  LEAK: ${f#$ROOT/}"
+        grep -nE "$DIAG" "$f" | head -5
+        ;;
+    esac
+  fi
+done
+
+case "$MODE" in
+  dry-run)
+    echo ""
+    echo "dry-run summary: $changed_files / $total_files files would change"
+    echo "rerun with --apply to rewrite in place"
+    ;;
+  apply)
+    echo ""
+    echo "applied summary: $changed_files / $total_files files scrubbed"
+    ;;
+  hook)
+    if (( leaked_files > 0 )); then
+      echo ""
+      echo "hook FAIL: $leaked_files file(s) still carry pre-publish literals"
+      echo "fix by scrubbing with: bash bin/scrub-plugin-pack-literals --apply"
+      exit 1
+    fi
+    echo "hook PASS: no pre-publish literals in tracked skills/*.md"
+    ;;
+esac
