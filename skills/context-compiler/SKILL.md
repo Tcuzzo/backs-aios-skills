@@ -22,8 +22,8 @@ metadata:
 
 ## Native execution binding
 
-Load the current [canonical law](../../CLAUDE.md) through [H_Boot](../../H_Boot.md)
-and apply [Yoke](../yoke/SKILL.md). Current operator instructions and that law
+Load the current [canonical law](../../CLAUDE.md) through H_Boot
+and apply [Yoke](../human-calibration/SKILL.md). Current operator instructions and that law
 control scope. This method adds no hook, rearm, approval, tool restriction, host
 allowlist, write gate, sandbox default, or LAN change. Owner configuration is a
 decision, not an audit finding. Act on already authorized work; surface any
@@ -32,7 +32,7 @@ unrequested runtime or hardware change before taking it.
 Use the registered `sys.read_file`, `sys.bash`, and `sys.write_file` tools for the
 file and command steps below. Tool names describe usable bindings, not a reduced
 runtime tool catalog. Resolve model roles and transports from
-[the configured fleet](../../config/fleet_ladder.yaml) via
+the configured fleet via
 `python scripts/fleet.py ladder --json` and `python scripts/fleet.py build --role
 <configured-role> --spec <complete-spec> --repo <owned-worktree> --timeout <budget>`.
 Record actual model, provider, transport, host, fallback, exit status, and evidence;

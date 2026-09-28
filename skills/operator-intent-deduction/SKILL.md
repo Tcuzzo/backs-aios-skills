@@ -1,6 +1,6 @@
 ---
-skill_id: operator_intent_deduction
-name: Operator Intent Deduction (know the human, decide with spine)
+skill_id: operator-intent-deduction
+name: operator-intent-deduction
 description: Use BEFORE handing the operator any build decision, dial, or "A or B?" — deduce what he would decide from his standing intent + the platform's record of how he thinks + simulation/data, then act with spine. The whole platform is insight into the human; this skill turns that insight into decisions so BACKS answers its own questions and stops putting the operator to work. Not visual taste (that is taste_engine) — this is DECISION taste and intent deduction.
 license: MIT
 version: "1.0"
