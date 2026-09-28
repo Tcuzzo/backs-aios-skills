@@ -14,7 +14,7 @@ license: MIT
 
 ## Paired serving code (prove before green claims)
 
-Live deploy tree: `/mnt/jarvis_data/backs_deploy/JarvisAI`
+Live deploy tree: `<placeholder-mount>/backs_deploy/JarvisAI`
 
 | Symbol | Path | Role |
 |--------|------|------|
@@ -22,7 +22,7 @@ Live deploy tree: `/mnt/jarvis_data/backs_deploy/JarvisAI`
 | `resolve_camera_sticky` | `backend/services/camera_streams.py` | Resolve inventory row by normalized MAC (sticky id) |
 | `_normalize_mac` | `backend/services/camera_streams.py` | Canonical MAC form for sticky key |
 | cameras API | `GET /api/security/cameras` | Inventory rows: `id`, `host`, `mac`/`mac_address`, snapshot honesty fields |
-| snapshot | `GET /api/security/cameras/{id}/snapshot` | Picture path = **serving tree**, never `/opt/JarvisAI/...` |
+| snapshot | `GET /api/security/cameras/{id}/snapshot` | Picture path = **serving tree**, never `[candidate-tree-root]/...` |
 | wifi-scan | `POST /api/security/wifi-scan` | Via `BACKS_AI_WIFI_SCAN_IFACE` / router host only — honest error if unset |
 | FE chrome | `frontend/components/security/camera-grid.tsx` | **AMBER** — Secure eye 2026-09-19: API missing-mac is honest; FE does **not** yet emit `data-camera-mac` / `data-camera-mac-missing` (skill doc was ahead of chrome) |
 
@@ -30,7 +30,7 @@ Live deploy tree: `/mnt/jarvis_data/backs_deploy/JarvisAI`
 - Proven / Secure #3 tip: `6e33b296ac` (full tip SHA when resolved on deploy: `6e33b296ac30441c0e39b55cf65f1313e1173d2e`)
 - Deploy HEAD sticky helpers: `956f0cd3` (prove on live `HEAD` / `refs/backs/proven/production`)
 - Prove with:
-  - `git -C /mnt/jarvis_data/backs_deploy/JarvisAI merge-base --is-ancestor 6e33b296ac HEAD`
+  - `git -C <placeholder-mount>/backs_deploy/JarvisAI merge-base --is-ancestor 6e33b296ac HEAD`
   - `git -C ... rev-parse --short=12 HEAD` starts with `956f0cd3` **or** is descendant that still contains sticky helpers
   - `rg -n 'apply_host_remap_for_mac|resolve_camera_sticky|_normalize_mac' backend/services/camera_streams.py`
 
@@ -51,7 +51,7 @@ Sticky law: after host remap, **same MAC → same camera id** via `apply_host_re
 1. **LO5:** inventory ready ≠ picture. `snapshot_available` / `snapshot_status` win over "camera listed".
 2. **Never invent** MAC, SSID, or `wlan0` success on .70.
 3. **Wi-Fi only** through `BACKS_AI_WIFI_SCAN_IFACE` / router-host path — missing iface → loud honest error (AMBER/RED), not fake AP list.
-4. **Snapshot path** from serving-tree deploy, not `/opt/JarvisAI/...`.
+4. **Snapshot path** from serving-tree deploy, not `[candidate-tree-root]/...`.
 5. **API mac fixtures** above are the contract — mismatch vs live `GET /api/security/cameras` is RED until serving matches (do not patch skill fixtures to paper over drift).
 
 ## Red cases (must fail loud until serving proves otherwise)

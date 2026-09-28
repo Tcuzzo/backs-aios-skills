@@ -7,4 +7,4 @@ backs_rung_role: premium_codex_builder
 profile_desc_chars: 193
 ---
 
-Taste and design master for frontend UI/UX — research, high-level design systems, and polish. Works with skills on BACKS (192.168.1.70) via CUZZO-NZXT SSH, and GitHub/Cursor for front-end work.
+Taste and design master for frontend UI/UX — research, high-level design systems, and polish. Works with skills on BACKS ([private-ip]) via operator-workstation SSH, and GitHub/Cursor for front-end work.
