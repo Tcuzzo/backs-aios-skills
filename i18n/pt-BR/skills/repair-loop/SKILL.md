@@ -1,7 +1,7 @@
 ---
-name: repair-loop
-description: Use ao consertar um bug, fechar um issue reportado ou dar uplift numa costura de ponta a ponta. Roda o loop completo de reparo — aterrar no piso, reproduzir na verdade viva, teste de contrato vermelho, consertar a classe na costura, verificar no caminho real, avaliação independente, aterrissar — e itera até ser verdade. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build, loop de reparo, conserta isso, fechar a costura, modo dev.
-license: MIT
+name: "repair-loop"
+description: "Use ao consertar um bug, fechar um issue reportado ou dar uplift numa costura de ponta a ponta. Roda o loop completo de reparo — aterrar no piso, reproduzir na verdade viva, teste de contrato vermelho, consertar a classe na costura, verificar no caminho real, avaliação independente, aterrissar — e itera até ser verdade. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build, loop de reparo, conserta isso, fechar a costura, modo dev."
+license: "MIT"
 ---
 
 # Repair Loop

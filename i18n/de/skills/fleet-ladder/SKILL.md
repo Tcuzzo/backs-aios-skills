@@ -1,7 +1,7 @@
 ---
-name: fleet-ladder
-description: Nutze das, bevor Arbeit an ein Modell geht — Bauen, Bewerten oder ein begrenzter Worker-Job — oder wenn ein Provider down ist und du die Fallback-Reihenfolge brauchst. Löst die LIVE-Modellleiter auf: probe, was wirklich läuft, wähle das beste Verfügbare nach expliziter Fallback-Ordnung, scheitere laut, wenn die Leiter erschöpft ist. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability, Leiter, Modellleiter, Ausfall, welches Modell, Verfügbarkeit.
-license: MIT
+name: "fleet-ladder"
+description: "Nutze das, bevor Arbeit an ein Modell geht — Bauen, Bewerten oder ein begrenzter Worker-Job — oder wenn ein Provider down ist und du die Fallback-Reihenfolge brauchst. Löst die LIVE-Modellleiter auf: probe, was wirklich läuft, wähle das beste Verfügbare nach expliziter Fallback-Ordnung, scheitere laut, wenn die Leiter erschöpft ist. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability, Leiter, Modellleiter, Ausfall, welches Modell, Verfügbarkeit."
+license: "MIT"
 ---
 
 # Fleet Ladder

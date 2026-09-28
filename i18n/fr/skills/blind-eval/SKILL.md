@@ -1,7 +1,7 @@
 ---
-name: blind-eval
-description: À utiliser avant de livrer quoi que ce soit où le goût ou la qualité du rendu est la question et qu'un test ne peut pas trancher. Juge un changement sur ses mérites, auteur masqué, puis garde ou annule — une égalité annule, seul un gain prouvé atterrit. Trigger words: blind eval, karpathy, keep or revert, quality gate, taste call, blind judge, A/B judge, prove uplift, éval à l'aveugle, garder ou annuler, barrière de qualité, question de goût, juge aveugle, gain prouvé.
-license: MIT
+name: "blind-eval"
+description: "À utiliser avant de livrer quoi que ce soit où le goût ou la qualité du rendu est la question et qu'un test ne peut pas trancher. Juge un changement sur ses mérites, auteur masqué, puis garde ou annule — une égalité annule, seul un gain prouvé atterrit. Trigger words: blind eval, karpathy, keep or revert, quality gate, taste call, blind judge, A/B judge, prove uplift, éval à l'aveugle, garder ou annuler, barrière de qualité, question de goût, juge aveugle, gain prouvé."
+license: "MIT"
 ---
 
 # Blind Eval — l'éval à l'aveugle

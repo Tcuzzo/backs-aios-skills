@@ -1,7 +1,7 @@
 ---
-name: root-cause-first
-description: 面对难缠的 bug、无声的失败、回归排查，或一个可能悄悄弄坏下游调用方的高风险改动时用它。不调查就没有修复——读报错、按需复现、查最近的改动、在组件边界上打探针、沿数据流倒推到源头。Trigger words: debug, root cause, why is this failing, silent failure, regression, works in tests but fails live, systematic debugging. 中文触发词：根因、排查、为什么会挂、无声失败、回归、测试过了线上挂、系统化调试、先查再修。
-license: MIT
+name: "root-cause-first"
+description: "面对难缠的 bug、无声的失败、回归排查，或一个可能悄悄弄坏下游调用方的高风险改动时用它。不调查就没有修复——读报错、按需复现、查最近的改动、在组件边界上打探针、沿数据流倒推到源头。Trigger words: debug, root cause, why is this failing, silent failure, regression, works in tests but fails live, systematic debugging. 中文触发词：根因、排查、为什么会挂、无声失败、回归、测试过了线上挂、系统化调试、先查再修。"
+license: "MIT"
 ---
 
 # Root Cause First

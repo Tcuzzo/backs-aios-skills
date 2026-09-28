@@ -1,7 +1,7 @@
 ---
-name: model-fusion
-description: Wenn die Antwort eines einzelnen Modells nicht vertrauenswürdig genug ist — ein harter Build, Fix oder Entwurf, bei dem mehrere Modelle antreten sollen und ein unabhängiger Richter wählt. Ein Panel entwirft parallel, ein Richter merged den Sieger, das Ergebnis wird gegen die ursprüngliche Absicht validiert. Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader, Richter, Mehrmodell, Entwürfe parallel, Sieger mergen, Builder nicht Bewerter.
-license: MIT
+name: "model-fusion"
+description: "Wenn die Antwort eines einzelnen Modells nicht vertrauenswürdig genug ist — ein harter Build, Fix oder Entwurf, bei dem mehrere Modelle antreten sollen und ein unabhängiger Richter wählt. Ein Panel entwirft parallel, ein Richter merged den Sieger, das Ergebnis wird gegen die ursprüngliche Absicht validiert. Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader, Richter, Mehrmodell, Entwürfe parallel, Sieger mergen, Builder nicht Bewerter."
+license: "MIT"
 ---
 
 # Model Fusion

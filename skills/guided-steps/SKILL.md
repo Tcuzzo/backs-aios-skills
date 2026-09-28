@@ -1,7 +1,7 @@
 ---
-name: guided-steps
-description: Use when a setup needs steps only a human can do — third-party dashboards, credentials, CI secrets, provisioning, one-off migrations, cutovers. Authors a stage-by-stage interactive script that opens each URL, says what to click and copy, captures values, and writes them where they belong. Trigger words: wizard, human-only steps, provision, credentials, dashboard setup, CI secrets, cutover.
-license: MIT
+name: "guided-steps"
+description: "Use when a setup needs steps only a human can do — third-party dashboards, credentials, CI secrets, provisioning, one-off migrations, cutovers. Authors a stage-by-stage interactive script that opens each URL, says what to click and copy, captures values, and writes them where they belong. Trigger words: wizard, human-only steps, provision, credentials, dashboard setup, CI secrets, cutover."
+license: "MIT"
 ---
 
 # Human Steps Wizard

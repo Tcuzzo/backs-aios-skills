@@ -1,7 +1,7 @@
 ---
-name: intent-compiler
-description: 当人的请求以自然语言到来——比喻、俚语、诗意、压缩的速记、火气、或"你懂我意思"——而不是一张工单时使用。把这些话翻译成明说的技术指令，用一行话亮出你的解读，然后执行。Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing. 中文触发词：话就是规格、读懂需求、翻译需求、模糊指令、他到底什么意思、推断意图、比喻、俚语、口语、语感。
-license: MIT
+name: "intent-compiler"
+description: "当人的请求以自然语言到来——比喻、俚语、诗意、压缩的速记、火气、或\"你懂我意思\"——而不是一张工单时使用。把这些话翻译成明说的技术指令，用一行话亮出你的解读，然后执行。Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing. 中文触发词：话就是规格、读懂需求、翻译需求、模糊指令、他到底什么意思、推断意图、比喻、俚语、口语、语感。"
+license: "MIT"
 ---
 
 # Prose Is the Spec——话就是规格

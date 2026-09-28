@@ -1,7 +1,7 @@
 ---
-name: human-voice
-description: À utiliser sur chaque message destiné à un humain. La barre du sans-diplôme ; tue le slop IA. Trigger words: human voice, plain speech, plain language, de-slop, slop, simplify, jargon, tone, readable, rewrite this, text like a human, voix humaine, langage clair, parler simple, déjargonner, ton, lisible, réécris ça, écris comme un humain.
-license: MIT
+name: "human-voice"
+description: "À utiliser sur chaque message destiné à un humain. La barre du sans-diplôme ; tue le slop IA. Trigger words: human voice, plain speech, plain language, de-slop, slop, simplify, jargon, tone, readable, rewrite this, text like a human, voix humaine, langage clair, parler simple, déjargonner, ton, lisible, réécris ça, écris comme un humain."
+license: "MIT"
 ---
 
 # Human Voice

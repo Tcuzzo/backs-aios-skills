@@ -1,7 +1,7 @@
 ---
-name: human-voice
-description: Für jede Nachricht an Menschen. Die Kein-Studium-Latte; tötet KI-Slop. Trigger words: human voice, plain speech, plain language, de-slop, slop, simplify, jargon, tone, readable, rewrite this, text like a human, menschliche Stimme, Klartext, einfache Sprache, entschwurbeln, verständlich, schreib das um, Ton, lesbar.
-license: MIT
+name: "human-voice"
+description: "Für jede Nachricht an Menschen. Die Kein-Studium-Latte; tötet KI-Slop. Trigger words: human voice, plain speech, plain language, de-slop, slop, simplify, jargon, tone, readable, rewrite this, text like a human, menschliche Stimme, Klartext, einfache Sprache, entschwurbeln, verständlich, schreib das um, Ton, lesbar."
+license: "MIT"
 ---
 
 # Human Voice

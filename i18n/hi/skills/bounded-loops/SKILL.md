@@ -1,7 +1,7 @@
 ---
-name: bounded-loops
-description: तब इस्तेमाल करें जब कोई भी ऐसा loop शुरू होने वाला हो जो retry, poll, iterate या external API call कर सकता है — agent loops, repair loops, schedulers, watchers; पहले budget की छतें घोषित करता है, budget ख़त्म होने पर checkpoint करता है, और hammering को ढाँचे से ही नामुमकिन बनाता है। Trigger words: bounded loop, budget, ceiling, retry, backoff, rate limit, throttle, kill-switch, checkpoint, runaway, infinite loop, spin, budget exhaustion, सीमित loop, बजट, छत, अनंत loop, बेलगाम.
-license: MIT
+name: "bounded-loops"
+description: "तब इस्तेमाल करें जब कोई भी ऐसा loop शुरू होने वाला हो जो retry, poll, iterate या external API call कर सकता है — agent loops, repair loops, schedulers, watchers; पहले budget की छतें घोषित करता है, budget ख़त्म होने पर checkpoint करता है, और hammering को ढाँचे से ही नामुमकिन बनाता है। Trigger words: bounded loop, budget, ceiling, retry, backoff, rate limit, throttle, kill-switch, checkpoint, runaway, infinite loop, spin, budget exhaustion, सीमित loop, बजट, छत, अनंत loop, बेलगाम."
+license: "MIT"
 ---
 
 # Bounded Loops

@@ -1,7 +1,7 @@
 ---
-name: blind-eval
-description: तब इस्तेमाल करें जब taste या output quality सवाल हो और कोई test फ़ैसला न कर सके — authorship छिपाकर बदलाव को उसके गुणों पर परखता है, फिर keep या revert; tie पर revert, सिर्फ साबित हुआ सुधार ही उतरता है। Trigger words: blind eval, karpathy, keep or revert, quality gate, taste call, blind judge, A/B judge, prove uplift, अंधी परख, रखें या पलटें, गुणवत्ता द्वार, सुधार साबित करो.
-license: MIT
+name: "blind-eval"
+description: "तब इस्तेमाल करें जब taste या output quality सवाल हो और कोई test फ़ैसला न कर सके — authorship छिपाकर बदलाव को उसके गुणों पर परखता है, फिर keep या revert; tie पर revert, सिर्फ साबित हुआ सुधार ही उतरता है। Trigger words: blind eval, karpathy, keep or revert, quality gate, taste call, blind judge, A/B judge, prove uplift, अंधी परख, रखें या पलटें, गुणवत्ता द्वार, सुधार साबित करो."
+license: "MIT"
 ---
 
 # Blind Eval

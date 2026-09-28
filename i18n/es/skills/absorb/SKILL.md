@@ -1,7 +1,7 @@
 ---
-name: absorb
-description: Úsala cuando necesites una capacidad que un proyecto open source ya ofrece — adóptala y hazle reingeniería como skill nativa en vez de inventar un duplicado. Trigger words: absorb, adopt, port, re-engineer, ingest a repo, prior art, capability port, make this native. Disparadores: absorber, adoptar, portar, reingeniería, ingerir un repo, arte previo, hazlo nativo.
-license: MIT
+name: "absorb"
+description: "Úsala cuando necesites una capacidad que un proyecto open source ya ofrece — adóptala y hazle reingeniería como skill nativa en vez de inventar un duplicado. Trigger words: absorb, adopt, port, re-engineer, ingest a repo, prior art, capability port, make this native. Disparadores: absorber, adoptar, portar, reingeniería, ingerir un repo, arte previo, hazlo nativo."
+license: "MIT"
 ---
 
 # Absorb — Adopta el arte previo, no lo reinventes

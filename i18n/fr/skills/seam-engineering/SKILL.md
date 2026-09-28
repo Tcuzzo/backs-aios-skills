@@ -1,7 +1,7 @@
 ---
-name: seam-engineering
-description: À utiliser pour réparer un bug ou clôturer un audit ou une chasse aux bugs. Fixe la classe de défaut une fois à sa primitive partagée, balaie chaque occurrence sœur, pose un garde qui attrape la prochaine instance, et clôt chaque constat remonté — aucun report silencieux. Trigger words: seam, class fix, whole-seam closure, point patch, structural guard, do it right the first time, couture, fix de classe, clôture de couture entière, patch ponctuel, garde structurel, bien faire du premier coup.
-license: MIT
+name: "seam-engineering"
+description: "À utiliser pour réparer un bug ou clôturer un audit ou une chasse aux bugs. Fixe la classe de défaut une fois à sa primitive partagée, balaie chaque occurrence sœur, pose un garde qui attrape la prochaine instance, et clôt chaque constat remonté — aucun report silencieux. Trigger words: seam, class fix, whole-seam closure, point patch, structural guard, do it right the first time, couture, fix de classe, clôture de couture entière, patch ponctuel, garde structurel, bien faire du premier coup."
+license: "MIT"
 ---
 
 # Seam Engineering

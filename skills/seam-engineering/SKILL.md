@@ -1,7 +1,7 @@
 ---
-name: seam-engineering
-description: Use when repairing a bug or closing out an audit or bug hunt. Fixes the flaw class once at its shared primitive, sweeps every sibling, lands a guard that catches the next instance, and closes every surfaced finding — no silent deferrals. Trigger words: seam, class fix, whole-seam closure, point patch, structural guard, do it right the first time.
-license: MIT
+name: "seam-engineering"
+description: "Use when repairing a bug or closing out an audit or bug hunt. Fixes the flaw class once at its shared primitive, sweeps every sibling, lands a guard that catches the next instance, and closes every surfaced finding — no silent deferrals. Trigger words: seam, class fix, whole-seam closure, point patch, structural guard, do it right the first time."
+license: "MIT"
 ---
 
 # Seam Engineering

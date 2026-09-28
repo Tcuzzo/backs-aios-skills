@@ -1,7 +1,7 @@
 ---
-name: invariant-floor
-description: 在搭建 agent harness、review 自主工作、或裁定一个改动能否合入时使用。每个自主改动都必须满足的编号法则地板——不许假绿、失败要大声、自主要有界、来源要记录、接缝要整条闭合。Trigger words: invariants, floor, landing gate, quality floor, hard rules, may this land, autonomous quality. 中文触发词：不变量、地板、合入门、质量地板、硬规则、能不能合、自主质量。
-license: MIT
+name: "invariant-floor"
+description: "在搭建 agent harness、review 自主工作、或裁定一个改动能否合入时使用。每个自主改动都必须满足的编号法则地板——不许假绿、失败要大声、自主要有界、来源要记录、接缝要整条闭合。Trigger words: invariants, floor, landing gate, quality floor, hard rules, may this land, autonomous quality. 中文触发词：不变量、地板、合入门、质量地板、硬规则、能不能合、自主质量。"
+license: "MIT"
 ---
 
 # The Invariant Floor——不变量地板

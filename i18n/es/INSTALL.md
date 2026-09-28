@@ -1,5 +1,7 @@
 # Instalación — monta el pack sobre un agente real
 
+> **v0.7 portable installer:** Registro actual en un paso para Claude Code, Codex, Cursor, OpenCode y agentes portables: `./install.sh --target all --locale es`. El script no sobrescribe nada; en PowerShell usa `./install.ps1`. La matriz de rutas vigente completa está en [la guía canónica de instalación](../../INSTALL.md).
+
 El pack son carpetas de markdown. Cada skill es `skills/<name>/SKILL.md`. Cada
 jugada es `plays/<name>.md`. Sin binarios, sin servidor, sin paso de build. Instalar
 significa poner el markdown donde tu agente busca skills.

@@ -1,7 +1,7 @@
 ---
-name: leap-protocol
-description: तब लगाओ जब कोई seam एक builder के लिए बहुत बड़ा हो और parallel workers में बाँटना पड़े। LEAP काम को अलग-अलग ownable balls में तोड़ता है — goal, पूरा spec, सख़्त file scope — उन्हें अलग worktrees में बैठे fresh builders को फेंकता है, और एक single write spine से जोड़ता है। Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff, काम बाँटो, टुकड़े करो, parallel में चलाओ, ball फेंको.
-license: MIT
+name: "leap-protocol"
+description: "तब लगाओ जब कोई seam एक builder के लिए बहुत बड़ा हो और parallel workers में बाँटना पड़े। LEAP काम को अलग-अलग ownable balls में तोड़ता है — goal, पूरा spec, सख़्त file scope — उन्हें अलग worktrees में बैठे fresh builders को फेंकता है, और एक single write spine से जोड़ता है। Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff, काम बाँटो, टुकड़े करो, parallel में चलाओ, ball फेंको."
+license: "MIT"
 ---
 
 # LEAP Protocol

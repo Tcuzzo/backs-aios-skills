@@ -1,7 +1,7 @@
 ---
-name: blind-eval
-description: Use antes de aterrissar qualquer coisa em que gosto ou qualidade de saída é a questão e um teste não consegue decidir. Julga a mudança pelo mérito com a autoria escondida, e mantém ou reverte — empate reverte, só ganho provado aterrissa. Trigger words: blind eval, karpathy, keep or revert, quality gate, taste call, blind judge, A/B judge, prove uplift, avaliação cega, manter ou reverter, portão de qualidade, decisão de gosto, juiz cego, provar ganho.
-license: MIT
+name: "blind-eval"
+description: "Use antes de aterrissar qualquer coisa em que gosto ou qualidade de saída é a questão e um teste não consegue decidir. Julga a mudança pelo mérito com a autoria escondida, e mantém ou reverte — empate reverte, só ganho provado aterrissa. Trigger words: blind eval, karpathy, keep or revert, quality gate, taste call, blind judge, A/B judge, prove uplift, avaliação cega, manter ou reverter, portão de qualidade, decisão de gosto, juiz cego, provar ganho."
+license: "MIT"
 ---
 
 # Blind Eval

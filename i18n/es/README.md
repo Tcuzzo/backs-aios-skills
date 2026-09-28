@@ -1,12 +1,34 @@
 > Esta es la traducción al español. La versión canónica, en inglés, vive en [README (English)](../../README.md).
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../../assets/reflex-seam-dark.svg">
+  <img alt="El Reflex Seam. A la izquierda, un runtime determinista es dueño del estado, los archivos, las reglas y los tests. A la derecha, un kernel de juicio del modelo es dueño de la inferencia, la política, la reversibilidad y la prioridad. Entre ellos corre una costura dentada. Las señales de decisión cruzan del modelo al runtime, y las actualizaciones de estado cruzan de vuelta. Un cambio de estado sin permiso se rechaza en voz alta." src="../../assets/reflex-seam-light.svg">
+</picture>
+
 # BACKS AIOS Skills
 
 **Léelo en:** [English](../../README.md) · [Português (BR)](../pt-BR/README.md) · [Français](../fr/README.md) · [Deutsch](../de/README.md) · [हिन्दी](../hi/README.md) · [简体中文](../zh-CN/README.md)
 
-Un harness de agentes destilado en 27 skills portables y 8 jugadas con nombre,
+**El modelo decide. El runtime es dueño del estado, los archivos y las reglas — y si el
+modelo busca un estado que no le pertenece, el sistema falla en voz alta en lugar de
+adivinar.**
+
+Esa línea es el **Reflex Seam**, y este pack es cómo lo instalas en un agente que ya
+usas. Este es el momento en que se gana su lugar: el agente va a ejecutar un comando
+antes de haber leído las reglas. Un hook lo revisa. La herramienta no corre, y al agente
+se le dice por qué. No es un prompt pidiéndole que se porte bien — es una compuerta con
+la que no puede discutir.
+
+Dos reglas viajan con él. **Sin teatro de mocks:** un test que pasa mientras la cosa
+está rota es una mentira, así que los tests afirman efectos reales. **Quien construye no
+califica:** el test que falla se escribe primero, y algo que no escribió el código tiene
+que aprobarlo.
+
+Un harness de agentes destilado en 28 skills portables y 8 jugadas con nombre,
 sacado de una plataforma de agentes en producción y reconstruido como markdown plano
 que cualquier agente puede cargar.
+
+Para aprender con imágenes, consulta el [mapa visual de skills y bucles](../../docs/FLOWCHARTS.md).
 
 ## Misión
 
@@ -85,7 +107,7 @@ equivalentes en español también disparan la misma disciplina.
   aterrizaje está en verde; el rol se define en
   [NAMING.md](NAMING.md#lord-of-the-loop).
 - **Los comandos** son las entradas slash que instala el plugin — cada uno carga una
-  jugada o una skill y la ejecuta. Un archivo cada uno en `commands/`.
+  jugada o una skill y la ejecuta. Un archivo cada uno en `command-adapters/`.
 - **La convención de nombres** — por qué las skills son frases nominales, los
   comandos son verbos y el piso es ley — está en [NAMING.md](NAMING.md).
 - **Los sellos de esfuerzo** — la afirmación de costo de una línea de cada skill
@@ -117,6 +139,7 @@ equivalentes en español también disparan la misma disciplina.
 | [human-voice](skills/human-voice/SKILL.md) | La vara sin-título-universitario: si leerlo exige un título, reescríbelo. Conserva la idea completa mientras quita los tics de máquina. |
 | [red-first](skills/red-first/SKILL.md) | Haz commit de un test probado-en-rojo antes de que empiece la construcción. El constructor no puede tocarlo. Un evaluador verifica que nunca se movió. |
 | [repair-loop](skills/repair-loop/SKILL.md) | El bucle de arreglo completo: anclarse en el piso, reproducir, test rojo, arreglar la clase, verificar en la ruta real, calificación independiente, aterrizar. |
+| [repo-map](skills/repo-map/SKILL.md) | Mapea primero la estructura real del repositorio, puntos de entrada, configuración y rutas de ejecución antes de cambiar código. |
 | [root-cause-first](skills/root-cause-first/SKILL.md) | Sin arreglos sin investigación. Reproduce a demanda, instrumenta las fronteras, rastrea los datos hacia atrás hasta la fuente. |
 | [seam-engineering](skills/seam-engineering/SKILL.md) | Arregla la clase de la falla una sola vez en su primitiva compartida, barre cada hermano, y deja una guarda que atrape al siguiente infractor. |
 | [session-handoff](skills/session-handoff/SKILL.md) | Compacta una sesión en un solo archivo plano que un agente recién llegado pueda leer en frío y continuar. Con los secretos tachados. |

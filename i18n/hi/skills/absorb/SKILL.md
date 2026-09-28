@@ -1,7 +1,7 @@
 ---
-name: absorb
-description: तब इस्तेमाल करें जब कोई capability किसी open-source project में पहले से मौजूद हो — डुप्लिकेट बनाने की बजाय उसे अपनाएँ और अपने harness के हिसाब से re-engineer करके native skill बनाएँ। Trigger words: absorb, adopt, port, re-engineer, ingest a repo, prior art, capability port, make this native, अपनाओ, समाहित करो, पोर्ट करो, दोबारा मत बनाओ, पहले से बना हुआ.
-license: MIT
+name: "absorb"
+description: "तब इस्तेमाल करें जब कोई capability किसी open-source project में पहले से मौजूद हो — डुप्लिकेट बनाने की बजाय उसे अपनाएँ और अपने harness के हिसाब से re-engineer करके native skill बनाएँ। Trigger words: absorb, adopt, port, re-engineer, ingest a repo, prior art, capability port, make this native, अपनाओ, समाहित करो, पोर्ट करो, दोबारा मत बनाओ, पहले से बना हुआ."
+license: "MIT"
 ---
 
 # Absorb — पहले से बना हुआ अपनाओ, दोबारा मत बनाओ

@@ -1,7 +1,7 @@
 ---
-name: blind-eval
-description: 当合入与否取决于品味或输出质量、测试判不了时，先跑这个。隐去作者身份、只凭作品本身评判，然后保留或回滚——平局即回滚，只有被证明的提升才能合入。Trigger words: blind eval, karpathy, keep or revert, quality gate, taste call, blind judge, A/B judge, prove uplift. 中文触发词：盲评、盲测、保留还是回滚、质量门、品味判断、A/B 盲评、证明提升。
-license: MIT
+name: "blind-eval"
+description: "当合入与否取决于品味或输出质量、测试判不了时，先跑这个。隐去作者身份、只凭作品本身评判，然后保留或回滚——平局即回滚，只有被证明的提升才能合入。Trigger words: blind eval, karpathy, keep or revert, quality gate, taste call, blind judge, A/B judge, prove uplift. 中文触发词：盲评、盲测、保留还是回滚、质量门、品味判断、A/B 盲评、证明提升。"
+license: "MIT"
 ---
 
 # Blind Eval——盲评

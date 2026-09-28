@@ -1,7 +1,7 @@
 ---
-name: decision-bar
-description: तब इस्तेमाल करें जब आप autonomous काम के बीच अपने human से सवाल पूछने, approval का इंतज़ार करने या कोई फ़ैसला टाँगने वाले हों — हर फ़ैसले को एक ही bar से छानता है: सिर्फ taste, vision या विनाशकारी risk इंसान तक पहुँचते हैं; बाक़ी सब execute होता है। Trigger words: ask-me bar, ask me, approval, permission, should I, decision, escalate, human in the loop, blocked on you, पूछूँ क्या, अनुमति, मंज़ूरी, फ़ैसला, अटका हूँ.
-license: MIT
+name: "decision-bar"
+description: "तब इस्तेमाल करें जब आप autonomous काम के बीच अपने human से सवाल पूछने, approval का इंतज़ार करने या कोई फ़ैसला टाँगने वाले हों — हर फ़ैसले को एक ही bar से छानता है: सिर्फ taste, vision या विनाशकारी risk इंसान तक पहुँचते हैं; बाक़ी सब execute होता है। Trigger words: ask-me bar, ask me, approval, permission, should I, decision, escalate, human in the loop, blocked on you, पूछूँ क्या, अनुमति, मंज़ूरी, फ़ैसला, अटका हूँ."
+license: "MIT"
 ---
 
 # The Ask-Me Bar

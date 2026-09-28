@@ -1,7 +1,7 @@
 ---
-name: seam-engineering
-description: Beim Reparieren eines Bugs oder beim Abschließen eines Audits oder einer Bug-Jagd. Fixt die Fehler-Klasse einmal an ihrem geteilten Primitiv, fegt jeden Geschwister-Fall mit, landet eine Wache, die die nächste Instanz fängt, und schließt jeden hochgekommenen Fund — kein stilles Vertagen. Trigger words: seam, class fix, whole-seam closure, point patch, structural guard, do it right the first time, Naht, Klassen-Fix, ganze Naht schließen, Punkt-Pflaster, strukturelle Wache, gleich beim ersten Mal richtig.
-license: MIT
+name: "seam-engineering"
+description: "Beim Reparieren eines Bugs oder beim Abschließen eines Audits oder einer Bug-Jagd. Fixt die Fehler-Klasse einmal an ihrem geteilten Primitiv, fegt jeden Geschwister-Fall mit, landet eine Wache, die die nächste Instanz fängt, und schließt jeden hochgekommenen Fund — kein stilles Vertagen. Trigger words: seam, class fix, whole-seam closure, point patch, structural guard, do it right the first time, Naht, Klassen-Fix, ganze Naht schließen, Punkt-Pflaster, strukturelle Wache, gleich beim ersten Mal richtig."
+license: "MIT"
 ---
 
 # Seam Engineering

@@ -1,7 +1,7 @@
 ---
-name: fleet-ladder
-description: 在把任何工作交给模型之前使用——构建、评审、或有界工人任务——或者在服务商挂掉、你需要回退顺序时。解析"活的"模型阶梯：探测真正在线的，按显式回退顺序选最好的可用项，阶梯耗尽就大声失败。Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability. 中文触发词：模型阶梯、派单、回退、降级、模型挂了、服务商挂了、用哪个模型、可用性。
-license: MIT
+name: "fleet-ladder"
+description: "在把任何工作交给模型之前使用——构建、评审、或有界工人任务——或者在服务商挂掉、你需要回退顺序时。解析\"活的\"模型阶梯：探测真正在线的，按显式回退顺序选最好的可用项，阶梯耗尽就大声失败。Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability. 中文触发词：模型阶梯、派单、回退、降级、模型挂了、服务商挂了、用哪个模型、可用性。"
+license: "MIT"
 ---
 
 # Fleet Ladder——模型阶梯

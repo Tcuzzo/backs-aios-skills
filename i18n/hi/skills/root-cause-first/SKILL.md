@@ -1,7 +1,7 @@
 ---
-name: root-cause-first
-description: तब लगाओ जब सामने कोई कड़ा bug हो, silent failure हो, regression की खोज हो, या ऐसा जोखिम भरा बदलाव जो चुपचाप किसी downstream consumer को तोड़ सकता हो। बिना जाँच कोई fix नहीं — error पढ़ो, माँग पर reproduce करो, हाल के बदलाव देखो, component की सीमाओं पर instrument लगाओ, data के बहाव को पीछे source तक trace करो। Trigger words: debug, root cause, why is this failing, silent failure, regression, works in tests but fails live, systematic debugging, जड़ पकड़ो, असली वजह ढूँढो, यह fail क्यों हो रहा है, पहले जाँच फिर fix.
-license: MIT
+name: "root-cause-first"
+description: "तब लगाओ जब सामने कोई कड़ा bug हो, silent failure हो, regression की खोज हो, या ऐसा जोखिम भरा बदलाव जो चुपचाप किसी downstream consumer को तोड़ सकता हो। बिना जाँच कोई fix नहीं — error पढ़ो, माँग पर reproduce करो, हाल के बदलाव देखो, component की सीमाओं पर instrument लगाओ, data के बहाव को पीछे source तक trace करो। Trigger words: debug, root cause, why is this failing, silent failure, regression, works in tests but fails live, systematic debugging, जड़ पकड़ो, असली वजह ढूँढो, यह fail क्यों हो रहा है, पहले जाँच फिर fix."
+license: "MIT"
 ---
 
 # Root Cause First

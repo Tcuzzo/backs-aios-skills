@@ -1,7 +1,7 @@
 ---
-name: live-research
-description: 当你要推理的代码库、API 或系统"真实长什么样"很关键时用它。并行跑一个调研 agent 去读实况真相——项目自己的 README、分区文档、真正的源码——让结论扎根在真实存在的东西上，而不是模型记忆里。Trigger words: live research, ground the reasoning, read the real source, check what is actually there, primary sources, background research, verify against the repo, what do the docs say. 中文触发词：实况调研、查源码、看文档怎么说、以仓库为准、一手来源、后台调研、别凭记忆。
-license: MIT
+name: "live-research"
+description: "当你要推理的代码库、API 或系统\"真实长什么样\"很关键时用它。并行跑一个调研 agent 去读实况真相——项目自己的 README、分区文档、真正的源码——让结论扎根在真实存在的东西上，而不是模型记忆里。Trigger words: live research, ground the reasoning, read the real source, check what is actually there, primary sources, background research, verify against the repo, what do the docs say. 中文触发词：实况调研、查源码、看文档怎么说、以仓库为准、一手来源、后台调研、别凭记忆。"
+license: "MIT"
 ---
 
 # Live Research

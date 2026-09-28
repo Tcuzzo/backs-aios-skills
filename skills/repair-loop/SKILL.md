@@ -1,7 +1,7 @@
 ---
-name: repair-loop
-description: Use when fixing a bug, closing a reported issue, or uplifting a seam end to end. Runs the full repair loop (ground in the floor, reproduce on live truth, red contract test, fix the class at the seam, verify on the real path, independent grade, land) and iterates until it is true. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build.
-license: MIT
+name: "repair-loop"
+description: "Use when fixing a bug, closing a reported issue, or uplifting a seam end to end. Runs the full repair loop (ground in the floor, reproduce on live truth, red contract test, fix the class at the seam, verify on the real path, independent grade, land) and iterates until it is true. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build."
+license: "MIT"
 ---
 
 # Repair Loop

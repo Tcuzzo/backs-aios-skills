@@ -1,7 +1,7 @@
 ---
-name: model-fusion
-description: 当单个模型的答案不够可信时用它——难啃的构建、修复或设计，你想让多个模型同场竞技、再由独立裁判来挑。一组模型并行起草，裁判合并出赢家，结果再对照原始意图校验。Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader. 中文触发词：模型融合、多模型、合议、裁判、并行起草、择优合并、构建者不当评分者。
-license: MIT
+name: "model-fusion"
+description: "当单个模型的答案不够可信时用它——难啃的构建、修复或设计，你想让多个模型同场竞技、再由独立裁判来挑。一组模型并行起草，裁判合并出赢家，结果再对照原始意图校验。Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader. 中文触发词：模型融合、多模型、合议、裁判、并行起草、择优合并、构建者不当评分者。"
+license: "MIT"
 ---
 
 # Model Fusion

@@ -1,7 +1,7 @@
 ---
-name: invariant-floor
-description: तब इस्तेमाल करें जब कोई agent harness खड़ा करना हो, autonomous काम review करना हो, या तय करना हो कि कोई बदलाव उतर सकता है या नहीं — क़ानूनों का वो नंबर लगा floor जिसे हर autonomous बदलाव को पूरा करना है: fake green नहीं, ज़ोरदार failures, सीमित autonomy, provenance, पूरे seam की closure. Trigger words: invariants, floor, landing gate, quality floor, hard rules, may this land, autonomous quality, बुनियादी क़ानून, सख़्त नियम, उतर सकता है क्या, गुणवत्ता की ज़मीन.
-license: MIT
+name: "invariant-floor"
+description: "तब इस्तेमाल करें जब कोई agent harness खड़ा करना हो, autonomous काम review करना हो, या तय करना हो कि कोई बदलाव उतर सकता है या नहीं — क़ानूनों का वो नंबर लगा floor जिसे हर autonomous बदलाव को पूरा करना है: fake green नहीं, ज़ोरदार failures, सीमित autonomy, provenance, पूरे seam की closure. Trigger words: invariants, floor, landing gate, quality floor, hard rules, may this land, autonomous quality, बुनियादी क़ानून, सख़्त नियम, उतर सकता है क्या, गुणवत्ता की ज़मीन."
+license: "MIT"
 ---
 
 # The Invariant Floor

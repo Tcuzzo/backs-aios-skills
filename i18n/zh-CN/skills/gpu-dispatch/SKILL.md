@@ -1,7 +1,7 @@
 ---
-name: gpu-dispatch
-description: 在把本地模型派往 GPU 时使用——调度推理任务、挑卡、或管理模型驻留。一卡一模型、不许溢出到内存、整个循环保温、循环结束才卸载、按实测真相放行。Trigger words: gpu, vram, gpu dispatch, model loading, keep alive, resident model, local inference, spill, warm. 中文触发词：显卡、显存、GPU 调度、模型加载、保活、驻留模型、本地推理、溢出、保温。
-license: MIT
+name: "gpu-dispatch"
+description: "在把本地模型派往 GPU 时使用——调度推理任务、挑卡、或管理模型驻留。一卡一模型、不许溢出到内存、整个循环保温、循环结束才卸载、按实测真相放行。Trigger words: gpu, vram, gpu dispatch, model loading, keep alive, resident model, local inference, spill, warm. 中文触发词：显卡、显存、GPU 调度、模型加载、保活、驻留模型、本地推理、溢出、保温。"
+license: "MIT"
 ---
 
 # GPU Dispatch Law——GPU 调度法则
