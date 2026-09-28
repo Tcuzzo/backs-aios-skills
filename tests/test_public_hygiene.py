@@ -38,6 +38,9 @@ _GUARD_TESTS = {
     # logic the test already applies to itself: a guard that greps its
     # own planted offenders lies.
     "bin/scrub-plugin-pack-literals",
+    # bin/backs-pack-sync defaults BACKS_SOURCE to a real path so the
+    # default works out of the box; same self-exclusion rationale.
+    "bin/backs-pack-sync",
 }
 
 # Generic shapes only — never a real literal.
