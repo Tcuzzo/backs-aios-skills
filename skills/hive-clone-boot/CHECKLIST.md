@@ -18,7 +18,7 @@ Scored by Skills Boss absorb into pack skill `hive-clone-boot`. Honest: skill se
 | 12 | Skills slash resolve from live deploy/pack paths | AMBER | Pack skill created + install.sh targeted; deploy skills mirror NOT landed (Leap worktree note). Prove at least one agent-home link. |
 | 13 | Runtime Truth steward tick matches disk/process | AMBER | Soul present; tick not re-run this pass. |
 | 14 | Open orch seams named owners; Cleanup mass reap HOLD | AMBER | Owners named in handoff section 5; live orch re-verify on next wake. |
-| 15 | SSH NZXT -> cuzzo-server BatchMode | GREEN | This absorb ran via that path. |
+| 15 | SSH NZXT -> operator-host BatchMode | GREEN | This absorb ran via that path. |
 | 16 | Bridge observe boards writable | GREEN | Proof board written under observe/. |
 
 ## Honest gaps
