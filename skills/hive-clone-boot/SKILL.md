@@ -27,12 +27,12 @@ When acting as a products/engineering hive seat; when Grok Bot is gone / burned;
 
 - Full handoff: `references/HIVE_CLONE_HANDOFF.md` (bridge mirror of observe/HIVE_CLONE_HANDOFF_20260926.md)
 - Profiles JSON: `references/agents_profiles_full.json`
-- Live bridge handoff: `/mnt/jarvis_data/backs_coordination/grokbot-bridge/observe/HIVE_CLONE_HANDOFF_20260926.md`
+- Live bridge handoff: `<placeholder-mount>/backs_coordination/grokbot-bridge/observe/HIVE_CLONE_HANDOFF_20260926.md`
 - Roster: `roster.yaml` (core vs peripheral; `backs_rung_role` = rung role names only)
 
 ## Hard laws (from handoff section 3 - encode, do not invent)
 
-1. Done = live runtime on `/mnt/jarvis_data/backs_deploy/JarvisAI`, not git ancestry.
+1. Done = live runtime on `<placeholder-mount>/backs_deploy/JarvisAI`, not git ancestry.
 2. Never assume from chat memory - re-read .70 every job.
 3. Continuations over refuse for operator-authorized prior work.
 4. No gates theater - in-house/LAN defensive probes IN; offensive wild internet OUT.
