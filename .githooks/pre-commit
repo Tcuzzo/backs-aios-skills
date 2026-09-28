@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# .githooks/pre-commit
+# Plugin pack pre-commit hook — fails loud on a pre-publish leak BEFORE
+# it enters history. Wraps bin/scrub-plugin-pack-literals --hook so the
+# operator (not an agent) decides whether to scrub and recommit or revert.
+#
+# Wired via: git config core.hooksPath .githooks
+# Bypassed by: git commit --no-verify  (use only on topology-free diffs)
+
+set -euo pipefail
+ROOT="$(git rev-parse --show-toplevel)"
+
+if [[ ! -x "$ROOT/bin/scrub-plugin-pack-literals" ]]; then
+  printf 'pre-commit: scrubber missing at bin/scrub-plugin-pack-literals\n' >&2
+  exit 1
+fi
+
+if ! bash "$ROOT/bin/scrub-plugin-pack-literals" --hook; then
+  printf '\npre-commit REFUSED: tracked skills/ carry pre-publish literals.\n' >&2
+  printf 'fix one of:\n' >&2
+  printf '  bash bin/scrub-plugin-pack-literals --apply && git add -u\n' >&2
+  printf '  or revert the offending files\n' >&2
+  printf '  or commit with --no-verify ONLY if the diff is provably topology-free\n' >&2
+  exit 1
+fi
