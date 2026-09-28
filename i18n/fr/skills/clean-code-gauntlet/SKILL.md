@@ -1,7 +1,7 @@
 ---
-name: clean-code-gauntlet
-description: À utiliser pour durcir ou livrer n'importe quel build — un agent, un service, une librairie — quand tu veux une barre de qualité déterministe plutôt qu'une revue ligne par ligne. Lance les tests au sniper, le score CRAP (complexité x couverture) et des tests de mutation bornés, puis une légère revue de goût. Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar, parcours d'épreuves, score CRAP, tests de mutation, durcir, complexité, couverture, barre de qualité.
-license: MIT
+name: "clean-code-gauntlet"
+description: "À utiliser pour durcir ou livrer n'importe quel build — un agent, un service, une librairie — quand tu veux une barre de qualité déterministe plutôt qu'une revue ligne par ligne. Lance les tests au sniper, le score CRAP (complexité x couverture) et des tests de mutation bornés, puis une légère revue de goût. Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar, parcours d'épreuves, score CRAP, tests de mutation, durcir, complexité, couverture, barre de qualité."
+license: "MIT"
 ---
 
 # Clean Code Gauntlet — le parcours d'épreuves

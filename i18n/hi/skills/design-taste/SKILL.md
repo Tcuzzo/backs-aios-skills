@@ -1,7 +1,7 @@
 ---
-name: design-taste
-description: तब इस्तेमाल करें जब कुछ भी visual बनाना हो — site, app, dashboard, console या deck — ताकि वो generic AI defaults की जगह असली taste के साथ ship हो। Trigger words: design, UI, taste, design tokens, design system, accessibility, WCAG, screenshot critique, dark mode, restyle, डिज़ाइन, रूप-रंग, सौंदर्य, सुलभता, स्क्रीनशॉट समीक्षा.
-license: MIT
+name: "design-taste"
+description: "तब इस्तेमाल करें जब कुछ भी visual बनाना हो — site, app, dashboard, console या deck — ताकि वो generic AI defaults की जगह असली taste के साथ ship हो। Trigger words: design, UI, taste, design tokens, design system, accessibility, WCAG, screenshot critique, dark mode, restyle, डिज़ाइन, रूप-रंग, सौंदर्य, सुलभता, स्क्रीनशॉट समीक्षा."
+license: "MIT"
 ---
 
 # Design Taste — पहले Tokens, नज़रें खुली, Accessibility सख़्त

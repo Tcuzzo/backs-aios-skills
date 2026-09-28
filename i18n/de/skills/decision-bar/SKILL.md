@@ -1,7 +1,7 @@
 ---
-name: decision-bar
-description: Nutze das, wenn du deinem Menschen gleich eine Frage stellen, auf Freigabe warten oder eine Entscheidung während autonomer Arbeit parken willst. Filtert jede Entscheidung durch eine Latte — nur Geschmack, Vision oder destruktives Risiko erreichen den Menschen; alles andere wird ausgeführt. Trigger words: ask-me bar, ask me, approval, permission, should I, decision, escalate, human in the loop, blocked on you, Freigabe, Erlaubnis, soll ich, Entscheidung, eskalieren, Rückfrage.
-license: MIT
+name: "decision-bar"
+description: "Nutze das, wenn du deinem Menschen gleich eine Frage stellen, auf Freigabe warten oder eine Entscheidung während autonomer Arbeit parken willst. Filtert jede Entscheidung durch eine Latte — nur Geschmack, Vision oder destruktives Risiko erreichen den Menschen; alles andere wird ausgeführt. Trigger words: ask-me bar, ask me, approval, permission, should I, decision, escalate, human in the loop, blocked on you, Freigabe, Erlaubnis, soll ich, Entscheidung, eskalieren, Rückfrage."
+license: "MIT"
 ---
 
 # Die Frag-mich-Latte

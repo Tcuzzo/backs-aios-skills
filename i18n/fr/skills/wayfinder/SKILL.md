@@ -1,7 +1,7 @@
 ---
-name: wayfinder
-description: À utiliser quand tu es perdu, que la suite est floue, ou qu'il faut décider quoi travailler ensuite. Trace une carte de décisions vers la destination au lieu de déposer une question sur l'humain. Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier, tracer la route, cartographier le travail, et maintenant, perdu, brouillard de guerre, carte de décisions, frontière.
-license: MIT
+name: "wayfinder"
+description: "À utiliser quand tu es perdu, que la suite est floue, ou qu'il faut décider quoi travailler ensuite. Trace une carte de décisions vers la destination au lieu de déposer une question sur l'humain. Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier, tracer la route, cartographier le travail, et maintenant, perdu, brouillard de guerre, carte de décisions, frontière."
+license: "MIT"
 ---
 
 # Wayfinder

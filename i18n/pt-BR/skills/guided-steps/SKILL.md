@@ -1,7 +1,7 @@
 ---
-name: guided-steps
-description: Use quando um setup precisa de passos que só um humano consegue fazer — dashboards de terceiros, credenciais, secrets de CI, provisionamento, migrações pontuais, cutovers. Escreve um script interativo estágio a estágio que abre cada URL, diz o que clicar e copiar, captura valores e escreve onde eles pertencem. Trigger words: wizard, human-only steps, provision, credentials, dashboard setup, CI secrets, cutover, assistente, passos humanos, provisionar, credenciais, configurar dashboard, segredos de CI, virada.
-license: MIT
+name: "guided-steps"
+description: "Use quando um setup precisa de passos que só um humano consegue fazer — dashboards de terceiros, credenciais, secrets de CI, provisionamento, migrações pontuais, cutovers. Escreve um script interativo estágio a estágio que abre cada URL, diz o que clicar e copiar, captura valores e escreve onde eles pertencem. Trigger words: wizard, human-only steps, provision, credentials, dashboard setup, CI secrets, cutover, assistente, passos humanos, provisionar, credenciais, configurar dashboard, segredos de CI, virada."
+license: "MIT"
 ---
 
 # Wizard de Passos Humanos

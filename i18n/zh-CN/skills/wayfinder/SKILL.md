@@ -1,7 +1,7 @@
 ---
-name: wayfinder
-description: 当你迷路、前路不明、或必须决定接下来做什么时用它。画一张通往目的地的决策地图，而不是把问题扔给人搁着。Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier. 中文触发词：探路、画路线、迷路了、接下来做什么、决策地图、战争迷雾、工作地图、前沿。
-license: MIT
+name: "wayfinder"
+description: "当你迷路、前路不明、或必须决定接下来做什么时用它。画一张通往目的地的决策地图，而不是把问题扔给人搁着。Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier. 中文触发词：探路、画路线、迷路了、接下来做什么、决策地图、战争迷雾、工作地图、前沿。"
+license: "MIT"
 ---
 
 # Wayfinder

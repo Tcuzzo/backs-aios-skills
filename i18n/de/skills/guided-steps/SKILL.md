@@ -1,7 +1,7 @@
 ---
-name: guided-steps
-description: Nutze das, wenn ein Setup Schritte braucht, die nur ein Mensch tun kann — Dashboards von Drittanbietern, Credentials, CI-Secrets, Provisionierung, einmalige Migrationen, Cutovers. Verfasst ein interaktives Skript Etappe für Etappe, das jede URL öffnet, sagt, was zu klicken und zu kopieren ist, Werte einfängt und sie dorthin schreibt, wo sie hingehören. Trigger words: wizard, human-only steps, provision, credentials, dashboard setup, CI secrets, cutover, Assistent, Zugangsdaten, manuelle Schritte, Einrichtung, provisionieren.
-license: MIT
+name: "guided-steps"
+description: "Nutze das, wenn ein Setup Schritte braucht, die nur ein Mensch tun kann — Dashboards von Drittanbietern, Credentials, CI-Secrets, Provisionierung, einmalige Migrationen, Cutovers. Verfasst ein interaktives Skript Etappe für Etappe, das jede URL öffnet, sagt, was zu klicken und zu kopieren ist, Werte einfängt und sie dorthin schreibt, wo sie hingehören. Trigger words: wizard, human-only steps, provision, credentials, dashboard setup, CI secrets, cutover, Assistent, Zugangsdaten, manuelle Schritte, Einrichtung, provisionieren."
+license: "MIT"
 ---
 
 # Wizard für menschliche Schritte

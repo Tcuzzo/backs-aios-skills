@@ -1,7 +1,7 @@
 ---
-name: guided-steps
-description: À utiliser quand une mise en place exige des étapes que seul un humain peut faire — dashboards tiers, identifiants, secrets CI, provisionnement, migrations ponctuelles, bascules. Rédige un script interactif étape par étape qui ouvre chaque URL, dit quoi cliquer et copier, capture les valeurs, et les écrit là où elles vont. Trigger words: wizard, human-only steps, provision, credentials, dashboard setup, CI secrets, cutover, assistant pas-à-pas, étapes humaines, identifiants, secrets CI, mise en place, bascule.
-license: MIT
+name: "guided-steps"
+description: "À utiliser quand une mise en place exige des étapes que seul un humain peut faire — dashboards tiers, identifiants, secrets CI, provisionnement, migrations ponctuelles, bascules. Rédige un script interactif étape par étape qui ouvre chaque URL, dit quoi cliquer et copier, capture les valeurs, et les écrit là où elles vont. Trigger words: wizard, human-only steps, provision, credentials, dashboard setup, CI secrets, cutover, assistant pas-à-pas, étapes humaines, identifiants, secrets CI, mise en place, bascule."
+license: "MIT"
 ---
 
 # Le wizard des étapes humaines

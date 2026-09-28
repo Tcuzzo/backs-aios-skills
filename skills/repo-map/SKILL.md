@@ -1,7 +1,7 @@
 ---
-name: repo-map
-description: Use on the first session in a cold repo with no index, and whenever the map goes stale. Walks the tree once, writes one CODE_MAP.md at the repo root, and makes every later session read the map first — map first, walk raw only when the map has no answer. Trigger words: repo map, code map, map first, map-first, index the repo, cold repo, stale map, refresh the map.
-license: MIT
+name: "repo-map"
+description: "Use on the first session in a cold repo with no index, and whenever the map goes stale. Walks the tree once, writes one CODE_MAP.md at the repo root, and makes every later session read the map first — map first, walk raw only when the map has no answer. Trigger words: repo map, code map, map first, map-first, index the repo, cold repo, stale map, refresh the map."
+license: "MIT"
 ---
 
 # Repo Map

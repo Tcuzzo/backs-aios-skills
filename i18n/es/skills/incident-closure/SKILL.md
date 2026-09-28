@@ -1,7 +1,7 @@
 ---
-name: incident-closure
-description: Úsala cuando el humano reporta algo roto o dice "arréglalo" — sobre todo cuando el plano de control normal (API, CLI, servicio) está muerto y debes meterte por debajo. La respuesta es un cierre completo con entendimiento primero — causa raíz con evidencia, test que falla primero, verde, prueba en vivo en el propio camino del humano, commit — nunca un menú de opciones de vuelta. Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore. Disparadores: arréglalo, cierre completo, roto, borrado, caído, dejó de funcionar, recuperar, restaurar.
-license: MIT
+name: "incident-closure"
+description: "Úsala cuando el humano reporta algo roto o dice \"arréglalo\" — sobre todo cuando el plano de control normal (API, CLI, servicio) está muerto y debes meterte por debajo. La respuesta es un cierre completo con entendimiento primero — causa raíz con evidencia, test que falla primero, verde, prueba en vivo en el propio camino del humano, commit — nunca un menú de opciones de vuelta. Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore. Disparadores: arréglalo, cierre completo, roto, borrado, caído, dejó de funcionar, recuperar, restaurar."
+license: "MIT"
 ---
 
 # Cierre completo

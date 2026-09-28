@@ -1,7 +1,7 @@
 ---
-name: session-handoff
-description: À utiliser quand une session se termine, que la fenêtre de contexte va se compacter, ou que le travail doit continuer dans un autre agent ou harnais. Compacte la session en un fichier plat qu'un agent tout neuf peut lire à froid et reprendre — état, travail à moitié fait, commande suivante exacte, décisions ouvertes — secrets expurgés et travail concurrent vérifié préservé. Trigger words: handoff, hand off, compact, save state, continue in another session, portable handoff, before restart, passation, passer la main, compacter, sauver l'état, continuer dans une autre session, passation portable, avant redémarrage.
-license: MIT
+name: "session-handoff"
+description: "À utiliser quand une session se termine, que la fenêtre de contexte va se compacter, ou que le travail doit continuer dans un autre agent ou harnais. Compacte la session en un fichier plat qu'un agent tout neuf peut lire à froid et reprendre — état, travail à moitié fait, commande suivante exacte, décisions ouvertes — secrets expurgés et travail concurrent vérifié préservé. Trigger words: handoff, hand off, compact, save state, continue in another session, portable handoff, before restart, passation, passer la main, compacter, sauver l'état, continuer dans une autre session, passation portable, avant redémarrage."
+license: "MIT"
 ---
 
 # Session Handoff

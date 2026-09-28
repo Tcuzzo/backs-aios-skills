@@ -1,7 +1,7 @@
 ---
-name: leap-protocol
-description: Use when a seam is too big for one builder and must be split across parallel workers. LEAP decomposes work into independently ownable balls (goal, full spec, hard file scope), fans them to fresh builders in isolated worktrees, and reconciles through a single write spine. Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff.
-license: MIT
+name: "leap-protocol"
+description: "Use when a seam is too big for one builder and must be split across parallel workers. LEAP decomposes work into independently ownable balls (goal, full spec, hard file scope), fans them to fresh builders in isolated worktrees, and reconciles through a single write spine. Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff."
+license: "MIT"
 ---
 
 # LEAP Protocol

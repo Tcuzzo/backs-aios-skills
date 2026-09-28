@@ -1,11 +1,11 @@
 ---
-name: blind-tribunal
-description: Úsala cuando un cambio autónomo necesita una calificación independiente antes de aterrizar y no hay humano en el circuito. Convoca jurados ciegos de familias distintas — una lente cada uno — sobre un sobre con archivos completos y autoría borrada; cada hallazgo se vuelve un nuevo test que falla; se repite hasta que todos los jurados aprueban. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing. Disparadores: tribunal ciego, jurados, calificación entre familias, convocar, calificar a ciegas, calificación independiente, calificar antes de aterrizar.
-license: MIT
+name: "blind-tribunal"
+description: "Úsala cuando un cambio autónomo necesita una calificación independiente antes de aterrizar y no hay humano en el circuito. Convoca jurados ciegos de familias distintas — una lente cada uno — sobre un sobre con archivos completos y autoría borrada; cada hallazgo se vuelve un nuevo test que falla; se repite hasta que todos los jurados aprueban. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing. Disparadores: tribunal ciego, jurados, calificación entre familias, convocar, calificar a ciegas, calificación independiente, calificar antes de aterrizar."
+license: "MIT"
 ---
 
 # Blind Tribunal
-**Effort:** heavy — tres modelos jurados de familias distintas, reconvocados con sobres frescos en cada ronda hasta la unanimidad; gástalo en cambios autónomos que aterrizan sin revisión humana. Elimina: aterrizajes rebeldes sin más puerta que la palabra del propio constructor.
+**Effort:** heavy — ocho jurados, una lente cada uno, enrutados por nivel a la familia de modelos más barata que basta, reconvocados con sobres frescos en cada ronda hasta la unanimidad; gástalo en cambios autónomos que aterrizan sin revisión humana. Elimina: aterrizajes rebeldes sin más puerta que la palabra del propio constructor.
 
 El loop de calificación que deja al humano irse sin que el agente se descarrile.
 Un panel de jurados revisa el cambio a ciegas, con la autoría borrada. Cada
@@ -20,15 +20,31 @@ todos los jurados aprueban. Nada aterriza solo con la palabra del constructor.
 
 ## Los asientos
 
-Tres jurados. Cada uno es un modelo de una familia DISTINTA a la del constructor.
-Cada uno sostiene exactamente UNA lente — un jurado al que le piden revisar todo
+Ocho jurados, una lente cada uno. Cada uno es un modelo de una familia DISTINTA a la
+del constructor (misma marca = misma familia). Un jurado al que le piden revisar todo
 no revisa nada bien.
 
-| Jurado | Lente | La pregunta que hace |
-| --- | --- | --- |
-| Defecto | caza de defectos | ¿Qué se rompe de verdad? Escapes, casos borde, contratos rotos. |
-| Proporción | tamaño justo | ¿Es este el tamaño correcto? ¿Sobreconstruido, o un parche sobre un síntoma? |
-| Consecuencia | impacto humano | Si esto está mal, ¿qué le pasa a la persona que depende de ello? |
+| Jurado | Id de lente | Nivel | La pregunta que hace |
+| --- | --- | --- | --- |
+| Defecto | `defect` | generalista | ¿Qué se rompe de verdad? Fallos de lógica, errores de sintaxis, defectos nuevos. |
+| Proporción | `proportion` | generalista | ¿Es el tamaño correcto? ¿Sobreconstruido, o a la medida de la intención? |
+| Consecuencia | `operator_consequence` | seguridad del operador | Si un operador humano ejecuta esto, ¿qué es destructivo, inseguro o dañino? |
+| Reversibilidad | `reversibility` | estado profundo | ¿Deja efectos irreversibles? Si muere a medio camino, ¿el sistema vuelve atrás limpio? |
+| Continuidad | `state_continuity` | estado profundo | ¿Huérfana variables, pisa estado global o pierde contexto que los nodos siguientes necesitan? |
+| Economía | `resource_economy` | estructural rápido | ¿Bucles sin optimizar, llamadas de red/API redundantes, memoria de más? |
+| Frontera | `boundary_condition` | estructural rápido | Con entradas nulas, vacías, de tipo inesperado o malformadas, ¿falla con gracia? |
+| Telemetría | `telemetry` | seguridad del operador | ¿Un fallo aquí se diagnostica desde los logs y el manejo de errores? |
+
+**Niveles de enrutamiento (primero la ruta más barata que basta):** estado profundo →
+el mayor contexto y razonamiento más profundo, idealmente por un harness que LEA el repo
+(nunca escriba); estructural rápido → primero una GPU local gratis, FUSIONADA con un
+verificador de nube barato que juzga el mismo prompt: la lente pasa solo si ambos pasan;
+sin nube, el veredicto local queda marcado UNVERIFIED, nunca «verificado» en silencio; y el
+modelo local debe ver TODO el artefacto (dimensiona `num_ctx` al prompt — el valor por
+defecto de Ollama, 4096, trunca en silencio — y rechaza antes de enviar lo que no cabe); el verificador nunca es de la misma familia que el asiento primario, y un asiento UNVERIFIED es una retención (nunca unanimidad); los jurados por harness corren read-only, y cada convocatoria lleva un `run_id` y escribe su resumen al final;
+después los modelos de nube de baja latencia; seguridad del operador →
+tu coder más fuerte con base en seguridad; generalista → un generalista grande y fiable.
+Cada escalera termina en un peldaño local de supervivencia.
 
 **Equipo solo.** Cuando solo hay una familia de modelos disponible, degrada
 EXPLÍCITAMENTE: un contexto o sesión fresca que nunca vio la conversación del
@@ -36,6 +52,20 @@ autor actúa como evaluador ciego, o el humano revisa el sobre con la autoría
 borrada. El reporte debe nombrar la puerta debilitada — "calificado a ciegas
 misma-familia, no entre familias" — nunca fingir en silencio que la puerta entre
 familias se sostuvo.
+
+## El constructor se declara, y la exclusión es estructural
+
+"Distinta familia que el constructor" era una regla que se pedía a los jurados recordar. En la
+propia prueba del tribunal, el asiento de seguridad del operador lo encabezó el mismo modelo que
+había construido el candidato, y nada lo registró ni lo excluyó: el autor calificó su propio
+trabajo durante dos rondas. Así que:
+
+- **Convoca con el constructor nombrado** (`--builder <modelo-o-familia>`). El registro lleva
+  `builder_family`. Cada peldaño de esa familia se rechaza en voz alta, antes de despachar, en
+  cada escalera. Una lente sin peldaño QUEDA EN ESPERA — nunca vuelve al constructor.
+- **Mismo proveedor = misma familia.** Una declaración excluye al proveedor entero.
+- **Pruébalo en la escalera viva, no en un test:** la tabla de rutas debe mostrar que sus
+  asientos pasaron a otra familia. Si no, la exclusión es decoración.
 
 ## El sobre
 
@@ -62,6 +92,23 @@ JSON estricto y parseable por máquina, un solo objeto, sin prosa:
                "claim": "...", "evidence": "..."}]}
 ```
 
+- **Un pass que lista un hallazgo `[blocker]` o `[major]` no es un pass.** Es contradictorio y
+  falla cerrado a refuse, nombrando la severidad que lo contradijo.
+- **Un veredicto para una lente distinta de la sentada** es un peldaño rechazado, no un veredicto:
+  se anota con ambas lentes y la marcha sigue al siguiente peldaño; solo si todos responden mal la
+  lente queda en espera. Nunca un pass.
+- **El directorio de salida se posee antes de barrerse.** El órgano sella (stamp) el directorio que
+  reclama; uno con esas formas de archivo SIN el sello se rechaza, nombrando archivos y remedio,
+  sin borrar nada. Uno con solo archivos ajenos nunca corrió peligro y no se bloquea.
+- **Una lente que explota nunca descarta los veredictos ya pagados.** Cada fallo se registra por
+  lente; veredictos y resumen se escriben ANTES de lanzar el error.
+- **La evidencia de mutación nombra un archivo reescrito** (`changed_paths`), no solo los que
+  aparecen o desaparecen.
+- **Todo lo que escribe el órgano es solo del propietario (0600).**
+- **Un modelo local derramado lo descarga solo su ÚLTIMO poseedor.** Dos lentes pueden compartir
+  una tarjeta; la primera en terminar no le quita el modelo a la otra a mitad de llamada.
+- **Un peldaño que no cabe el artefacto se salta antes de llamar**, con la razón anotada; un
+  rechazo por capacidad es un TIPO y la marcha sigue — nunca un halt.
 - Un jurado que RESPONDIÓ mal — basura, texto que no es JSON, texto de rechazo —
   cuenta como **refuse**; un jurado que NUNCA respondió (falla de transporte,
   inalcanzable) es una **espera**: vuelve a sentarlo vía
@@ -78,7 +125,7 @@ JSON estricto y parseable por máquina, un solo objeto, sin prosa:
    ([red-first](../red-first/SKILL.md)).
 2. Construye hasta el verde.
 3. Arma el sobre con los archivos ACTUALES.
-4. Sienta a los tres jurados — de familias distintas a la del constructor
+4. Sienta a los ocho jurados, por nivel, — de familias distintas a la del constructor
    ([fleet-ladder](../fleet-ladder/SKILL.md) resuelve cuáles están vivos).
 5. Cada jurado además verifica, no solo lee: los tests nuevos pasan; la suite de
    regresión no está peor que la línea base; y un chequeo de verde falso — un test
@@ -93,6 +140,16 @@ JSON estricto y parseable por máquina, un solo objeto, sin prosa:
    después" es exactamente la fuga que esta skill existe para frenar. Un hallazgo
    termina ARREGLADO o refutado con evidencia registrada, nunca estacionado.
 
+## El pie nombra el lente, un peldaño rechazado conserva sus palabras y el piso tiene tres peldaños
+
+La ronda 4 dejó dos lentes en espera con cero rechazos, y cada eslabón quedó en el registro. Salieron tres leyes:
+
+- **Declara la forma de la respuesta junto a la respuesta.** El pie del protocolo lleva el nombre literal del lente (`"lens": "defect"`), nunca el marcador `<your lens>`. Un jurado al que se le pidió recordar el lente desde 350 KB antes, dentro de un artefacto que nombra los ocho lentes, respondió el lente equivocado tres veces en dos rondas. Rellena el marcador al renderizar.
+- **Un peldaño rechazado deja sus palabras en el registro.** Una respuesta con lente equivocado o un veredicto anulado lleva un `raw_tail` acotado en la entrada rechazada, para que la siguiente ronda lea la causa en vez de inferirla.
+- **Dos peldaños de nube no son un piso.** Cada nivel tiene al menos tres peldaños sin `context_tokens` declarado (pueden cargar un artefacto de 120k tokens) antes de su cola local. Un lente equivocado más una anulación nunca deben dejar un lente en espera.
+- **Un veredicto estructurado nunca comparte su presupuesto con el pensamiento.** Un modelo razonador al que se le pidió un veredicto JSON escueto gastó todo su presupuesto de 65536 tokens pensando en un artefacto de 131k tokens y no emitió nada (`finish_reason=length`); el tope de tiempo del rol mató después al siguiente peldaño a mitad de camino. Cada peldaño de nube que pide un veredicto en objeto JSON corre con el canal de razonamiento apagado (`reasoning_effort: none`), y la escalera del verificador guarda detrás una tercera familia por HTTP plano.
+- **Nada más escribe en el repo del tribunal mientras sesiona.** El archivo de estado de un calificador concurrente dentro del checkout cambió bytes bajo un asiento, y el órgano anuló ese veredicto con honestidad: no puede atribuir un cambio. Serializa los escritores, o sesiona en un worktree aparte del mismo commit.
+
 ## Reglas duras — romper una anula la calificación
 
 - El constructor nunca califica su propio trabajo: ni la misma instancia, ni la misma familia.
@@ -106,6 +163,11 @@ JSON estricto y parseable por máquina, un solo objeto, sin prosa:
 - Nunca debilites ni edites los tests que fallan para alcanzar un pase. Los
   jurados verifican que los archivos de test siguen sin cambios desde el commit
   rojo.
+- **Un superviviente es una afirmación; una prueba en verde es una afirmación.** Vuelve a correr a
+  mano cada mutante superviviente, en un árbol aislado, con un tope que sobreviva la carga. Un
+  timeout no es un superviviente; un error de colección no es una muerte. Toda ruta de veredicto
+  del arnés debe poder decir INVALID, y un arnés cuya línea base sin mutación no esté en verde
+  limpio se niega a emitir veredictos.
 - Un pase unánime abre la puerta; no es la meta. Aterriza, y luego prueba la
   capacidad en vivo sobre la superficie real. Verde sin prueba en vivo no es
   estar terminado.

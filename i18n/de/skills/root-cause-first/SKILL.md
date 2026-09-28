@@ -1,7 +1,7 @@
 ---
-name: root-cause-first
-description: Bei einem harten Bug, einem stillen Versagen, einer Regressions-Jagd oder einer riskanten Änderung, die leise einen nachgelagerten Konsumenten brechen könnte. Keine Fixes ohne Untersuchung — Fehler lesen, auf Kommando reproduzieren, jüngste Änderungen prüfen, Komponenten-Grenzen instrumentieren, den Datenfluss rückwärts zur Quelle verfolgen. Trigger words: debug, root cause, why is this failing, silent failure, regression, works in tests but fails live, systematic debugging, Ursache, Grundursache, warum schlägt das fehl, stilles Versagen, läuft im Test aber nicht live, systematisches Debuggen.
-license: MIT
+name: "root-cause-first"
+description: "Bei einem harten Bug, einem stillen Versagen, einer Regressions-Jagd oder einer riskanten Änderung, die leise einen nachgelagerten Konsumenten brechen könnte. Keine Fixes ohne Untersuchung — Fehler lesen, auf Kommando reproduzieren, jüngste Änderungen prüfen, Komponenten-Grenzen instrumentieren, den Datenfluss rückwärts zur Quelle verfolgen. Trigger words: debug, root cause, why is this failing, silent failure, regression, works in tests but fails live, systematic debugging, Ursache, Grundursache, warum schlägt das fehl, stilles Versagen, läuft im Test aber nicht live, systematisches Debuggen."
+license: "MIT"
 ---
 
 # Root Cause First

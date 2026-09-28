@@ -1,7 +1,7 @@
 ---
-name: intent-compiler
-description: À utiliser quand la demande d'un humain arrive en prose naturelle — métaphore, argot, poésie, raccourci compressé, coup de sang, ou « tu vois ce que je veux dire » — plutôt qu'en ticket. Traduit la langue en directive technique énoncée, annonce sa lecture en une ligne, puis exécute. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing, la prose est la spec, lire la demande, demande floue, qu'est-ce qu'il a voulu dire, déduire l'intention, métaphore, argot, formulation.
-license: MIT
+name: "intent-compiler"
+description: "À utiliser quand la demande d'un humain arrive en prose naturelle — métaphore, argot, poésie, raccourci compressé, coup de sang, ou « tu vois ce que je veux dire » — plutôt qu'en ticket. Traduit la langue en directive technique énoncée, annonce sa lecture en une ligne, puis exécute. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing, la prose est la spec, lire la demande, demande floue, qu'est-ce qu'il a voulu dire, déduire l'intention, métaphore, argot, formulation."
+license: "MIT"
 ---
 
 # La prose EST la spec

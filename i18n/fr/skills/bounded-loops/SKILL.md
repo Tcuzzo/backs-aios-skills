@@ -1,7 +1,7 @@
 ---
-name: bounded-loops
-description: À utiliser avant de lancer toute boucle qui peut relancer, poller, itérer ou appeler une API externe — boucles d'agent, boucles de réparation, planificateurs, watchers. Déclare des plafonds de budget, pose un checkpoint à l'épuisement, et rend le martèlement structurellement impossible. Trigger words: bounded loop, budget, ceiling, retry, backoff, rate limit, throttle, kill-switch, checkpoint, runaway, infinite loop, spin, budget exhaustion, boucle bornée, plafond, budget épuisé, boucle infinie, relance, martèlement, emballement.
-license: MIT
+name: "bounded-loops"
+description: "À utiliser avant de lancer toute boucle qui peut relancer, poller, itérer ou appeler une API externe — boucles d'agent, boucles de réparation, planificateurs, watchers. Déclare des plafonds de budget, pose un checkpoint à l'épuisement, et rend le martèlement structurellement impossible. Trigger words: bounded loop, budget, ceiling, retry, backoff, rate limit, throttle, kill-switch, checkpoint, runaway, infinite loop, spin, budget exhaustion, boucle bornée, plafond, budget épuisé, boucle infinie, relance, martèlement, emballement."
+license: "MIT"
 ---
 
 # Boucles bornées
