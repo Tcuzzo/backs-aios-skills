@@ -1,7 +1,17 @@
 ---
-name: "backs-pack-sync"
-description: "Use when the BACKS AIOS plugin pack has drifted from the BACKS source skills/ — a new BACKS skill exists that the IDE cannot discover because the plugin pack has no entry for it. Closes the drift class at the primitive so a missing skill stops being a manual add-it-by-hand cycle. Wraps bin/backs-pack-sync: dry-run shows the drift, --bridge <name> mirrors one skill, --bridge-all-missing mirrors every BACKS-only skill (currently 131). Each bridged file is a thin AIOS-portable SKILL.md that points to the canonical BACKS implementation. Trigger words: plugin pack drift, BACKS skill missing, sync plugin pack, mirror skill to AIOS, bridge skill, deploy tree root vs plugin pack."
-license: "MIT"
+name: backs-pack-sync
+description: 'Use when the BACKS AIOS plugin pack has drifted from the BACKS source
+  skills/ — a new BACKS skill exists that the IDE cannot discover because the plugin
+  pack has no entry for it. Closes the drift class at the primitive so a missing skill
+  stops being a manual add-it-by-hand cycle. Wraps bin/backs-pack-sync: dry-run shows
+  the drift, --bridge <name> mirrors one skill, --bridge-all-missing mirrors every
+  BACKS-only skill (currently 131). Each bridged file is a thin AIOS-portable SKILL.md
+  that points to the canonical BACKS implementation. Trigger words: plugin pack drift,
+  BACKS skill missing, sync plugin pack, mirror skill to AIOS, bridge skill, deploy
+  tree root vs plugin pack.'
+license: MIT
+tags:
+- es
 ---
 
 # backs-pack-sync
