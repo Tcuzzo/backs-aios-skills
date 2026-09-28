@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+# backs-pack-sync
+# Sync organ for the BACKS AIOS plugin pack. Diff the BACKS source
+# skills/ against the plugin pack skills/ and propose bridges for any
+# skill the operator wants mirrored. Closes the drift class at the
+# primitive so a missing skill in the plugin pack stops being a manual
+# add-it-by-hand cycle.
+#
+# Usage:
+#   bash bin/backs-pack-sync                       # dry-run; shows drift
+#   bash bin/backs-pack-sync --bridge <name>       # mirror one skill from BACKS
+#   bash bin/backs-pack-sync --bridge-all-missing  # mirror every BACKS-only skill
+#
+# Where "missing" = skill exists at BACKS_SOURCE/skills/<name>/SKILL.md
+#                  but NOT at plugin pack skills/<name>/SKILL.md.
+#
+# Configuration:
+#   BACKS_SOURCE  default /opt/JarvisAI/JarvisAI   (the IDE worktree)
+#                 override with BACKS_SOURCE=...
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+BACKS_SOURCE="${BACKS_SOURCE:-/opt/JarvisAI/JarvisAI}"
+PLUGIN_SKILLS="$ROOT/skills"
+BACKS_SKILLS="$BACKS_SOURCE/skills"
+
+if [[ ! -d "$BACKS_SKILLS" ]]; then
+  printf 'FATAL: BACKS_SOURCE=%s has no skills/ directory\n' "$BACKS_SKILLS" >&2
+  exit 1
+fi
+
+red()   { printf '\033[31m%s\033[0m\n' "$*"; }
+green() { printf '\033[32m%s\033[0m\n' "$*"; }
+cyan()  { printf '\033[36m%s\033[0m\n' "$*"; }
+bold()  { printf '\033[1m%s\033[0m\n' "$*"; }
+
+# Emit the AIOS-portable SKILL.md body that points to the canonical BACKS
+# implementation. Description is the BACKS skill's description (verbatim
+# if it fits the 1-1024 trigger-word budget, otherwise truncated to fit).
+write_aios_skill() {
+  local name="$1"
+  local src="$BACKS_SKILLS/$name/SKILL.md"
+  local dst="$PLUGIN_SKILLS/$name/SKILL.md"
+  mkdir -p "$PLUGIN_SKILLS/$name"
+
+  local desc
+  desc="$(awk '/^description:/{flag=1; sub(/^description:[[:space:]]*/,""); sub(/^"|"$/,""); print; exit}' "$src")"
+  if [[ -z "$desc" ]]; then
+    desc="BACKS skill mirrored to AIOS for live IDE load."
+  fi
+  if (( ${#desc} > 1024 )); then
+    desc="${desc:0:1010}..."
+  fi
+
+  cat > "$dst" <<EOF
+---
+name: "$name"
+description: "$desc"
+license: "MIT"
+---
+
+# $name
+
+This is the AIOS-pack load-side surface. The full implementation lives in
+the BACKS runtime at:
+
+- \`$BACKS_SKILLS/$name/SKILL.md\`
+- any backend service referenced by that skill
+
+## When this skill is the right organ
+
+When the operator (or any agent in an IDE that has loaded the BACKS AIOS
+pack) needs the discipline this skill teaches. This pack entry is the
+address the IDE routes to; the canonical body lives in the BACKS repo so
+the implementation is always in lockstep with the operator's actual
+runtime.
+
+## What this pack skill is, and what it isn't
+
+- **Is** — the AIOS-portable load-side surface that lets the IDE discover
+  the skill via this pack and route \`/$name\` invocations to the BACKS
+  implementation when this session is inside the BACKS repo.
+- **Isn't** — the full skill body. The full skill lives in the BACKS
+  source. This skill is the address; that one is the body.
+
+When this session is inside the BACKS repo, the runtime resolves the
+canonical version from the BACKS source. When this session is outside
+BACKS, this skill is the trailer that points the agent to use BACKS
+to get the full discipline.
+EOF
+
+  echo "  bridged: $dst"
+}
+
+# ---- main ----------------------------------------------------------------
+case "${1:-}" in
+  "")
+    cyan "=== Plugin pack sync drift ==="
+    printf '  plugin pack:    %s\n' "$PLUGIN_SKILLS"
+    printf '  BACKS source:   %s\n' "$BACKS_SKILLS"
+    echo ""
+
+    missing=()
+    while IFS= read -r -d '' skill; do
+      s="$(basename "$(dirname "$skill")")"
+      [[ ! -f "$PLUGIN_SKILLS/$s/SKILL.md" ]] && missing+=("$s")
+    done < <(find "$BACKS_SKILLS" -mindepth 2 -maxdepth 2 -name SKILL.md -print0)
+
+    if (( ${#missing[@]} == 0 )); then
+      green "  drift: 0 — every BACKS skill is mirrored in the plugin pack"
+    else
+      bold "  drift: ${#missing[@]} BACKS skill(s) missing from plugin pack:"
+      for s in "${missing[@]}"; do
+        printf '    - %s\n' "$s"
+      done
+      echo ""
+      bold "  next: bash bin/backs-pack-sync --bridge <name>"
+      bold "  or:   bash bin/backs-pack-sync --bridge-all-missing"
+    fi
+    ;;
+
+  --bridge)
+    [[ -n "${2:-}" ]] || { red "usage: $0 --bridge <name>"; exit 2; }
+    name="$2"
+    src="$BACKS_SKILLS/$name/SKILL.md"
+    [[ -f "$src" ]] || { red "BACKS has no skill: $name"; exit 1; }
+    if [[ -f "$PLUGIN_SKILLS/$name/SKILL.md" ]]; then
+      red "plugin pack already has: $name/SKILL.md"; exit 1
+    fi
+    write_aios_skill "$name"
+    bash "$ROOT/bin/scrub-plugin-pack-literals" --hook >/dev/null
+    green "bridged + hygiene clean: $name"
+    ;;
+
+  --bridge-all-missing)
+    bridged=0
+    while IFS= read -r -d '' skill; do
+      s="$(basename "$(dirname "$skill")")"
+      [[ ! -f "$PLUGIN_SKILLS/$s/SKILL.md" ]] || continue
+      write_aios_skill "$s"
+      bridged=$((bridged + 1))
+    done < <(find "$BACKS_SKILLS" -mindepth 2 -maxdepth 2 -name SKILL.md -print0)
+    bash "$ROOT/bin/scrub-plugin-pack-literals" --hook >/dev/null
+    green "bridged $bridged skill(s); hygiene clean"
+    ;;
+
+  *)
+    red "usage: $0 [--bridge <name>|--bridge-all-missing]"
+    exit 2
+    ;;
+esac

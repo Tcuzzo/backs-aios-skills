@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# .githooks/pre-push
+# Plugin pack pre-push hook — re-runs the scrubber against the working
+# tree AND scans outgoing commit messages for model-credit trailers.
+# Catches the next leak class before it reaches the GitHub mirror.
+#
+# Wired via: git config core.hooksPath .githooks
+
+set -euo pipefail
+ROOT="$(git rev-parse --show-toplevel)"
+
+if [[ ! -x "$ROOT/bin/scrub-plugin-pack-literals" ]]; then
+  printf 'pre-push: scrubber missing at bin/scrub-plugin-pack-literals\n' >&2
+  exit 1
+fi
+
+# 1) Working-tree scrub (any un-committed file)
+if ! bash "$ROOT/bin/scrub-plugin-pack-literals" --hook; then
+  printf '\npre-push REFUSED: working tree carries pre-publish literals.\n' >&2
+  exit 1
+fi
+
+# 2) Outgoing commit-message scan — refuse any push that adds a model
+#    trailer. Honors BACKS inv_21: no Co-Authored-By / Generated-with-<model>.
+#    Pattern is built at runtime so the literal class string never appears
+#    in this hook's own source.
+TRAILER_CLASS="$(printf '%s' 'Co-Authored-By|Co-authored-by|Generated with')"
+remote="$1"
+url="$2"
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [[ "$local_sha" == "0000000000000000000000000000000000000000" ]] && continue
+  range="$local_sha"
+  [[ "$remote_sha" != "0000000000000000000000000000000000000000" ]] && range="$remote_sha..$local_sha"
+  bad="$(git log "$range" --format='%B' \
+    | grep -iE "^($TRAILER_CLASS):[[:space:]]*[A-Za-z]" || true)"
+  if [[ -n "$bad" ]]; then
+    printf '\npre-push REFUSED: outgoing commits contain model-credit trailers.\n' >&2
+    printf '%s\n' "$bad" | head -5 >&2
+    printf '\nfix: amend those commits to drop the trailer (BACKS inv_21).\n' >&2
+    exit 1
+  fi
+done
+
+exit 0
