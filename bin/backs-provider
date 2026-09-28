@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CONFIG="$HOME/.config/backs-aios/provider-control"
+RUNTIME="${BACKS_AIOS_PROVIDER_RUNTIME:-$HOME/.local/share/backs-aios/provider-control/current}"
+CONTROLLER="$RUNTIME/provider/backs_provider.py"
+
+if [[ -z "${BACKS_PROJECT_ROOT:-}" && -r "$CONFIG/project-root" ]]; then
+    IFS= read -r BACKS_PROJECT_ROOT < "$CONFIG/project-root" || true
+    export BACKS_PROJECT_ROOT
+fi
+PYTHON="${BACKS_PROVIDER_PYTHON:-}"
+if [[ -z "$PYTHON" && -r "$CONFIG/python-executable" ]]; then
+    IFS= read -r PYTHON < "$CONFIG/python-executable" || true
+fi
+if [[ -z "$PYTHON" || ! -x "$PYTHON" || ! -f "$CONTROLLER" ]]; then
+    printf '%s\n' 'ERROR: provider installation is incomplete; rerun install-provider.sh in the working BACKS environment.' >&2
+    exit 1
+fi
+# Same interpreter and project for CLI, slash commands, and apiKeyHelper.
+# No key or other credential is serialized into a shell command or file.
+exec "$PYTHON" -B "$CONTROLLER" "$@"

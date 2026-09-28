@@ -1,7 +1,7 @@
 ---
-name: leap-protocol
-description: Use quando uma costura é grande demais para um builder só e precisa ser dividida entre workers paralelos. O LEAP decompõe o trabalho em balls com dono único — objetivo, spec completa, escopo duro de arquivos — distribui para builders novos em worktrees isolados e reconcilia por uma única espinha de escrita. Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff, fatiar, decompor, builders paralelos, jogar a bola, espinha de escrita.
-license: MIT
+name: "leap-protocol"
+description: "Use quando uma costura é grande demais para um builder só e precisa ser dividida entre workers paralelos. O LEAP decompõe o trabalho em balls com dono único — objetivo, spec completa, escopo duro de arquivos — distribui para builders novos em worktrees isolados e reconcilia por uma única espinha de escrita. Trigger words: leap, ball, slice, decompose, fan out, parallel builders, single write spine, throw the ball, stateless handoff, fatiar, decompor, builders paralelos, jogar a bola, espinha de escrita."
+license: "MIT"
 ---
 
 # Protocolo LEAP

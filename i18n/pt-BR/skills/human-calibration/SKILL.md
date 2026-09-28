@@ -1,7 +1,7 @@
 ---
-name: human-calibration
-description: Use quando um build, design ou decisão de UX com consequência começa e você precisa primeiro conhecer o humano que ele serve. Carrega ou constrói um perfil de sessão de como esse humano pensa, decide e quer que falem com ele, e então guia o build inteiro por ele. Trigger words: yoke, know your human, human profile, session profile, grounding ladder, interaction model, intent, conheça seu humano, perfil humano, perfil de sessão, escada de ancoragem, modelo de interação, intenção.
-license: MIT
+name: "human-calibration"
+description: "Use quando um build, design ou decisão de UX com consequência começa e você precisa primeiro conhecer o humano que ele serve. Carrega ou constrói um perfil de sessão de como esse humano pensa, decide e quer que falem com ele, e então guia o build inteiro por ele. Trigger words: yoke, know your human, human profile, session profile, grounding ladder, interaction model, intent, conheça seu humano, perfil humano, perfil de sessão, escada de ancoragem, modelo de interação, intenção."
+license: "MIT"
 ---
 
 # Conheça o Seu Humano

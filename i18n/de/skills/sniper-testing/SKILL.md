@@ -1,7 +1,7 @@
 ---
-name: sniper-testing
-description: Für jede Fix- oder Build-Schleife, und bevor du irgendeinem grünen Test traust. Fährt nur die Tests, die abdecken, was du angefasst hast, und killt Mock-Theater — Tests, die bestehen, während die Fähigkeit kaputt ist. Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat, gezielte Tests, Test-Scope, falsches Grün, ganze Suite, Test-Blähung.
-license: MIT
+name: "sniper-testing"
+description: "Für jede Fix- oder Build-Schleife, und bevor du irgendeinem grünen Test traust. Fährt nur die Tests, die abdecken, was du angefasst hast, und killt Mock-Theater — Tests, die bestehen, während die Fähigkeit kaputt ist. Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat, gezielte Tests, Test-Scope, falsches Grün, ganze Suite, Test-Blähung."
+license: "MIT"
 ---
 
 # Sniper Testing

@@ -1,7 +1,7 @@
 ---
-name: live-research
-description: Use ao raciocinar sobre um codebase, API ou sistema cuja forma real importa. Roda um agente de pesquisa em paralelo que lê a verdade viva — os READMEs do próprio projeto, os docs de seção, a fonte de fato — para as conclusões se apoiarem no que existe de verdade, não na memória do modelo. Trigger words: live research, ground the reasoning, read the real source, check what is actually there, primary sources, background research, verify against the repo, what do the docs say, pesquisa ao vivo, ler a fonte real, fontes primárias, conferir no repo, o que dizem os docs.
-license: MIT
+name: "live-research"
+description: "Use ao raciocinar sobre um codebase, API ou sistema cuja forma real importa. Roda um agente de pesquisa em paralelo que lê a verdade viva — os READMEs do próprio projeto, os docs de seção, a fonte de fato — para as conclusões se apoiarem no que existe de verdade, não na memória do modelo. Trigger words: live research, ground the reasoning, read the real source, check what is actually there, primary sources, background research, verify against the repo, what do the docs say, pesquisa ao vivo, ler a fonte real, fontes primárias, conferir no repo, o que dizem os docs."
+license: "MIT"
 ---
 
 # Live Research

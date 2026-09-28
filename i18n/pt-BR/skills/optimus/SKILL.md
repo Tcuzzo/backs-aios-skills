@@ -1,7 +1,7 @@
 ---
-name: optimus
-description: Use ao iniciar qualquer sessão, job ou loop de agente — antes de escrever qualquer código. Boot harness-first: carregue o piso de invariantes e as skills que o job precisa, para o agente ler as regras antes de trabalhar; inclui o padrão de hook do portão de aterramento que bloqueia ferramentas mutantes até o harness carregar. Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence, carregar o harness, início de sessão, ler o piso, sem código sem harness.
-license: MIT
+name: "optimus"
+description: "Use ao iniciar qualquer sessão, job ou loop de agente — antes de escrever qualquer código. Boot harness-first: carregue o piso de invariantes e as skills que o job precisa, para o agente ler as regras antes de trabalhar; inclui o padrão de hook do portão de aterramento que bloqueia ferramentas mutantes até o harness carregar. Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence, carregar o harness, início de sessão, ler o piso, sem código sem harness."
+license: "MIT"
 ---
 
 # Harness Boot

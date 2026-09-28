@@ -1,7 +1,7 @@
 ---
-name: understanding-gates
-description: 当一个构建、修复或升级正从意图走向交付、你需要证明它仍然对得上最初的请求时用它。以 approve/revise/reject 裁决逐一审问 Design、Plan、Build、Test、Ship 五个阶段，具名失败即修复目标，每次修复后重跑该关。Trigger words: understanding, stage gates, validate build, spec match, verdict, green but wrong, echo check, done means done. 中文触发词：理解关卡、阶段关卡、对齐原始需求、裁决、绿了但不对、回声检查、做完才算完。
-license: MIT
+name: "understanding-gates"
+description: "当一个构建、修复或升级正从意图走向交付、你需要证明它仍然对得上最初的请求时用它。以 approve/revise/reject 裁决逐一审问 Design、Plan、Build、Test、Ship 五个阶段，具名失败即修复目标，每次修复后重跑该关。Trigger words: understanding, stage gates, validate build, spec match, verdict, green but wrong, echo check, done means done. 中文触发词：理解关卡、阶段关卡、对齐原始需求、裁决、绿了但不对、回声检查、做完才算完。"
+license: "MIT"
 ---
 
 # Understanding Gates

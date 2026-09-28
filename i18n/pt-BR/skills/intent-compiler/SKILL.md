@@ -1,7 +1,7 @@
 ---
-name: intent-compiler
-description: Use quando o pedido de um humano chega como prosa natural — metáfora, gíria, poesia, atalho comprimido, calor, ou "você sabe o que eu quero dizer" — em vez de um ticket. Traduz a linguagem numa diretiva técnica declarada, declara a leitura em uma linha, e então executa. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing, a prosa é a spec, ler a prosa, traduzir o pedido, pedido ambíguo, o que ele quis dizer, deduzir intenção, metáfora, gíria, linguajar.
-license: MIT
+name: "intent-compiler"
+description: "Use quando o pedido de um humano chega como prosa natural — metáfora, gíria, poesia, atalho comprimido, calor, ou \"você sabe o que eu quero dizer\" — em vez de um ticket. Traduz a linguagem numa diretiva técnica declarada, declara a leitura em uma linha, e então executa. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing, a prosa é a spec, ler a prosa, traduzir o pedido, pedido ambíguo, o que ele quis dizer, deduzir intenção, metáfora, gíria, linguajar."
+license: "MIT"
 ---
 
 # A Prosa É a Spec

@@ -1,7 +1,7 @@
 ---
-name: wayfinder
-description: Wenn du verloren bist, der Weg nach vorn unklar ist oder du entscheiden musst, woran als Nächstes gearbeitet wird. Kartiert eine Entscheidungs-Karte zum Ziel, statt eine Frage beim Menschen zu parken. Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier, der Pfad, Route kartieren, was als Nächstes, verloren, Nebel, Entscheidungs-Karte.
-license: MIT
+name: "wayfinder"
+description: "Wenn du verloren bist, der Weg nach vorn unklar ist oder du entscheiden musst, woran als Nächstes gearbeitet wird. Kartiert eine Entscheidungs-Karte zum Ziel, statt eine Frage beim Menschen zu parken. Trigger words: wayfinder, the path, chart the route, map the work, what next, lost, fog of war, decision map, frontier, der Pfad, Route kartieren, was als Nächstes, verloren, Nebel, Entscheidungs-Karte."
+license: "MIT"
 ---
 
 # Wayfinder

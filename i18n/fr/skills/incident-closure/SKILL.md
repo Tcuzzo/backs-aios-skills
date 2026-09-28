@@ -1,7 +1,7 @@
 ---
-name: incident-closure
-description: À utiliser quand l'humain signale une casse ou dit « répare ça » — surtout quand le plan de contrôle normal (API, CLI, service) est mort et qu'il faut passer en dessous. La réponse est une clôture complète, compréhension d'abord — cause racine avec preuves, test en échec d'abord, vert, preuve live sur le propre chemin de l'humain, commit — jamais un menu d'options en retour. Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore, répare ça, c'est cassé, en panne, ça ne marche plus, récupérer, restaurer, clôture complète.
-license: MIT
+name: "incident-closure"
+description: "À utiliser quand l'humain signale une casse ou dit « répare ça » — surtout quand le plan de contrôle normal (API, CLI, service) est mort et qu'il faut passer en dessous. La réponse est une clôture complète, compréhension d'abord — cause racine avec preuves, test en échec d'abord, vert, preuve live sur le propre chemin de l'humain, commit — jamais un menu d'options en retour. Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore, répare ça, c'est cassé, en panne, ça ne marche plus, récupérer, restaurer, clôture complète."
+license: "MIT"
 ---
 
 # La clôture complète

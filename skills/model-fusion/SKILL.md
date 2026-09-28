@@ -1,7 +1,7 @@
 ---
-name: model-fusion
-description: Use when one model's answer is not trustworthy enough — a hard build, fix, or design where you want several models to compete and an independent judge to pick. A panel drafts in parallel, a judge merges the winner, the result is validated against the original intent. Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader.
-license: MIT
+name: "model-fusion"
+description: "Use when one model's answer is not trustworthy enough — a hard build, fix, or design where you want several models to compete and an independent judge to pick. A panel drafts in parallel, a judge merges the winner, the result is validated against the original intent. Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader."
+license: "MIT"
 ---
 
 # Model Fusion

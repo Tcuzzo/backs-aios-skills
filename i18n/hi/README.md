@@ -1,12 +1,31 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../../assets/reflex-seam-dark.svg">
+  <img alt="रिफ़्लेक्स सीम। बाईं ओर, एक डिटरमिनिस्टिक रनटाइम स्टेट, फ़ाइलों, नियमों और टेस्ट का मालिक है। दाईं ओर, मॉडल का जजमेंट कर्नल इनफ़रेंस, पॉलिसी, रिवर्सिबिलिटी और प्राथमिकता का मालिक है। दोनों के बीच एक दाँतेदार सीम चलती है। फ़ैसले के संकेत मॉडल से रनटाइम की ओर जाते हैं, और स्टेट अपडेट वापस आते हैं। बिना अनुमति स्टेट बदलने की कोशिश ज़ोर से ठुकरा दी जाती है।" src="../../assets/reflex-seam-light.svg">
+</picture>
+
 # BACKS AIOS Skills
 
 **इसे इन भाषाओं में पढ़ें:** [English](../../README.md) · [Español](../es/README.md) · [Português (BR)](../pt-BR/README.md) · [Français](../fr/README.md) · [Deutsch](../de/README.md) · [简体中文](../zh-CN/README.md)
 
+**मॉडल फ़ैसला करता है। रनटाइम स्टेट, फ़ाइलों और नियमों का मालिक है — और अगर मॉडल ऐसी स्टेट
+की ओर हाथ बढ़ाए जो उसकी नहीं है, तो सिस्टम चुपचाप अंदाज़ा लगाने के बजाय ज़ोर से फेल हो जाता है।**
+
+यही लाइन **Reflex Seam** है, और यह पैक उसे उस एजेंट पर लगाने का तरीका है जो आप पहले से
+इस्तेमाल करते हैं। यह रहा वह पल जब यह अपनी कीमत वसूल करता है: एजेंट नियम पढ़े बिना ही कोई
+कमांड चलाने जा रहा है। एक हुक जाँच करता है। टूल नहीं चलता, और एजेंट को वजह बता दी जाती है।
+यह कोई प्रॉम्प्ट नहीं है जो उससे अच्छा बर्ताव करने को कहे — यह एक गेट है जिससे वह बहस नहीं कर सकता।
+
+दो नियम साथ चलते हैं। **कोई मॉक थिएटर नहीं:** जो टेस्ट चीज़ के टूटे होने पर भी पास हो जाए, वह
+झूठ है — इसलिए टेस्ट असली असर जाँचते हैं। **बनाने वाला जाँचने वाला नहीं:** फेल होने वाला टेस्ट
+पहले लिखा जाता है, और जिसने कोड नहीं लिखा, उसे ही उसे पास करना होता है।
+
 > यह English मूल संस्करण [../../README.md](../../README.md) का हिन्दी अनुवाद है — English ही canonical है।
 
-एक agent harness, 27 portable skills और 8 नामी plays में निचोड़ा हुआ — एक चलते हुए
+एक agent harness, 28 portable skills और 8 नामी plays में निचोड़ा हुआ — एक चलते हुए
 agent platform से निकालकर सादे markdown में दोबारा बनाया गया, जिसे कोई भी agent
 load कर सकता है।
+
+तस्वीरों से सीखने के लिए [skills और loops का visual guide](../../docs/FLOWCHARTS.md) देखें।
 
 ## Mission
 
@@ -80,7 +99,7 @@ Hermes, एक bare API loop — [INSTALL.md](INSTALL.md) में हैं।
   जो iteration तब तक चलाता है जब तक landing gate green न हो जाए; इस भूमिका की
   परिभाषा [NAMING.md](NAMING.md#lord-of-the-loop) में है।
 - **Commands** वे slash entries हैं जो plugin install करता है — हर एक कोई play या
-  skill load करके चलाती है। हर एक की एक file `commands/` में।
+  skill load करके चलाती है। हर एक की एक file `command-adapters/` में।
 - **Naming convention** — skills noun phrases क्यों हैं, commands verbs क्यों, और
   floor क़ानून क्यों — [NAMING.md](NAMING.md) में है।
 - **Effort stamps** — हर skill का एक-पंक्ति लागत-दावा (free / light / heavy) और हर
@@ -112,6 +131,7 @@ Hermes, एक bare API loop — [INSTALL.md](INSTALL.md) में हैं।
 | [human-voice](skills/human-voice/SKILL.md) | no-degree bar: अगर पढ़ने के लिए degree चाहिए, तो दोबारा लिखो। पूरा विचार बचाकर machine के सुराग़ हटाती है। |
 | [red-first](skills/red-first/SKILL.md) | build शुरू होने से पहले एक साबित-failing test commit करो। builder उसे छू नहीं सकता। एक grader जाँचता है कि वह कभी हिला नहीं। |
 | [repair-loop](skills/repair-loop/SKILL.md) | पूरा fix loop: floor में ज़मीन पकड़ो, reproduce करो, red test, class ठीक करो, असली path पर verify करो, independent grade, land। |
+| [repo-map](skills/repo-map/SKILL.md) | code बदलने से पहले repository की असली संरचना, entrypoints, config और runtime paths का नक्शा बनाओ। |
 | [root-cause-first](skills/root-cause-first/SKILL.md) | बिना जाँच के कोई fix नहीं। माँगते ही reproduce करो, boundaries पर instrument लगाओ, data को पीछे source तक trace करो। |
 | [seam-engineering](skills/seam-engineering/SKILL.md) | खोट की class को उसके साझा primitive पर एक बार ठीक करो, हर भाई-बंधु को sweep करो, और एक guard बिठाओ जो अगले offender को पकड़े। |
 | [session-handoff](skills/session-handoff/SKILL.md) | session को एक flat file में निचोड़ती है जिसे एक बिल्कुल नया agent ठंडा पढ़कर आगे बढ़ा सके। secrets हटाकर। |

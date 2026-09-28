@@ -1,7 +1,7 @@
 ---
-name: human-voice
-description: Úsala en cada mensaje dirigido a un humano. La vara del sin-título; mata el slop de IA. Trigger words: human voice, plain speech, plain language, de-slop, slop, simplify, jargon, tone, readable, rewrite this, text like a human, voz humana, lenguaje claro, hablar claro, sin jerga, quitar slop, simplificar, tono, legible, reescribe esto, escribe como humano.
-license: MIT
+name: "human-voice"
+description: "Úsala en cada mensaje dirigido a un humano. La vara del sin-título; mata el slop de IA. Trigger words: human voice, plain speech, plain language, de-slop, slop, simplify, jargon, tone, readable, rewrite this, text like a human, voz humana, lenguaje claro, hablar claro, sin jerga, quitar slop, simplificar, tono, legible, reescribe esto, escribe como humano."
+license: "MIT"
 ---
 
 # Human Voice

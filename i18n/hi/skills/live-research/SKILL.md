@@ -1,7 +1,7 @@
 ---
-name: live-research
-description: तब लगाओ जब किसी codebase, API या system पर reasoning हो रही हो और उसकी असल शक्ल मायने रखती हो। एक parallel research agent चलाता है जो live सच पढ़ता है — project के अपने READMEs, section docs, असली source — ताकि नतीजे उस पर टिकें जो सच में वहाँ है, model की याददाश्त पर नहीं। Trigger words: live research, ground the reasoning, read the real source, check what is actually there, primary sources, background research, verify against the repo, what do the docs say, असली source पढ़ो, repo से मिलाओ, docs क्या कहते हैं, ज़मीनी सच.
-license: MIT
+name: "live-research"
+description: "तब लगाओ जब किसी codebase, API या system पर reasoning हो रही हो और उसकी असल शक्ल मायने रखती हो। एक parallel research agent चलाता है जो live सच पढ़ता है — project के अपने READMEs, section docs, असली source — ताकि नतीजे उस पर टिकें जो सच में वहाँ है, model की याददाश्त पर नहीं। Trigger words: live research, ground the reasoning, read the real source, check what is actually there, primary sources, background research, verify against the repo, what do the docs say, असली source पढ़ो, repo से मिलाओ, docs क्या कहते हैं, ज़मीनी सच."
+license: "MIT"
 ---
 
 # Live Research

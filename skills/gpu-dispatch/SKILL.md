@@ -1,7 +1,7 @@
 ---
-name: gpu-dispatch
-description: Use when dispatching local models to GPUs — scheduling inference work, picking a card, or managing model residency. One model per GPU, no spill to system RAM, keep warm through the loop, unload at loop end, admit by measured truth. Trigger words: gpu, vram, gpu dispatch, model loading, keep alive, resident model, local inference, spill, warm.
-license: MIT
+name: "gpu-dispatch"
+description: "Use when dispatching local models to GPUs — scheduling inference work, picking a card, or managing model residency. One model per GPU, no spill to system RAM, keep warm through the loop, unload at loop end, admit by measured truth. Trigger words: gpu, vram, gpu dispatch, model loading, keep alive, resident model, local inference, spill, warm."
+license: "MIT"
 ---
 
 # GPU Dispatch Law

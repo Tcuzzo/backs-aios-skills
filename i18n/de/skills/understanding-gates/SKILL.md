@@ -1,7 +1,7 @@
 ---
-name: understanding-gates
-description: Wenn ein Build, Fix oder Uplift von der Absicht Richtung Auslieferung wandert und du Beweis brauchst, dass er noch zur ursprünglichen Bitte passt. Verhört Design, Plan, Build, Test und Ship mit approve/revise/reject-Urteilen, benannten Fehlschlägen als Reparatur-Zielen und einem Wiederholungslauf nach jeder Reparatur. Trigger words: understanding, stage gates, validate build, spec match, verdict, green but wrong, echo check, done means done, Verständnis, Stufen-Gates, Build validieren, Urteil, grün aber falsch, fertig heißt fertig.
-license: MIT
+name: "understanding-gates"
+description: "Wenn ein Build, Fix oder Uplift von der Absicht Richtung Auslieferung wandert und du Beweis brauchst, dass er noch zur ursprünglichen Bitte passt. Verhört Design, Plan, Build, Test und Ship mit approve/revise/reject-Urteilen, benannten Fehlschlägen als Reparatur-Zielen und einem Wiederholungslauf nach jeder Reparatur. Trigger words: understanding, stage gates, validate build, spec match, verdict, green but wrong, echo check, done means done, Verständnis, Stufen-Gates, Build validieren, Urteil, grün aber falsch, fertig heißt fertig."
+license: "MIT"
 ---
 
 # Understanding Gates

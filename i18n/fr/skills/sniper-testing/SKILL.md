@@ -1,7 +1,7 @@
 ---
-name: sniper-testing
-description: À utiliser pendant toute boucle de fix ou de build, et avant de croire n'importe quel test vert. Ne lance que les tests qui couvrent ce que tu as touché, et tue le théâtre de mocks — les tests qui passent pendant que la capacité est cassée. Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat, tests ciblés, périmètre de test, théâtre de mocks, faux vert, suite complète, tests au sniper.
-license: MIT
+name: "sniper-testing"
+description: "À utiliser pendant toute boucle de fix ou de build, et avant de croire n'importe quel test vert. Ne lance que les tests qui couvrent ce que tu as touché, et tue le théâtre de mocks — les tests qui passent pendant que la capacité est cassée. Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat, tests ciblés, périmètre de test, théâtre de mocks, faux vert, suite complète, tests au sniper."
+license: "MIT"
 ---
 
 # Sniper Testing

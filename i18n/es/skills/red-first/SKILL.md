@@ -1,7 +1,7 @@
 ---
-name: red-first
-description: Úsala al despachar cualquier constructor — un agente, un modelo o tú mismo — para hacer un cambio que un test debería probar. Commitea un test de contrato probado-en-rojo antes de que arranque el build, le prohíbe al constructor tocarlo, y un evaluador independiente verifica que el test nunca fue editado. Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build, rojo primero, test en rojo primero, test de contrato, línea base roja, test a prueba de manipulación, test antes del build.
-license: MIT
+name: "red-first"
+description: "Úsala al despachar cualquier constructor — un agente, un modelo o tú mismo — para hacer un cambio que un test debería probar. Commitea un test de contrato probado-en-rojo antes de que arranque el build, le prohíbe al constructor tocarlo, y un evaluador independiente verifica que el test nunca fue editado. Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build, rojo primero, test en rojo primero, test de contrato, línea base roja, test a prueba de manipulación, test antes del build."
+license: "MIT"
 ---
 
 # Rojo Primero, a Prueba de Manipulación

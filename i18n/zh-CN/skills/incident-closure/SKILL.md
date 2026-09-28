@@ -1,7 +1,7 @@
 ---
-name: incident-closure
-description: 当人报告东西坏了或说"修好它"时使用——尤其当正常控制面（API、CLI、服务）已死、你必须从底下够进去时。答案是一次理解先行的完整闭环——带证据的根因、失败测试先行、转绿、在人自己的路径上现场证明、提交——绝不是把选项菜单递回去。Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore. 中文触发词：修好它、坏了、挂了、被清空了、不工作了、恢复、还原、彻底修复。
-license: MIT
+name: "incident-closure"
+description: "当人报告东西坏了或说\"修好它\"时使用——尤其当正常控制面（API、CLI、服务）已死、你必须从底下够进去时。答案是一次理解先行的完整闭环——带证据的根因、失败测试先行、转绿、在人自己的路径上现场证明、提交——绝不是把选项菜单递回去。Trigger words: fix it, fix shit, full close, broken, wiped, down, it stopped working, recover, restore. 中文触发词：修好它、坏了、挂了、被清空了、不工作了、恢复、还原、彻底修复。"
+license: "MIT"
 ---
 
 # Full Close——完整闭环

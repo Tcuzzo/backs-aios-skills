@@ -1,7 +1,7 @@
 ---
-name: design-taste
-description: Use before building anything visual (a site, app, dashboard, console, or deck) so it ships with real taste instead of generic AI defaults. Trigger words: design, UI, taste, design tokens, design system, accessibility, WCAG, screenshot critique, dark mode, restyle.
-license: MIT
+name: "design-taste"
+description: "Use before building anything visual (a site, app, dashboard, console, or deck) so it ships with real taste instead of generic AI defaults. Trigger words: design, UI, taste, design tokens, design system, accessibility, WCAG, screenshot critique, dark mode, restyle."
+license: "MIT"
 ---
 
 # Design Taste — Tokens First, Eyes On, Accessibility Hard

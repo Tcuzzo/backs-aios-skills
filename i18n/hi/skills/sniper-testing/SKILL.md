@@ -1,7 +1,7 @@
 ---
-name: sniper-testing
-description: किसी भी fix या build loop के दौरान लगाओ, और किसी भी green test पर भरोसा करने से पहले। सिर्फ़ वे tests चलाता है जो तुम्हारे छुए हुए code को cover करते हैं, और mock theater को मारता है — वे tests जो pass होते हैं जबकि capability टूटी पड़ी है। Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat, सिर्फ़ ज़रूरी tests, नक़ली green, पूरी suite मत चलाओ, test का दायरा.
-license: MIT
+name: "sniper-testing"
+description: "किसी भी fix या build loop के दौरान लगाओ, और किसी भी green test पर भरोसा करने से पहले। सिर्फ़ वे tests चलाता है जो तुम्हारे छुए हुए code को cover करते हैं, और mock theater को मारता है — वे tests जो pass होते हैं जबकि capability टूटी पड़ी है। Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat, सिर्फ़ ज़रूरी tests, नक़ली green, पूरी suite मत चलाओ, test का दायरा."
+license: "MIT"
 ---
 
 # Sniper Testing

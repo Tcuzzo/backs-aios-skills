@@ -1,7 +1,7 @@
 ---
-name: gpu-dispatch
-description: तब इस्तेमाल करें जब local models GPUs पर dispatch करने हों — inference का काम schedule करना, card चुनना या model residency सँभालना; हर GPU पर एक model, system RAM में कोई spill नहीं, loop भर warm रखो, loop के अंत में unload करो, दाख़िला नापे हुए सच से। Trigger words: gpu, vram, gpu dispatch, model loading, keep alive, resident model, local inference, spill, warm, कार्ड, गरम रखो, लोकल मॉडल.
-license: MIT
+name: "gpu-dispatch"
+description: "तब इस्तेमाल करें जब local models GPUs पर dispatch करने हों — inference का काम schedule करना, card चुनना या model residency सँभालना; हर GPU पर एक model, system RAM में कोई spill नहीं, loop भर warm रखो, loop के अंत में unload करो, दाख़िला नापे हुए सच से। Trigger words: gpu, vram, gpu dispatch, model loading, keep alive, resident model, local inference, spill, warm, कार्ड, गरम रखो, लोकल मॉडल."
+license: "MIT"
 ---
 
 # GPU Dispatch Law

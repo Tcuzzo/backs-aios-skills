@@ -1,5 +1,7 @@
 # 安装 —— 把这个包拧到真实的 agent 上
 
+> **v0.7 portable installer:** Claude Code、Codex、Cursor、OpenCode 和通用 agent 的当前一键注册方式：`./install.sh --target all --locale zh-CN`。脚本不会覆盖已有路径；PowerShell 用户运行 `./install.ps1`。完整的当前路径矩阵见[规范安装指南](../../INSTALL.md)。
+
 这个包就是几个装满 markdown 的文件夹。每个技能是 `skills/<name>/SKILL.md`，
 每套战术是 `plays/<name>.md`。没有二进制、没有服务器、没有构建步骤。
 安装 = 把 markdown 放到你的 agent 找技能的地方。

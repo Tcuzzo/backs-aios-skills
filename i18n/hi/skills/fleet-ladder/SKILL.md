@@ -1,7 +1,7 @@
 ---
-name: fleet-ladder
-description: तब इस्तेमाल करें जब किसी model को कोई काम सौंपना हो — building, grading या bounded worker job — या कोई provider down हो और fallback क्रम चाहिए; LIVE model ladder resolve करता है: probe करो कि सचमुच क्या चालू है, explicit fallback क्रम से सबसे अच्छा available चुनो, ladder ख़त्म हो तो ज़ोर से fail करो। Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability, कौन सा model, सीढ़ी, विकल्प क्रम, उपलब्धता.
-license: MIT
+name: "fleet-ladder"
+description: "तब इस्तेमाल करें जब किसी model को कोई काम सौंपना हो — building, grading या bounded worker job — या कोई provider down हो और fallback क्रम चाहिए; LIVE model ladder resolve करता है: probe करो कि सचमुच क्या चालू है, explicit fallback क्रम से सबसे अच्छा available चुनो, ladder ख़त्म हो तो ज़ोर से fail करो। Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability, कौन सा model, सीढ़ी, विकल्प क्रम, उपलब्धता."
+license: "MIT"
 ---
 
 # Fleet Ladder

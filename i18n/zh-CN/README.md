@@ -1,11 +1,29 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../../assets/reflex-seam-dark.svg">
+  <img alt="反射缝。左侧是确定性运行时，掌管状态、文件、规则和测试。右侧是模型判断内核，掌管推理、策略、可回滚性和优先级。两者之间是一道锯齿状的缝。决策信号从模型穿过缝走向运行时，状态更新再穿回来。未经许可的状态改动会被大声拒绝。" src="../../assets/reflex-seam-light.svg">
+</picture>
+
 # BACKS AIOS Skills
 
+先看图？这里有[技能与循环视觉指南](../../docs/FLOWCHARTS.md)。
+
 **其他语言版本：** [English](../../README.md) · [Español](../es/README.md) · [Português (BR)](../pt-BR/README.md) · [Français](../fr/README.md) · [Deutsch](../de/README.md) · [हिन्दी](../hi/README.md)
+
+**模型负责判断。运行时掌管状态、文件和规则——如果模型去动它无权触碰的状态，系统会大声报错，
+而不是自己去猜。**
+
+这条线就是 **Reflex Seam**（反射缝），而这个技能包就是把它装到你已经在用的智能体上的办法。
+它值回票价的时刻是这样的：智能体还没读规则，就要去执行一条命令。一个 hook 拦下检查。工具没有
+运行，并且智能体被告知原因。这不是一句请它守规矩的提示词——这是一道它没法争辩的闸门。
+
+两条规则一起过来。**不搞假测试：** 东西已经坏了测试却还是绿的，那就是撒谎，所以这里的测试断言
+的是真实的副作用。**写代码的人不给自己打分：** 先写会失败的测试，再由没写这段代码的一方来判定
+它是否通过。
 
 > 本页是简体中文镜像，以英文原版为准：[English（canonical）](../../README.md)。
 
 一套从真实运行中的 agent 平台提炼出来的 agent harness（约束和驱动 agent 的
-执行框架），拆成 27 个可移植的技能和 8 套有名字的战术，重写成任何 agent
+执行框架），拆成 28 个可移植的技能和 8 套有名字的战术，重写成任何 agent
 都能加载的纯 markdown。
 
 ## 使命
@@ -73,7 +91,7 @@ Hermes、裸 API 循环——见 [INSTALL.md](INSTALL.md)。
   线框图里都标着一位 **Lord of the Loop**——驱动迭代直到落地门槛转绿的
   循环负责人；这个角色的定义见 [NAMING.md](NAMING.md#lord-of-the-loop)。
 - **命令（Commands）** 是插件安装的斜杠入口——每条命令加载一套战术或
-  一个技能并执行。每条命令在 `commands/` 里一个文件。
+  一个技能并执行。每条命令在 `command-adapters/` 里一个文件。
 - **命名规范**——为什么技能是名词短语、命令是动词、地板是法律——
   见 [NAMING.md](NAMING.md)。
 - **Effort 标记**——每个技能一行的成本承诺（free / light / heavy），加上
@@ -104,6 +122,7 @@ Hermes、裸 API 循环——见 [INSTALL.md](INSTALL.md)。
 | [human-voice](skills/human-voice/SKILL.md) | 无学位门槛：如果读懂它需要一个学位，就重写。剥掉机器腔的同时保住完整的想法。 |
 | [red-first](skills/red-first/SKILL.md) | 构建开始前先提交一条被证明会失败的测试。构建者不许碰它。评审核实它从没动过。 |
 | [repair-loop](skills/repair-loop/SKILL.md) | 完整的修复循环：扎根地板、复现、红测试、修掉整个类、在真实路径上验证、独立评审、落地。 |
+| [repo-map](skills/repo-map/SKILL.md) | 改代码前，先画清仓库的真实结构、入口、配置和运行路径。 |
 | [root-cause-first](skills/root-cause-first/SKILL.md) | 没调查就没修复。按需复现、在边界埋探针、把数据一路往回追到源头。 |
 | [seam-engineering](skills/seam-engineering/SKILL.md) | 在共享原语处一次修掉整个缺陷类，横扫所有同类，再落一个能抓住下一个惯犯的守卫。 |
 | [session-handoff](skills/session-handoff/SKILL.md) | 把一个会话压缩成一个平面文件，让全新的 agent 能冷读并接着干。密钥已脱敏。 |
@@ -140,5 +159,5 @@ agent 上都能独立成立：Claude Code、OpenClaw、Hermes、Codex、Cursor�
 [NOTICE.md](../../NOTICE.md)。许可证：[MIT](../../LICENSE)。欢迎贡献——
 请保持致谢完整。
 
-> 说明：LICENSE、NOTICE.md、CITATION.cff 以及 `commands/`、`hooks/`
+> 说明：LICENSE、NOTICE.md、CITATION.cff 以及 `command-adapters/`、`hooks/`
 > 保持英文原文，不做翻译——它们是法律文本、事实性引用和可执行接线。

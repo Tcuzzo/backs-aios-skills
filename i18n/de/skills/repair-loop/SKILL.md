@@ -1,7 +1,7 @@
 ---
-name: repair-loop
-description: Beim Fixen eines Bugs, beim Schließen eines gemeldeten Issues oder beim Uplift einer Naht von Anfang bis Ende. Fährt die volle Reparatur-Schleife — im Fundament erden, auf Live-Wahrheit reproduzieren, roter Vertrags-Test, die Klasse an der Naht fixen, auf dem echten Pfad verifizieren, unabhängige Bewertung, landen — und iteriert, bis es wahr ist. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build, Reparatur-Schleife, fix das, Naht schließen, bau das fertig.
-license: MIT
+name: "repair-loop"
+description: "Beim Fixen eines Bugs, beim Schließen eines gemeldeten Issues oder beim Uplift einer Naht von Anfang bis Ende. Fährt die volle Reparatur-Schleife — im Fundament erden, auf Live-Wahrheit reproduzieren, roter Vertrags-Test, die Klasse an der Naht fixen, auf dem echten Pfad verifizieren, unabhängige Bewertung, landen — und iteriert, bis es wahr ist. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build, Reparatur-Schleife, fix das, Naht schließen, bau das fertig."
+license: "MIT"
 ---
 
 # Repair Loop

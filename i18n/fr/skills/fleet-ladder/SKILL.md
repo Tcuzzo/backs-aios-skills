@@ -1,7 +1,7 @@
 ---
-name: fleet-ladder
-description: À utiliser avant de confier n'importe quel travail à un modèle — build, notation, ou job de worker borné — ou quand un fournisseur est en panne et qu'il te faut l'ordre de repli. Résout l'échelle de modèles LIVE : sonde ce qui répond vraiment, choisit le meilleur disponible selon un ordre de repli explicite, échoue bruyamment quand l'échelle est épuisée. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability, échelle de modèles, repli, modèle en panne, fournisseur à terre, quel modèle, disponibilité.
-license: MIT
+name: "fleet-ladder"
+description: "À utiliser avant de confier n'importe quel travail à un modèle — build, notation, ou job de worker borné — ou quand un fournisseur est en panne et qu'il te faut l'ordre de repli. Résout l'échelle de modèles LIVE : sonde ce qui répond vraiment, choisit le meilleur disponible selon un ordre de repli explicite, échoue bruyamment quand l'échelle est épuisée. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability, échelle de modèles, repli, modèle en panne, fournisseur à terre, quel modèle, disponibilité."
+license: "MIT"
 ---
 
 # Fleet Ladder — l'échelle de la flotte

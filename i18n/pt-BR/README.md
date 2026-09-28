@@ -1,12 +1,31 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../../assets/reflex-seam-dark.svg">
+  <img alt="O Reflex Seam. À esquerda, um runtime determinístico é dono do estado, dos arquivos, das regras e dos testes. À direita, um kernel de julgamento do modelo é dono da inferência, da política, da reversibilidade e da prioridade. Entre eles corre uma costura serrilhada. Os sinais de decisão cruzam do modelo para o runtime, e as atualizações de estado cruzam de volta. Uma mudança de estado sem permissão é recusada em voz alta." src="../../assets/reflex-seam-light.svg">
+</picture>
+
 # BACKS AIOS Skills
 
 **Leia isto em:** [English](../../README.md) · [Español](../es/README.md) · [Français](../fr/README.md) · [Deutsch](../de/README.md) · [हिन्दी](../hi/README.md) · [简体中文](../zh-CN/README.md)
 
+**O modelo decide. O runtime é dono do estado, dos arquivos e das regras — e se o modelo
+tentar pegar um estado que não é dele, o sistema falha em voz alta em vez de adivinhar.**
+
+Essa linha é o **Reflex Seam**, e este pack é como você o instala em um agente que já
+usa. Eis o momento em que ele se paga: o agente vai rodar um comando antes de ter lido as
+regras. Um hook confere. A ferramenta não roda, e o agente é informado do porquê. Não é
+um prompt pedindo bom comportamento — é uma trava com a qual ele não pode discutir.
+
+Duas regras vêm junto. **Sem teatro de mocks:** um teste que passa enquanto a coisa está
+quebrada é mentira, então os testes afirmam efeitos reais. **Quem constrói não avalia:** o
+teste que falha é escrito primeiro, e algo que não escreveu o código precisa aprová-lo.
+
 > Esta é a tradução em português (Brasil). O [README em inglês](../../README.md) é a versão canônica.
 
-Um harness de agente destilado em 27 skills portáteis e 8 plays nomeados,
+Um harness de agente destilado em 28 skills portáteis e 8 plays nomeados,
 extraído de uma plataforma de agentes em produção e reconstruído como markdown
 puro que qualquer agente consegue carregar.
+
+Para aprender visualmente, consulte o [guia das skills e dos loops](../../docs/FLOWCHARTS.md).
 
 ## Missão
 
@@ -84,7 +103,7 @@ Agent Skills, OpenClaw, Hermes, um loop de API puro — estão em
   dono do loop, que conduz a iteração até o gate de pouso ficar verde; o papel
   está definido em [NAMING.md](NAMING.md#lord-of-the-loop).
 - **Comandos** são as entradas de barra que o plugin instala — cada um carrega
-  um play ou uma skill e roda. Um arquivo cada em `commands/`.
+  um play ou uma skill e roda. Um arquivo cada em `command-adapters/`.
 - **A convenção de nomes** — por que skills são substantivos, comandos são
   verbos e o piso é lei — está em [NAMING.md](NAMING.md).
 - **Selos de esforço** — a afirmação de custo de uma linha de cada skill
@@ -116,6 +135,7 @@ Agent Skills, OpenClaw, Hermes, um loop de API puro — estão em
 | [human-voice](skills/human-voice/SKILL.md) | A régua sem-diploma: se ler exige diploma, reescreva. Mantém a ideia inteira enquanto tira os cacoetes de máquina. |
 | [red-first](skills/red-first/SKILL.md) | Commita um teste comprovadamente falhando antes de o build começar. O builder não pode tocá-lo. Um avaliador verifica que ele nunca se moveu. |
 | [repair-loop](skills/repair-loop/SKILL.md) | O ciclo de conserto completo: ancorar no piso, reproduzir, teste vermelho, consertar a classe, verificar no caminho real, avaliação independente, pousar. |
+| [repo-map](skills/repo-map/SKILL.md) | Mapeie primeiro a estrutura real do repositório, pontos de entrada, configuração e caminhos de execução antes de alterar código. |
 | [root-cause-first](skills/root-cause-first/SKILL.md) | Nenhum conserto sem investigação. Reproduza sob demanda, instrumente as fronteiras, rastreie os dados de volta até a origem. |
 | [seam-engineering](skills/seam-engineering/SKILL.md) | Conserta a classe da falha uma vez, na primitiva compartilhada, varre cada irmão, e planta uma guarda que pega o próximo infrator. |
 | [session-handoff](skills/session-handoff/SKILL.md) | Compacta uma sessão num arquivo único que um agente novo em folha lê a frio e continua. Segredos redigidos. |

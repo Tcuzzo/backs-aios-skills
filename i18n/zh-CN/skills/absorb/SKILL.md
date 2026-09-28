@@ -1,7 +1,7 @@
 ---
-name: absorb
-description: 当你需要的能力已经有开源项目实现时使用——把它收编进来、改造成原生技能，而不是重复造轮子。Trigger words: absorb, adopt, port, re-engineer, ingest a repo, prior art, capability port, make this native. 中文触发词：吸收、收编、借鉴、移植、改造、复用开源、别造轮子。
-license: MIT
+name: "absorb"
+description: "当你需要的能力已经有开源项目实现时使用——把它收编进来、改造成原生技能，而不是重复造轮子。Trigger words: absorb, adopt, port, re-engineer, ingest a repo, prior art, capability port, make this native. 中文触发词：吸收、收编、借鉴、移植、改造、复用开源、别造轮子。"
+license: "MIT"
 ---
 
 # Absorb——收编前人成果，别重复造轮子

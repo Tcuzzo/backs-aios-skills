@@ -1,7 +1,7 @@
 ---
-name: human-voice
-description: 每一条面向人的消息都用它。无学历门槛线；专杀 AI 味。Trigger words: human voice, plain speech, plain language, de-slop, slop, simplify, jargon, tone, readable, rewrite this, text like a human. 中文触发词：说人话、大白话、去 AI 味、口语化、太绕了、通俗易懂、改得像人写的。
-license: MIT
+name: "human-voice"
+description: "每一条面向人的消息都用它。无学历门槛线；专杀 AI 味。Trigger words: human voice, plain speech, plain language, de-slop, slop, simplify, jargon, tone, readable, rewrite this, text like a human. 中文触发词：说人话、大白话、去 AI 味、口语化、太绕了、通俗易懂、改得像人写的。"
+license: "MIT"
 ---
 
 # Human Voice

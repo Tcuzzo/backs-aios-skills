@@ -1,7 +1,7 @@
 ---
-name: understanding-gates
-description: तब लगाओ जब कोई build, fix या uplift intent से delivery की तरफ़ बढ़ रहा हो और तुम्हें proof चाहिए कि वह अब भी original माँग से मेल खाता है। Design, Plan, Build, Test और Ship से जिरह करता है — approve/revise/reject verdicts, नामी failures बतौर repair targets, और हर repair के बाद rerun। Trigger words: understanding, stage gates, validate build, spec match, verdict, green but wrong, echo check, done means done, समझ की जाँच, माँग से मिलाओ, हर stage पर परखो, green पर भी ग़लत.
-license: MIT
+name: "understanding-gates"
+description: "तब लगाओ जब कोई build, fix या uplift intent से delivery की तरफ़ बढ़ रहा हो और तुम्हें proof चाहिए कि वह अब भी original माँग से मेल खाता है। Design, Plan, Build, Test और Ship से जिरह करता है — approve/revise/reject verdicts, नामी failures बतौर repair targets, और हर repair के बाद rerun। Trigger words: understanding, stage gates, validate build, spec match, verdict, green but wrong, echo check, done means done, समझ की जाँच, माँग से मिलाओ, हर stage पर परखो, green पर भी ग़लत."
+license: "MIT"
 ---
 
 # Understanding Gates

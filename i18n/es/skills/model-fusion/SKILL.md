@@ -1,7 +1,7 @@
 ---
-name: model-fusion
-description: Úsala cuando la respuesta de un solo modelo no da suficiente confianza — un build, fix o diseño difícil donde quieres que varios modelos compitan y un juez independiente elija. Un panel redacta en paralelo, un juez fusiona al ganador, y el resultado se valida contra la intención original. Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader, fusión, panel de modelos, juez, multimodelo, borradores en paralelo, el que construye no califica.
-license: MIT
+name: "model-fusion"
+description: "Úsala cuando la respuesta de un solo modelo no da suficiente confianza — un build, fix o diseño difícil donde quieres que varios modelos compitan y un juez independiente elija. Un panel redacta en paralelo, un juez fusiona al ganador, y el resultado se valida contra la intención original. Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader, fusión, panel de modelos, juez, multimodelo, borradores en paralelo, el que construye no califica."
+license: "MIT"
 ---
 
 # Model Fusion

@@ -1,7 +1,7 @@
 ---
-name: repair-loop
-description: तब लगाओ जब कोई bug fix करना हो, reported issue बंद करना हो, या किसी seam को end to end uplift करना हो। पूरा repair loop चलाता है — floor में grounding, live सच पर reproduce, red contract test, seam पर class का fix, असली रास्ते पर verify, independent grade, land — और तब तक iterate करता है जब तक सब सच न हो जाए। Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build, इसे ठीक करो, bug बंद करो, seam बंद करो, पूरा loop चलाओ.
-license: MIT
+name: "repair-loop"
+description: "तब लगाओ जब कोई bug fix करना हो, reported issue बंद करना हो, या किसी seam को end to end uplift करना हो। पूरा repair loop चलाता है — floor में grounding, live सच पर reproduce, red contract test, seam पर class का fix, असली रास्ते पर verify, independent grade, land — और तब तक iterate करता है जब तक सब सच न हो जाए। Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build, इसे ठीक करो, bug बंद करो, seam बंद करो, पूरा loop चलाओ."
+license: "MIT"
 ---
 
 # Repair Loop

@@ -1,12 +1,34 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../../assets/reflex-seam-dark.svg">
+  <img alt="Die Reflexnaht. Links besitzt eine deterministische Runtime den Zustand, die Dateien, die Regeln und die Tests. Rechts besitzt ein Urteilskern des Modells die Inferenz, die Richtlinien, die Umkehrbarkeit und die Priorität. Dazwischen verläuft eine gezackte Naht. Entscheidungssignale laufen vom Modell zur Runtime, Zustandsänderungen laufen zurück. Eine nicht erlaubte Zustandsänderung wird laut abgelehnt." src="../../assets/reflex-seam-light.svg">
+</picture>
+
 # BACKS AIOS Skills
 
 **Lies das auf:** [English](../../README.md) · [Español](../es/README.md) · [Português (BR)](../pt-BR/README.md) · [Français](../fr/README.md) · [हिन्दी](../hi/README.md) · [简体中文](../zh-CN/README.md)
 
+**Das Modell entscheidet. Die Runtime besitzt den Zustand, die Dateien und die Regeln —
+und wenn das Modell nach einem Zustand greift, der ihm nicht gehört, scheitert das System
+laut, statt zu raten.**
+
+Diese Linie ist der **Reflex Seam**, und dieses Pack installiert sie auf einem Agenten,
+den du schon benutzt. Hier zahlt sie sich aus: Der Agent will einen Befehl ausführen,
+bevor er die Regeln gelesen hat. Ein Hook prüft das. Das Werkzeug läuft nicht, und dem
+Agenten wird gesagt, warum. Kein Prompt, der um gutes Benehmen bittet — ein Gatter, mit
+dem er nicht diskutieren kann.
+
+Zwei Regeln fahren mit. **Kein Mock-Theater:** Ein Test, der grün ist, während die Sache
+kaputt ist, ist eine Lüge — also prüfen Tests echte Wirkungen. **Wer baut, bewertet
+nicht:** Der fehlschlagende Test wird zuerst geschrieben, und etwas, das den Code nicht
+geschrieben hat, muss ihn durchwinken.
+
 *Deutsche Ausgabe — das englische Original ist die maßgebliche Fassung: [README (Englisch)](../../README.md)*
 
-Ein Agenten-Harness, destilliert in 27 portable Skills und 8 benannte Plays — aus
+Ein Agenten-Harness, destilliert in 28 portable Skills und 8 benannte Plays — aus
 einer laufenden Agenten-Plattform gezogen und als schlichtes Markdown neu gebaut,
 das jeder Agent laden kann.
+
+Für visuelles Lernen gibt es einen [Leitfaden mit Skill-Maps und Abläufen](../../docs/FLOWCHARTS.md).
 
 ## Mission
 
@@ -87,7 +109,7 @@ OpenClaw, Hermes, ein nackter API-Loop — stehen in [INSTALL.md](INSTALL.md).
   [NAMING.md](NAMING.md#lord-of-the-loop) definiert.
 - **Commands** sind die Slash-Einträge, die das Plugin installiert — jeder lädt
   ein Play oder einen Skill und führt ihn aus. Eine Datei pro Command in
-  `commands/`.
+  `command-adapters/`.
 - **Die Namenskonvention** — warum Skills Nominalphrasen sind, Commands Verben
   und der Boden Gesetz ist — steht in [NAMING.md](NAMING.md).
 - **Effort-Stempel** — die einzeilige Kosten-Angabe jedes Skills (free / light /
@@ -119,6 +141,7 @@ OpenClaw, Hermes, ein nackter API-Loop — stehen in [INSTALL.md](INSTALL.md).
 | [human-voice](skills/human-voice/SKILL.md) | Die Latte ohne Studium: Wenn man zum Lesen einen Abschluss braucht, schreib es um. Behält die ganze Idee und entfernt die Maschinen-Marker. |
 | [red-first](skills/red-first/SKILL.md) | Einen bewiesen-fehlschlagenden Test committen, bevor der Build startet. Der Builder darf ihn nicht anfassen. Ein Prüfer verifiziert, dass er sich nie bewegt hat. |
 | [repair-loop](skills/repair-loop/SKILL.md) | Die volle Fix-Schleife: im Boden erden, reproduzieren, roter Test, die Klasse fixen, auf dem echten Pfad verifizieren, unabhängig benoten, landen. |
+| [repo-map](skills/repo-map/SKILL.md) | Kartiert zuerst die echte Repository-Struktur, Einstiegspunkte, Konfigurationen und Laufzeitpfade, bevor Code geändert wird. |
 | [root-cause-first](skills/root-cause-first/SKILL.md) | Keine Fixes ohne Untersuchung. Auf Abruf reproduzieren, Grenzen instrumentieren, die Daten rückwärts bis zur Quelle verfolgen. |
 | [seam-engineering](skills/seam-engineering/SKILL.md) | Die Fehlerklasse einmal am gemeinsamen Primitiv fixen, jedes Geschwister durchfegen, eine Wache landen, die den nächsten Täter fängt. |
 | [session-handoff](skills/session-handoff/SKILL.md) | Eine Session in eine flache Datei kompaktieren, die ein ganz neuer Agent kalt lesen und fortsetzen kann. Secrets geschwärzt. |
