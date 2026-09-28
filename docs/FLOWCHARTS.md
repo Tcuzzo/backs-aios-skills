@@ -49,6 +49,9 @@ Shapes carry meaning so the guide never depends on color:
 [conscientious-objector](../skills/conscientious-objector/SKILL.md) ·
 [hive-clone-boot](../skills/hive-clone-boot/SKILL.md) ·
 [osha-bot](../skills/osha-bot/SKILL.md) ·
+[scrub-plugin-pack-literals](../skills/scrub-plugin-pack-literals/SKILL.md) ·
+[backs-pack-sync](../skills/backs-pack-sync/SKILL.md) ·
+[reload-vsc-and-verify](../skills/reload-vsc-and-verify/SKILL.md) ·
 [turn-and-burn](../skills/turn-and-burn/SKILL.md) ·
 [context-engineer](../skills/context-engineer/SKILL.md) ·
 [context-compiler](../skills/context-compiler/SKILL.md) ·
