@@ -205,14 +205,24 @@ function sessionIdOf(payload, cliArg) {
   if (cliArg) return String(cliArg).trim();
   const fromPayload = String(payload.session_id || payload.conversation_id || "").trim();
   if (fromPayload) return fromPayload;
+  // Audit 2026-10-07 AA-7: a child Codex session sets BOTH CODEX_SESSION_ID
+// and CODEX_THREAD_ID. The hook payload arrives with session_id (== SESSION_ID);
+// the explicit --load falls back to env. If the loader picks THREAD_ID while
+// the hook reads SESSION_ID, state lands at one identity and is read at the
+// other -- the child session flips RED. The documented invocation
+// ``--load <skill> "$CODEX_SESSION_ID"`` aligned them manually; the fix is to
+// align the env chain itself: SESSION_ID wins over THREAD_ID by default. Same
+// env-key order as hooks/aios_gate.py so a future change cannot reintroduce
+// the divergence. Class scope (inv_23): one identity seam, no new hook, no
+// operator approval friction.
   const envKeys = [
     "BACKS_BUILD_SESSION",
     "CLAUDE_CODE_SESSION_ID",
-    "CODEX_THREAD_ID",
+    "CODEX_SESSION_ID",
     "CURSOR_SESSION_ID",
     "CURSOR_CONVERSATION_ID",
     "OPENCODE_SESSION_ID",
-    "CODEX_SESSION_ID",
+    "CODEX_THREAD_ID",
     "CLAUDE_SESSION_ID",
   ];
   for (const key of envKeys) {

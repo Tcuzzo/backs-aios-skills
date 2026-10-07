@@ -141,14 +141,24 @@ def _session_id(payload: dict, cli_arg: str | None = None) -> str:
     sid = str(payload.get("session_id") or payload.get("conversation_id") or "").strip()
     if sid:
         return sid
+    # Audit 2026-10-07 AA-7: a child Codex session sets BOTH ``CODEX_SESSION_ID``
+    # and ``CODEX_THREAD_ID``. The hook payload arrives with ``session_id`` (==
+    # SESSION_ID); the explicit ``--load`` falls back to env. If the loader
+    # picks THREAD_ID while the hook reads SESSION_ID, state is written at one
+    # identity and read at the other -- the child session flips RED. The
+    # documented invocation ``--load <skill> "$CODEX_SESSION_ID"`` aligned them
+    # manually; the fix is to align the env chain itself: SESSION_ID wins over
+    # THREAD_ID by default. Same env-key order as ``hooks/aios_gate.js`` so a
+    # future change cannot reintroduce the divergence. Class scope (inv_23):
+    # one identity seam, no new hook, no operator approval friction.
     env_keys = (
         "BACKS_BUILD_SESSION",
         "CLAUDE_CODE_SESSION_ID",
-        "CODEX_THREAD_ID",
+        "CODEX_SESSION_ID",
         "CURSOR_SESSION_ID",
         "CURSOR_CONVERSATION_ID",
         "OPENCODE_SESSION_ID",
-        "CODEX_SESSION_ID",
+        "CODEX_THREAD_ID",
         "CLAUDE_SESSION_ID",
     )
     for key in env_keys:
