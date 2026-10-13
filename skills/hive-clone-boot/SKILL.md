@@ -1,4 +1,5 @@
 ---
+skill_id: hive-clone-boot
 name: "hive-clone-boot"
 description: "Use when Grok Bot is gone / hive must run native / seat wake for products+eng hive. Boot Optimus first, then load this roster so BACKS seats self-load verbatim hive souls. Trigger words: hive-clone-boot, hive clone, Grok gone, native hive, products engineering hive, seat wake, Build Foreman, Patch master, Skills Boss."
 license: "MIT"
