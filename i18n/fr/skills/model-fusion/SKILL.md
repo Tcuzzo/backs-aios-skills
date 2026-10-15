@@ -74,8 +74,8 @@ contre ce qui était vraiment demandé.
 ## Règles dures — une seule enfreinte et le skill a échoué
 
 - **Le builder ne juge jamais.** Le juge n'a rédigé aucun candidat. Le
-  correcteur final est un modèle différent (idéalement d'une autre famille) de
-  celui qui a construit le gagnant.
+  correcteur final travaille dans une session vierge et disjointe de l'auteur.
+  Le même modèle ou la même famille est permis là où le runtime configuré le permet.
 - **Aucun nom de modèle en dur** à aucun point d'appel. Les rôles dans le code,
   les modèles dans la config.
 - **Aucune dégradation silencieuse.** Rédacteurs écartés, repli du juge, échecs

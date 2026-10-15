@@ -73,8 +73,8 @@ geprüft, was wirklich gefragt war.
 ## Harte Regeln — eine gebrochen, und der Skill ist gescheitert
 
 - **Der Builder richtet nie.** Der Richter hat keinen Kandidaten geschrieben.
-  Der finale Bewerter ist ein anderes Modell (ideal: eine andere Familie) als
-  wer auch immer den Sieger gebaut hat.
+  Der finale Bewerter arbeitet in einer frischen, vom Autor getrennten Sitzung.
+  Dasselbe Modell oder dieselbe Familie ist zulässig, sofern die konfigurierte Laufzeit es erlaubt.
 - **Keine hartcodierten Modellnamen** an irgendeiner Aufrufstelle. Rollen im
   Code, Modelle in der Config.
 - **Kein stummes Degradieren.** Gefallene Entwerfer, Richter-Fallback,

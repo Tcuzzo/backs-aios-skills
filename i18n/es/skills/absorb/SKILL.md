@@ -84,5 +84,5 @@ hecho, no un adorno.
 
 - [red-first](../red-first/SKILL.md) — los tests de contrato que custodian cada capacidad.
 - [sniper-testing](../sniper-testing/SKILL.md) — efectos reales, sin teatro de mocks.
-- [blind-tribunal](../blind-tribunal/SKILL.md) — evaluación entre familias del port.
+- [blind-tribunal](../blind-tribunal/SKILL.md) — evaluación independiente del port.
 - [decision-bar](../decision-bar/SKILL.md) — los bloqueos de licencia y las decisiones de gusto van a tu humano; todo lo demás se ejecuta.

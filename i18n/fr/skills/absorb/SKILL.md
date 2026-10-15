@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # Absorb — Adopter l'existant, pas le réinventer
-**Effort:** light — une ingestion de repo (sonde des métadonnées + clone superficiel) et une notation inter-famille du portage. Élimine : réinventer une capacité que l'existant a déjà résolue — le doublon écrit de zéro dont chaque bug serait à ta charge.
+**Effort:** light — une ingestion de repo (sonde des métadonnées + clone superficiel) et une notation indépendante du portage. Élimine : réinventer une capacité que l'existant a déjà résolue — le doublon écrit de zéro dont chaque bug serait à ta charge.
 
 **La capacité est reine.** Un repo n'est qu'un véhicule pour une capacité. Quand tu as
 besoin d'une chose qu'un projet existant fait déjà, ne construis pas un doublon à partir
@@ -57,8 +57,8 @@ citation est un fait, pas une décoration.
    qui vérifie un effet réel — un fichier, une ligne en base, une vraie sortie. Ne mocke
    que le transport d'une API externe payante, jamais la logique.
 6. **Reconstruis rouge d'abord.** Committe les tests en échec, puis construis jusqu'au
-   vert sur toute la couture. Un modèle d'une autre famille que le builder note le
-   résultat — le builder ne note jamais son propre travail.
+   vert sur toute la couture. Un évaluateur dans une session vierge et disjointe de l'auteur note le
+   résultat ; le même modèle ou la même famille est permis si le runtime configuré le permet — le builder ne note jamais son propre travail.
 7. **Cite et consigne.** Écris le crédit d'échafaudage là où la capacité vit
    désormais : auteur, projet, licence, ce qui est emprunté (l'échafaudage) et ce qui
    est à toi (la réingénierie). N'invente jamais un crédit. N'en retire jamais un.
@@ -78,5 +78,5 @@ citation est un fait, pas une décoration.
 
 - [red-first](../red-first/SKILL.md) — les tests-contrats qui gardent chaque capacité.
 - [sniper-testing](../sniper-testing/SKILL.md) — de vrais effets, pas de théâtre de mocks.
-- [blind-tribunal](../blind-tribunal/SKILL.md) — la notation inter-familles du portage.
+- [blind-tribunal](../blind-tribunal/SKILL.md) — la notation indépendante du portage.
 - [decision-bar](../decision-bar/SKILL.md) — les blocages de licence et les questions de goût remontent à ton humain ; tout le reste s'exécute.

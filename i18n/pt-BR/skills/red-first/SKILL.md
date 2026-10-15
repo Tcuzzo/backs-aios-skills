@@ -47,8 +47,8 @@ quanto para capacidade nova.
   contar.
 - **O builder nunca edita o teste.** O diff vazio do arquivo de teste desde a
   linha de base vermelha é parte do portão de aterrissagem, não uma cortesia.
-- **O builder nunca é o avaliador.** Use outra pessoa, outro agente ou um
-  modelo de família diferente da do builder.
+- **O builder nunca é o avaliador.** Use um avaliador em uma sessão nova e disjunta do autor; o mesmo
+  modelo ou família é permitido onde o runtime configurado o permita.
 - **Verde sozinho não é prova.** Verde + teste intocado + avaliação
   independente é prova.
 - **Quando uma classe inteira de defeito está em jogo, guarde a classe.**

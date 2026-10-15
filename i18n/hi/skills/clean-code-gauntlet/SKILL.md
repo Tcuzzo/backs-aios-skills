@@ -92,7 +92,7 @@ Absolute score छिपा देता है कि क़र्ज़ कि
 ## Taste review (आख़िर में, और हल्का)
 
 Deterministic gates पहले चलते हैं; model वहीं ख़र्चो जहाँ reasoning ही इकलौता
-औज़ार है। Reviewer builder से अलग family का model है — builder अपना काम खुद कभी
+औज़ार है। Reviewer एक fresh, author-disjoint session में काम करता है; configured runtime की अनुमति हो तो वही model या family भी मान्य है — builder अपना काम खुद कभी
 grade नहीं करता। वो सिर्फ design और taste परखता है: naming, गड्ड-मड्ड concerns,
 interface की चौड़ाई, और छह smells — rigidity, fragility, immobility, needless
 complexity, needless repetition, opacity. हिसाब-किताब gates पहले ही निपटा चुके।

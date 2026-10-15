@@ -47,7 +47,8 @@ portão na acessibilidade — duro.
    renderize num navegador headless em larguras mobile e desktop, tire screenshot,
    e ponha um modelo de visão para pontuar — depois conserte, em passadas separadas
    (crítica → conserto estrutural → auditoria → polimento), nunca de uma vez só. O
-   crítico é um avaliador: use um modelo de família diferente da do builder,
+   crítico é um avaliador: use uma sessão nova e disjunta do autor; o mesmo modelo ou família é permitido
+   onde o runtime configurado o permita,
    pontuando eixos nomeados, nunca uma nota holística única. Resolva o modelo
    crítico da config na hora da chamada — um id de modelo pinado aposenta um dia e
    leva o loop inteiro junto.

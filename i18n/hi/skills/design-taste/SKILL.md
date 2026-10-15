@@ -46,7 +46,7 @@ spec की तरह पढ़ो, किसी भी component से पह�
    headless browser में mobile और desktop चौड़ाइयों पर render करो, screenshot
    लो, और किसी vision model से score करवाओ — फिर ठीक करो, अलग-अलग passes में
    (critique → structural fix → audit → polish), कभी one-shot नहीं। Critic एक
-   grader है: builder से अलग family का model, नामित axes पर score, कभी एक
+   grader है: fresh, author-disjoint session में reviewer; configured runtime की अनुमति हो तो वही model या family भी मान्य है। नामित axes पर score, कभी एक
    holistic score नहीं। Critic model को call के वक़्त config से resolve करो —
    pinned model id एक दिन retire होती है और पूरा loop साथ ले डूबती है।
 7. **8-axis taste rubric पर score दो।** हर axis पर 0–3, और हर axis का score ≥ 2

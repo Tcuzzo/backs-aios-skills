@@ -46,7 +46,8 @@ et aucune friction pour l'humain. Elle lie l'agent à une discipline qui rend
    mutation bornés. Un mutant qui survit à ton fix veut dire que le test n'a
    jamais atteint la branche que tu as changée — faux vert ; continue d'itérer.
 7. **Note indépendante.** Un correcteur qui n'a pas écrit le changement —
-   idéalement un modèle d'une autre famille que le builder — doit le valider.
+   dans une session vierge et disjointe de l'auteur ; le même modèle ou la même famille
+   est permis si le runtime configuré le permet — doit le valider.
    Le builder ne note jamais son propre travail. Voir
    [blind-tribunal](../blind-tribunal/SKILL.md).
 8. **Vérifie le travail concurrent.** Avant de modifier un état partagé,

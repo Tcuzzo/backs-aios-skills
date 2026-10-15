@@ -50,7 +50,8 @@ boucle de captures d'écran, et barre la sortie sur l'accessibilité — dur.
    affiche-le dans un navigateur headless aux largeurs mobile et desktop, capture, et
    fais noter par un modèle de vision — puis corrige, en passes séparées (critique →
    correction structurelle → audit → polish), jamais en un seul coup. Le critique est
-   un correcteur : un modèle d'une autre famille que le builder, qui note des axes
+   un correcteur : un évaluateur dans une session vierge et disjointe de l'auteur ; le même modèle
+   ou la même famille est permis si le runtime configuré le permet. Il note des axes
    nommés, jamais une note holistique unique. Résous le modèle critique depuis la
    config au moment de l'appel — un id de modèle épinglé finit par prendre sa retraite
    et emporte toute la boucle avec lui.
@@ -86,7 +87,7 @@ boucle de captures d'écran, et barre la sortie sur l'accessibilité — dur.
 - [intent-compiler](../intent-compiler/SKILL.md) — la discipline complète de lecture du brief.
 - [blind-eval](../blind-eval/SKILL.md) — garder-ou-annuler quand la question est le goût.
 - [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) — durcir le code derrière les pixels.
-- [blind-tribunal](../blind-tribunal/SKILL.md) — la notation inter-familles avant de livrer.
+- [blind-tribunal](../blind-tribunal/SKILL.md) — la notation indépendante avant de livrer.
 
 > Crédit d'échafaudage : W3C Design Tokens Community Group (format de tokens) ;
 > WCAG 2.2, W3C (barrière d'accessibilité) ; UICrit, UIST 2024 (critique d'UI notée

@@ -93,7 +93,7 @@ accesibilidad — dura.
 - [intent-compiler](../intent-compiler/SKILL.md) — la disciplina completa de leer el brief.
 - [blind-eval](../blind-eval/SKILL.md) — conservar-o-revertir cuando la pregunta es de gusto.
 - [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) — endurecer el código detrás de los píxeles.
-- [blind-tribunal](../blind-tribunal/SKILL.md) — calificación entre familias antes de aterrizar.
+- [blind-tribunal](../blind-tribunal/SKILL.md) — calificación independiente antes de aterrizar.
 
 > Crédito de andamiaje: W3C Design Tokens Community Group (formato de tokens);
 > WCAG 2.2, W3C (puerta de accesibilidad); UICrit, UIST 2024 (crítica de UI
