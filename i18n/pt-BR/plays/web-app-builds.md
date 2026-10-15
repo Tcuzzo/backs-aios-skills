@@ -87,8 +87,8 @@ O build, num relance:
    deploy; rode mutação sobre os predicados de validação e de auth até nada
    sobreviver. Um check de fronteira cuja comparação invertida ainda passa na
    suíte é uma porta aberta numa superfície pública.
-8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — avaliação entre
-   famílias antes do deploy.
+8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — avaliação independente em sessões
+   novas e disjuntas do autor antes do deploy.
    Cada achado de jurado vira um novo teste vermelho; reconvoque até todos os jurados passarem.
 
 ## A doutrina (o que o build precisa cumprir)

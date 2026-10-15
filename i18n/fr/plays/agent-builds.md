@@ -72,7 +72,7 @@ Le build, en un coup d'œil :
    zéro survivant. Une logique de branche qui survit à une comparaison inversée
    n'a jamais vraiment été testée.
 7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — des graders (les
-   évaluateurs) d'une autre famille de modèles valident l'agent avant la
+   évaluateurs) indépendants dans des sessions vierges et disjointes de l'auteur valident l'agent avant la
    livraison. Le builder (celui qui construit) ne note jamais son propre travail.
    Chaque constat d'un juré devient un nouveau test rouge ; reconvoque jusqu'à ce que chaque juré valide.
 
@@ -113,11 +113,11 @@ Le build, en un coup d'œil :
 - Toute frontière fail-open, tout fallback silencieux, toute erreur avalée
   bloque la livraison.
 - Des mutants survivants dans les chemins de décision bloquent la livraison.
-- La note inter-famille doit passer ; le builder n'est jamais le grader.
+- La note indépendante doit passer ; l'exécution qui construit ne se note jamais elle-même.
 
 ## Marche bien avec
 
 - [root-cause-first](../skills/root-cause-first/SKILL.md) — quand l'agent déraille
 - [session-handoff](../skills/session-handoff/SKILL.md) — l'état durable, fait proprement
 
-**Weight:** surtout de la discipline free plus une porte de design light ; la dépense heavy, ce sont les runs de mutation du gauntlet et le tribunal inter-famille — elle se rentabilise sur tout agent qui agira sans personne pour regarder.
+**Weight:** surtout de la discipline free plus une porte de design light ; la dépense heavy, ce sont les runs de mutation du gauntlet et le tribunal indépendant — elle se rentabilise sur tout agent qui agira sans personne pour regarder.

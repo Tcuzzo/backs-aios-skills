@@ -87,7 +87,7 @@ Der Build auf einen Blick:
    Deploy; fahre Mutation über die Validierungs- und Auth-Prädikate, bis nichts
    mehr überlebt. Ein Grenz-Check, dessen umgedrehter Vergleich die Suite immer
    noch besteht, ist eine offene Tür auf einer öffentlichen Fläche.
-8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — familienfremde Benotung
+8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — unabhängige Benotung in frischen, vom Autor getrennten Sitzungen
    vor dem Deploy.
    Jeder Befund eines Jurors wird ein neuer roter Test; berufe das Tribunal neu ein, bis jeder Juror passt.
 

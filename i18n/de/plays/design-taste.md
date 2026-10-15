@@ -82,8 +82,8 @@ Der Geschmacks-Loop auf einen Blick:
 
 ## Harte Gates (play-spezifisch — die eigenen harten Regeln des Skills gelten obendrauf)
 
-- Der Kritiker ist eine ANDERE Modellfamilie als der Builder, live über die
-  Fleet-Ladder aufgelöst — niemals eine fest gepinnte Modell-ID (ein stillgelegter
+- Der Kritiker arbeitet in einer frischen, vom Autor getrennten Sitzung und wird
+  live über die Fleet-Ladder aufgelöst; dieselbe Modellfamilie ist zulässig — niemals eine fest gepinnte Modell-ID (ein stillgelegter
   Pin tötet den ganzen Kritiker lautlos).
 
 ## Passt gut zu

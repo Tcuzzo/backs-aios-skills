@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # LEAP Protocol
-**Effort:** heavy — des builders parallèles dans des worktrees isolés plus des relecteurs inter-famille à l'aveugle par balle ; à ne dépenser que sur les coutures trop grosses pour un seul builder, là où l'éventail rembourse le temps horloge qu'une seule voie brûlerait en série. Élimine : les builders qui se percutent sur des fichiers partagés, et l'unique diff géant, impossible à relire, que personne ne peut annuler.
+**Effort:** heavy — des builders parallèles dans des worktrees isolés plus des relecteurs indépendants à l'aveugle par balle ; à ne dépenser que sur les coutures trop grosses pour un seul builder, là où l'éventail rembourse le temps horloge qu'une seule voie brûlerait en série. Élimine : les builders qui se percutent sur des fichiers partagés, et l'unique diff géant, impossible à relire, que personne ne peut annuler.
 
 LEAP est une méthode bornée de passation sans état. Tu découpes une couture en
 **balles**. Chaque balle part chez un builder neuf qui ne porte aucun contexte
@@ -95,8 +95,8 @@ Le builder ne note jamais sa propre balle. Avant tout `1` :
 2. **Garder ou revenir** — comparer candidat et champion sur la métrique
    déclarée de la balle, dans l'ordre de champs déclaré. Une égalité ou une
    régression perd. Voir [blind-eval](../blind-eval/SKILL.md).
-3. **Revue croisée en aveugle** — au moins deux relecteurs de familles de
-   modèles différentes de celle du builder, chacun voyant le même hash du
+3. **Revue indépendante en aveugle** — au moins deux relecteurs dans des sessions
+   vierges et disjointes de l'auteur ; la même famille de modèles est permise. Chacun voit le même hash du
    candidat et la même enveloppe expurgée de l'auteur. Un relecteur qui a
    RÉPONDU mal — déchets, non-JSON, texte de refus — vaut un refus valide :
    `-1`. Un relecteur qui n'a JAMAIS répondu (panne de transport, injoignable)

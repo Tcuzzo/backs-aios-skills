@@ -82,8 +82,8 @@ O loop de gosto, num relance:
 
 ## Gates duros (específicos do play — as regras duras da própria skill valem por cima)
 
-- O crítico é de uma família de modelos DIFERENTE da de quem constrói, resolvido
-  ao vivo pela fleet ladder — nunca um id de modelo fixado (um pin aposentado
+- O crítico trabalha em uma sessão nova e disjunta do autor; seu modelo é resolvido
+  ao vivo pela fleet ladder; a mesma família de modelos é permitida — nunca um id de modelo fixado (um pin aposentado
   mata o crítico inteiro em silêncio).
 
 ## Funciona bem com

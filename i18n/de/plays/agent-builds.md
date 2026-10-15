@@ -70,8 +70,8 @@ Der Build auf einen Blick:
    deiner Obergrenze, dann Mutation über die Entscheidungspfade bis auf null
    Überlebende. Verzweigungslogik, die einen umgedrehten Vergleich überlebt, war
    nie wirklich getestet.
-7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — Prüfer aus einer anderen
-   Modellfamilie geben den Agenten frei, bevor er ausgeliefert wird. Der Builder
+7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — unabhängige Prüfer in frischen,
+   vom Autor getrennten Sitzungen geben den Agenten frei, bevor er ausgeliefert wird. Der Builder
    benotet nie seine eigene Arbeit.
    Jeder Befund eines Jurors wird ein neuer roter Test; berufe das Tribunal neu ein, bis jeder Juror passt.
 
@@ -112,11 +112,11 @@ Der Build auf einen Blick:
 - Jede fail-open-Grenze, jeder stille Fallback, jeder geschluckte Fehler blockiert
   die Auslieferung.
 - Überlebende Mutanten in Entscheidungspfaden blockieren die Auslieferung.
-- Die familienfremde Benotung muss bestehen; der Builder ist niemals der Prüfer.
+- Die unabhängige Benotung muss bestehen; die erstellende Ausführung darf sich niemals selbst benoten.
 
 ## Passt gut zu
 
 - [root-cause-first](../skills/root-cause-first/SKILL.md) — wenn der Agent sich danebenbenimmt
 - [session-handoff](../skills/session-handoff/SKILL.md) — dauerhafter Zustand, richtig gemacht
 
-**Weight:** überwiegend free-Disziplin plus ein light-Design-Gate; der heavy-Einsatz sind die Mutations-Läufe des Gauntlets und das familienfremde Tribunal — er zahlt sich bei jedem Agenten aus, der handeln wird, während niemand zuschaut.
+**Weight:** überwiegend free-Disziplin plus ein light-Design-Gate; der heavy-Einsatz sind die Mutations-Läufe des Gauntlets und das unabhängige Tribunal — er zahlt sich bei jedem Agenten aus, der handeln wird, während niemand zuschaut.

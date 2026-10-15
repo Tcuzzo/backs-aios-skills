@@ -68,8 +68,8 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
    riesgo por debajo de tu techo, y luego mutación sobre las rutas de decisión hasta
    cero sobrevivientes. Una lógica de ramas que sobrevive a una comparación invertida
    nunca estuvo probada de verdad.
-7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — evaluadores de otra
-   familia de modelos aprueban el agente antes de la entrega. El que construye nunca
+7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — evaluadores independientes en sesiones
+   nuevas y disjuntas del autor aprueban el agente antes de la entrega. El que construye nunca
    califica su propio trabajo.
    Cada hallazgo de un jurado se vuelve un nuevo test en rojo; reconvoca hasta que todos los jurados aprueben.
 
@@ -107,8 +107,8 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
 - Cualquier frontera que falla abierta, fallback silencioso o error tragado bloquea
   la entrega.
 - Mutantes sobrevivientes en las rutas de decisión bloquean la entrega.
-- La calificación entre familias debe pasar; el que construye nunca es el que
-  califica.
+- La calificación independiente debe pasar; la ejecución que construye nunca se
+  califica a sí misma.
 
 ## Combina bien con
 

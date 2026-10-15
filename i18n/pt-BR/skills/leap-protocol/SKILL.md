@@ -93,8 +93,8 @@ O builder nunca avalia a própria ball. Antes de qualquer `1`:
 2. **Mantém-ou-reverte** — compare candidato vs campeão na métrica declarada
    da ball, na ordem de campos declarada. Empate ou regressão perde. Veja
    [blind-eval](../blind-eval/SKILL.md).
-3. **Revisão cega entre famílias** — pelo menos dois revisores de famílias de
-   modelo diferentes da do builder, cada um vendo o mesmo hash de candidato e
+3. **Revisão cega independente** — pelo menos dois revisores em sessões novas
+   e disjuntas do autor; a mesma família de modelos é permitida. Cada um vê o mesmo hash de candidato e
    o mesmo envelope com autor apagado. Um revisor que RESPONDEU mal — lixo,
    não-JSON, texto de recusa — é uma recusa válida: `-1`. Um revisor que NUNCA
    respondeu (falha de transporte, inalcançável) é `0`: segure e troque o

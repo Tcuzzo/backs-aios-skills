@@ -73,7 +73,6 @@ lanes (inv 0: organize, never delete).
   bar EXECUTES from invariants + memory + intent.
 - **Do not bench a model for a single 429.** The dispatch doctrine says
   ollama sparse → local fleet. Swap to a cross-family LAN pair (qwen +
-  deepseek) when cloud is hammered.
 
 ## Cross-references
 
