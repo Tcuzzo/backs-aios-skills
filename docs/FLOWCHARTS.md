@@ -211,59 +211,34 @@ PROVE
 
 ## 3. Session boot and grounding loop
 
-The hook does not decide what the agent may build. It only prevents an ungrounded
-agent from mutating files before it loads the floor.
+Grounding comes from loading current source bodies into host context. Tools
+remain available throughout loading and recovery.
 
 ```mermaid
 flowchart TD
-  accTitle: Session boot and deterministic grounding gate
-  accDescr: Claude/Cursor native sessionStart or a new OpenCode/Codex identity with no marker starts RED. An existing GREEN marker stays GREEN. From RED, research is allowed and then Optimus is invoked; native skill-event hosts arm GREEN on a successful post-skill event, while non-native hosts use the explicit gate loader --load to load Optimus and arm GREEN. Re-arm to RED happens only on a real native sessionStart or explicit --rearm; a new job, handoff, or compaction alone does not rearm.
-
-  Start([Session boundary]) --> Boundary{What changed?}
-  Boundary -->|Claude/Cursor<br/>sessionStart| Red[Gate state: RED]
-  Boundary -->|OpenCode/Codex<br/>new identity / no marker| Red
-  Boundary -->|Existing GREEN marker| Green[Gate state: GREEN]
-  Red --> Read[Read-only research stays available]
-  Read --> Boot[Invoke optimus]
-  Boot --> Event{Native skill-event host?}
-  Event -->|Yes| Post[Successful post-skill event]
-  Post --> Green
-  Event -->|No| Explicit[Run explicit gate loader:<br/>node hooks/aios_gate.js --load backs-aios:optimus<br/>loads optimus and arms GREEN]
-  Explicit --> Green
-  Green --> Work[Mutating tools may run]
-  Work --> Rearm{Re-arm to RED?}
-  Rearm -->|Real native sessionStart| Red
-  Rearm -->|Explicit --rearm| Red
-  Rearm -->|New job / handoff / compaction alone| Work
-  Red --> Mutate{Mutation attempted before grounding?}
-  Mutate -->|Yes| Block[Block and point to optimus]
-  Block --> Boot
-  Mutate -->|No, research only| Read
+  accTitle: Automatic grounding without tool denial
+  accDescr: Session start and compaction deliver current floor bodies. Missing grounding triggers another load, with truthful evidence and no tool refusal.
+  Start([Session start or compaction]) --> Read[Read actual harness, Optimus and Yoke]
+  Missing[Matched tool without session marker] --> Read
+  Read --> Available{Bodies available?}
+  Available -->|Yes| Deliver[Deliver bodies into host context]
+  Deliver --> Receipt[Record source hashes and loaded marker]
+  Available -->|No| Warn[Report unavailable evidence]
+  Receipt --> Work[Continue work]
+  Warn --> Work
+  Skill[Actual Skill event] --> SkillReceipt[Separate invocation receipt]
 ```
 
 <details>
 <summary>Text version</summary>
 
 ```text
-Session boundary
-  ├─ Claude/Cursor native sessionStart -> RED
-  ├─ OpenCode/Codex new identity / no marker -> RED
-  └─ existing GREEN marker -> GREEN
-
-RED -> research allowed
-  -> invoke optimus
-    ├─ native skill-event host (Claude/Cursor/OpenCode) -> post-skill event -> GREEN
-    └─ non-native host -> explicit gate loader --load backs-aios:optimus
-       loads optimus and arms GREEN
-
-GREEN -> mutations may run
-
-Re-arm to RED only on:
-  - real native sessionStart
-  - explicit --rearm
-A new job, handoff, or compaction alone does NOT rearm.
-
-Mutation while RED -> blocked with a direct pointer to optimus.
+Session start, compaction, or a matched tool with no loaded marker
+  -> read the current harness, Optimus and Yoke bodies
+  -> bodies available: deliver context, then record hashes and marker
+  -> bodies unavailable: report the missing evidence
+  -> continue work with tools available
+Actual Skill events retain separate invocation receipts.
 ```
 
 </details>

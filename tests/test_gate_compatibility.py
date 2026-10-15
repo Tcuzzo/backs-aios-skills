@@ -46,7 +46,7 @@ class GateCompatibilityTest(unittest.TestCase):
         # the test's own **env wins — the gate under test is unchanged.
         for key in SESSION_IDENTITY_KEYS:
             merged_env.pop(key, None)
-        merged_env.update({"HOME": self.home.name, **env})
+        merged_env.update({"HOME": self.home.name, "BACKS_DEPLOY_ROOT": str(Path(self.home.name)/"missing-deploy"), "AIOS_GATE": "on", **env})
         return subprocess.run(
             (*gate, *arguments),
             input=value,
@@ -56,15 +56,17 @@ class GateCompatibilityTest(unittest.TestCase):
             check=False,
         )
 
-    def assert_denied(self, result: subprocess.CompletedProcess, protocol: str) -> None:
+    def assert_grounding_delivered(self, result: subprocess.CompletedProcess, protocol: str) -> None:
         self.assertEqual(0, result.returncode, result.stderr)
         output = json.loads(result.stdout)
         if protocol == "claude":
-            self.assertEqual("deny", output["hookSpecificOutput"]["permissionDecision"])
+            self.assertNotIn("permissionDecision", output["hookSpecificOutput"])
+            self.assertIn("## BACKS loaded: optimus", output["hookSpecificOutput"]["additionalContext"])
         else:
-            self.assertEqual("deny", output["permission"])
+            self.assertNotIn("permission", output)
+            self.assertIn("## BACKS loaded: optimus", output["additional_context"])
 
-    def test_claude_and_cursor_protocols_deny_red_then_allow_green(self) -> None:
+    def test_claude_and_cursor_protocols_load_grounding_then_allow(self) -> None:
         for gate in GATES:
             for protocol, session, pre_event, post_event, shell_name in (
                 ("claude", "claude-1", "PreToolUse", "PostToolUse", "Bash"),
@@ -83,7 +85,7 @@ class GateCompatibilityTest(unittest.TestCase):
                         "tool_name": shell_name,
                         "tool_input": {"command": "git commit -m test"},
                     })
-                    self.assert_denied(denied, protocol)
+                    self.assert_grounding_delivered(denied, protocol)
 
                     armed = self.run_gate(gate, {
                         **session_fields,
@@ -101,17 +103,61 @@ class GateCompatibilityTest(unittest.TestCase):
                     })
                     self.assertEqual("", allowed.stdout)
 
-    def test_cursor_write_is_denied_while_red(self) -> None:
+    def test_cursor_write_loads_missing_grounding(self) -> None:
         for gate in GATES:
             with self.subTest(gate=gate[1]):
                 result = self.run_gate(gate, {
-                    "conversation_id": "cursor-write",
+                    "conversation_id": f"cursor-write-{Path(gate[1]).suffix}",
                     "cursor_version": "3.17",
                     "hook_event_name": "preToolUse",
                     "tool_name": "Write",
                     "tool_input": {"path": "file.txt"},
                 })
-                self.assert_denied(result, "cursor")
+                self.assert_grounding_delivered(result, "cursor")
+
+    def test_codex_patch_surfaces_load_grounding_then_allow(self) -> None:
+        """Drive the real CLI evaluators with Codex's direct and nested payloads."""
+        mutations = (
+            ("apply_patch", "*** Begin Patch\n*** Update File: example.txt"),
+            ("functions.apply_patch", "*** Begin Patch\n*** Update File: example.txt"),
+            (
+                "functions.exec",
+                "await tools.apply_patch(\"*** Begin Patch\\n*** Update File: example.txt\")",
+            ),
+        )
+        for gate in GATES:
+            suffix = Path(gate[1]).suffix.lstrip(".")
+            for index, (tool_name, tool_input) in enumerate(mutations):
+                with self.subTest(gate=gate[1], tool_name=tool_name):
+                    session = f"codex-patch-{suffix}-{index}"
+                    payload = {
+                        "session_id": session,
+                        "hook_event_name": "PreToolUse",
+                        "tool_name": tool_name,
+                        "tool_input": tool_input,
+                    }
+                    self.assert_grounding_delivered(self.run_gate(gate, payload), "claude")
+
+                    loaded = self.run_gate(
+                        gate,
+                        "",
+                        "--load",
+                        "backs-aios:optimus",
+                        CODEX_SESSION_ID=session,
+                    )
+                    self.assertEqual(0, loaded.returncode, loaded.stderr)
+                    self.assertEqual("", self.run_gate(gate, payload).stdout)
+
+    def test_hook_registration_covers_codex_patch_surfaces(self) -> None:
+        manifest = json.loads((ROOT / "hooks" / "hooks.json").read_text(encoding="utf-8"))
+        matchers = {
+            entry["matcher"]
+            for entry in manifest["hooks"]["PreToolUse"]
+        }
+        registered = set().union(*(set(matcher.split("|")) for matcher in matchers))
+        self.assertTrue(
+            {"apply_patch", "functions.apply_patch", "functions.exec"} <= registered
+        )
 
     def test_kill_switch_allows_loudly(self) -> None:
         for gate in GATES:
@@ -126,7 +172,7 @@ class GateCompatibilityTest(unittest.TestCase):
                 self.assertEqual("", result.stdout)
                 self.assertIn("disabled", result.stderr.lower())
 
-    def test_session_start_context_is_compact_and_never_embeds_skill_bodies(self) -> None:
+    def test_session_start_delivers_floor_bodies_and_wake_pointers(self) -> None:
         for gate in GATES:
             with self.subTest(gate=gate[1]):
                 result = self.run_gate(gate, {
@@ -135,7 +181,7 @@ class GateCompatibilityTest(unittest.TestCase):
                     "hook_event_name": "sessionStart",
                 })
                 self.assertEqual(0, result.returncode, result.stderr)
-                self.assertLessEqual(len(result.stdout.encode()), 2048)
+                self.assertIn("## BACKS loaded: optimus", result.stdout)
                 output = json.loads(result.stdout)
                 context = output["additional_context"]
                 self.assertIn("operator_intent_deduction", context)
@@ -162,7 +208,7 @@ class GateCompatibilityTest(unittest.TestCase):
                     "tool_input": {"command": "git commit -m test"},
                 }
                 denied = self.run_gate(gate, payload)
-                self.assert_denied(denied, "claude")
+                self.assert_grounding_delivered(denied, "claude")
 
                 loaded = self.run_gate(
                     gate,
@@ -195,7 +241,7 @@ class GateCompatibilityTest(unittest.TestCase):
                 self.assertEqual(0, rearmed.returncode, rearmed.stderr)
                 self.assertIn("re-armed", rearmed.stdout)
                 self.assertFalse(state.exists())
-                self.assert_denied(self.run_gate(gate, payload), "claude")
+                self.assert_grounding_delivered(self.run_gate(gate, payload), "claude")
 
     def test_unknown_skill_cannot_arm_environment_session(self) -> None:
         for gate in GATES:
@@ -263,11 +309,13 @@ console.log(JSON.stringify({{denied, allowed}}));
                 **os.environ,
                 "HOME": self.home.name,
                 "BACKS_AIOS_RUNTIME_ROOT": str(ROOT),
+                "BACKS_DEPLOY_ROOT": str(Path(self.home.name)/"missing-deploy"),
+                "AIOS_GATE": "on",
             },
             check=False,
         )
         self.assertEqual(0, result.returncode, result.stderr)
-        self.assertEqual({"denied": True, "allowed": True}, json.loads(result.stdout))
+        self.assertEqual({"denied": False, "allowed": True}, json.loads(result.stdout))
         state = (
             Path(self.home.name)
             / ".aios"
