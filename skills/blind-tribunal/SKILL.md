@@ -21,14 +21,15 @@ Nothing lands on the builder's word alone.
 ## The seats
 
 Eight jurors, one lens each. Each is picked live from a rung that carries the
-lens's required capability, with the builder recorded as provenance on the run
-record (`--builder`, `builder_family` where the portable runner carries them)
-so the resolver can refuse that exact authoring execution out loud before any
-dispatch. The authoring execution and any session that inherited the builder's
-conversation or context are disqualified; a fresh, author-disjoint session that
-carries none of that conversation may use the same model, rung, or family where
-the configured runtime permits. A juror asked to check everything checks
-nothing well.
+lens's required capability, with the authoring execution that built recorded as
+provenance on the run record (`--builder`, `builder_family`, where the runner
+the operator actually uses carries them) so the resolver — where one exists —
+can refuse that exact authoring execution out loud before any dispatch. The
+authoring execution and any session that inherited the builder's conversation
+or context are disqualified by recorded evidence, not by a model or family
+label; a fresh, author-disjoint session that carries none of that conversation
+may use the same model, rung, or family where the configured runtime permits.
+A juror asked to check everything checks nothing well.
 
 | Juror | Lens id | Tier | The question it asks |
 | --- | --- | --- | --- |
@@ -51,8 +52,8 @@ Route each tier to what the lens needs, not to the biggest model you own:
   named tests. Run harness jurors read-only (`codex exec --sandbox read-only`; a
   read-only tool catalog on a claude harness) and void any verdict whose dispatch
   changed repository bytes, naming the paths. Header: *trace every state change across the whole workflow before you judge.*
-- **fast structural** (boundary_condition, resource_economy): the cheapest fast route —
-  a free local GPU model first. A local model must see the WHOLE artifact or it does
+- **fast structural** (boundary_condition, resource_economy): the cheapest measured
+  sufficient configured route that meets the lens's needs. A local model must see the WHOLE artifact or it does
   not judge: size the request's context window to the prompt (`num_ctx` on Ollama — the
   server default is 4096 tokens and it truncates silently; measured 2026-09-04, a
   16B juror "passed" a 124 KB diff it never saw, citing a file that does not exist)
@@ -75,42 +76,58 @@ Route each tier to what the lens needs, not to the biggest model you own:
 - **generalist** (defect, proportion): a reliable large generalist. Header: *precise
   findings, no invented context.*
 
-Every tier's ladder ends on a local survival rung, so the tribunal still convenes with
-zero cloud. The premium accounts an IDE session holds (Claude Opus/Sonnet, Codex) are an
-IDE-only lane for the deep-state seats: render the prompt files, pipe them in, drop the
-verdicts into the same shape.
+Every tier's ladder keeps enough eligible configured routes to carry the artifact, so
+the tribunal still convenes when cloud is unavailable. Local and IDE-resident rungs
+participate by configured eligibility — measured capacity, residency, and the
+operator's live config decide availability; there is no fixed physical-location order.
 
-**Solo rig.** When only one configured rung is available, degrade EXPLICITLY: a
-fresh, author-disjoint context or session that never saw the author's conversation
-acts as the blind grader, or the human reviews the redacted envelope. The report
-must name the weakened gate ("graded on a single configured rung"), never
-silently pretend a stronger capability or independence gate held.
+**Solo rig.** When only one configured rung is available, independence still
+comes from a fresh, author-disjoint context or session that never saw the
+author's conversation. That session, with the author-redacted envelope and
+frozen evidence bytes, IS the blind grader — the same capable model in a fresh
+session is permitted, where the configured runtime allows. The report records
+the single-rung configuration as provenance, not as a weakened gate: the
+separation is the session, not the model name. A legacy identity filter on
+top of this policy is an unresolved runtime mismatch — surface it, never
+silently assert it fixed, never bypass.
 
-## The builder is declared, and the exclusion is structural
+## The builder is declared, and the exclusion is recorded session isolation
 
 "Different family than the builder" was a rule jurors were asked to remember. In the
 tribunal's own dogfood the operator-safety seat led with the very model that had built
 the candidate, and nothing recorded or excluded it — the author graded its own work for
-two rounds and every builder-is-not-grader claim on those rounds was unfounded. So:
+two rounds and every builder-is-not-grader claim on those rounds was unfounded. The
+fix is to require RECORDED session-context evidence; family or model-label flags alone
+cannot identify a session and the public pack ships none. What follows is therefore conditional on the runner the operator actually uses.
 
-- **Convene with the builder named** (`--builder <identity>`), where the
-  portable runner records it as provenance on the run. The run record carries
-  `builder_family` for the resolver to read where the runner supplies it. The
-  authoring execution and any session that inherited the builder's conversation
-  or context are disqualified out loud, before any dispatch, on every ladder. A
-  lens left with no rung HOLDS — it never falls back to the builder because the
-  builder was the only seat left. The exclusion is the authoring execution that
-  built; it is recorded as provenance, not enforced as a blanket model, rung,
-  family, or vendor gate.
+- **Convene with the builder named**, where the runner actually supports it
+  (e.g. `--builder <identity>` where the runner knows such a flag; otherwise
+  as a run-record field where the runner records it). The run record carries
+  the authoring execution that built and `builder_family` for the resolver to
+  read where the runner supplies it. The authoring execution and any session
+  that inherited the builder's conversation or context are disqualified out
+  loud, before any dispatch, on every ladder. A lens left with no rung HOLDS —
+  it never falls back to the builder because the builder was the only seat
+  left. The exclusion is the recorded authoring execution that built; it is
+  recorded as provenance, not enforced as a blanket model, rung, family, or
+  vendor gate. Family/provider flags are not session identity and do not by
+  themselves exclude anyone.
 - **Same model, rung, or family in a fresh, author-disjoint session is allowed**
   where the configured runtime permits. It is not categorically barred here.
   What is barred: a juror inheriting the builder's conversation or context.
-- **Prove it on the live ladder, not in a test:** after the first convene with the builder
-  declared, the routing table must show the builder's seats fell through to another
-  capability-sufficient rung. If it did not, the exclusion is decoration. A legacy
-  model-name-only or family-only identity filter that sits underneath this matrix
-  is an unresolved runtime mismatch — surface it, never silently assert it fixed,
-  never bypass.
+- **Prove session isolation with recorded evidence, not a new model name:**
+  after the first convene with the builder declared, the receipt must show the
+  grader ran in a fresh, author-disjoint session that did not see the
+  builder's conversation or inherit its context — and the envelope was
+  author-redacted, frozen, and bound to the receipt before any juror was paid.
+  The proof is the recorded session-context evidence, not a model or family
+  label. `builder_family` (where the runner records it) is provenance, not a
+  session identifier; a same model, rung, or family reviewer in a fresh session
+  is permitted where the configured runtime allows. A legacy model-name-only or
+  family-only identity filter that sits underneath this matrix is an unresolved
+  runtime mismatch — surface it, never silently assert it fixed, never bypass.
+  The public pack ships no Fleet resolver; it does not enforce this exclusion
+  for you.
 
 ## The footer names the lens, a rejected rung keeps its words, and the receipt is exact
 

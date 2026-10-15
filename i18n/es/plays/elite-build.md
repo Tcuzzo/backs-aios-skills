@@ -91,11 +91,12 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
    código; nunca lo evalúes a ojo.
 9. [blind-eval](../skills/blind-eval/SKILL.md), luego
    [blind-tribunal](../skills/blind-tribunal/SKILL.md) — un sobre con el autor
-   tachado va a evaluadores de una familia de modelos distinta a la del
-   constructor. El constructor nunca califica su propio trabajo. Cada hallazgo de un
+   tachado va a evaluadores en sesiones frescas sin contexto del autor. El
+   constructor nunca califica su propio trabajo. Cada hallazgo de un
    jurado se vuelve un nuevo test rojo; vuelve a convocar hasta que todos los
-   jurados aprueben. ¿Equipo de una sola máquina? Degrada según la regla "Solo rig"
-   de blind-tribunal — y nombra la puerta debilitada en el reporte de aterrizaje.
+   jurados aprueben. ¿Equipo de una sola máquina? Sigue la regla "Solo rig"
+   de blind-tribunal — y registra la configuración de un solo rung como
+   proveniencia, no como una puerta debilitada.
 10. Aterriza — mergea limpio, corre UNA pasada completa sobre las suites de los
     módulos tocados, reinicia el servicio real y prueba el comportamiento en la
     superficie propia del humano (la página que carga, el comando que corre) —
@@ -105,8 +106,8 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
 
 - El test que falla fue commiteado antes de la construcción y está intacto — el
   evaluador verifica que el diff del archivo de test esté vacío.
-- El constructor nunca es el evaluador, y el evaluador es de otra familia de
-  modelos.
+- El constructor nunca es el evaluador, y el evaluador corre en una sesión
+  fresca, sin contexto del autor.
 - Cada hallazgo sacado a la luz queda cerrado, o adjudicado como "no es un bug" con
   evidencia registrada. Nunca aplazado en silencio. Cierre de costura completa — la
   costura es el punto compartido del código donde vive esta clase de bug — o no hay

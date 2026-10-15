@@ -126,7 +126,7 @@ ajoutés dans les descriptions des skills de ce miroir.
 | --- | --- |
 | [absorb](skills/absorb/SKILL.md) | Adopter une capacité open source existante et la ré-ingénierer en skill natif, au lieu d'en construire un doublon. |
 | [blind-eval](skills/blind-eval/SKILL.md) | Juger un changement sur ses mérites, auteur masqué, puis garder ou annuler. Seul un gain prouvé atterrit. |
-| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Des jurés à l'aveugle, de familles de modèles différentes, notent le changement, une grille de lecture chacun. Chaque trouvaille devient un test qui échoue. Boucle jusqu'à ce que tous passent. |
+| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Des jurés à l'aveugle, dans des sessions fraîches sans contexte d'auteur, notent le changement, une grille de lecture chacun. Chaque trouvaille devient un test qui échoue. Boucle jusqu'à ce que tous passent. |
 | [bounded-loops](skills/bounded-loops/SKILL.md) | Plafonds de budget, checkpoints et kill-switchs sur chaque boucle. Rend le martelage d'une API structurellement impossible. |
 | [clean-code-gauntlet](skills/clean-code-gauntlet/SKILL.md) | Une barre de qualité déterministe : tests sniper, le score CRAP (complexité x couverture), tests de mutation bornés, puis une légère revue de goût. |
 | [decision-bar](skills/decision-bar/SKILL.md) | Une seule barre pour chaque décision : seuls le goût, la vision ou le risque destructeur remontent à l'humain. Tout le reste s'exécute. |

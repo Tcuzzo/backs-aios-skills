@@ -36,30 +36,34 @@ revisar todo no revisa nada bien.
 | Frontera | `boundary_condition` | estructural rápido | Con entradas nulas, vacías, de tipo inesperado o malformadas, ¿falla con gracia? |
 | Telemetría | `telemetry` | seguridad del operador | ¿Un fallo aquí se diagnostica desde los logs y el manejo de errores? |
 
-**Niveles de enrutamiento (primero la ruta más barata que basta):** estado profundo →
-el mayor contexto y razonamiento más profundo, idealmente por un harness que LEA el repo
-(nunca escriba); estructural rápido → primero una GPU local gratis; un veredicto local
-independiente y suficiente puede PASAR sin un verificador de nube o fusionado cuando
-el contrato de la tarea no lo exige. Si un verificador opcional está FUSIONADO con el
-asiento primario, juzga el mismo prompt; si el verificador no está disponible (ningún
-peldaño de nube vivo), el veredicto primario local se sostiene sobre su propia
-evidencia, marcado UNVERIFIED en la revisión y el resumen — nunca «verificado» en
-silencio. Un verificador REQUERIDO por la tarea que está ausente es RETENCIÓN
-independiente de local/nube. El modelo local debe ver TODO el artefacto
-(dimensiona `num_ctx` al prompt — el valor por defecto de Ollama, 4096, trunca en
-silencio — y rechaza antes de enviar lo que no cabe); los jurados por harness corren
-read-only, y cada convocatoria lleva un `run_id` y escribe su resumen al final;
-después los modelos de nube de baja latencia; seguridad del operador →
-tu coder más fuerte con base en seguridad; generalista → un generalista grande y fiable.
-Cada escalera termina en un peldaño local de supervivencia.
+**Niveles de enrutamiento (primero la ruta medida más barata que basta):** cada nivel
+se enruta según lo que la lente necesita, no según el modelo más grande que tengas;
+el orden y la elección vienen de la matriz de peldaños configurada en vivo y del
+coste / disponibilidad medidos — sin preferencia universal nube-primero /
+local-último. Estado profundo → el mayor contexto y razonamiento más profundo,
+idealmente por un harness que LEA el repo (nunca escriba); estructural rápido → la
+ruta rápida más barata que cumple los requisitos; un veredicto local independiente y
+suficiente puede PASAR sin un verificador de nube o fusionado cuando el contrato de la
+tarea no lo exige. Si un verificador opcional está FUSIONADO con el asiento primario,
+juzga el mismo prompt; si el verificador no está disponible (ningún peldaño de nube
+vivo), el veredicto primario local se sostiene sobre su propia evidencia, marcado
+UNVERIFIED en la revisión y el resumen — nunca «verificado» en silencio. Un
+verificador REQUERIDO por la tarea que está ausente es RETENCIÓN independiente de
+local/nube. El modelo local debe ver TODO el artefacto (dimensiona `num_ctx` al
+prompt — el valor por defecto de Ollama, 4096, trunca en silencio — y rechaza antes
+de enviar lo que no cabe); los jurados por harness corren read-only, y cada
+convocatoria lleva un `run_id` y escribe su resumen al final; seguridad del
+operador → tu coder más fuerte con base en seguridad; generalista → un generalista
+grande y fiable. Los peldaños locales / de IDE permanecen en la escalera según la
+capacidad realmente configurada, sin un orden de posición fijo.
 
-**Equipo solo.** Cuando solo hay un peldaño de modelo disponible, degrada
-EXPLÍCITAMENTE: un contexto o sesión fresca que nunca vio la conversación del
-autor actúa como evaluador ciego, o el humano revisa el sobre con la autoría
-borrada. Un revisor del mismo modelo, peldaño o familia en una sesión fresca y
-disjunta del autor se permite donde el runtime configurado lo admita. El reporte
-debe nombrar la puerta debilitada — nunca fingir en silencio que una puerta más
-fuerte se sostuvo.
+**Equipo solo.** Cuando solo hay un peldaño de modelo disponible, la independencia
+sigue viniendo de un contexto o sesión fresca y disjunta del autor que nunca vio
+la conversación del autor, con el sobre con la autoría borrada y los bytes de
+evidencia congelados. Un revisor del mismo modelo, peldaño o familia en una
+sesión fresca se permite donde el runtime configurado lo admita. El reporte
+registra la configuración de un solo peldaño como proveniencia, no como una
+puerta debilitada: la separación es la sesión, no el nombre del modelo.
 
 ## El constructor se declara, y la exclusión es estructural
 
@@ -68,12 +72,15 @@ propia prueba del tribunal, el asiento de seguridad del operador lo encabezó el
 había construido el candidato, y nada lo registró ni lo excluyó: el autor calificó su propio
 trabajo durante dos rondas. Así que:
 
-- **Convoca con el constructor nombrado** (`--builder <modelo-o-familia>`). El registro lleva
-  `builder_family` como procedencia donde el corredor lo registre. La ejecución autora que construyó
-  al candidato y cualquier sesión que haya heredado la conversación o el contexto del constructor
-  quedan descalificadas en voz alta, antes de despachar, en cada escalera. Una lente sin peldaño
-  QUEDA EN ESPERA — nunca vuelve al constructor. Procedencia, no un veto ciego por modelo, peldaño,
-  familia o proveedor.
+- **Convoca con el constructor nombrado**, allí donde el corredor elegido lo admita
+  realmente (p. ej. `--builder <identidad>` si el corredor conoce un flag así; si
+  no, como campo de registro de carrera). El registro lleva la sesión autora del
+  constructor y `builder_family` como procedencia donde el corredor lo registre.
+  La ejecución autora que construyó al candidato y cualquier sesión que haya
+  heredado la conversación o el contexto del constructor quedan descalificadas en
+  voz alta, antes de despachar, en cada escalera. Una lente sin peldaño QUEDA EN
+  ESPERA — nunca vuelve al constructor. Procedencia, no un veto ciego por modelo,
+  peldaño, familia o proveedor.
 - **Pruébalo en la escalera viva, no en un test:** la tabla de rutas debe mostrar que los
   asientos cayeron en peldaños disponibles en vivo, y el reporte nombra el peldaño elegido por
   lente. Si no, la exclusión es decoración.

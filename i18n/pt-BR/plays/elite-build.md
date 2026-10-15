@@ -93,11 +93,11 @@ O loop, num relance:
    nunca avalie no olho.
 9. [blind-eval](../skills/blind-eval/SKILL.md), depois
    [blind-tribunal](../skills/blind-tribunal/SKILL.md) — um envelope com a
-   autoria apagada vai para avaliadores de uma família de modelos diferente da
-   do builder. Quem constrói nunca avalia o próprio trabalho. Cada achado de
+   autoria apagada vai para avaliadores em sessões frescas sem contexto do
+   autor. Quem constrói nunca avalia o próprio trabalho. Cada achado de
    jurado vira um novo teste vermelho; reconvoque até todo jurado aprovar. Rig
-   solo? Degrade conforme a regra "Solo rig" do blind-tribunal — e nomeie o gate
-   enfraquecido no relatório de pouso.
+   solo? Siga a regra "Solo rig" do blind-tribunal — e registre a configuração
+   de um único degrau como proveniência, não como um gate enfraquecido.
 10. Pouse — faça um merge limpo, rode UM passe completo das suítes dos módulos
     tocados, reinicie o serviço real e prove o comportamento na superfície do
     próprio humano (a página que ele carrega, o comando que ele roda) — nunca
@@ -107,7 +107,8 @@ O loop, num relance:
 
 - O teste que falha foi commitado antes do build e está intocado — o avaliador
   verifica que o diff do arquivo de teste está vazio.
-- Quem constrói nunca avalia, e o avaliador é de outra família de modelos.
+- Quem constrói nunca avalia, e o avaliador roda em uma sessão fresca, sem
+  contexto do autor.
 - Todo achado levantado é fechado, ou adjudicado como "não é bug" com evidência
   registrada. Nunca adiado em silêncio. Fechamento da costura inteira — a
   costura é o ponto compartilhado do código onde essa classe de bug mora — ou

@@ -103,7 +103,7 @@ Hermes、裸 API 循环——见 [INSTALL.md](INSTALL.md)。
 | --- | --- |
 | [absorb](skills/absorb/SKILL.md) | 吸收现有的开源能力，重新工程化为原生技能，而不是造一个重复轮子。 |
 | [blind-eval](skills/blind-eval/SKILL.md) | 隐去作者信息，只凭改动本身的价值评判，然后留下或回滚。只有被证明的提升才落地。 |
-| [blind-tribunal](skills/blind-tribunal/SKILL.md) | 来自不同模型家族的盲评陪审员给变更打分，一人一个视角。每条发现都变成一条失败测试。循环到全员放行。 |
+| [blind-tribunal](skills/blind-tribunal/SKILL.md) | 在全新、作者隔离的会话中的盲评陪审员给变更打分，一人一个视角。每条发现都变成一条失败测试。循环到全员放行。 |
 | [bounded-loops](skills/bounded-loops/SKILL.md) | 每个循环都带预算上限、检查点和急停开关。让狂轰 API 在结构上不可能发生。 |
 | [clean-code-gauntlet](skills/clean-code-gauntlet/SKILL.md) | 一条确定性的质量线：狙击测试、CRAP 分数（复杂度 x 覆盖率）、有界变异测试，再加一轮轻量品味审查。 |
 | [decision-bar](skills/decision-bar/SKILL.md) | 每个决定过同一条杠：只有品味、愿景或破坏性风险才到人面前。其余一律直接执行。 |

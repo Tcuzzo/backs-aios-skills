@@ -92,11 +92,11 @@ Der Loop auf einen Blick:
    beäuge ihn nie nur.
 9. [blind-eval](../skills/blind-eval/SKILL.md), dann
    [blind-tribunal](../skills/blind-tribunal/SKILL.md) — ein Envelope ohne
-   Autorenangabe geht an Prüfer aus einer anderen Modellfamilie als der Builder.
+   Autorenangabe geht an Prüfer in frischen Sitzungen ohne Autor-Kontext.
    Der Builder benotet nie seine eigene Arbeit. Jeder Juroren-Fund wird ein neuer
    roter Test; das Tribunal tagt neu, bis jeder Juror besteht. Solo-Rig?
-   Degradiere nach der Solo-Rig-Regel im blind-tribunal — und benenne das
-   geschwächte Gate im Landungsbericht.
+   Folge der Solo-Rig-Regel im blind-tribunal — und erfasse die
+   Einzel-Sprossen-Konfiguration als Provenienz, nicht als geschwächtes Gate.
 10. Lande — merge sauber, fahre EINEN vollen Durchlauf über die Suiten der
     berührten Module, starte den echten Service neu und beweise das Verhalten auf
     der eigenen Oberfläche des Menschen (die Seite, die er lädt, das Kommando, das
@@ -106,7 +106,8 @@ Der Loop auf einen Blick:
 
 - Der fehlschlagende Test wurde vor dem Build committet und ist unberührt — der
   Prüfer verifiziert, dass der Diff der Testdatei leer ist.
-- Der Builder ist niemals der Prüfer, und der Prüfer ist eine andere Modellfamilie.
+- Der Builder ist niemals der Prüfer, und der Prüfer läuft in einer frischen
+  Sitzung ohne Autor-Kontext.
 - Jeder aufgetauchte Fund ist geschlossen — oder mit dokumentierten Beweisen als
   „kein Bug“ beurteilt. Niemals still vertagt. Ganze-Seam-Schließung — die Seam
   ist die gemeinsame Stelle im Code, an der diese Bug-Klasse wohnt — oder keine

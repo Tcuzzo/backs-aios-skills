@@ -1,17 +1,23 @@
 ---
 name: "fleet-ladder"
-description: "Use before any work is handed to a model (building, grading, or a bounded worker job), when a provider is down and you need the fallback order, or when the rung is frontier/design/reason and must honor research-before-heavy-lift. Resolves the LIVE model ladder from deploy yaml only: probe what is up, pick by explicit fallback order by capability and availability, gate frontier research seams, fail loud when exhausted. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability, builder seat, frontier research, research seams, rung policy, thinking floor, token efficiency, research before builder, capability, oauth, api, quota, essence, checkpoint."
+description: "Use before any work is handed to a model (building, grading, or a bounded worker job), when a provider is down and you need the fallback order, or when the rung is frontier/design/reason and must honor research-before-heavy-lift. States the desired selection discipline (task + evidence work the agent must do before dispatch) and points at the configured ladder file as the only place that knows actual routing. Does NOT itself rank, score, or filter candidates; the public pack ships no resolver and no Fleet executable. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability, frontier research, research seams, rung policy, thinking floor, token efficiency, research before builder, capability, oauth, api, quota, essence, checkpoint."
 license: "MIT"
 ---
 
 # Fleet Ladder
 **Effort:** light — one cached live probe of the rung before any dispatch. Removes: dispatches to dead providers, model names hardcoded at call sites, frontier heavy-lift without realtime research, and the seat-itself-as-authority mistake.
 
-Never hand-build a provider call, and never hardcode a model name at a call site.
-One resolver owns the question "which model does this job right now?" — and it
-answers from live truth (probe + provider status), not from a config file's
-opinion. Capability and availability drive the choice; model identity records
-provenance, never authority.
+This skill teaches the **desired selection discipline** an agent must follow
+before handing work to a model, and points at the configured ladder file as
+the only place that knows the live ordering. It does **not** rank candidates,
+does **not** score cost / essence / matrix entries, and ships **no resolver
+and no Fleet executable**. Where the live runner on the operator's host does
+not implement a step this file describes, that gap is named as a runtime gap —
+never silently bypassed and never papered over with a disclaimer.
+
+Capability and availability drive the choice. Model identity records
+provenance, never authority. Family / vendor / model name do NOT identify a
+session — only an author-disjoint execution does.
 
 ## When to run it
 
@@ -24,42 +30,99 @@ provenance, never authority.
 
 ## Source of truth (READ — never fork)
 
-Resolution lives only in deploy ladder files. Skills teach agents to **honor**
-them; Patch owns yaml edits.
+Resolution lives only in the deploy ladder files. Skills teach agents to
+**honor** them; Patch owns yaml edits. This file does not own routing.
 
 | File | Absolute path (deploy parent) |
 |------|-------------------------------|
 | Fleet ladder | `<placeholder-mount>/backs_deploy/JarvisAI/config/fleet_ladder.yaml` |
 | GPU nodes | `<placeholder-mount>/backs_deploy/JarvisAI/config/gpu_nodes.yaml` |
+| Public ladder example | `skills/fleet-ladder/ladder.example.yaml` (template only) |
 
 **NEVER** hardcode model IDs in skill text, prompts, or call sites as source of truth.
-You may name **roles** in prose (`builder`, `grader`, `worker`, `frontier` / planner),
-and you may name **capabilities** the job needs (long context, vision, code, reason).
-Resolution = ladder + gpu_nodes files only. Patch owns yaml; Skills own these rails.
+You may name **roles** in prose (`builder`, `grader`, `worker`, and the
+configured planning role — native deployments call this `plan` — **only if
+the live ladder actually configures a planning role**), and you may name
+**capabilities** the job needs (long context, vision, code, reason). The role
+list this skill names is a desire; the role list a live ladder actually
+configures is the only authority. This skill does not invent a `planner`
+rung; if the live yaml has no configured planning role, do not add one here.
+
+Public pack note: this skill ships no Fleet executable and no resolver. The
+actual fallback mechanism lives wherever the operator's host runs the ladder
+runner. Current native Fleet public build flags are
+`--role --repo --spec --timeout --refresh --dry-run`. Flags this skill
+mentions beyond that list are **desired** surface, not deployed surface —
+name a gap; do not invent.
 
 ## The steps
 
-1. **Declare the role AND the capability the job needs.** Every job asks for a
-   role — `builder`, `grader`, or `worker` — and a capability (the kind of work it
-   must do). The ladder maps roles to ordered model candidates and ranks candidates
-   by capability fit plus live availability.
-   - `builder`: implements and repairs.
-   - `grader`: independent review — the authoring execution that built is
-     disqualified; the grader runs in a fresh, author-disjoint session that did
-     not see the builder's conversation or inherit its context.
-   - `worker`: bounded, well-specified jobs. Cheaper rungs are fine here.
-   - Capability is matched to the task from a list the ladder reads (long
-     context, vision, code-gen, reason, tool-use, ...). A candidate that does
-     not carry the capability is refused, even if it is the first rung.
-2. **Read the ladder from deploy config.** Load `fleet_ladder.yaml` (+ `gpu_nodes.yaml`
-   for local survival / organ placement). One file lists, per role, the candidates in
-   explicit fallback order: strongest first, down to local GPU survival when clouds are dark.
-   To change or add a model, **Patch edits that file** — never skill text, never call sites.
-3. **Probe live before you trust.** A config listing is a claim, not truth. Probe the
-   provider before dispatching to a rung — models-endpoint or a one-token request.
-   Cache the probe for a sane window; do not hammer providers. A routing route is
-   distinguished from a working inference: a probe that just replies is not a
-   working candidate for a heavy task unless the ladder says so.
+1. **State the role and the capability the job needs (agent's task work).**
+   Every job asks for a role (`builder`, `grader`, `worker`, plus `planner`
+   **only when the live ladder actually configures one**) and a capability
+   (long context, vision, code-gen, reason, tool-use, …). The agent writes
+   this requirement down with the dispatch record. This step is **task work
+   the agent does**, not filtering this skill performs.
+
+   Independence is **fresh, author-disjoint EXECUTION**, not a different
+   model, family, vendor, seat, or rung. The same capable model in two fresh,
+   author-disjoint sessions is permitted by this skill's desired policy;
+   the configured runtime may impose additional restrictions — surface any
+   such restriction as a named runtime gap, never a silent block.
+
+   Task matrix (capability-fit scores) and essence (per-model know-thyself)
+   entries are **inputs the agent plans to consult as available**, not new
+   filtering logic this skill implements. A missing matrix/essence read on a
+   rung is NOT a waiver: a task-required capability that the agent cannot
+   verify is not satisfied by silence or by a "we'll trust the role order"
+   default. Distinguish the inability to automatically read a matrix entry
+   from the absence of a verified capability. The agent may provide real
+   evidence and use configured public role routing only when requirements
+   are met; otherwise record the unsatisfied task/gap, never downgrade the
+   requirement or quietly proceed.
+
+   The grader's required review is **fresh, author-disjoint execution over
+   an author-redacted frozen packet**, with **no author chat / reasoning**
+   in the packet. Provenance on the builder run (model name, family,
+   transport) records who built; it does NOT identify the grader's session.
+2. **Read the role order from the configured ladder (only authority).**
+   Load `fleet_ladder.yaml` (+ `gpu_nodes.yaml` for local survival / organ
+   placement). Each role lists candidates **in the order the live config
+   chooses** — Patch owns that order. Selection within that order is the
+   agent's job and follows this skill's discipline:
+
+   - **Planner / spec / heavy design lift:** strongest SUITABLE reasoning
+     the live ladder actually configures for that role. "Strongest suitable"
+     is measured by what the rung can actually carry (context, tools,
+     research seams) on a bounded probe — not by a model label.
+   - **Worker / bounded implementation:** cheapest SUFFICIENT measured
+     bounded implementation the live ladder actually configures. "Cheapest
+     sufficient" is measured by an actual bounded dispatch, not a catalog
+     listing.
+   - **No universal cloud-first / local-last default.** The live config
+     owns preference. Local GPU rungs stay on the ladder and obey the GPU
+     dispatch law.
+
+   To change or add a model, **Patch edits the yaml** — never skill text,
+   never call sites. This skill never reorders a configured rung.
+3. **Probe live before you trust — and prove the probe, not just the catalog.**
+   A config listing is a claim, not truth. A `models` / `catalog`
+   response proves **catalog access**, not working inference, not task
+   capability, and not available quota. Distinguish, at minimum:
+
+   - **Provider** (the upstream service: an HTTP host)
+   - **Account / auth** (key, oauth, tenant)
+   - **Quota / rate limit** (per-account, per-route, per-window)
+   - **CLI / transport** (the runner that actually carries the call)
+   - **Harness** (this skill and any wrapper around it)
+   - **Hardware** (local GPU rungs obey the GPU dispatch law)
+
+   Required probe evidence per rung before dispatching a heavy task: a real
+   bounded inference / actual dispatch on that rung (a one-token request at
+   minimum, a small bounded call where the ladder offers one), not a
+   `models` listing alone. Cache the probe for a sane window; do not hammer
+   providers. On fallback, **recheck capability on the new rung** — do not
+   assume the same evidence transfers.
 4. **Walk down, loudly.** Dispatch to the best AVAILABLE rung whose capability
    matches the task. On transport failure (provider down, oauth token expired,
    api error, quota exceeded), report loudly, checkpoint the dispatch with the
@@ -74,27 +137,35 @@ Resolution = ladder + gpu_nodes files only. Patch owns yaml; Skills own these ra
    the right one next time. Shared quota is a measured account/route fact: it is
    not assumed because model names match across runs.
 
-## Rung policy (honor builder seat + frontier research)
+## Rung policy (honor frontier research — no fabricated isolation flags)
 
-Encode on the ladder (Patch yaml). This skill **reads** those keys; it does not
-invent a parallel policy. The builder's live identity is whatever the ladder
-declares (typically `roles.builder.candidates[0]` plus identity / notes /
-transport fields). Agents resolve the seat from the yaml — model IDs are never
-pasted into skill forks.
+Encode on the ladder (Patch yaml). This skill states desired policy and
+**points at the live yaml**; it does not invent a parallel policy and it
+does not invent runner flags. Where the configured runner does not enforce
+a step, that gap is named here, not silently asserted fixed.
 
-### Builder seat
-- The builder identity is the live value the ladder returns after Patch lands
-  the operator order. The seat is read from yaml; it is not pinned here.
-- The builder's run record carries `--builder <identity>` and `builder_family`
-  where the portable runner supports them — these are runner-side fields, not
-  universal flags. Skills teach how the **resolver** uses the recorded
-  authoring execution: it disqualifies that exact execution and any session
-  that inherited the builder's conversation or context out loud before any
-  dispatch, and it reads `builder_family` for the same purpose when present.
-  Provenance, not a blanket model, rung, family, or vendor gate.
-- Agents resolve the seat from the yaml identity / notes / transport fields —
-  do not paste model IDs into skill forks, and do not assume a runner that
-  does not carry `--builder` will produce one.
+### Author-disjoint grader (desired policy)
+- The grader's required separation from the builder is **fresh,
+  author-disjoint EXECUTION over an author-redacted frozen packet** — the
+  packet contains no author chat / reasoning, and the grader's session has
+  not inherited the builder's conversation or context. That is the
+  separation this skill requires.
+- `provider`, `family`, `model`, `vendor`, `rung`, and any `builder_family`
+  value are **provenance on the builder run record**. They describe a model,
+  not a session, and they do NOT identify the grader's session. The live
+  runtime may record them; nothing in this skill treats them as isolation
+  guarantees.
+- The same capable model in a fresh, author-disjoint session is permitted
+  by this skill's desired policy. Whether the configured runtime allows
+  that on a given host is a **separate runtime question** — surface it
+  with the runner name and its flags; do not assert either way here.
+- Current native Fleet public build flags are
+  `--role --repo --spec --timeout --refresh --dry-run`. The public pack
+  ships no Fleet executable. Earlier drafts of this skill mentioned
+  hypothetical flags such as `--builder`, `--author-family`, or
+  `--capability`; those are **not** part of the deployed CLI surface and
+  must not be pasted into a runner or claimed as enforcement. The only
+  CLI surface to honor is the list above.
 
 ### Frontier / design / reason — HARD research gate
 Before any heavy design, solve, or reason lift on a rung that is marked
@@ -124,26 +195,37 @@ dispatch law (one model per card, no spill to system RAM, warm for the whole
 loop, unload only at loop end) governs these organs — it is preserved here, not
 re-invented.
 
-## Research → token efficiency + thinking floor
+## Research → token efficiency + thinking baseline
 
 **Purpose of the research seam (token efficiency):** gather frontier specs /
 prior art **BEFORE** heavy builder lift so the builder's tokens spend on the
 **correct scope** — not rediscovery. Research-first is the efficiency lever;
 chopping prompts is not.
 
-### Thinking scale (FLOOR = medium)
-- Scale range: **ultra ↔ medium only**.
-- **FLOOR = medium** — never drop below medium (no "low" / "minimal" thinking as a save-tokens move).
-- **Autonomic primitives:** agents may scale thinking **UP** (toward ultra) or
-  **DOWN** (toward medium) based on task hardness — never below the floor.
-- Efficiency = research-first + right rung + thinking-floor discipline — **not** truncation.
+### Thinking baseline (medium-or-higher where supported)
+- **Semantic baseline:** planning / spec / heavy-lift / long-envelope grading
+  runs at **medium-or-higher** reasoning depth **where the model and transport
+  actually support it**. "Where supported" means the live runner can set the
+  parameter the rung accepts — every provider / transport does not accept the
+  same numeric key, and some expose no knob at all. This skill states the
+  **semantic** baseline; the existing transport configuration owns the
+  supported parameters, and agents refer to those configured transport
+  settings rather than asserting a uniform API. **Do not** assert that every
+  rung implements the same `thinking_floor` / `thinking_scale` numeric keys;
+  **do** require the configured rung to carry out at least medium-equivalent
+  depth for the semantic work in question.
+- **Autonomic primitives:** agents may scale reasoning **UP** (toward the
+  rung's max) or **DOWN** (toward the rung's medium-equivalent floor) based
+  on task hardness — never below the semantic floor for that work.
+- **Efficiency** = research-first + right rung + thinking-baseline discipline
+  — not truncation.
 
 ### Explicit ban — no truncation hacks
 **FORBIDDEN** as a thinking / token-efficiency control:
 - truncating / chopping prompts, context, or history "to save tokens"
 - fake efficiency via context amputation
 Token efficiency comes from: research seams → correct cheap-builder specs →
-right ladder rung → thinking floor discipline.
+right ladder rung → thinking-baseline discipline.
 
 ### Route token budgets (capability + host + auth, not provider name)
 Route the budget by what the job needs and what the host can carry, not by a
@@ -156,14 +238,18 @@ provider label:
   Record the budget map in ledgers + ops manual so every session reads it from
   the harness, not from session memory.
 
-### Expected ladder keys (Patch-owned yaml — Skills READ only)
-Hermetic names for Patch tip / FOLLOW-ON (land into `config/fleet_ladder.yaml`;
-do **not** invent a second SoT):
+### Ladder keys (Patch-owned yaml — this skill does not enforce them)
+The keys below are a **proposal Patch may land into
+`config/fleet_ladder.yaml`**. This skill does **not** claim to read or enforce
+them in the present tense — the present-tense enforcement is whatever the
+configured runner actually parses on the live host. Where the live deploy
+does not carry a key, the policy here stands as desired doctrine and the
+field is logged as a GAP for Patch.
 
 | Key | Expected shape / value | Notes |
 |-----|------------------------|-------|
-| `thinking_floor` | `medium` | Global or per-role/rung; never resolve below this |
-| `thinking_scale` | `ultra` ↔ `medium` (ordered) | Autonomic up/down within this band only |
+| `thinking_floor` | `medium` (semantic) | Where the transport supports a knob; semantic baseline lives here as desired doctrine regardless |
+| `thinking_scale` | rung max ↔ medium (semantic) | Autonomic up/down within this band only — semantic, not numeric-on-every-transport |
 | `research_seams` | list or map | Maps research → cheap-builder / frontier specs before heavy lift |
 | `requires_research_seams` | `true` on frontier / design / reason rungs | Existing HARD gate (deploy may still GAP until land) |
 | `capabilities` | per-rung list | Capability tags each rung carries (long context, vision, code, reason, ...) |
@@ -177,53 +263,90 @@ boards **GAP** for Patch. Never hardcode model IDs; resolve seats via ladder +
 - **No model name at a call site.** Code asks for a role and a capability; the
   ladder answers with a model. Grep for model-name literals — each one is a bug.
 - **No model IDs as skill source of truth.** Point at `fleet_ladder.yaml` + `gpu_nodes.yaml`.
-- **The live probe outranks the config.** Checked-and-it-answers is settled;
-  a stale list is not. A listing in the catalog is provenance; live
-  availability is what dispatches.
-- **The grader seat did not see the builder's authoring execution.** When the
-  portable runner records the builder's authoring identity on the run
-  (`--builder`, `builder_family`), the resolver disqualifies that exact
-  execution and any session that inherited the builder's conversation or
-  context out loud before any dispatch — provenance, not a blanket model,
-  rung, family, or vendor gate. The exclusion is the authoring execution; a
-  same model, rung, or family reviewer in a fresh, author-disjoint context is
-  allowed where the configured runtime permits.
+- **The live probe outranks the config — and the probe must prove inference, not
+  catalog access.** Checked-and-it-answers is settled; a stale list is not. A
+  listing in the catalog is provenance; live availability + a bounded
+  inference on the rung is what dispatches. Catalog answers do **not** settle
+  capability or quota.
+- **The grader's separation is fresh, author-disjoint execution over an
+  author-redacted frozen packet.** Provenance on the builder run record
+  (model name, family, transport — `builder_family` where the runner
+  carries it) records who built; it does NOT identify the grader's
+  session. The same capable model in a fresh, author-disjoint session is
+  permitted by this skill's desired policy. Any additional restriction
+  the configured runtime imposes is a separate runtime gap; surface it
+  by name, do not silently impose it and do not claim this skill imposes
+  it.
 - **Frontier research-before-lift is HARD** when the rung marks frontier / research_seams.
 - **Bounded probing.** Probes are cheap, cached, and backoff-aware.
 - **No silent fallback.** Every step down the ladder is visible in the log and
   report, with the reason (provider error, quota, oauth expired, transport
   refused) and a checkpoint carrying the full required context + tools.
-- **Thinking FLOOR = medium.** Scale ultra↔medium only; autonomic up/down; never below medium.
+- **Thinking baseline = medium-or-higher (semantic, where supported).** Never
+  drop below the rung's medium-equivalent for the semantic work in question;
+  do not assert a numeric key the transport does not accept.
 - **No truncation hacks** as token efficiency (no chopping context/history to "save tokens").
 - **Route token budgets by capability + host + auth**, not by provider label.
+- **Distinguish provider / auth / account / quota / CLI transport / harness /
+  hardware** in every probe and every failure. Conflating them is the bug.
+- **No universal cloud-first / local-last default.** The live config owns
+  preference; the agent reads it.
+- **No fabricated runner flags.** This skill names current native Fleet public
+  build flags (`--role --repo --spec --timeout --refresh --dry-run`) and no
+  others as deployed surface. Hypothetical flags such as `--builder`,
+  `--author-family`, or `--capability` are not part of the deployed CLI
+  surface and must not be pasted into a runner or claimed as enforcement.
+- **No resolver / no Fleet executable in this skill.** The public pack ships
+  none. Where a step needs runtime support that is not in the public pack,
+  name the gap; do not silently bypass.
 - **Ground in the BACKS harness, never session or model memory.** BACKS is
   model- and context-agnostic with robust memory lanes — the harness carries
   the knowledge, not the model's head. Essence files (per-model know-thyself)
   load at the dispatch site, not from session chat.
 - **Patch owns yaml; Skills own rails.** Do not edit `fleet_ladder.yaml` from this skill.
 
-## Unresolved runtime mismatches (surface, never silently fix or bypass)
+## Unresolved runtime gaps (surface, never silently fix or bypass)
 
-A few historical runtime pieces still ride alongside the matrix above. They
-must be surfaced by name, never silently asserted fixed and never bypassed by
-this skill:
+A few runtime pieces still ride alongside the matrix above. They must be
+surfaced by name, never silently asserted fixed and never bypassed by this
+skill:
 
-- A legacy identity filter (model-name-only or family-only) on top of the
-  capability + `--builder` policy is **not fixed** by this rewrite. If it sits
-  underneath the resolver, the resolver still follows the matrix; the legacy
-  filter becomes a separate ticket. Patch owns that ticket.
-- An old role-prescription block on a previous version of this skill (named
+- **Identity-based exclusion on top of author-disjoint review is a separate
+  runtime gap.** This skill's desired policy is fresh, author-disjoint
+  execution over an author-redacted frozen packet. Any additional rule
+  the host applies (e.g. refuse same-family or same-vendor dispatch) is a
+  configured-runtime decision, not a property of this skill. If it sits
+  in front of the resolver, it does so as a separate deploy-side ticket
+  owned by Patch; this skill does not enforce it.
+- **An old role-prescription block on a previous version of this skill (named
   seat assignments, dated operator rulings pinned to a moment in time) is
-  retired here. If the deploy ladder still reads from those legacy blocks,
+  retired here.** If the deploy ladder still reads from those legacy blocks,
   that is a GAP for Patch — do not paste the old assignments into this file
   and do not use them as authority. Read the live yaml.
+- **Task-matrix / essence-driven filtering is desired, not implemented.** If
+  the live runner cannot read a matrix or essence entry on a given rung, the
+  agent **may not proceed** as if the capability were waived: a task-required
+  capability that the runner cannot verify is not satisfied by silence or by
+  a "trust the role order" default. Distinguish the inability to automatically
+  read a matrix entry (a runner gap) from the absence of a verified capability
+  (an unsatisfied requirement). The agent records the unsatisfied task/gap
+  and uses configured public role routing only when requirements are met;
+  it never downgrades a requirement, never quietly proceeds, and never
+  synthesizes a missing value here.
+- **A planning role is only in scope when the live ladder configures one.**
+  This skill names the configured planning role (native `plan`) as a role
+  candidates may carry; it does not invent a `planner` rung. If the live yaml
+  has no configured planning role, do not add one here.
 
 ## Works well with
 
 - [live-research](../live-research/SKILL.md) — realtime seams before frontier heavy lift.
 - [model-fusion](../model-fusion/SKILL.md) — panel/judge resolve through this ladder.
 - [blind-tribunal](../blind-tribunal/SKILL.md) — jurors graded by capability and
-  availability; ladder picks live ones; the builder's identity is refused out loud.
+  availability; ladder picks live ones; the grader's required separation is
+  fresh, author-disjoint execution over an author-redacted frozen packet (this
+  skill's desired policy; runtime-enforced isolation is a separate deploy
+  ticket).
 - [bounded-loops](../bounded-loops/SKILL.md) — probe cadence, backoff, kill-switches.
 - [optimus](../optimus/SKILL.md) — harness boot loads this skill when dispatch is in play.
 - [wayfinder](../wayfinder/SKILL.md) — chart route; frontier tickets still honor research gate.

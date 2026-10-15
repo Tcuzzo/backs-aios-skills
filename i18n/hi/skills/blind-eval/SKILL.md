@@ -28,8 +28,12 @@ REVERT करो। Tie का मतलब revert। सिर्फ साब�
    उनके बारे में कोई description कभी नहीं।
 3. **Authorship हटाओ।** उन्हें A और B नाम दो, क्रम फेंटो (shuffle), हर नाम, model id
    और author की दलील हटा दो। Judge को सिर्फ artifacts और rubric दिखते हैं।
-4. **ऐसा judge बिठाओ जिसने दोनों में से कुछ नहीं लिखा** — किसी दूसरी family का
-   model, या एक इंसान। Author अपना काम खुद कभी grade नहीं करता।
+4. **ऐसा judge बिठाओ जिसने दोनों में से कुछ नहीं लिखा** — एक
+   non-builder reviewer, capability और availability के हिसाब से configured rung
+   matrix से live चुना हुआ (जिस execution ने बनाया, वो provenance के रूप में दर्ज है
+   और disqualify है; same model, rung या family का reviewer एक ताज़ी,
+   author-disjoint session में इसलिए मान्य है जहाँ configured runtime अनुमति
+   देता है), या एक इंसान। Author अपना काम खुद कभी grade नहीं करता।
 5. **गुणों पर परखो।** हर rubric axis पर score दो। हर score के लिए artifact से सबूत
    cite करो — बिना सबूत का verdict एक अंदाज़ा है।
 6. **KEEP सिर्फ तब जब candidate bar पार करे AND baseline को साफ़-साफ़ हराए।**
@@ -53,9 +57,11 @@ REVERT करो। Tie का मतलब revert। सिर्फ साब�
   और majority vote लो — shuffle position bias मारता है और repeats शोर मारते हैं,
   एक ही चाल में। अगर असली सुधार judge के run-दर-run झूले से छोटा है, तो gate
   signal और तुक़्क़े में फ़र्क़ नहीं कर सकता — readings बढ़ाओ या कोई स्थिर measure चुनो।
-- **Solo rig.** दूसरी model family नहीं है? एक ताज़ा blind session जो author की
-  बातचीत ने कभी नहीं देखी, judge बनता है — और report कमज़ोर हुए gate का नाम लेती
-  है ("graded on a single configured rung")।
+- **Solo rig.** एक भी अलग configured execution नहीं? एक ताज़ा,
+  author-disjoint session जो author की बातचीत ने कभी नहीं देखी, judge बनती है —
+  और report single-rung configuration को provenance के रूप में दर्ज करती है
+  ("graded on a single configured rung"), कमज़ोर हुए gate के रूप में नहीं:
+  अलगाव session है, model का नाम नहीं।
 - **भरोसेमंद bar नहीं? Dominance इस्तेमाल करो।** जब baseline का level अनजान या
   शोर-भरा हो, absolute bar छोड़ो और सिर्फ वही रखो जो मौजूदा champion को साफ़ हराए।
   Regression कभी dominate नहीं कर सकता, इसलिए किसी floor की ज़रूरत नहीं।

@@ -59,8 +59,10 @@ reverts. Only proven uplift lands.
   than the judge's run-to-run swing, the gate cannot tell signal from luck —
   add readings or pick a steadier measure.
 - **Solo rig.** Only one configured rung available? A fresh, author-disjoint
-  session that never saw the author's conversation judges — and the report names
-  the weakened gate ("judged on a single configured rung").
+  session that never saw the author's conversation judges — and the report
+  records the single-rung configuration as provenance ("judged on a single
+  configured rung"), not as a weakened gate: the separation is the session,
+  not the model name.
 - **No trusted bar? Use dominance.** When the baseline level is unknown or noisy,
   drop the absolute bar and keep only what strictly beats the current champion.
   A regression can never dominate, so no floor is needed.

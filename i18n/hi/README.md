@@ -112,7 +112,7 @@ Hermes, एक bare API loop — [INSTALL.md](INSTALL.md) में हैं।
 | --- | --- |
 | [absorb](skills/absorb/SKILL.md) | किसी मौजूदा open-source capability को अपनाकर native skill की तरह re-engineer करती है, नक़ल बनाने की जगह। |
 | [blind-eval](skills/blind-eval/SKILL.md) | बदलाव को लेखक छिपाकर उसकी खूबियों पर परखती है, फिर रखती है या revert करती है। सिर्फ़ साबित हुआ uplift ही land होता है। |
-| [blind-tribunal](skills/blind-tribunal/SKILL.md) | अलग-अलग model families के blind jurors बदलाव का grade करते हैं, हर एक का एक lens। हर finding एक failing test बनती है। तब तक loop, जब तक सब pass न दें। |
+| [blind-tribunal](skills/blind-tribunal/SKILL.md) | ताज़ा, लेखक-विच्छिन्न sessions के blind jurors बदलाव का grade करते हैं, हर एक का एक lens। हर finding एक failing test बनती है। तब तक loop, जब तक सब pass न दें। |
 | [bounded-loops](skills/bounded-loops/SKILL.md) | हर loop पर budget की छत, checkpoints, और kill-switches। किसी API को hammering structurally नामुमकिन बना देती है। |
 | [clean-code-gauntlet](skills/clean-code-gauntlet/SKILL.md) | एक deterministic quality bar: sniper tests, CRAP score (complexity x coverage), सीमित mutation testing, फिर एक हल्की taste review। |
 | [decision-bar](skills/decision-bar/SKILL.md) | हर फ़ैसले के लिए एक bar: सिर्फ़ taste, vision, या destructive risk ही इंसान तक पहुँचते हैं। बाक़ी सब execute होता है। |

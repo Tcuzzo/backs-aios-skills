@@ -86,11 +86,11 @@
    न आँकें।
 9. [blind-eval](../skills/blind-eval/SKILL.md), फिर
    [blind-tribunal](../skills/blind-tribunal/SKILL.md) — एक author-redacted
-   envelope builder से अलग model family के graders के पास जाता है। builder कभी
+   envelope ताज़ा, लेखक-विच्छिन्न sessions में graders के पास जाता है। builder कभी
    अपने काम का grade नहीं करता। हर juror finding एक नया red test बनती है;
    tribunal तब तक दोबारा बैठता है जब तक हर juror pass न दे। अकेला rig है?
-   blind-tribunal के Solo rig नियम के हिसाब से नीचे उतरें — और landing report में
-   कमज़ोर किए गए gate का नाम लिखें।
+   blind-tribunal के Solo rig नियम का पालन करें — और एक-rung वाले config को
+   provenience के रूप में दर्ज करें, कमज़ोर किए गए gate के रूप में नहीं।
 10. Land — साफ़ merge करें, छुए गए modules की suites पर ठीक एक पूरा pass चलाएँ,
     असली service restart करें, और behavior को इंसान की अपनी surface पर साबित करें
     (जो page वे खोलते हैं, जो command वे चलाते हैं) — proxy probe कभी नहीं। फिर
@@ -100,7 +100,7 @@
 
 - failing test build से पहले commit हुआ था और अछूता है — grader जाँचता है कि
   test-file का diff खाली है।
-- builder कभी grader नहीं, और grader एक अलग model family से है।
+- builder कभी grader नहीं, और grader एक ताज़ा, लेखक-विच्छिन्न session में चलता है।
 - हर सामने आई finding बंद है, या recorded सबूत के साथ "not a bug" की adjudication
   हुई है। चुपचाप टालना कभी नहीं। whole-seam closure — seam code की वह साझा जगह है
   जहाँ bug की यह class रहती है — नहीं तो landing नहीं।
