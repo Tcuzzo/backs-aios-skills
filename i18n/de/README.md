@@ -122,7 +122,7 @@ OpenClaw, Hermes, ein nackter API-Loop — stehen in [INSTALL.md](INSTALL.md).
 | --- | --- |
 | [absorb](skills/absorb/SKILL.md) | Eine bestehende Open-Source-Fähigkeit übernehmen und als nativen Skill neu bauen, statt ein Duplikat zu schreiben. |
 | [blind-eval](skills/blind-eval/SKILL.md) | Eine Änderung nach ihrem Wert beurteilen, mit verdeckter Autorschaft, dann behalten oder zurückrollen. Nur bewiesener Fortschritt landet. |
-| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Blinde Juroren aus verschiedenen Modellfamilien benoten die Änderung, je eine Linse. Jeder Fund wird ein fehlschlagender Test. Schleife, bis alle bestehen. |
+| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Blinde Juroren, in frischen Sitzungen ohne Autor-Kontext, benoten die Änderung, je eine Linse. Jeder Fund wird ein fehlschlagender Test. Schleife, bis alle bestehen. |
 | [bounded-loops](skills/bounded-loops/SKILL.md) | Budget-Obergrenzen, Checkpoints und Kill-Switches auf jeder Schleife. Macht das Hämmern auf eine API strukturell unmöglich. |
 | [clean-code-gauntlet](skills/clean-code-gauntlet/SKILL.md) | Eine deterministische Qualitätslatte: Sniper-Tests, der CRAP-Score (Komplexität x Coverage), begrenzte Mutation-Tests, dann eine leichte Geschmacks-Review. |
 | [decision-bar](skills/decision-bar/SKILL.md) | Eine Latte für jede Entscheidung: Nur Geschmack, Vision oder destruktives Risiko erreichen den Menschen. Alles andere wird ausgeführt. |

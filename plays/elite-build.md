@@ -107,8 +107,9 @@ The loop, at a glance:
     is carried only as far as that runner carries it — provenance, not a
     universal capability gate. The seat that built never grades its own work.
     Every juror finding becomes a new red test; re-convene until every juror
-    passes. Solo rig? Degrade per blind-tribunal's Solo rig rule — and name the
-    weakened gate in the landing report.
+    passes. Solo rig? Follow blind-tribunal's Solo rig rule — and record the
+    single-rung configuration as provenance, not a weakened gate, in the
+    landing report.
 12. Land: merge cleanly, run ONE full pass over the touched modules' suites, restart
     the real service, and prove the behavior on the human's own surface (the page
     they load, the command they run) — never a proxy probe. Then report.

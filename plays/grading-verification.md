@@ -2,8 +2,10 @@
 
 The adversarial grading play. Its one belief: a green result is a claim, not proof.
 The grader attacks, and the floor is built so it cannot be gamed. Model identity is
-provenance, not authority — the seat that grades is the seat that did not build,
-chosen live by capability and availability from the configured rung matrix.
+provenance, not authority — the grader is the EXECUTION that did not author the
+candidate, chosen live by capability and availability from the configured rung
+matrix; independence is author-disjoint execution, not model, family, vendor,
+seat, rung, or runner identity.
 
 ## When to run
 
@@ -23,11 +25,11 @@ The grade, at a glance:
 | 2 sniper-testing  scoped runs verified;    |  re-convene               |
 |   no mock theater on the changed seam      |                           |
 +--------------------------------------------+   +---------------------+ |
-| 3 independent grade  a non-builder seat,   |   |  LORD OF THE LOOP   |-+
-|   chosen live by capability + availability |   | one hand drives the |
-|   from the configured rung matrix          |   | loop: dispatch,     |
-+--------------------------------------------+   | loop: dispatch,     |
-| 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
+| 3 independent grade  an author-disjoint   |   |  LORD OF THE LOOP   |-+
+|   execution, chosen live by capability +   |   | one hand drives the |
+|   availability from the configured matrix  |   | loop: dispatch,     |
++--------------------------------------------+   | judge, loop back    |
+| 4 blind-tribunal  jurors judge an          |-->| until the gate is   |
 |   author-redacted envelope in a fresh      |   | until the gate is   |
 |   session, no conversation inherited       |   | green. a lane never |
 +--------------------------------------------+   | lands its own work. |

@@ -35,29 +35,34 @@ contexto do builder também. Jurado mandado checar tudo não checa nada direito.
 | Borda | `boundary_condition` | estrutural rápido | Com entrada nula, vazia, de tipo errado ou malformada — falha com graça? |
 | Telemetria | `telemetry` | segurança do operador | Uma falha aqui se diagnostica pelos logs e pelo tratamento de erro? |
 
-**Camadas de roteamento (primeiro a rota mais barata que basta):** estado profundo →
-maior contexto e raciocínio mais fundo, de preferência por um harness que LÊ o repo
-(nunca escreve); estrutural rápido → primeiro uma GPU local grátis; um veredito local
-independente e suficiente pode PASSAR sem um verificador de nuvem ou fundido quando o
-contrato da tarefa não o exige. Se um verificador opcional está FUNDIDO com o assento
-primário, julga o mesmo prompt; se o verificador não está disponível (nenhum degrau de
-nuva vivo), o veredito primário local se mantém por sua própria evidência, marcado
-UNVERIFIED na revisão e no resumo — nunca "verificado" em silêncio. Um verificador
-EXIGIDO pela tarefa que está ausente é uma RETENÇÃO independente de local/nuvem. O
-modelo local precisa ver TODO o artefato (dimensione `num_ctx` pelo prompt — o padrão
-do Ollama, 4096, trunca em silêncio — e recuse antes de enviar o que não cabe);
-jurados via harness rodam read-only, e cada convocação carrega um `run_id` e escreve
-seu resumo por último; depois os modelos de nuvem de baixa latência; segurança do
-operador → seu coder mais forte com base em segurança; generalista → um generalista
-grande e confiável. Toda escada termina num degrau local de sobrevivência.
+**Camadas de roteamento (primeiro a rota medida mais barata que basta):** cada
+camada é roteada pelo que a lente exige, não pelo maior modelo que você tem; a
+ordenação e a escolha vêm da matriz de degraus configurada ao vivo e do custo /
+disponibilidade medidos — sem preferência universal nuvem-primeiro / local-último.
+Estado profundo → maior contexto e raciocínio mais fundo, de preferência por um
+harness que LÊ o repo (nunca escreve); estrutural rápido → a rota rápida mais
+barata que atende aos requisitos; um veredito local independente e suficiente pode
+PASSAR sem um verificador de nuvem ou fundido quando o contrato da tarefa não o
+exige. Se um verificador opcional está FUNDIDO com o assento primário, julga o
+mesmo prompt; se o verificador não está disponível (nenhum degrau de nuvem vivo),
+o veredito primário local se mantém por sua própria evidência, marcado UNVERIFIED
+na revisão e no resumo — nunca "verificado" em silêncio. Um verificador EXIGIDO
+pela tarefa que está ausente é uma RETENÇÃO independente de local/nuvem. O modelo
+local precisa ver TODO o artefato (dimensione `num_ctx` pelo prompt — o padrão do
+Ollama, 4096, trunca em silêncio — e recuse antes de enviar o que não cabe);
+jurados via harness rodam read-only, e cada convocação carrega um `run_id` e
+escreve seu resumo por último; segurança do operador → seu coder mais forte com
+base em segurança; generalista → um generalista grande e confiável. Os degraus
+locais / de IDE permanecem na escada conforme a capacidade real configurada, sem
+uma ordem de posição fixa.
 
-**Rig solo.** Quando só um degrau de modelo está disponível, degrade
-EXPLICITAMENTE: um contexto ou sessão nova que nunca viu a conversa do autor age
-como avaliador cego, ou o humano revisa o envelope com autoria removida. Um
-avaliador de mesmo modelo, degrau ou família em uma sessão nova e disjunta do
-autor é permitido onde o runtime configurado o permita. O relatório tem que
-nomear o portão enfraquecido — nunca fingir em silêncio que um portão mais
-forte segurou.
+**Rig solo.** Quando só um degrau de modelo está disponível, a independência
+mesmo assim vem de um contexto ou sessão nova e disjunta do autor que nunca viu
+a conversa do autor, junto com o envelope com autoria removida e os bytes de
+evidência congelados. Um avaliador de mesmo modelo, degrau ou família em uma
+sessão nova é permitido onde o runtime configurado o permita. O relatório
+registra a configuração de um único degrau como proveniência, não como um
+portão enfraquecido: a separação é a sessão, não o nome do modelo.
 
 ## O construtor é declarado, e a exclusão é estrutural
 
@@ -66,12 +71,15 @@ do tribunal, o assento de segurança do operador foi liderado pelo mesmo modelo 
 candidato, e nada o registrou ou excluiu: o autor avaliou o próprio trabalho por duas rodadas.
 Então:
 
-- **Convoque com o construtor nomeado** (`--builder <modelo-ou-família>`). O registro carrega
-  `builder_family` como proveniência onde o runner o registra. A execução autora que construiu o
-  candidato, e qualquer sessão que tenha herdado a conversa ou o contexto do builder, são
-  desqualificadas em voz alta, antes de despachar, em cada escada. Uma lente sem degrau FICA EM
-  ESPERA — nunca volta ao construtor. Proveniência, não um veto cego por modelo, degrau, família
-  ou fornecedor.
+- **Convoque com o construtor nomeado**, onde o runner escolhido realmente o
+  suporte (p. ex. `--builder <identidade>` se o runner conhece tal flag; caso
+  contrário, como campo de registro de execução). O registro carrega a sessão
+  autora da execução e `builder_family` como proveniência onde o runner os
+  registra. A execução autora que construiu o candidato, e qualquer sessão que
+  tenha herdado a conversa ou o contexto do builder, são desqualificadas em voz
+  alta, antes de despachar, em cada escada. Uma lente sem degrau FICA EM ESPERA
+  — nunca volta ao construtor. Proveniência, não um veto cego por modelo, degrau,
+  família ou fornecedor.
 - **Prove na escada viva, não num teste:** a tabela de rotas deve mostrar que os assentos caíram
   em degraus disponíveis vivos, e o relatório nomeia o degrau escolhido por lente. Senão a
   exclusão é enfeite.

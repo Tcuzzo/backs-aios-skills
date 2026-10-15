@@ -33,8 +33,13 @@ prouvé est conservé.
 3. **Efface l'auteur.** Étiquette-les A et B, mélange l'ordre, retire chaque nom,
    chaque id de modèle et le raisonnement de l'auteur. Le juge ne voit que les
    artefacts et la grille.
-4. **Assieds un juge qui n'a écrit ni l'un ni l'autre** — un modèle d'une autre
-   famille, ou un humain. L'auteur ne note jamais son propre travail.
+4. **Assieds un juge qui n'a écrit ni l'un ni l'autre** — un correcteur
+   non-constructeur, choisi en direct par capacité et disponibilité depuis la
+   matrice de barreaux configurée (l'exécution autrice qui a construit est
+   consignée comme provenance et disqualifiée ; un correcteur de même modèle,
+   même barreau ou même famille dans une session vierge et disjointe de
+   l'auteur est permis là où le runtime configuré le permet), ou un humain.
+   L'auteur ne note jamais son propre travail.
 5. **Juge sur les mérites.** Note chaque axe de la grille. Cite une preuve tirée de
    l'artefact pour chaque note — un verdict sans preuve est une supposition.
 6. **GARDE seulement si le candidat franchit la barre ET bat strictement la base.**
@@ -61,9 +66,11 @@ prouvé est conservé.
   geste. Si le vrai gain est plus petit que la variation du juge d'un run à l'autre,
   la barrière ne distingue pas le signal de la chance — ajoute des lectures ou choisis
   une mesure plus stable.
-- **Montage solo.** Pas de seconde famille de modèles sous la main ? Une session
-  vierge qui n'a jamais vu la conversation de l'auteur juge — et le rapport nomme la
-  barrière affaiblie (« jugé même-famille-à-l'aveugle, pas inter-familles »).
+- **Montage solo.** Un seul barreau configuré sous la main ? Une session
+  vierge qui n'a jamais vu la conversation de l'auteur juge — et le rapport
+  enregistre la configuration à un seul barreau comme provenance
+  (« jugé même-famille-à-l'aveugle, pas inter-familles »), pas comme une
+  barrière affaiblie : la séparation, c'est la session, pas le nom du modèle.
 - **Pas de barre fiable ? Utilise la dominance.** Quand le niveau de la base est
   inconnu ou bruité, abandonne la barre absolue et ne garde que ce qui bat strictement
   le champion en titre. Une régression ne peut jamais dominer, donc aucun plancher

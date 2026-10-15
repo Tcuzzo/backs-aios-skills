@@ -93,12 +93,12 @@ La boucle, en un coup d'œil :
    ne le juge jamais à l'œil.
 9. [blind-eval](../skills/blind-eval/SKILL.md), puis
    [blind-tribunal](../skills/blind-tribunal/SKILL.md) — une enveloppe dont
-   l'auteur est masqué part vers des graders d'une autre famille de modèles que
-   le builder. Le builder ne note jamais son propre travail. Chaque trouvaille
+   l'auteur est masqué part vers des graders dans des sessions fraîches sans
+   contexte d'auteur. Le builder ne note jamais son propre travail. Chaque trouvaille
    d'un juré devient un nouveau test rouge ; on reconvoque jusqu'à ce que chaque
-   juré passe. Config solo ? Dégrade selon la règle « Solo rig » de
-   blind-tribunal — et nomme la barrière affaiblie dans le rapport
-   d'atterrissage.
+   juré passe. Config solo ? Suis la règle « Solo rig » de
+   blind-tribunal — et enregistre la configuration à un seul barreau comme
+   provenance, pas comme une barrière affaiblie.
 10. Atterris — merge proprement, fais tourner UNE passe complète sur les suites
     des modules touchés, redémarre le vrai service, et prouve le comportement
     sur la propre surface de l'humain (la page qu'il charge, la commande qu'il
@@ -108,8 +108,8 @@ La boucle, en un coup d'œil :
 
 - Le test qui échoue a été commité avant le build et n'a pas bougé — le grader
   vérifie que le diff du fichier de test est vide.
-- Le builder n'est jamais le grader, et le grader vient d'une autre famille de
-  modèles.
+- Le builder n'est jamais le grader, et le grader tourne dans une session
+  fraîche, sans contexte d'auteur.
 - Chaque trouvaille remontée est fermée, ou tranchée « pas un bug » avec des
   preuves enregistrées. Jamais reportée en silence. Fermeture de la couture
   entière — la couture, c'est l'endroit partagé du code où vit cette classe de

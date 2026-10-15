@@ -33,27 +33,31 @@ failing test बनती है। Loop तब तक दोहराता ह
 | Boundary | `boundary_condition` | fast structural | Null, empty, ग़लत type या malformed input पर — क्या gracefully fail होता है? |
 | Telemetry | `telemetry` | operator safety | यहाँ की failure logs और error handling से पकड़ी जा सकती है? |
 
-**Routing tiers (पहले सबसे सस्ता जो काफ़ी हो):** deep state → सबसे बड़ा context और
-सबसे गहरा reasoning, बेहतर हो तो ऐसे harness से जो repo को READ करे (कभी write नहीं);
-fast structural → पहले free local GPU; एक स्वतंत्र रूप से पर्याप्त local verdict तब
-भी PASS हो सकता है जब कोई cloud rung या fused verifier न हो और task contract उसकी
-माँग भी न करता हो। जब कोई optional verifier primary के साथ fused होता है, वही prompt
-जाँचता है; कोई cloud rung live न हो तो local primary verdict अपनी ही evidence पर
-खड़ा रहता है, review और summary में UNVERIFIED मार्क होकर, कभी चुपचाप "verified"
-नहीं; और जो verifier task contract के लिए ज़रूरी था और मौजूद नहीं, वो local/cloud से
-हट कर HOLD है। local model को पूरा artifact दिखना चाहिए (`num_ctx` को prompt के
-हिसाब से set करो — Ollama का default 4096 चुपचाप काट देता है — जो नहीं समाता उसे
-भेजने से पहले ही refuse करो); harness jurors read-only चलते हैं, और हर convene एक
-`run_id` रखता है और summary सबसे आख़िर में लिखता है; फिर low-latency cloud models;
-operator safety → safety grounding वाला आपका सबसे मज़बूत coder; generalist → एक
-बड़ा भरोसेमंद generalist। हर ladder एक local survival rung पर ख़त्म होती है।
+**Routing tiers (पहले मापा हुआ सबसे सस्ता जो काफ़ी हो):** हर tier वहाँ routed होता है
+जहाँ lens की ज़रूरत है, सबसे बड़े model पर नहीं जो आपके पास है; क्रम और चुनाव live
+configured rung matrix और मापी हुई cost / availability से आते हैं — कोई सार्वभौमिक
+cloud-first / local-last वरीयता नहीं। deep state → सबसे बड़ा context और सबसे गहरा
+reasoning, बेहतर हो तो ऐसे harness से जो repo को READ करे (कभी write नहीं); fast
+structural → सबसे सस्ती तेज़ route जो ज़रूरतें पूरी करती हो; एक स्वतंत्र रूप से
+पर्याप्त local verdict तब भी PASS हो सकता है जब कोई cloud rung या fused verifier न
+हो और task contract उसकी माँग भी न करता हो। जब कोई optional verifier primary के
+साथ fused होता है, वही prompt जाँचता है; कोई cloud rung live न हो तो local primary
+verdict अपनी ही evidence पर खड़ा रहता है, review और summary में UNVERIFIED मार्क
+होकर, कभी चुपचाप "verified" नहीं; और जो verifier task contract के लिए ज़रूरी था और
+मौजूद नहीं, वो local/cloud से हट कर HOLD है। local model को पूरा artifact दिखना
+चाहिए (`num_ctx` को prompt के हिसाब से set करो — Ollama का default 4096 चुपचाप
+काट देता है — जो नहीं समाता उसे भेजने से पहले ही refuse करो); harness jurors
+read-only चलते हैं, और हर convene एक `run_id` रखता है और summary सबसे आख़िर में
+लिखता है; operator safety → safety grounding वाला आपका सबसे मज़बूत coder;
+generalist → एक बड़ा भरोसेमंद generalist। local / IDE rungs ladder पर
+वास्तविक configured capacity के अनुसार रहते हैं, निश्चित स्थान-क्रम के बिना।
 
-**Solo rig.** जब सिर्फ एक configured rung उपलब्ध हो, तो SAAF-SAAF degrade करो:
-एक ताज़ा context या session जो author की बातचीत ने कभी नहीं देखी, blind grader
-बनता है, या इंसान redacted envelope को review करता है; same model, rung या family
-का reviewer एक ताज़ी, author-disjoint session में इसलिए मान्य है जहाँ configured
-runtime अनुमति देता है। Report को कमज़ोर हुए gate का नाम लेना ही होगा — कभी
-चुपचाप किसी मज़बूत gate के टिके होने का नाटक नहीं।
+**Solo rig.** जब सिर्फ एक configured rung उपलब्ध हो, तो भी independence एक
+ताज़ी, author-disjoint context या session से आती है जो author की बातचीत ने कभी
+नहीं देखी, साथ में redacted envelope और जमे हुए evidence bytes। same model, rung
+या family का reviewer एक ताज़ी session में इसलिए मान्य है जहाँ configured
+runtime अनुमति देता है। Report एक-rung वाले config को provenience के रूप में
+दर्ज करता है, कमज़ोर हुए gate के रूप में नहीं — अलगाव session है, model का नाम नहीं।
 
 ## builder घोषित होता है, और बहिष्कार संरचनात्मक है
 
@@ -61,12 +65,22 @@ runtime अनुमति देता है। Report को कमज़ो�
 सीट का नेतृत्व उसी model ने किया जिसने candidate बनाया था, और किसी ने उसे दर्ज या बाहर नहीं किया: लेखक ने दो
 round तक अपना ही काम grade किया। इसलिए:
 
-- **builder का नाम लेकर convene करें** (`--builder <model-या-परिवार>`)। run record में `builder_family` provenance
-  के रूप में रहता है, जहाँ runner उसे दर्ज करता है। जिस execution ने candidate बनाया, और जिस session ने builder
-  की बातचीत या context inherit किया, वो हर ladder पर, dispatch से पहले, ज़ोर से disqualify होती हैं। बिना rung वाला
+- **builder का नाम लेकर convene करें**, जहाँ चुना हुआ runner उसे वाक़ई सपोर्ट करता है
+  (जैसे `--builder <पहचान>` अगर runner को ऐसा flag पता है; नहीं तो run-record field
+  के रूप में)। run record में builder की authoring session और `builder_family`
+  provenance के रूप में रहता है, जहाँ runner उन्हें दर्ज करता है। जिस execution ने
+  candidate बनाया, और जिस session ने builder की बातचीत या context inherit किया,
+  वो हर ladder पर, dispatch से पहले, ज़ोर से disqualify होती हैं। बिना rung वाला
   lens HOLD पर जाता है — कभी builder पर नहीं लौटता। Provenance, model/rung/family/vendor का अंधा gate नहीं।
-- **इसे live ladder पर साबित करें, test में नहीं:** routing table दिखाए कि सीटें live उपलब्ध rungs पर गिरीं,
-  और report हर lens के लिए चुनी हुई rung का नाम दे। वरना बहिष्कार सजावट है।
+- **Session isolation साबित करें, नया model नाम नहीं:** पहली convene के बाद
+  receipt दिखाए कि grader एक ताज़ी, author-disjoint session में चला जिसने
+  builder की बातचीत नहीं देखी, और envelope author-redacted, जमा हुआ, और
+  किसी juror को paid करने से पहले receipt से bound था। `builder_family` (जहाँ
+  portable runner दर्ज करता है) provenance है, session identifier नहीं; same
+  model, rung या family का reviewer एक ताज़ी session में मान्य है जहाँ configured
+  runtime अनुमति देता है। इस matrix के नीचे बैठा हुआ कोई legacy model-name-only
+  या family-only identity filter एक unresolved runtime mismatch है — surface
+  करें, कभी silently fixed मत बताइए, कभी bypass मत करिए।
 
 ## Envelope
 
@@ -136,7 +150,7 @@ Round 4 में zero refusal के साथ दो lens hold पर रह �
 
 - **जवाब का shape जवाब के बगल में लिखो।** Protocol footer में lens का literal नाम होता है (`"lens": "defect"`), कभी `<your lens>` placeholder नहीं। एक juror से 350 KB पहले बताया गया lens याद रखने को कहा गया, ऐसे artifact के अंदर जो आठों lens के नाम लेता है — उसने दो round में तीन बार गलत lens जवाब दिया। Placeholder render के समय भरो।
 - **Rejected rung अपने शब्द record पर छोड़ता है।** गलत lens का जवाब या void हुआ verdict rejected entry पर एक bounded `raw_tail` रखता है, ताकि अगला round कारण पढ़े, अंदाज़ा न लगाए।
-- **Route गहराई एक मापी हुई क्षमता है, "तीन cloud rung" का जादुई floor नहीं।** हर tier अपनी local tail से पहले उतनी रखता है जितनी artifact को उठाने के लिए ज़रूरी है (`context_tokens` और `num_ctx` Ollama पर; default 4096 चुपचाप काट देता है)। एक गलत lens और एक void मिलकर कभी lens को hold पर न रखें।
+- **Route गहराई एक मापी हुई क्षमता है, "तीन cloud rung" का जादुई floor नहीं।** हर tier के पास artifact को उठाने के लिए पर्याप्त eligible configured routes रहते हैं (`context_tokens` और `num_ctx` Ollama पर; default 4096 चुपचाप काट देता है); कोई निश्चित local-last क्रम नहीं। एक गलत lens और एक void मिलकर कभी lens को hold पर न रखें।
 - **Reasoning channel और budget route और जवाब के shape का पालन करते हैं।** जिस reasoning model से सादा JSON verdict माँगा गया, उसने 131k-token artifact पर सोचने में अपना budget खर्च कर दिया और कुछ नहीं दिया (`finish_reason=length`); फिर role की time ceiling ने अगले rung को बीच रास्ते मार दिया। कुछ clouds JSON पर reasoning बंद करते हैं (`reasoning_effort: none`), कुछ medium पर रखते हैं; ऐतिहासिक घटना evidence के तौर पर दर्ज है, सार्वभौमिक नियम नहीं।
 - **Tribunal जब बैठा हो, उसके repo में और कोई कुछ न लिखे।** Checkout के अंदर एक साथ चल रहे grader की status file ने एक seat के नीचे bytes बदल दिए, और organ ने वह verdict ईमानदारी से void किया: वह बदलाव को किसी को attribute नहीं कर सकता। Writers को serialize करो, या उसी commit के अलग worktree पर बैठो।
 

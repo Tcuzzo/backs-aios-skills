@@ -37,29 +37,35 @@ vérifier ne vérifie rien correctement.
 | Bornes | `boundary_condition` | structurel rapide | Entrées nulles, vides, mal typées ou malformées — échoue-t-il proprement ? |
 | Télémétrie | `telemetry` | sécurité opérateur | Une panne ici se diagnostique-t-elle depuis les logs et la gestion d'erreurs ? |
 
-**Paliers de routage (la route la moins chère qui suffit d'abord) :** état profond → le
-plus grand contexte et le raisonnement le plus profond, idéalement via un harness qui LIT
-le repo (n'écrit jamais) ; structurel rapide → d'abord un GPU local gratuit ; un verdict
-local indépendant et suffisant peut PASSER sans un vérificateur cloud ou fusionné quand
-le contrat de la tâche ne l'exige pas. Si un vérificateur optionnel est FUSIONNÉ avec le
-siège primaire, il juge le même prompt ; si le vérificateur n'est pas disponible (aucun
-barreau cloud en vie), le verdict primaire local tient sur sa propre preuve, marqué
-UNVERIFIED dans la revue et le résumé — jamais « vérifié » en silence. Un vérificateur
-REQUIS par la tâche qui est absent est un HOLD indépendamment de local/cloud. Le modèle
-local doit voir TOUT l'artefact (dimensionne `num_ctx` sur le prompt — le défaut d'Ollama,
-4096, tronque en silence — et refuse avant l'envoi ce qui ne tient pas) ; les jurés par
-harness tournent en read-only, et chaque convocation porte un `run_id` et écrit son
-résumé en dernier ; ensuite les modèles cloud à faible latence ; sécurité opérateur →
+**Paliers de routage (la route mesurée la moins chère qui suffit d'abord) :** chaque
+palier est routé selon ce que la lentille exige, pas selon le plus grand modèle que
+vous avez ; l'ordre et le choix viennent de la matrice de barreaux configurée en
+direct et du coût / disponibilité mesurés — sans préférence universelle nuage-d'abord
+/ local-dernier. État profond → le plus grand contexte et le raisonnement le plus
+profond, idéalement via un harness qui LIT le repo (n'écrit jamais) ; structurel
+rapide → la route rapide la moins chère qui répond aux exigences ; un verdict local
+indépendant et suffisant peut PASSER sans un vérificateur cloud ou fusionné quand le
+contrat de la tâche ne l'exige pas. Si un vérificateur optionnel est FUSIONNÉ avec le
+siège primaire, il juge le même prompt ; si le vérificateur n'est pas disponible
+(aucun barreau cloud en vie), le verdict primaire local tient sur sa propre preuve,
+marqué UNVERIFIED dans la revue et le résumé — jamais « vérifié » en silence. Un
+vérificateur REQUIS par la tâche qui est absent est un HOLD indépendamment de
+local/cloud. Le modèle local doit voir TOUT l'artefact (dimensionne `num_ctx` sur le
+prompt — le défaut d'Ollama, 4096, tronque en silence — et refuse avant l'envoi ce
+qui ne tient pas) ; les jurés par harness tournent en read-only, et chaque
+convocation porte un `run_id` et écrit son résumé en dernier ; sécurité opérateur →
 ton codeur le plus fort ancré sur la sécurité ; généraliste → un grand généraliste
-fiable. Chaque échelle finit sur un barreau local de survie.
+fiable. Les barreaux locaux / IDE restent sur l'échelle selon la capacité
+réellement configurée, sans ordre de position fixe.
 
-**Montage solo.** Quand un seul barreau de modèle est disponible, dégrade
-EXPLICITEMENT : un contexte ou une session vierge qui n'a jamais vu la conversation de
-l'auteur joue le correcteur aveugle, ou l'humain relit l'enveloppe expurgée. Un
-correcteur de même modèle, même barreau ou même famille dans une session vierge et
-disjointe de l'auteur est permis là où le runtime configuré le permet. Le rapport
-doit nommer la barrière affaiblie — jamais faire semblant, en silence, qu'une
-barrière plus forte a tenu.
+**Montage solo.** Quand un seul barreau de modèle est disponible, l'indépendance
+vient quand même d'un contexte ou d'une session vierge et disjointe de l'auteur
+qui n'a jamais vu la conversation de l'auteur, avec l'enveloppe expurgée et les
+octets de preuve gelés. Un correcteur de même modèle, même barreau ou même
+famille dans une session vierge est permis là où le runtime configuré le permet.
+Le rapport enregistre la configuration à un seul barreau comme provenance, pas
+comme une barrière affaiblie : la séparation, c'est la session, pas le nom du
+modèle.
 
 ## Le constructeur est déclaré, et l'exclusion est structurelle
 
@@ -68,12 +74,15 @@ propre test du tribunal, le siège de sécurité opérateur était mené par le 
 construit le candidat, et rien ne l'a enregistré ni exclu : l'auteur a noté son propre travail
 pendant deux tours. Donc :
 
-- **Convoquez avec le constructeur nommé** (`--builder <modèle-ou-famille>`). Le registre porte
-  `builder_family` comme provenance là où le coureur l'enregistre. L'exécution autrice qui a
-  construit le candidat, et toute session qui a hérité de la conversation ou du contexte du
-  builder, sont disqualifiées à voix haute, avant tout envoi, sur chaque échelle. Une lentille
-  sans barreau est EN ATTENTE — jamais renvoyée au constructeur. Provenance, pas un veto
-  aveugle par modèle, barreau, famille ou fournisseur.
+- **Convoquez avec le constructeur nommé**, là où le coureur choisi le supporte
+  vraiment (p. ex. `--builder <identité>` si le coureur connaît un tel flag ;
+  sinon, comme champ de registre de course). Le registre porte la session
+  autrice du constructeur et `builder_family` comme provenance là où le coureur
+  les enregistre. L'exécution autrice qui a construit le candidat, et toute
+  session qui a hérité de la conversation ou du contexte du builder, sont
+  disqualifiées à voix haute, avant tout envoi, sur chaque échelle. Une
+  lentille sans barreau est EN ATTENTE — jamais renvoyée au constructeur.
+  Provenance, pas un veto aveugle par modèle, barreau, famille ou fournisseur.
 - **Prouvez-le sur l'échelle vivante, pas dans un test :** la table de routage doit montrer que
   les sièges sont tombés sur des barreaux disponibles en vie, et le rapport nomme le barreau
   choisi par lentille. Sinon l'exclusion est décorative.

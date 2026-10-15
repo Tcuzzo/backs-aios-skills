@@ -36,31 +36,35 @@ des Builders geerbt hat, ebenso. Ein Juror, der alles prüfen soll, prüft nicht
 | Grenzfall | `boundary_condition` | schnell-strukturell | Null, leer, falscher Typ, absichtlich kaputt — fällt es sauber aus? |
 | Telemetrie | `telemetry` | Operator-Sicherheit | Lässt sich ein Fehler hier aus Logs und Fehlerbehandlung diagnostizieren? |
 
-**Routing-Stufen (die günstigste ausreichende Route zuerst):** Deep State → größter
-Kontext und tiefstes Reasoning, idealerweise durch einen Harness, der das Repo LIEST
-(nie schreibt); schnell-strukturell → erst eine freie lokale GPU; ein unabhängig
-hinreichendes lokales Urteil darf PASSEN, auch wenn kein Cloud- oder optionaler
-Verifizierer verfügbar ist und der Auftrag keinen verlangt. Wenn ein optionaler
-Verifizierer mit dem Primärsitz FUSIONIERT ist, beurteilt er denselben Prompt; ist der
-Verifizierer nicht erreichbar (keine Cloud-Sprosse live), steht das lokale
-Primärurteil auf eigener Evidenz, markiert UNVERIFIED in der Bewertung und der
-Zusammenfassung — nie stillschweigend „verifiziert". Ein vom Auftrag VERLANGTER
-Verifizierer, der fehlt, ist HALT unabhängig von lokal/Cloud. Das lokale Modell muss
-das GANZE Artefakt sehen (`num_ctx` auf den Prompt dimensionieren — Ollamas Default
-4096 kürzt stillschweigend — und vor dem Senden ablehnen, was nicht passt); ein
-Harness-Juror läuft read-only, und jede Einberufung trägt eine `run_id` und schreibt
-ihre Zusammenfassung zuletzt; danach die Cloud-Modelle mit niedriger Latenz;
+**Routing-Stufen (die günstigste gemessen ausreichende Route zuerst):** jede Stufe wird
+nach dem geroutet, was die Linse braucht, nicht nach dem größten Modell, das du hast;
+Reihenfolge und Wahl kommen aus der live konfigurierten Sprossen-Matrix und der
+gemessenen Kosten/Verfügbarkeit — keine universelle Cloud-zuerst / Lokal-zuletzt
+Präferenz. Deep State → größter Kontext und tiefstes Reasoning, idealerweise durch
+einen Harness, der das Repo LIEST (nie schreibt); schnell-strukturell → die günstigste
+schnelle Route, die die Anforderungen erfüllt; ein unabhängig hinreichendes lokales
+Urteil darf PASSEN, auch wenn kein Cloud- oder optionaler Verifizierer verfügbar ist
+und der Auftrag keinen verlangt. Wenn ein optionaler Verifizierer mit dem Primärsitz
+FUSIONIERT ist, beurteilt er denselben Prompt; ist der Verifizierer nicht erreichbar
+(keine Cloud-Sprosse live), steht das lokale Primärurteil auf eigener Evidenz,
+markiert UNVERIFIED in der Bewertung und der Zusammenfassung — nie stillschweigend
+„verifiziert". Ein vom Auftrag VERLANGTER Verifizierer, der fehlt, ist HALT
+unabhängig von lokal/Cloud. Das lokale Modell muss das GANZE Artefakt sehen
+(`num_ctx` auf den Prompt dimensionieren — Ollamas Default 4096 kürzt stillschweigend
+— und vor dem Senden ablehnen, was nicht passt); ein Harness-Juror läuft read-only,
+und jede Einberufung trägt eine `run_id` und schreibt ihre Zusammenfassung zuletzt;
 Operator-Sicherheit → dein stärkster Coder mit Sicherheits-Grounding; Generalist →
-ein großer, zuverlässiger Generalist. Jede Leiter endet auf einer lokalen
-Überlebens-Sprosse.
+ein großer, zuverlässiger Generalist. Lokale/IDE-Sprossen bleiben auf der Leiter
+entsprechend der tatsächlich konfigurierten Kapazität, ohne garantierte
+Position-Reihenfolge.
 
-**Solo-Rig.** Wenn nur eine Modell-Sprosse verfügbar ist, degradiere EXPLIZIT: Ein
-frischer Kontext oder eine frische Session, die die Konversation des Autors nie
-gesehen hat, agiert als blinder Grader, oder der Mensch prüft den geschwärzten
-Umschlag. Ein Prüfer gleichen Modells, gleicher Sprosse oder gleicher Familie ist
-in einer frischen, autor-disjunkten Session zulässig, wo die konfigurierte
-Laufzeit es erlaubt. Der Bericht muss das geschwächte Gate benennen — niemals
-still so tun, als hätte ein stärkeres Gate gehalten.
+**Solo-Rig.** Wenn nur eine Modell-Sprosse verfügbar ist, kommt die Unabhängigkeit
+trotzdem aus einer frischen, autor-disjunkten Session, die die Konversation des
+Autors nie gesehen hat, mit dem geschwärzten Umschlag und eingefrorenen
+Beweis-Bytes. Ein Prüfer gleichen Modells, gleicher Sprosse oder gleicher Familie
+in einer frischen Session ist zulässig, wo die konfigurierte Laufzeit es erlaubt.
+Der Bericht erfasst die Einzel-Sprossen-Konfiguration als Provenienz, nicht als
+geschwächtes Gate: die Trennung ist die Session, nicht der Modellname.
 
 ## Der Builder wird deklariert, und der Ausschluss ist strukturell
 
@@ -69,12 +73,14 @@ des Tribunals führte den Operator-Sicherheitssitz genau das Modell an, das den 
 hatte, und nichts hat es erfasst oder ausgeschlossen: Der Autor hat zwei Runden lang seine eigene
 Arbeit benotet. Also:
 
-- **Einberufen mit benanntem Builder** (`--builder <modell-oder-familie>`). Der Lauf trägt
-  `builder_family` als Provenienz, wo der Läufer es aufzeichnet. Jede ausführende Session, die den
-  Kandidaten gebaut hat, und jede Session, die die Konversation oder den Kontext des Builders geerbt
-  hat, werden laut abgelehnt, vor jedem Versand, auf jeder Leiter. Eine Linse ohne Sprosse HÄLT —
-  fällt nie auf den Builder zurück. Provenienz, kein pauschales Modell-, Sprossen-, Familien- oder
-  Anbieter-Gate.
+- **Einberufen mit benanntem Builder**, wo der gewählte Runner das tatsächlich
+  unterstützt (z. B. `--builder <identität>`, wenn der Runner ein Flag kennt; sonst
+  als Lauf-Record-Feld). Der Lauf trägt die ausführende Builder-Session und `builder_family`
+  als Provenienz, wo der Runner sie aufzeichnet. Jede ausführende Session, die den
+  Kandidaten gebaut hat, und jede Session, die die Konversation oder den Kontext des
+  Builders geerbt hat, werden laut abgelehnt, vor jedem Versand, auf jeder Leiter. Eine
+  Linse ohne Sprosse HÄLT — fällt nie auf den Builder zurück. Provenienz, kein
+  pauschales Modell-, Sprossen-, Familien- oder Anbieter-Gate.
 - **Beweise es auf der lebenden Leiter, nicht im Test:** Die Routing-Tabelle muss zeigen, dass die
   Sitze auf live verfügbare Sprossen gefallen sind, und der Bericht benennt die ausgewählte Sprosse
   pro Linse. Sonst ist der Ausschluss Dekoration.

@@ -28,8 +28,13 @@ depois MANTENHA ou REVERTA. Empate reverte. Só ganho provado aterrissa.
    nunca uma descrição delas.
 3. **Arranque a autoria.** Rotule A e B, embaralhe a ordem, tire todo nome, id de
    modelo e o raciocínio do autor. O juiz vê só os artefatos e a rubrica.
-4. **Sente um juiz que não escreveu nenhuma das duas** — um modelo de outra família,
-   ou um humano. O autor nunca avalia o próprio trabalho.
+4. **Sente um juiz que não escreveu nenhuma das duas** — um avaliador
+   não-construtor, escolhido ao vivo por capacidade e disponibilidade na matriz
+   de degraus configurada (a execução autora que construiu é registrada como
+   proveniência e desqualificada; um avaliador de mesmo modelo, degrau ou
+   família em uma sessão nova e disjunta do autor é permitido onde o runtime
+   configurado o permita), ou um humano. O autor nunca avalia o próprio
+   trabalho.
 5. **Julgue pelo mérito.** Pontue cada eixo da rubrica. Cite evidência do artefato
    para cada nota — veredito sem evidência é chute.
 6. **MANTENHA só se a candidata passa a barra E vence a baseline com folga estrita.**
@@ -55,9 +60,11 @@ depois MANTENHA ou REVERTA. Empate reverte. Só ganho provado aterrissa.
   de posição e as repetições matam o ruído, num movimento só. Se a melhoria real é
   menor que a oscilação do juiz entre rodadas, o portão não separa sinal de sorte —
   adicione leituras ou escolha uma medida mais estável.
-- **Rig solo.** Sem segunda família de modelo disponível? Uma sessão cega nova, que
-  nunca viu a conversa do autor, julga — e o relatório nomeia o portão enfraquecido
-  ("julgado em um único rung configurado").
+- **Rig solo.** Nenhuma execução configurada separada disponível? Uma
+  sessão nova, disjunta do autor, que nunca viu a conversa do autor, julga —
+  e o relatório registra a configuração de um único degrau como proveniência
+  ("julgado em um único rung configurado"), não como portão enfraquecido: a
+  separação é a sessão, não o nome do modelo.
 - **Sem barra confiável? Use dominância.** Quando o nível da baseline é desconhecido
   ou ruidoso, derrube a barra absoluta e mantenha só o que vence o campeão atual com
   folga estrita. Uma regressão nunca domina, então não precisa de piso.

@@ -1,32 +1,58 @@
-# Fleet ladder — EJEMPLO. Copia esto junto a tu código (p. ej. ladder.yaml) y
-# cambia cada marcador por un modelo que tus proveedores sirvan de verdad.
-# Por rol: candidatos en orden, el más fuerte primero, terminando en una cola
-# local de supervivencia (lo que corra en tu propio hardware cuando todos los
-# proveedores cloud estén caídos).
+# Escalera de flota — EJEMPLO. Copia esto junto a tu código (p. ej. ladder.yaml) y
+# sustituye cada marcador por un modelo que tus proveedores realmente sirvan.
+# Por rol: candidatos ordenados, elegidos por ENCAJE CON LA TAREA — el razonamiento
+# SUITABLE (idoneo) más fuerte para trabajo de planificación / spec, la implementación
+# medida y acotada más barata SUFFICIENT (suficiente) para trabajo de worker — y
+# ordenados por configuración en vivo + costo / disponibilidad medidos (sin preferencia
+# universal cloud-first / local-last). Los peldaños de GPU local permanecen en la
+# escalera y obedecen la ley de despacho de GPU.
+# La independencia es EJECUCIÓN disjunta del autor, no identidad de modelo, familia,
+# proveedor, asiento o peldaño; el mismo modelo capaz en dos sesiones frescas y
+# disjuntas del autor no se degrada automáticamente.
 # Para cambiar o agregar un modelo, edita ESTE archivo — nunca el código.
 
 builder:                        # implementa y repara
-  - strong-cloud-model          # la mejor calidad; primera opción cuando está arriba
-  - mid-cloud-model             # sólido y más barato; el respaldo usual
-  - local-coder-model           # cola de supervivencia: tu propio hardware
+  - planning-fit-model          # razonamiento SUITABLE más fuerte para el peldaño de planificación / spec / carga pesada — elegido por encaje de capacidad
+  - mid-fit-model               # peldaño capaz de rango medio; el respaldo habitual cuando planning-fit está caído
+  - local-coder-model           # supervivencia de GPU local — tu propio hardware; honrado por la configuración
 
-grader:                         # revisión independiente — nunca el modelo que construyó
-  - other-family-strong-model   # una familia DISTINTA a la de los peldaños del builder
-  - other-family-mid-model
+grader:                         # revisión independiente — la ejecución autora que construyó queda descalificada; se permite el mismo modelo, peldaño o familia en una sesión fresca y disjunta del autor
+  - independent-strong-model    # una ejecución SEPARADA, disjunta del autor, respecto a los peldaños del builder
+  - independent-mid-model
   - local-review-model
 
-worker:                         # trabajos acotados y bien especificados; peldaños baratos sirven
+worker:                         # trabajos acotados y bien especificados; los peldaños baratos sirven
   - fast-cheap-model
   - local-small-model
 
-# --- Variante solo: una sola familia de modelos disponible ------------------
-# El constructor y el evaluador igual no deben resolver al MISMO modelo para
-# el mismo cambio. Separa dentro de la familia (otro modelo u otro tamaño) y
-# dilo en el log de despacho — es la separación legal más débil, no la ideal.
+# --- Variante solo: solo una ejecución configurada disponible ---------------
+# Builder y grader deben correr en EJECUCIONES DISTINTAS y disjuntas del autor
+# (la ejecución autora que construyó no puede aprobar su propio trabajo, y cualquier
+# sesión que haya heredado la conversación o el contexto del builder queda
+# descalificada). Cuando el mismo modelo capaz es la única ejecución configurada,
+# corre el builder y el grader en dos sesiones FRESCAS y disjuntas del autor y
+# registra el aislamiento de sesión en el log de despacho; esa es la separación
+# más débil permitida aquí, no una división por modelo/familia. El orden, el
+# encaje de capacidad y la elección de proveedor deben venir de tu configuración
+# en vivo y costo medido — no de este ejemplo.
 #
 # builder:
-#   - family-large-model
+#   - only-configured-model     # registrado como la ejecución autora
 # grader:
-#   - family-small-model        # misma familia, otro modelo — déjalo en el log
+#   - only-configured-model     # mismo modelo, en una sesión fresca y disjunta del autor — el aislamiento de sesión ES la separación
 # worker:
-#   - family-small-model
+#   - only-configured-model
+#
+# --- Mismo modelo, dos sesiones frescas (ejemplo ilustrativo) ---------------
+# Cuando un modelo capaz es la única ejecución disponible, la independencia viene
+# del aislamiento de sesión / contexto, no de elegir un nombre de modelo distinto:
+#
+# builder:
+#   - capable-model              # sesión A: autora de la candidata
+# grader:
+#   - capable-model              # sesión B: mismo modelo, contexto fresco, sin conversación heredada
+# worker:
+#   - capable-model              # una tercera sesión fresca para trabajo acotado
+#
+# La escalera NO requiere aquí un modelo, peldaño o familia diferente. El
+# requisito es EJECUCIÓN FRESCA Y DISJUNTA DEL AUTOR, registrada como tal.

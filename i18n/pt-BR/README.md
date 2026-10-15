@@ -116,7 +116,7 @@ Agent Skills, OpenClaw, Hermes, um loop de API puro — estão em
 | --- | --- |
 | [absorb](skills/absorb/SKILL.md) | Adota uma capacidade open-source existente e a re-engenheira como skill nativa, em vez de construir uma cópia. |
 | [blind-eval](skills/blind-eval/SKILL.md) | Julga uma mudança pelos méritos, com a autoria escondida, e então mantém ou reverte. Só melhoria provada pousa. |
-| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Jurados cegos, de famílias de modelos diferentes, avaliam a mudança, uma lente cada. Todo achado vira um teste que falha. Repete até todos aprovarem. |
+| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Jurados cegos, em sessões frescas sem contexto do autor, avaliam a mudança, uma lente cada. Todo achado vira um teste que falha. Repete até todos aprovarem. |
 | [bounded-loops](skills/bounded-loops/SKILL.md) | Tetos de orçamento, checkpoints e kill-switches em todo loop. Torna martelar uma API estruturalmente impossível. |
 | [clean-code-gauntlet](skills/clean-code-gauntlet/SKILL.md) | Uma régua de qualidade determinística: testes sniper, o score CRAP (complexidade x cobertura), teste de mutação com limites, depois uma revisão leve de gosto. |
 | [decision-bar](skills/decision-bar/SKILL.md) | Uma régua para toda decisão: só gosto, visão ou risco destrutivo chegam ao humano. Todo o resto executa. |

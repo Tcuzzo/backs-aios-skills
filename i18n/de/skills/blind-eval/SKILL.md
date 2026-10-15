@@ -32,9 +32,13 @@ wird verworfen. Nur bewiesener Uplift landet.
 3. **Entferne die Autorschaft.** Beschrifte sie A und B, mische die Reihenfolge,
    streiche jeden Namen, jede Modell-ID und die Begründung des Autors. Der Judge
    sieht nur die Artefakte und die Rubrik.
-4. **Setze einen Judge ein, der keins von beiden geschrieben hat** — ein Modell aus
-   einer anderen Familie, oder einen Menschen. Der Autor bewertet nie die eigene
-   Arbeit.
+4. **Setze einen Judge ein, der keins von beiden geschrieben hat** — eine
+   nicht-Builder-Prüfung, live nach Fähigkeit und Verfügbarkeit aus der
+   konfigurierten Sprossen-Matrix gewählt (die ausführende Session, die gebaut
+   hat, wird als Provenienz vermerkt und disqualified; ein Prüfer gleichen
+   Modells, gleicher Sprosse oder gleicher Familie in einer frischen,
+   autor-disjunkten Session ist zulässig, wo die konfigurierte Laufzeit es
+   erlaubt), oder einen Menschen. Der Autor bewertet nie die eigene Arbeit.
 5. **Urteile nach Substanz.** Punkte pro Rubrik-Achse. Belege jede Wertung mit
    Evidenz aus dem Artefakt — ein Urteil ohne Beleg ist geraten.
 6. **KEEP nur, wenn der Kandidat die Latte nimmt UND die Baseline strikt schlägt.**
@@ -62,9 +66,11 @@ wird verworfen. Nur bewiesener Uplift landet.
   einem Zug. Ist die echte Verbesserung kleiner als die Lauf-zu-Lauf-Schwankung
   des Judges, kann das Gate Signal nicht von Glück unterscheiden — mehr Lesungen,
   oder ein stabileres Maß.
-- **Solo-Rig.** Keine zweite Modellfamilie verfügbar? Dann urteilt eine frische
-  Blind-Session, die die Konversation des Autors nie gesehen hat — und der Bericht
-  benennt das geschwächte Gate („auf einer einzigen konfigurierten Sprosse bewertet“).
+- **Solo-Rig.** Nur eine konfigurierte Sprosse verfügbar? Dann urteilt eine
+  frische Blind-Session, die die Konversation des Autors nie gesehen hat — und
+  der Bericht erfasst die Einzel-Sprossen-Konfiguration als Provenienz
+  („auf einer einzigen konfigurierten Sprosse bewertet"), nicht als
+  geschwächtes Gate: die Trennung ist die Session, nicht der Modellname.
 - **Keine verlässliche Latte? Nimm Dominanz.** Wenn das Baseline-Niveau unbekannt
   oder verrauscht ist, lass die absolute Latte weg und behalte nur, was den
   aktuellen Champion strikt schlägt. Eine Regression kann nie dominieren, also

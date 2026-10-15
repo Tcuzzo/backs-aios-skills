@@ -120,7 +120,7 @@ equivalentes en español también disparan la misma disciplina.
 | --- | --- |
 | [absorb](skills/absorb/SKILL.md) | Adopta una capacidad open-source existente y re-ingeniérala como skill nativa, en vez de construir un duplicado. |
 | [blind-eval](skills/blind-eval/SKILL.md) | Juzga un cambio por sus méritos con la autoría oculta, y luego conserva o revierte. Solo aterriza la mejora probada. |
-| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Jurados ciegos de distintas familias de modelos califican el cambio, un lente cada uno. Cada hallazgo se vuelve un test que falla. Itera hasta que todos aprueben. |
+| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Jurados ciegos, en sesiones frescas sin contexto del autor, califican el cambio, un lente cada uno. Cada hallazgo se vuelve un test que falla. Itera hasta que todos aprueben. |
 | [bounded-loops](skills/bounded-loops/SKILL.md) | Techos de presupuesto, checkpoints y kill-switches en cada bucle. Hace estructuralmente imposible martillar una API. |
 | [clean-code-gauntlet](skills/clean-code-gauntlet/SKILL.md) | Una vara de calidad determinista: tests francotirador, el puntaje CRAP (complejidad x cobertura), testing de mutación acotado, y al final una revisión ligera de gusto. |
 | [decision-bar](skills/decision-bar/SKILL.md) | Una sola vara para cada decisión: solo el gusto, la visión o el riesgo destructivo llegan al humano. Todo lo demás se ejecuta. |
