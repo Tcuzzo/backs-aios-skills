@@ -40,8 +40,8 @@ isn't repeated.
    for UI. The play's `injected_block` IS the baseline — zero baseline pre-
    prompting, ever.
 4. **Quick tribunal on plan + design.** Before any builder runs, blind-tribunal
-   the plan and the design with at least 2 cross-family seats. Builder ≠
-   grader. A plan that passes blind review is the only plan that gets built.
+   the plan and the design with at least 2 independent jurors in fresh,
+   author-disjoint sessions. Builder ≠ grader. A plan that passes blind review is the only plan that gets built.
 5. **Three-questions interrog.** Ask: (a) what could fail silently here?
    (b) what is the cheapest sufficient route? (c) what is the operator's
    surface — does this prove on it? These three questions cut the
