@@ -1,40 +1,9 @@
 #!/usr/bin/env node
-/* aios_gate — the pack's grounding gate, programmed instead of prompted.
- *
- * Behavior-identical Node port of aios_gate.py (same state files, same deny
- * JSON, same Bash mutating-verb pattern, same AIOS_GATE=off kill-switch, same
- * hook fail-open). Node >= 18, zero dependencies.
- *
- * Every session starts RED. While RED, the file-edit tools (Edit, Write,
- * NotebookEdit, MultiEdit) are denied, and Bash is denied ONLY when its command
- * matches a conservative mutating-verb pattern — until a pack skill has been
- * invoked this session. Invoking any pack skill (PostToolUse on the Skill tool)
- * flips the session GREEN.
- *
- * Rules this script holds structurally:
- *   - Read-only tools are NEVER touched (the hooks.json matcher scopes to
- *     mutators, and this script re-checks the tool name as a second belt).
- *   - Read-only shell is NEVER blocked: Bash denies only on a positive match
- *     of a mutating verb at a command position (git commit/push, rm, mv/tee onto
- *     a tracked-looking path, sed -i, npm/pip/cargo install, systemctl/service
- *     restart, chmod/chown, > redirection outside /tmp). ls, cat, grep,
- *     git status/diff/log, and echo without redirection always pass.
- *   - Kill-switch: AIOS_GATE=off (also 0/false/no) disables the gate entirely.
- *     The capability defaults ON; the switch is loud, reversible, the only escape.
- *   - Fail-open ONLY in stdin hook-mode errors: a broken hook must never brick
- *     a session. Hook errors print one warning line to stderr and exit 0
- *     (no decision = allow). Explicit --load/--rearm errors are loud and exit
- *     nonzero.
- *
- * Load a skill explicitly to arm the session:
- *   node aios_gate.js --load backs-aios:<skill> [session_id]
- *   node aios_gate.js --load <skill> [session_id]
- *
- * Re-arm for a new job in the same session:
- *   node aios_gate.js --rearm [session_id]     (falls back to parent PID)
- *
- * State lives in ~/.aios/state/ (falls back to the system temp dir if that
- * is not writable).
+/* BACKS grounding loader. Session start delivers the actual Optimus/Yoke bodies
+ * and the deployed harness when present. Missing grounding triggers loading,
+ * never tool refusal. Context delivery and explicit Skill evidence are separate.
+ * AIOS_GATE=off remains the operator's existing kill switch. Hook failures warn
+ * and allow; explicit --load failures return a nonzero status.
  */
 
 "use strict";
@@ -51,15 +20,20 @@ const MUTATING_TOOLS = new Set([
   "MultiEdit",
   "NotebookEdit",
   "Write",
+  // Codex exposes its patch primitive both directly and under its function namespace.
+  "apply_patch",
+  "functions.apply_patch",
 ]);
-const DENY_MESSAGE =
-  "Load the floor first — run /optimus. Set AIOS_GATE=off to disable.";
+const CODEX_EXEC_TOOL = "functions.exec";
+const CODEX_PATCH_CALL = /\b(?:tools|functions)\s*\.\s*apply_patch\s*\(/;
+// Retained export for older installed adapters; evaluate never returns deny.
+const DENY_MESSAGE = "BACKS grounding loads automatically; tools remain available.";
 
 // A verb counts only at a command position: line start, after ; & |, or inside
 // a substitution. "grep rm" or "echo 'rm x'" can never match.
 const CMD_POS = "(?:^|[;&|\r\n]|\\$\\(|`)\\s*(?:sudo\\s+)?";
 
-// Conservative mutating-verb patterns for Bash. Deny fires ONLY on a positive
+// Conservative mutating-verb patterns for Bash. Loading runs only on a positive
 // match; everything unmatched — all read-only shell — passes untouched.
 const BASH_MUTATING = [
   CMD_POS + "git\\s+(?:-\\S+\\s+)*(?:commit|push)\\b",
@@ -151,6 +125,103 @@ function stateExists(sessionId) {
   return fs.existsSync(stateFile(sessionId));
 }
 
+
+/** CO-readable grounding evidence (shared seam with conscientious_objector).
+ * Smoking gun fix: also write ~/.claude/state/backs_ground_<sid>.state + .hashes.json
+ * while keeping the existing ~/.aios/state/aios_floor_*.state marker.
+ */
+function coStateDir() {
+  const preferred = path.join(os.homedir(), ".claude", "state");
+  try {
+    fs.mkdirSync(preferred, { recursive: true });
+    return preferred;
+  } catch {
+    return os.tmpdir();
+  }
+}
+
+function writeCoGroundingEvidence(sessionId, skillDigests) {
+  const sid = stateComponent(sessionId);
+  const dir = coStateDir();
+  const statePath = path.join(dir, `backs_ground_${sid}.state`);
+  const hashPath = path.join(dir, `backs_ground_${sid}.hashes.json`);
+  const tmpState = path.join(dir, `.tmp-state-${process.pid}-${Date.now()}`);
+  const tmpHash = path.join(dir, `.tmp-hash-${process.pid}-${Date.now()}`);
+  let fd = null;
+  try {
+    fd = fs.openSync(tmpState, "wx", 0o600);
+    fs.writeSync(fd, Buffer.from("true\n", "utf8"));
+    fs.fsyncSync(fd);
+    fs.closeSync(fd);
+    fd = null;
+    fs.renameSync(tmpState, statePath);
+  } catch (err) {
+    if (fd !== null) { try { fs.closeSync(fd); } catch {} }
+    try { fs.unlinkSync(tmpState); } catch {}
+    throw err;
+  }
+  const digests = skillDigests && typeof skillDigests === "object" ? skillDigests : {};
+  const keys = Object.keys(digests).sort();
+  const ordered = {};
+  for (const k of keys) ordered[k] = digests[k];
+  const payload = Buffer.from(JSON.stringify(ordered), "utf8");
+  fd = null;
+  try {
+    fd = fs.openSync(tmpHash, "wx", 0o600);
+    fs.writeSync(fd, payload);
+    fs.fsyncSync(fd);
+    fs.closeSync(fd);
+    fd = null;
+    fs.renameSync(tmpHash, hashPath);
+  } catch (err) {
+    if (fd !== null) { try { fs.closeSync(fd); } catch {} }
+    try { fs.unlinkSync(tmpHash); } catch {}
+    throw err;
+  }
+  return { statePath, hashPath };
+}
+
+function deployRoot() {
+  const env = String(process.env.BACKS_DEPLOY_ROOT || process.env.BACKS_AI_ROOT || "").trim();
+  if (env) return env;
+  for (const host of [".codex", ".claude"]) {
+    try {
+      const skill = fs.realpathSync(path.join(os.homedir(), host, "skills/optimus/SKILL.md"));
+      const candidate = path.dirname(path.dirname(path.dirname(skill)));
+      if (fs.statSync(path.join(candidate, "backend/prompts/BACKS_CODEX_HARNESS.md")).isFile()) return candidate;
+    } catch {}
+  }
+  return "";
+}
+
+function resolveNativeOrPackSkill(canonical) {
+  const aliases = {
+    yoke: ["human-calibration", "yoke"],
+    "human-calibration": ["human-calibration", "yoke"],
+    optimus: ["optimus"],
+    "conscientious-objector": ["conscientious_objector", "conscientious-objector"],
+    conscientious_objector: ["conscientious_objector", "conscientious-objector"],
+  };
+  const names = aliases[canonical] || [canonical];
+  const root = deployRoot();
+  if (root) {
+    for (const name of names) {
+      const p = path.join(root, "skills", name, "SKILL.md");
+      try {
+        if (fs.existsSync(p) && fs.statSync(p).isFile() && fs.statSync(p).size > 0) {
+          return { path: p, canonical: name, source: "deploy_native" };
+        }
+      } catch {}
+    }
+  }
+  for (const name of names) {
+    const p = resolveSkillPath(name);
+    if (p) return { path: p, canonical: name, source: "installed_pack" };
+  }
+  return null;
+}
+
+
 /** Atomic marker writer shared by native Skill events and explicit --load. */
 function writeFloorMarker(sessionId) {
   const target = stateFile(sessionId);
@@ -237,7 +308,7 @@ function sessionIdOf(payload, cliArg) {
  * Returns a Set of names under skills/<name>/SKILL.md. Symlink redirects and
  * anything outside the real pack root are ignored. If the skills directory is
  * missing/unreadable or no real skills exist, throws so the caller leaves the
- * session RED and warns.
+ * session without a new receipt and warns.
  */
 function packSkillNames() {
   const names = new Set();
@@ -280,30 +351,24 @@ function invokedSkill(toolInput) {
   return raw.slice(raw.lastIndexOf(":") + 1);
 }
 
-function deny(cursorProtocol) {
-  if (cursorProtocol) {
-    process.stdout.write(
-      JSON.stringify({
-        permission: "deny",
-        user_message: DENY_MESSAGE,
-        agent_message: DENY_MESSAGE,
-      }) + "\n",
-    );
-    return;
+/** True only for Codex's real nested patch call inside functions.exec.
+ *
+ * The exec transport may carry its source as a freeform string or in one of
+ * the documented code/script/input fields. We leave every other exec payload
+ * alone so automatic loading stays scoped to the existing mutation matcher.
+ */
+function codexExecInvokesPatch(toolName, rawToolInput) {
+  if (toolName !== CODEX_EXEC_TOOL) return false;
+  const sources = [];
+  if (typeof rawToolInput === "string") {
+    sources.push(rawToolInput);
+  } else if (rawToolInput && typeof rawToolInput === "object" && !Array.isArray(rawToolInput)) {
+    for (const key of ["code", "script", "input"]) {
+      if (typeof rawToolInput[key] === "string") sources.push(rawToolInput[key]);
+    }
   }
-  // Byte-identical to the Python gate's json.dumps output (ensure_ascii,
-  // ", " / ": " separators) so both runtimes emit the same deny line.
-  const reason = JSON.stringify(DENY_MESSAGE).replace(
-    /[\u0080-\uffff]/g,
-    (c) => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"),
-  );
-  process.stdout.write(
-    '{"hookSpecificOutput": {"hookEventName": "PreToolUse", ' +
-      '"permissionDecision": "deny", ' +
-      `"permissionDecisionReason": ${reason}}}\n`,
-  );
+  return sources.some((source) => CODEX_PATCH_CALL.test(source));
 }
-
 
 function wakeLoadContext() {
   return (
@@ -314,29 +379,57 @@ function wakeLoadContext() {
   );
 }
 
-function sessionStartOutput(cursorProtocol, sessionId) {
-  removeState(sessionId);
-  const ctx = wakeLoadContext();
-  if (cursorProtocol) {
-    process.stdout.write(
-      JSON.stringify({
-        additional_context: ctx,
-        agent_message:
-          "BACKS wake-load: operator_intent_deduction + context_engineer armed.",
-      }) + "\n",
-    );
-    return;
+/** Reading a pointer is not delivery. Record only bodies handed to the host. */
+function floorContext() {
+  const entries = [];
+  const root = deployRoot();
+  if (root && fs.existsSync(path.join(root, "backend/prompts/BACKS_CODEX_HARNESS.md"))) {
+    entries.push({path: path.join(root, "backend/prompts/BACKS_CODEX_HARNESS.md"), canonical: "harness", source: "deploy_native"});
   }
-  process.stdout.write(
-    JSON.stringify({
-      hookSpecificOutput: {
-        hookEventName: "SessionStart",
-        additionalContext: ctx,
-      },
-    }) + "\n",
-  );
+  for (const name of ["optimus", "yoke"]) {
+    const resolved = resolveNativeOrPackSkill(name);
+    if (!resolved) throw new Error(`${name} unavailable`);
+    entries.push(resolved);
+  }
+  const bodies = entries.map((entry) => {
+    const body = fs.readFileSync(entry.path, "utf8");
+    if (!body.trim()) throw new Error(`${entry.canonical} unavailable`);
+    return {...entry, body, sha256: crypto.createHash("sha256").update(body).digest("hex")};
+  });
+  return {context: wakeLoadContext() + "\n\n" + bodies.map(x => `## BACKS loaded: ${x.canonical}\n${x.body}`).join("\n\n"), bodies};
 }
 
+function deliverFloor(cursorProtocol, sessionId, event, options = {}) {
+  try {
+    const floor = floorContext();
+    if (typeof options.deliverContext === "function") {
+      options.deliverContext(floor.context);
+    } else if (options.emit !== false) {
+      const output = cursorProtocol ? {additional_context: floor.context} : {
+        hookSpecificOutput: {hookEventName: event, additionalContext: floor.context},
+      };
+      const data = Buffer.from(JSON.stringify(output) + "\n");
+      let offset = 0;
+      while (offset < data.length) offset += fs.writeSync(1, data, offset);
+    } else {
+      return {decision: "allow", additionalContext: floor.context, delivered: false};
+    }
+    const receipt = {session_id: sessionId, kind: "context_delivery", bodies: floor.bodies.map(({body, ...entry}) => entry)};
+    const target = stateFile(sessionId) + ".load.json";
+    const tmp = target + `.${process.pid}.${crypto.randomBytes(6).toString("hex")}.tmp`;
+    try {
+      fs.writeFileSync(tmp, JSON.stringify(receipt), {mode: 0o600, flag: "wx"});
+      fs.renameSync(tmp, target);
+    } finally {
+      try { fs.unlinkSync(tmp); } catch {}
+    }
+    writeFloorMarker(sessionId);
+    return {decision: "allow", delivered: true};
+  } catch (err) {
+    process.stderr.write(`aios_gate: grounding unavailable (${err.name}: ${err.message}); allowing\n`);
+    return {decision: "allow", delivered: false};
+  }
+}
 
 function evaluate(payload, options = {}) {
   const kill = String(process.env[KILL_ENV] || "").trim().toLowerCase();
@@ -354,15 +447,15 @@ function evaluate(payload, options = {}) {
     event === "preToolUse" ||
     event === "postToolUse" ||
     Boolean(payload.cursor_version);
-  let toolInput = payload.tool_input || {};
+  const rawToolInput = payload.tool_input;
+  let toolInput = rawToolInput || {};
   if (typeof toolInput !== "object" || toolInput === null || Array.isArray(toolInput)) {
     toolInput = {};
   }
   const sessionId = sessionIdOf(payload);
 
   if (event === "SessionStart" || event === "sessionStart") {
-    if (options.emit !== false) sessionStartOutput(cursorProtocol, sessionId);
-    return { decision: "allow", wake_load: true };
+    return deliverFloor(cursorProtocol, sessionId, event, options);
   }
 
   if (event === "PostToolUse" || event === "postToolUse") {
@@ -374,11 +467,21 @@ function evaluate(payload, options = {}) {
           pack = packSkillNames();
         } catch (err) {
           process.stderr.write(
-            `aios_gate: WARNING skill catalog unreadable or empty, floor stays RED (${err.name}: ${err.message})\n`,
+            `aios_gate: WARNING skill catalog unreadable or empty, grounding evidence unavailable (${err.name}: ${err.message})\n`,
           );
         }
         if (pack && pack.has(skill)) {
           writeFloorMarker(sessionId);
+          try {
+            const digests = {};
+            const resolved = resolveNativeOrPackSkill(skill);
+            if (resolved) {
+              digests[resolved.canonical] = crypto.createHash('sha256').update(fs.readFileSync(resolved.path)).digest('hex');
+            }
+            writeCoGroundingEvidence(sessionId, digests);
+          } catch (err) {
+            process.stderr.write(`aios_gate: WARNING CO evidence write failed (${err.message})\n`);
+          }
         }
       }
     }
@@ -389,19 +492,17 @@ function evaluate(payload, options = {}) {
     const red = !stateExists(sessionId);
     if (toolName === "Bash" || toolName === "Shell") {
       if (red && bashIsMutating(String(toolInput.command || ""))) {
-        if (options.emit !== false) deny(cursorProtocol);
-        return { decision: "deny", reason: DENY_MESSAGE };
+        return deliverFloor(cursorProtocol, sessionId, event, options);
       }
       return { decision: "allow" };
     }
-    if (!MUTATING_TOOLS.has(toolName)) {
+    if (!MUTATING_TOOLS.has(toolName) && !codexExecInvokesPatch(toolName, rawToolInput)) {
       return { decision: "allow" };
     }
     if (!red) {
       return { decision: "allow" };
     }
-    if (options.emit !== false) deny(cursorProtocol);
-    return { decision: "deny", reason: DENY_MESSAGE };
+    return deliverFloor(cursorProtocol, sessionId, event, options);
   }
 
   return { decision: "allow" };
@@ -428,15 +529,32 @@ function load(argv) {
       process.stderr.write("aios_gate: skill not found\n");
       return 2;
     }
-    const resolved = resolveSkillPath(canonical);
-    if (!resolved) {
+    const resolvedInfo = resolveNativeOrPackSkill(canonical);
+    if (!resolvedInfo) {
       process.stderr.write("aios_gate: skill not found\n");
       return 2;
     }
-    const body = fs.readFileSync(resolved, "utf8");
+    let body = fs.readFileSync(resolvedInfo.path, "utf8");
     const sessionId = sessionIdOf({}, argv[1]);
+    const digests = {};
+    digests[resolvedInfo.canonical] = crypto.createHash("sha256").update(body, "utf8").digest("hex");
+    if (resolvedInfo.canonical === "optimus" || canonical === "optimus") {
+      const yoke = resolveNativeOrPackSkill("yoke");
+      if (yoke) {
+        const yokeBody = fs.readFileSync(yoke.path, "utf8");
+        digests[yoke.canonical] = crypto.createHash("sha256").update(yokeBody).digest("hex");
+        body += "\n\n" + yokeBody;
+      }
+    }
+    const data = Buffer.from(body);
+    let offset = 0;
+    while (offset < data.length) offset += fs.writeSync(1, data, offset);
     writeFloorMarker(sessionId);
-    process.stdout.write(body);
+    try {
+      writeCoGroundingEvidence(sessionId, digests);
+    } catch (err) {
+      process.stderr.write(`aios_gate: WARNING CO evidence write failed (${err.message})\n`);
+    }
     return 0;
   } catch (err) {
     process.stderr.write(`aios_gate: load failed (${err.name}: ${err.message})\n`);

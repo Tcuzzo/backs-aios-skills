@@ -25,7 +25,6 @@ const gatePath = runtimeRoot
     );
 
 let evaluate;
-let DENY_MESSAGE;
 let gateAvailable = false;
 let unavailableReason = "load failed";
 
@@ -33,12 +32,9 @@ try {
   const require = createRequire(import.meta.url);
   const gate = require(gatePath);
   if (
-    typeof gate?.evaluate === "function" &&
-    typeof gate?.DENY_MESSAGE === "string" &&
-    gate.DENY_MESSAGE.length > 0
+    typeof gate?.evaluate === "function"
   ) {
     evaluate = gate.evaluate;
-    DENY_MESSAGE = gate.DENY_MESSAGE;
     gateAvailable = true;
   } else {
     unavailableReason = "invalid gate shape";
@@ -116,8 +112,26 @@ async function toolExecuteBefore(input, output) {
   }
 
   if (handleDisabled(result)) return;
-  if (result?.decision === "deny") {
-    throw new Error(DENY_MESSAGE);
+  // Grounding is delivered through the host context hook, never tool refusal.
+}
+
+async function systemTransform(input, output) {
+  if (!gateAvailable) {
+    warnUnavailable("unavailable-context");
+    return;
+  }
+  if (!Array.isArray(output?.system)) return;
+  try {
+    await evaluate(
+      {session_id: input?.sessionID, hook_event_name: "SessionStart"},
+      {emit: false, deliverContext(context) {
+        // The host retains this array. Merge into its leading system block.
+        if (output.system.length) output.system[0] += "\n\n" + context;
+        else output.system.push(context);
+      }},
+    );
+  } catch (err) {
+    warnOnce("context", `aios-plugin: grounding unavailable (${err?.name || "Error"}); allowing`);
   }
 }
 
@@ -161,6 +175,7 @@ async function toolExecuteAfter(input, output) {
 
 export default async function aiosOpenCodePlugin() {
   return {
+    "experimental.chat.system.transform": systemTransform,
     "tool.execute.before": toolExecuteBefore,
     "tool.execute.after": toolExecuteAfter,
   };

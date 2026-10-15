@@ -24,7 +24,7 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "Edit|Write|NotebookEdit|MultiEdit",
+        "matcher": "Edit|Write|NotebookEdit|MultiEdit|apply_patch|functions.apply_patch|functions.exec",
         "hooks": [
           {
             "type": "command",

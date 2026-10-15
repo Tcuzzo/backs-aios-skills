@@ -1,35 +1,8 @@
 #!/usr/bin/env python3
-"""aios_gate — the pack's grounding gate, programmed instead of prompted.
+"""BACKS grounding loader: deliver actual floor bodies without tool refusal.
 
-Every session starts RED. While RED, the file-edit tools (Edit, Write,
-NotebookEdit, MultiEdit) are denied, and Bash is denied ONLY when its command
-matches a conservative mutating-verb pattern — until a pack skill has been
-invoked this session. Invoking any pack skill (PostToolUse on the Skill tool)
-flips the session GREEN.
-
-Rules this script holds structurally:
-  * Read-only tools are NEVER touched (the hooks.json matcher scopes to mutators,
-    and this script re-checks the tool name as a second belt).
-  * Read-only shell is NEVER blocked: Bash denies only on a positive match of a
-    mutating verb at a command position (git commit/push, rm, mv/tee onto a
-    tracked-looking path, sed -i, npm/pip/cargo install, systemctl/service
-    restart, chmod/chown, > redirection outside /tmp). ls, cat, grep,
-    git status/diff/log, and echo without redirection always pass.
-  * Kill-switch: AIOS_GATE=off (also 0/false/no) disables the gate entirely.
-    The capability defaults ON; the switch is loud, reversible, and the only escape.
-  * Fail-open ONLY in stdin hook-mode errors: a broken hook must never brick a
-    session. Hook errors print one warning line to stderr and exit 0 (no decision
-    = allow). Explicit --load/--rearm errors are loud and exit nonzero.
-
-Load a skill explicitly to arm the session:
-  python3 aios_gate.py --load backs-aios:<skill> [session_id]
-  python3 aios_gate.py --load <skill> [session_id]
-
-Re-arm for a new job in the same session:
-  python3 aios_gate.py --rearm [session_id]     (falls back to parent PID)
-
-Zero dependencies. Python 3 stdlib only. State lives in ~/.aios/state/
-(falls back to the system temp dir if that is not writable).
+Context delivery and explicit Skill evidence are separate. AIOS_GATE=off remains
+available. Hook failures warn and allow; explicit load errors return nonzero.
 """
 
 from __future__ import annotations
@@ -44,14 +17,19 @@ import tempfile
 import time
 
 KILL_ENV = "AIOS_GATE"
-MUTATING_TOOLS = {"Delete", "Edit", "MultiEdit", "NotebookEdit", "Write"}
-DENY_MESSAGE = "Load the floor first — run /optimus. Set AIOS_GATE=off to disable."
+MUTATING_TOOLS = {
+    "Delete", "Edit", "MultiEdit", "NotebookEdit", "Write",
+    # Codex exposes its patch primitive both directly and under its function namespace.
+    "apply_patch", "functions.apply_patch",
+}
+CODEX_EXEC_TOOL = "functions.exec"
+_CODEX_PATCH_CALL = re.compile(r"\b(?:tools|functions)\s*\.\s*apply_patch\s*\(")
 
 # A verb counts only at a command position: line start, after ; & |, or inside
 # a substitution. "grep rm" or "echo 'rm x'" can never match.
 _CMD_POS = r"(?:^|[;&|\r\n]|\$\(|`)\s*(?:sudo\s+)?"
 
-# Conservative mutating-verb patterns for Bash. Deny fires ONLY on a positive
+# Conservative mutating-verb patterns for Bash. Loading runs only on a positive
 # match; everything unmatched — all read-only shell — passes untouched.
 _BASH_MUTATING = tuple(re.compile(p) for p in (
     _CMD_POS + r"git\s+(?:-\S+\s+)*(?:commit|push)\b",
@@ -174,7 +152,7 @@ def _pack_skill_names() -> set:
     Returns the set of names under skills/<name>/SKILL.md. Symlink redirects and
     anything outside the real pack root are ignored. If the skills directory is
     missing/unreadable or no real skills exist, raises so the caller leaves the
-    session RED and warns.
+    session without a new receipt and warns.
     """
     names = set()
     root = _plugin_root()
@@ -205,6 +183,23 @@ def _invoked_skill(tool_input: dict) -> str:
     raw = str(tool_input.get("skill") or tool_input.get("name") or "").strip()
     # Plugin skills arrive namespaced ("backs-aios:optimus"); keep the last part.
     return raw.rsplit(":", 1)[-1]
+
+
+def _codex_exec_invokes_patch(tool_name: str, raw_tool_input: object) -> bool:
+    """Match Codex's nested patch call without blocking unrelated exec calls."""
+    if tool_name != CODEX_EXEC_TOOL:
+        return False
+    if isinstance(raw_tool_input, str):
+        sources = (raw_tool_input,)
+    elif isinstance(raw_tool_input, dict):
+        sources = tuple(
+            raw_tool_input[key]
+            for key in ("code", "script", "input")
+            if isinstance(raw_tool_input.get(key), str)
+        )
+    else:
+        sources = ()
+    return any(_CODEX_PATCH_CALL.search(source) for source in sources)
 
 
 def _resolve_skill_path(canonical: str) -> str | None:
@@ -256,21 +251,75 @@ def _write_floor_marker(session_id: str) -> None:
         raise
 
 
-def _deny(cursor_protocol: bool) -> None:
-    if cursor_protocol:
-        print(json.dumps({
-            "permission": "deny",
-            "user_message": DENY_MESSAGE,
-            "agent_message": DENY_MESSAGE,
-        }))
-        return
-    print(json.dumps({
-        "hookSpecificOutput": {
-            "hookEventName": "PreToolUse",
-            "permissionDecision": "deny",
-            "permissionDecisionReason": DENY_MESSAGE,
-        }
-    }))
+
+def _co_state_dir() -> str:
+    preferred = os.path.join(os.path.expanduser("~"), ".claude", "state")
+    try:
+        os.makedirs(preferred, exist_ok=True)
+        return preferred
+    except OSError:
+        return tempfile.gettempdir()
+
+
+def _write_co_grounding_evidence(session_id: str, skill_digests: dict | None = None) -> dict:
+    """Write CO-readable backs_ground_*.state + .hashes.json (smoking-gun seam)."""
+    sid = _state_component(session_id)
+    directory = _co_state_dir()
+    state_path = os.path.join(directory, f"backs_ground_{sid}.state")
+    hash_path = os.path.join(directory, f"backs_ground_{sid}.hashes.json")
+    digests = {str(k): str(v) for k, v in dict(skill_digests or {}).items() if k and v}
+
+    def _atomic(path: str, data: bytes) -> None:
+        tmp = os.path.join(
+            directory,
+            f".tmp-{os.getpid()}-{time.time_ns()}-{os.path.basename(path)}",
+        )
+        flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+        fd = os.open(tmp, flags, 0o600)
+        try:
+            os.write(fd, data)
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+        os.replace(tmp, path)
+
+    _atomic(state_path, b"true\n")
+    _atomic(hash_path, json.dumps(digests, sort_keys=True).encode("utf-8"))
+    return {"state": state_path, "hashes": hash_path}
+
+
+def _deploy_root() -> str:
+    env = str(os.environ.get("BACKS_DEPLOY_ROOT") or os.environ.get("BACKS_AI_ROOT") or "").strip()
+    if env:
+        return env
+    for host in ('.codex', '.claude'):
+        skill = os.path.realpath(os.path.expanduser(os.path.join('~', host, 'skills/optimus/SKILL.md')))
+        candidate = os.path.dirname(os.path.dirname(os.path.dirname(skill)))
+        if os.path.isfile(os.path.join(candidate, 'backend/prompts/BACKS_CODEX_HARNESS.md')):
+            return candidate
+    return ""
+
+
+def _resolve_native_or_pack_skill(canonical: str):
+    aliases = {
+        "yoke": ("human-calibration", "yoke"),
+        "human-calibration": ("human-calibration", "yoke"),
+        "optimus": ("optimus",),
+        "conscientious-objector": ("conscientious_objector", "conscientious-objector"),
+        "conscientious_objector": ("conscientious_objector", "conscientious-objector"),
+    }
+    names = aliases.get(canonical, (canonical,))
+    root = _deploy_root()
+    if root:
+        for name in names:
+            p = os.path.join(root, "skills", name, "SKILL.md")
+            if os.path.isfile(p) and os.path.getsize(p) > 0:
+                return p, name, "deploy_native"
+    for name in names:
+        p = _resolve_skill_path(name)
+        if p:
+            return p, name, "installed_pack"
+    return None
 
 
 def _wake_load_context() -> str:
@@ -283,23 +332,63 @@ def _wake_load_context() -> str:
     )
 
 
-def _session_start_output(cursor_protocol: bool, session_id: str) -> None:
-    """Rearm floor RED, then inject wake-load compilers into agent context."""
-    _remove_state(session_id)
-    ctx = _wake_load_context()
-    if cursor_protocol:
-        # Cursor sessionStart: additional_context field (best-effort)
-        print(json.dumps({
-            "additional_context": ctx,
-            "agent_message": "BACKS wake-load: operator_intent_deduction + context_engineer armed.",
-        }))
-        return
-    print(json.dumps({
-        "hookSpecificOutput": {
-            "hookEventName": "SessionStart",
-            "additionalContext": ctx,
-        }
-    }))
+def _floor_context() -> tuple[str, list[dict]]:
+    entries = []
+    root = _deploy_root()
+    harness = os.path.join(root, 'backend/prompts/BACKS_CODEX_HARNESS.md')
+    if root and os.path.isfile(harness):
+        entries.append((harness, 'harness', 'deploy_native'))
+    for name in ('optimus', 'yoke'):
+        resolved = _resolve_native_or_pack_skill(name)
+        if not resolved:
+            raise ValueError(f'{name} unavailable')
+        entries.append(resolved)
+    context = [_wake_load_context()]
+    bodies = []
+    for filename, canonical, source in entries:
+        with open(filename, encoding='utf-8', newline='') as handle:
+            body = handle.read()
+        if not body.strip():
+            raise ValueError(f'{canonical} unavailable')
+        context.append(f'## BACKS loaded: {canonical}\n{body}')
+        bodies.append({'path': filename, 'canonical': canonical, 'source': source,
+                       'sha256': hashlib.sha256(body.encode()).hexdigest()})
+    return '\n\n'.join(context), bodies
+
+
+def _write_stdout(body: str) -> None:
+    # Complete the real host write before recording delivery. Buffered stdout
+    # can otherwise fail again at interpreter shutdown and change exit status.
+    remaining = memoryview(body.encode('utf-8'))
+    while remaining:
+        written = os.write(sys.stdout.fileno(), remaining)
+        if written <= 0:
+            raise OSError('context output made no progress')
+        remaining = remaining[written:]
+
+
+def _deliver_floor(cursor_protocol: bool, session_id: str, event: str) -> None:
+    """Deliver actual bodies, then record loading separately from Skill events."""
+    try:
+        context, bodies = _floor_context()
+        output = ({'additional_context': context} if cursor_protocol else
+                  {'hookSpecificOutput': {'hookEventName': event, 'additionalContext': context}})
+        _write_stdout(json.dumps(output) + '\n')
+        target = _state_file(session_id) + '.load.json'
+        tmp = target + f'.{os.getpid()}.{os.urandom(6).hex()}.tmp'
+        try:
+            fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            with os.fdopen(fd, 'w', encoding='utf-8') as handle:
+                json.dump({'session_id': session_id, 'kind': 'context_delivery', 'bodies': bodies}, handle)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(tmp, target)
+        finally:
+            with contextlib.suppress(OSError):
+                os.unlink(tmp)
+        _write_floor_marker(session_id)
+    except Exception as exc:
+        print(f'aios_gate: grounding unavailable ({type(exc).__name__}: {exc}); allowing', file=sys.stderr)
 
 
 def handle(payload: dict) -> None:
@@ -309,13 +398,14 @@ def handle(payload: dict) -> None:
         event in {"sessionStart", "preToolUse", "postToolUse"}
         or bool(payload.get("cursor_version"))
     )
-    tool_input = payload.get("tool_input") or {}
+    raw_tool_input = payload.get("tool_input")
+    tool_input = raw_tool_input or {}
     if not isinstance(tool_input, dict):
         tool_input = {}
     session_id = _session_id(payload)
 
     if event in {"SessionStart", "sessionStart"}:
-        _session_start_output(cursor_protocol, session_id)
+        _deliver_floor(cursor_protocol, session_id, event)
         return
 
     if event in {"PostToolUse", "postToolUse"}:
@@ -326,25 +416,37 @@ def handle(payload: dict) -> None:
                     pack = _pack_skill_names()
                 except (OSError, ValueError) as exc:
                     print(
-                        f"aios_gate: WARNING skill catalog unreadable or empty, floor stays RED ({exc})",
+                        f"aios_gate: WARNING skill catalog unreadable or empty, grounding evidence unavailable ({exc})",
                         file=sys.stderr,
                     )
                 else:
                     if skill in pack:
                         _write_floor_marker(session_id)
+                        try:
+                            digests = {}
+                            info = _resolve_native_or_pack_skill(skill)
+                            if info:
+                                rp, rn, _ = info
+                                with open(rp, "rb") as sfh:
+                                    digests[rn] = hashlib.sha256(sfh.read()).hexdigest()
+                            _write_co_grounding_evidence(session_id, digests)
+                        except Exception as err:
+                            sys.stderr.write(f"aios_gate: WARNING CO evidence write failed ({err})\n")
         return
 
     if event in {"PreToolUse", "preToolUse"}:
         red = not _state_exists(session_id)
         if tool_name in {"Bash", "Shell"}:
             if red and _bash_is_mutating(str(tool_input.get("command") or "")):
-                _deny(cursor_protocol)
+                _deliver_floor(cursor_protocol, session_id, event)
             return  # read-only shell always passes, red or green
-        if tool_name not in MUTATING_TOOLS:
+        if tool_name not in MUTATING_TOOLS and not _codex_exec_invokes_patch(
+            tool_name, raw_tool_input
+        ):
             return  # read-only and unknown tools always pass
         if not red:
             return  # floor loaded this session: allow
-        _deny(cursor_protocol)
+        _deliver_floor(cursor_protocol, session_id, event)
         return
     # Any other event: no decision.
 
@@ -365,15 +467,29 @@ def _load(argv: list) -> int:
         if not canonical or not re.match(r"^[a-z0-9]+([_-][a-z0-9]+)*$", canonical):
             sys.stderr.write("aios_gate: skill not found\n")
             return 2
-        resolved = _resolve_skill_path(canonical)
-        if not resolved:
+        resolved_info = _resolve_native_or_pack_skill(canonical)
+        if not resolved_info:
             sys.stderr.write("aios_gate: skill not found\n")
             return 2
-        with open(resolved, "r", encoding="utf-8") as fh:
+        resolved, resolved_name, _src = resolved_info
+        with open(resolved, "r", encoding="utf-8", newline="") as fh:
             body = fh.read()
         session_id = _session_id({}, argv[1] if len(argv) > 1 else None)
+        digests = {resolved_name: hashlib.sha256(body.encode("utf-8")).hexdigest()}
+        if resolved_name == "optimus" or canonical == "optimus":
+            yoke = _resolve_native_or_pack_skill("yoke")
+            if yoke:
+                yp, yn, _ = yoke
+                with open(yp, encoding='utf-8', newline='') as yfh:
+                    yoke_body = yfh.read()
+                digests[yn] = hashlib.sha256(yoke_body.encode()).hexdigest()
+                body += '\n\n' + yoke_body
+        _write_stdout(body)
         _write_floor_marker(session_id)
-        sys.stdout.write(body)
+        try:
+            _write_co_grounding_evidence(session_id, digests)
+        except Exception as err:
+            sys.stderr.write(f"aios_gate: WARNING CO evidence write failed ({err})\n")
         return 0
     except Exception as exc:
         sys.stderr.write(f"aios_gate: load failed ({type(exc).__name__}: {exc})\n")

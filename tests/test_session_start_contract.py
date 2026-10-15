@@ -27,7 +27,7 @@ class SessionStartContractTest(unittest.TestCase):
         merged_env = os.environ.copy()
         for key in SESSION_IDENTITY_KEYS:
             merged_env.pop(key, None)
-        merged_env.update({"HOME": home, **env})
+        merged_env.update({"HOME": home, "BACKS_DEPLOY_ROOT": str(Path(home)/"missing-deploy"), "AIOS_GATE": "on", **env})
         return subprocess.run(
             (*gate, *arguments),
             input=payload if isinstance(payload, str) else json.dumps(payload),
@@ -37,7 +37,7 @@ class SessionStartContractTest(unittest.TestCase):
             check=False,
         )
 
-    def test_claude_start_is_compact_accurate_and_rearms_red(self) -> None:
+    def test_claude_start_delivers_floor_and_preserves_grounding(self) -> None:
         for gate in GATES:
             with self.subTest(gate=gate[1]), tempfile.TemporaryDirectory() as home:
                 session = f"claude-start-{Path(gate[1]).suffix.lstrip('.')}"
@@ -54,24 +54,21 @@ class SessionStartContractTest(unittest.TestCase):
                     "hook_event_name": "SessionStart",
                 })
                 self.assertEqual(0, started.returncode, started.stderr)
-                self.assertLessEqual(len(started.stdout.encode()), 2048)
+                self.assertIn("## BACKS loaded: optimus", started.stdout)
                 context = json.loads(started.stdout)["hookSpecificOutput"]["additionalContext"]
                 self.assertIn("operator_intent_deduction", context)
                 self.assertIn("context_engineer", context)
                 self.assertIn("context-compiler is a context_engineer alias", context)
                 self.assertIn("intent-compiler is a separate skill", context)
                 self.assertNotIn("## WAKE_SKILL", context)
-                self.assertFalse(state.exists())
+                self.assertTrue(state.exists())
                 denied = self.run_gate(gate, home, {
                     "session_id": session,
                     "hook_event_name": "PreToolUse",
                     "tool_name": "Write",
                 })
                 self.assertEqual(0, denied.returncode, denied.stderr)
-                self.assertEqual(
-                    "deny",
-                    json.loads(denied.stdout)["hookSpecificOutput"]["permissionDecision"],
-                )
+                self.assertEqual("", denied.stdout)
 
     def test_alias_copies_stay_byte_identical(self) -> None:
         groups = (
