@@ -1,0 +1,15 @@
+{
+  "provider": "fleet",
+  "endpoint": "http://127.0.0.1:8000",
+  "auth": "api-key-helper",
+  "catalog_source": "configured gateway discovery at /api/system/needle_engineer_rungs",
+  "source": "configured native or portable gateway",
+  "verified_docs_date": "2026-10-15",
+  "gateway_discovery": true,
+  "roles": {
+    "default": [],
+    "opus": [],
+    "sonnet": [],
+    "haiku": []
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "needle": {
+    "python": "~/.local/share/backs-aios/typed-decision/current/venv/bin/python",
+    "log_path": "~/.local/state/backs-aios/portable-needle.log",
+    "timeout_s": 8,
+    "max_input_bytes": 24000,
+    "max_response_bytes": 262144,
+    "cpu_threads": 2,
+    "startup_timeout_s": 120,
+    "idle_timeout_s": 120,
+    "weights_path": "~/.local/share/backs-aios/typed-decision/current/needle/needle3.cact",
+    "library_path": "~/.local/share/backs-aios/typed-decision/current/needle/libneedle3.so",
+    "checkpoint": "Cactus-Compute/needle3@93e88ede867e4311c39151285e74df513e4b835b"
+  },
+  "typed_decision": {
+    "model": "kev-latest",
+    "python": "~/.local/share/backs-aios/typed-decision/current/venv/bin/python",
+    "hf_home": "~/.local/share/backs-aios/typed-decision/current/hf",
+    "checkpoint": "jaredpalmer/kev-0.6b@dece6dba8d43f0f7ded45e9f5b9df12474d90843",
+    "log_path": "~/.local/state/backs-aios/portable-kev.log",
+    "timeout_s": 8,
+    "max_input_bytes": 24000,
+    "max_response_bytes": 65536,
+    "cpu_threads": 2,
+    "dtype": "fp32",
+    "startup_timeout_s": 120,
+    "idle_timeout_s": 120
+  },
+  "receipt_path": "~/.local/state/backs-aios/portable-routing.jsonl",
+  "request_timeout_s": 180,
+  "decision_timeout_s": 8
+}

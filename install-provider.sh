@@ -13,16 +13,10 @@ if [[ -z "$PROJECT_ROOT" && -r "$CONFIG/project-root" ]]; then
     IFS= read -r PROJECT_ROOT < "$CONFIG/project-root" || true
 fi
 if [[ -z "$PROJECT_ROOT" || ! -d "$PROJECT_ROOT" ]]; then
-    printf '%s\n' 'ERROR: pass the existing BACKS workspace to install-provider.sh.' >&2
+    printf '%s\n' 'ERROR: pass the existing project directory to install-provider.sh.' >&2
     exit 1
 fi
 PROJECT_ROOT="$(cd "$PROJECT_ROOT" && pwd -P)"
-for module in env_loader.py env_utils.py; do
-    [[ -f "$PROJECT_ROOT/backend/core/$module" ]] || {
-        printf '%s\n' 'ERROR: workspace does not contain the BACKS environment resolver.' >&2
-        exit 1
-    }
-done
 if [[ -z "$PYTHON" && -n "${VIRTUAL_ENV:-}" && -x "$VIRTUAL_ENV/bin/python3" ]]; then
     PYTHON="$VIRTUAL_ENV/bin/python3"
 fi
@@ -61,7 +55,7 @@ for target in "$GLOBAL_SKILL" "$LOCAL_SKILL"; do
         echo 'ERROR: user-owned provider skill; not changed.' >&2; exit 1
     fi
 done
-for pair in 'backs-provider:bin/backs-provider' 'backs-ollama-key:provider/ollama-key-helper.sh' 'backs-minimax-key:provider/minimax-key-helper.sh' 'backs-aios-update:bin/backs-aios-update'; do
+for pair in 'backs-provider:bin/backs-provider' 'backs-ollama-key:provider/ollama-key-helper.sh' 'backs-minimax-key:provider/minimax-key-helper.sh' 'backs-needle-key:provider/needle-key-helper.sh' 'backs-aios-update:bin/backs-aios-update'; do
     name="${pair%%:*}"
     source="$ROOT/${pair#*:}"
     [[ -f "$source" ]] || { echo 'ERROR: incomplete provider package.' >&2; exit 1; }
@@ -81,13 +75,13 @@ for target in "$GLOBAL_SKILL" "$LOCAL_SKILL"; do
     mkdir -p "$(dirname "$target")"
     ln -sfn "$EXPECTED" "$target"
 done
-for pair in 'backs-provider:bin/backs-provider' 'backs-ollama-key:provider/ollama-key-helper.sh' 'backs-minimax-key:provider/minimax-key-helper.sh' 'backs-aios-update:bin/backs-aios-update'; do
+for pair in 'backs-provider:bin/backs-provider' 'backs-ollama-key:provider/ollama-key-helper.sh' 'backs-minimax-key:provider/minimax-key-helper.sh' 'backs-needle-key:provider/needle-key-helper.sh' 'backs-aios-update:bin/backs-aios-update'; do
     name="${pair%%:*}"
     tmp="$(mktemp "$BIN/.backs-install.XXXXXX")"
     install -m 0755 "$ROOT/${pair#*:}" "$tmp"
     mv -f "$tmp" "$BIN/$name"
 done
-printf '\n%s\n' 'BACKS provider installed: shared project and Python context for CLI + IDE credential helper.'
+printf '\n%s\n' 'BACKS provider installed: shared project and Python context; ordinary projects and native BACKS supported.'
 printf '%s\n' 'Existing BACKS runtime, .env, and OAuth credential store were not changed.'
-printf '%s\n' 'Run backs-provider minimax or backs-provider ollama to validate real API requests and activate the profile.'
+printf '%s\n' 'Installation preserves the selected provider. Use backs-provider serve for a configured portable Automatic endpoint, or explicitly select needle|minimax|ollama.'
 printf '%s\n' 'Then reload the IDE window and open a NEW LOCAL Claude Code chat.'

@@ -20,7 +20,8 @@ $PackEntries = @(
     ".claude-plugin", ".codex-plugin", ".cursor-plugin", ".gitignore",
     "command-adapters", "docs", "hooks", "i18n", "plays", "skills",
     "CITATION.cff", "INSTALL.md", "LICENSE", "NAMING.md", "NOTICE.md", "README.md",
-    "install.sh", "install.ps1"
+    "install.sh", "install.ps1", "install-provider.sh",
+    "provider", "bin", "claude-skills", "scripts", "config"
 )
 $script:Conflicts = 0
 
