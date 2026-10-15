@@ -1,70 +1,187 @@
 #!/usr/bin/env bash
 set -euo pipefail
+exec python3 - "$@" <<'PY'
+"""Update provider control from a checkout or an immutable installed package."""
+import fcntl
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import tempfile
 
-PROVIDER_RUNTIME="${BACKS_AIOS_PROVIDER_RUNTIME:-$HOME/.local/share/backs-aios/provider-control/current}"
-PROJECT_FILE="$HOME/.config/backs-aios/provider-control/project-root"
 
-if [[ ! -L "$PROVIDER_RUNTIME" ]]; then
-  printf 'ERROR: provider-control runtime is not an updateable symlink.\n' >&2
-  exit 1
-fi
-SOURCE="$(cd "$PROVIDER_RUNTIME" && pwd -P)"
-if [[ ! -d "$SOURCE/.git" ]]; then
-  printf 'ERROR: provider-control source is not a git checkout.\n' >&2
-  exit 1
-fi
+def run(*args, cwd=None, capture=False, env=None):
+    return subprocess.run(args, cwd=cwd, env=env, check=True, text=True,
+                          stdout=subprocess.PIPE if capture else None)
 
-# Serialize updater calls. Do not alter the primary BACKS runtime or credentials.
-command -v flock >/dev/null || { printf 'ERROR: flock is required.\n' >&2; exit 1; }
-exec 9>"$SOURCE/.git/backs-provider-update.lock"
-flock -n 9 || { printf 'ERROR: a provider update is already running.\n' >&2; exit 1; }
 
-clean_source() {
-  [[ -z "$(git -C "$SOURCE" status --porcelain --untracked-files=no)" ]]
-}
-clean_source || { printf 'ERROR: tracked local changes; nothing overwritten.\n' >&2; exit 1; }
-BRANCH="${BACKS_AIOS_CHANNEL:-main}"
-git check-ref-format --branch "$BRANCH" >/dev/null
-if [[ "$(git -C "$SOURCE" branch --show-current)" != "$BRANCH" ]]; then
-  printf 'ERROR: checkout is not on the configured update branch.\n' >&2
-  exit 1
-fi
-BEFORE="$(git -C "$SOURCE" rev-parse HEAD)"
-git -C "$SOURCE" fetch origin "refs/heads/$BRANCH"
-CANDIDATE="$(git -C "$SOURCE" rev-parse --verify 'FETCH_HEAD^{commit}')"
-git -C "$SOURCE" merge-base --is-ancestor "$BEFORE" "$CANDIDATE" || {
-  printf 'ERROR: update is not a fast-forward.\n' >&2; exit 1;
-}
+def git(source, *args):
+    return run("git", "-C", str(source), *args, capture=True).stdout.strip()
 
-# Validate an archive of the exact candidate BEFORE changing the live checkout.
-# A clean HOME/environment is established by the runner; only fixtures supply keys.
-STAGING="$(mktemp -d)"
-trap 'rm -rf -- "$STAGING"' EXIT
-mkdir "$STAGING/source"
-git -C "$SOURCE" archive "$CANDIDATE" | tar -xf - -C "$STAGING/source"
-if [[ ! -f "$STAGING/source/provider/run_provider_tests.py" ]]; then
-  printf 'ERROR: candidate lacks isolated provider validation; update refused.\n' >&2
-  exit 1
-fi
-if ! python3 -I -B "$STAGING/source/provider/run_provider_tests.py" "$STAGING/source"; then
-  printf 'ERROR: validation failed. Live checkout and installed wrappers were not changed.\n' >&2
-  exit 1
-fi
-clean_source && [[ "$(git -C "$SOURCE" rev-parse HEAD)" == "$BEFORE" ]] || {
-  printf 'ERROR: checkout changed during validation; update refused.\n' >&2; exit 1;
-}
-git -C "$SOURCE" merge --ff-only "$CANDIDATE"
 
-PROJECT_ROOT="${BACKS_PROJECT_ROOT:-}"
-if [[ -z "$PROJECT_ROOT" && -r "$PROJECT_FILE" ]]; then
-  IFS= read -r PROJECT_ROOT < "$PROJECT_FILE" || true
-fi
-if [[ -n "$PROJECT_ROOT" && -d "$PROJECT_ROOT" ]]; then
-  bash "$SOURCE/install-provider.sh" "$PROJECT_ROOT"
-else
-  bash "$SOURCE/install-provider.sh"
-fi
-printf '\nBACKS provider control updated successfully.\n'
-printf 'Branch : %s\n' "$BRANCH"
-printf 'Commit : %s\n' "$CANDIDATE"
-printf 'Main BACKS runtime was not modified.\n'
+def snapshot(paths):
+    return {p: ("link", os.readlink(p)) if p.is_symlink() else
+            ("file", p.read_bytes(), p.stat().st_mode & 0o777) if p.is_file() else
+            ("missing",) for p in paths}
+
+
+def restore(saved):
+    for path, value in saved.items():
+        if value[0] == "missing":
+            if path.is_symlink() or path.is_file():
+                path.unlink()
+            continue
+        with tempfile.TemporaryDirectory(dir=path.parent, prefix=".backs-restore-") as raw:
+            staged = Path(raw) / "entry"
+            if value[0] == "link":
+                staged.symlink_to(value[1])
+            else:
+                staged.write_bytes(value[1])
+                staged.chmod(value[2])
+            os.replace(staged, path)
+
+
+def overlay(source, destination):
+    """Overlay the public archive without following copied destination symlinks."""
+    for item in source.iterdir():
+        target = destination / item.name
+        if item.is_dir() and not item.is_symlink():
+            if target.is_symlink() or target.is_file():
+                target.unlink()
+            target.mkdir(exist_ok=True)
+            overlay(item, target)
+        else:
+            if target.is_dir() and not target.is_symlink():
+                shutil.rmtree(target)
+            elif target.is_symlink() or target.exists():
+                target.unlink()
+            if item.is_symlink():
+                target.symlink_to(os.readlink(item))
+            else:
+                shutil.copy2(item, target)
+
+
+def update():
+    home = Path.home()
+    runtime = Path(os.environ.get("BACKS_AIOS_PROVIDER_RUNTIME",
+                                  str(home / ".local/share/backs-aios/provider-control/current")))
+    config = home / ".config/backs-aios/provider-control"
+    if not runtime.is_symlink():
+        raise ValueError("provider-control runtime is not an updateable symlink")
+    source = runtime.resolve(strict=True)
+    branch = os.environ.get("BACKS_AIOS_CHANNEL", "main")
+    run("git", "check-ref-format", "--branch", branch, capture=True)
+    checkout = (source / ".git").exists()
+    # Linked worktrees use a .git file; Git owns resolution of its lock path.
+    lock_path = Path(git(source, "rev-parse", "--path-format=absolute", "--git-path",
+                         "backs-provider-update.lock")) if checkout else runtime.parent / "update.lock"
+    with lock_path.open("a") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise ValueError("a provider update is already running") from None
+        before = None
+        previous = {}
+        if checkout:
+            if git(source, "status", "--porcelain", "--untracked-files=no"):
+                raise ValueError("tracked local changes; nothing overwritten")
+            if git(source, "branch", "--show-current") != branch:
+                raise ValueError("checkout is not on the configured update branch")
+            before = git(source, "rev-parse", "HEAD")
+            git(source, "fetch", "origin", "refs/heads/" + branch)
+            repository = source
+            origin = git(source, "remote", "get-url", "origin")
+        else:
+            manifest = json.loads((source / ".codex-plugin/plugin.json").read_text())
+            origin = manifest["repository"]
+            if isinstance(origin, dict):
+                origin = origin["url"]
+            if not isinstance(origin, str) or not origin:
+                raise ValueError("installed package lacks its repository origin")
+            repository = runtime.parent / "update-source.git"
+            if not repository.exists():
+                run("git", "init", "--bare", "--quiet", str(repository))
+            if git(repository, "rev-parse", "--is-bare-repository") != "true":
+                raise ValueError("provider update source is not its managed bare repository")
+            git(repository, "fetch", origin, "refs/heads/" + branch)
+            receipt = source / ".backs-provider-source.json"
+            if receipt.is_file():
+                previous = json.loads(receipt.read_text())
+                if previous.get("origin") == origin and previous.get("branch") == branch:
+                    before = previous["commit"]
+        candidate = git(repository, "rev-parse", "--verify", "FETCH_HEAD^{commit}")
+        if before:
+            git(repository, "merge-base", "--is-ancestor", before, candidate)
+        with tempfile.TemporaryDirectory(prefix="backs-provider-update-") as raw:
+            stage = Path(raw)
+            archive = stage / "candidate.tar"
+            git(repository, "archive", "--output=" + str(archive), candidate)
+            proposed = stage / "candidate"
+            proposed.mkdir()
+            run("tar", "-xf", str(archive), "-C", str(proposed))
+            runner = proposed / "provider/run_provider_tests.py"
+            if not runner.is_file():
+                raise ValueError("candidate lacks isolated provider validation")
+            validation = subprocess.run([sys.executable, "-I", "-B", str(runner), str(proposed)])
+            if validation.returncode:
+                raise ValueError("validation failed; installed wrappers and current package were not changed")
+            if runtime.resolve() != source:
+                raise ValueError("runtime changed during validation; nothing overwritten")
+            if checkout:
+                if git(source, "status", "--porcelain", "--untracked-files=no") or git(source, "rev-parse", "HEAD") != before:
+                    raise ValueError("checkout changed during validation; nothing overwritten")
+                git(source, "merge", "--ff-only", candidate)
+                target = source
+            else:
+                releases = runtime.parent / "releases"
+                releases.mkdir(exist_ok=True)
+                target = Path(tempfile.mkdtemp(prefix=candidate[:12] + "-", dir=releases))
+                shutil.copytree(source, target, dirs_exist_ok=True, symlinks=True)
+                public_files = run("git", "-C", str(repository), "ls-tree", "-rz", "--name-only", candidate, capture=True).stdout.split("\0")
+                public_files = [name for name in public_files if name]
+                for name in set(previous.get("files", [])) - set(public_files):
+                    relative = Path(name)
+                    stale = target / relative
+                    if relative.is_absolute() or ".." in relative.parts:
+                        raise ValueError("invalid recorded provider source path")
+                    if stale.parent.resolve().is_relative_to(target) and (stale.is_file() or stale.is_symlink()):
+                        stale.unlink()
+                overlay(proposed, target)
+                (target / ".backs-provider-source.json").write_text(json.dumps(
+                    {"commit": candidate, "origin": origin, "branch": branch, "files": public_files}, indent=2) + "\n")
+            env = dict(os.environ)
+            project = env.get("BACKS_PROJECT_ROOT", "")
+            if not project and (config / "project-root").is_file():
+                project = (config / "project-root").read_text().strip()
+            if not env.get("BACKS_PROVIDER_PYTHON") and (config / "python-executable").is_file():
+                env["BACKS_PROVIDER_PYTHON"] = (config / "python-executable").read_text().strip()
+            env["BACKS_AIOS_PROVIDER_RUNTIME"] = str(runtime)
+            env["BACKS_AIOS_PROVIDER_ROOT"] = str(runtime.parent)
+            bin_dir = home / ".local/bin"
+            paths = [runtime, config / "project-root", config / "python-executable"]
+            paths += [bin_dir / name for name in ("backs-provider", "backs-ollama-key", "backs-minimax-key",
+                                                 "backs-needle-key", "backs-aios-update")]
+            paths += [Path(env.get("CLAUDE_CONFIG_DIR", str(home / ".claude"))) / "skills/provider"]
+            if project:
+                paths += [Path(project) / ".claude/skills/provider"]
+            saved = snapshot(paths)
+            try:
+                run("bash", str(target / "install-provider.sh"), *([project] if project else []), env=env)
+            except BaseException:
+                restore(saved)
+                raise
+            print("\nBACKS provider control updated successfully.")
+            print("Branch : " + branch)
+            print("Commit : " + candidate)
+            print("Main BACKS runtime and host plugin cache were not modified.")
+
+
+try:
+    update()
+except (OSError, ValueError, KeyError, subprocess.CalledProcessError) as exc:
+    print("ERROR: " + (str(exc) if not isinstance(exc, subprocess.CalledProcessError)
+                      else "provider update command failed; current package retained when validation failed") + ".", file=sys.stderr)
+    sys.exit(1)
+PY

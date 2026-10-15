@@ -97,3 +97,21 @@ python3 -m pytest -q tests/test_provider_backend_absent.py tests/test_portable_g
 The live runtime tests use real files, real local HTTP and real CPU checkpoints.
 Only the paid provider's HTTP transport is replaced in protocol fixtures. Actual
 host proof is recorded separately from fixture results.
+
+
+## Update provider control
+
+Run `backs-aios-update` (or `backs-provider update`). A source checkout keeps its
+existing clean, configured-branch fast-forward update path; linked Git worktrees
+are supported. An installed/copied plugin package uses its repository metadata
+to fetch the configured branch, validates the exact candidate in an isolated
+process, and installs a fresh provider-only release. The original package and
+extra native skills remain intact. Later updates remove obsolete public files
+recorded by the previous provider update while retaining extra package files.
+
+The updater preserves the saved project and Python interpreter, selected
+provider settings and credentials. Installation failure restores the previous
+provider pointer, launchers and installer settings. It does not update a host's
+plugin cache or marketplace version, change the main BACKS runtime, start a
+listener or select Automatic. Use the host's normal plugin update operation for
+a full plugin upgrade. `BACKS_AIOS_CHANNEL` retains the existing branch override.
