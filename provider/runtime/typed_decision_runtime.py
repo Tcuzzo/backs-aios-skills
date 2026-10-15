@@ -172,8 +172,9 @@ class TypedDecisionRuntime:
             request_id = request_id or uuid.uuid4().hex
             future = concurrent.futures.Future()
             self._pending = (request_id, future)
-            # Reserve bounded physical settlement time inside the caller budget.
-            work_budget = max(.01, budget - min(1., budget / 4))
+            # Execution receives the full configured phase budget. Physical
+            # settlement is separately bounded by _stop; never skip reaping.
+            work_budget = budget
             envelope = {"id": request_id, "deadline": time.time() + work_budget, "request": payload}
             try:
                 process.stdin.write((json.dumps(envelope, allow_nan=False) + "\n").encode())

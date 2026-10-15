@@ -71,7 +71,10 @@ point that process at the printed endpoint and choose `backs/claude-auto`.
 only this gateway and its owned inference workers.
 
 Automatic requests run CPU Needle similarity and Kev typed decisions through
-shared native/plugin policy with one configured eight-second decision budget.
+shared native/plugin policy in the existing Needle-then-typed-decision order.
+Each phase retains its configured execution timeout; Needle time does not
+subtract from the typed role's eight-second budget. Receipts report each phase
+and total elapsed time, including bounded physical worker cleanup.
 Only the current human task enters routing; separate host reminder blocks and
 tool results stay in the original upstream payload without becoming the task. A cold, busy, unavailable or uncertain component
 produces an honest fallback receipt; it does not block the configured provider.
