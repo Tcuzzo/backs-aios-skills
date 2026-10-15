@@ -57,7 +57,7 @@ depois MANTENHA ou REVERTA. Empate reverte. Só ganho provado aterrissa.
   adicione leituras ou escolha uma medida mais estável.
 - **Rig solo.** Sem segunda família de modelo disponível? Uma sessão cega nova, que
   nunca viu a conversa do autor, julga — e o relatório nomeia o portão enfraquecido
-  ("julgado cego-mesma-família, não cross-family").
+  ("julgado em um único rung configurado").
 - **Sem barra confiável? Use dominância.** Quando o nível da baseline é desconhecido
   ou ruidoso, derrube a barra absoluta e mantenha só o que vence o campeão atual com
   folga estrita. Uma regressão nunca domina, então não precisa de piso.

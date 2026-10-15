@@ -80,7 +80,7 @@ spec की तरह पढ़ो, किसी भी component से पह�
 - [intent-compiler](../intent-compiler/SKILL.md) — पूरी read-the-brief discipline.
 - [blind-eval](../blind-eval/SKILL.md) — जब सवाल taste हो, तब keep-or-revert.
 - [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) — pixels के पीछे के code की hardening.
-- [blind-tribunal](../blind-tribunal/SKILL.md) — उतरने से पहले cross-family grading.
+- [blind-tribunal](../blind-tribunal/SKILL.md) — उतरने से पहले independent, non-author grading।
 
 > Scaffold credit: W3C Design Tokens Community Group (token format); WCAG 2.2, W3C
 > (accessibility gate); UICrit, UIST 2024 (axis-scored UI critique); AI Jason, &

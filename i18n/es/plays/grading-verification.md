@@ -21,8 +21,8 @@ La calificación, de un vistazo:
 | 2 sniper-testing  scoped runs verified;    |  re-convene               |
 |   no mock theater on the changed seam      |                           |
 +--------------------------------------------+   +---------------------+ |
-| 3 cross-family grade -- a model from a     |   |  LORD OF THE LOOP   |-+
-|   DIFFERENT family than the builder        |   | one hand drives the |
+| 3 independent grade  a non-builder grader, |   |  LORD OF THE LOOP   |-+
+|   chosen live by capability + availability |   | one hand drives the |
 +--------------------------------------------+   | loop: dispatch,     |
 | 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
 |   author-redacted envelope                 |   | until the gate is   |
@@ -37,7 +37,7 @@ La calificación, de un vistazo:
 | LANDING GATE -- the two-sided proof:       |
 | fail-to-pass AND pass-to-pass, run         |
 | hermetically . no fake-green tell .        |
-| builder + grader families differ . the     |
+| author-disjoint grader session . the       |
 | grader re-ran the checks itself            |
 +--------------------------------------------+
 ```
@@ -52,10 +52,13 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
 2. [sniper-testing](../skills/sniper-testing/SKILL.md) — verifica que el constructor
    usó tests acotados durante la iteración y no corrió teatro de mocks sobre la
    costura que cambió.
-3. Calificación entre familias — entrega el trabajo a un modelo de una familia
-   DISTINTA a la del constructor. Calificar dentro de la misma familia infla las
-   tasas de victoria de forma medible — los evaluadores favorecen a los suyos;
-   otra instancia de la misma familia no alcanza.
+3. Calificación del autor disjunta — entrega el trabajo a un evaluador cuya
+   ejecución autora no construyó el cambio, elegido en vivo por capacidad y
+   disponibilidad desde la matriz de peldaños configurada; un evaluador del
+   mismo modelo, peldaño o familia en una sesión fresca y disjunta del autor se
+   permite donde el runtime configurado lo admita. La calificación con la misma
+   ejecución autora está descalificada de raíz; la auto-preferencia entre
+   ejecuciones de la misma familia infla las tasas de victoria de forma medible.
 4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — para cambios con
    consecuencias, convoca jurados sobre un sobre con el autor tachado. Cada hallazgo
    se vuelve un nuevo test rojo, y el tribunal se vuelve a convocar hasta que todos
@@ -91,7 +94,8 @@ El piso de mecánica del juez vive en la sección "De-bias the judge" de
 
 ## Puertas duras — cualquiera hace fallar la jugada
 
-- El constructor y el evaluador comparten familia de modelos.
+- La ejecución autora que construyó el cambio es la misma que firma la
+  calificación.
 - La suite no se puede mostrar en rojo antes del arreglo.
 - Falta fail-to-pass o pass-to-pass en la corrida calificada.
 - Cualquiera de las señales de verde falso de arriba está presente.

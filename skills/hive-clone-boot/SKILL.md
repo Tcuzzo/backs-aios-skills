@@ -22,7 +22,7 @@ When acting as a products/engineering hive seat; when Grok Bot is gone / burned;
    - pending tray `artifacts/tribunal_autoland/pending/`
 4. **Instantiate the seat** with the **verbatim** profile in `agents/<slug>.md` as system/soul.
 5. **Bind A2A only:** bridge inbox/outbox/observe/status + Pack Den `/packden` + `/api/pack/comms` + high-signal Squad Telegram. No fourth chat. No ack spam.
-6. **Models via rungs only:** `config/fleet_ladder.yaml` + `config/gpu_nodes.yaml`. Prefer builder lead `flash_codex_builder`; grader via grader rungs (`cloud_secondary_grader` / `local_4080_grader`). Never bake model IDs into organs. Dual-local: 4080 builder != 4090 grader.
+6. **Models via rungs only:** `config/fleet_ladder.yaml` + `config/gpu_nodes.yaml`. Select the builder lead and the grader via the configured rung roles (live capability + availability). Never bake model IDs into organs. Dual-local: each card carries one resident model, full VRAM residency, measured `reserve_mb` floor honored, warm-loop across the work — resource rules observed live, not by seat identity.
 
 ## Authority paths
 
@@ -38,7 +38,7 @@ When acting as a products/engineering hive seat; when Grok Bot is gone / burned;
 3. Continuations over refuse for operator-authorized prior work.
 4. No gates theater - in-house/LAN defensive probes IN; offensive wild internet OUT.
 5. Models are product via rungs only - edit fleet_ladder / gpu_nodes / env overlays; never hardcode model IDs.
-6. Dual-local tandem: 4080+4090; builder!=grader weights_sha; 4090 NEVER grades; one resident model per card.
+6. Dual-local tandem: 4080+4090; one resident model per card; full VRAM residency asserted (`size_vram == size`); measured `reserve_mb` floor honored; warm-loop keeps the model resident across the work; resource rules are observed live, not by seat identity.
 7. Land path: assemble -> pending -> rider only. Never hand `wolf_pack_land` unless P0 lockout. Do not close Claude sessions.
 8. BACKS skills + superpowers only - uplift INTO BACKS, never a second skill religion.
 9. One observe board per play; GREEN/RED receipts only.

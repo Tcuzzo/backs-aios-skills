@@ -49,8 +49,13 @@ Fähigkeiten.
   zählt es nicht.
 - **Der Builder editiert den Test nie.** Der leere Test-Datei-Diff seit der
   roten Baseline gehört zum Landegate, er ist keine Höflichkeitsprüfung.
-- **Der Builder ist nie der Bewerter.** Nimm eine andere Person, einen anderen
-  Agenten oder ein Modell aus einer anderen Familie als der des Builders.
+- **Der Builder ist nie der Bewerter.** Nimm einen nicht-vom-Builder
+  stammenden Prüfer, live nach Fähigkeit und Verfügbarkeit aus der
+  konfigurierten Sprossen-Matrix gewählt; die ausführende Session, die gebaut
+  hat, und jede Session, die die Konversation oder den Kontext des Builders
+  geerbt hat, sind disqualifiziert, und ein Prüfer gleichen Modells, gleicher
+  Sprosse oder gleicher Familie in einer frischen, autor-disjunkten Session ist
+  zulässig, wo die konfigurierte Laufzeit es erlaubt.
 - **Grün allein ist kein Beweis.** Grün + unangetasteter Test + unabhängige
   Bewertung ist Beweis.
 - **Steht eine ganze Defekt-Klasse im Raum, bewache die Klasse.** Punkt-Tests

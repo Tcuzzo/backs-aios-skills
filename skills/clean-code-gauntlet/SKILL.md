@@ -88,11 +88,14 @@ delta against the pre-change baseline:
 ## The taste review (last, and light)
 
 Deterministic gates go first; spend a model only where reasoning is the only
-tool. The reviewer is a model from a different family than the builder — the
-builder never grades its own work. It judges only design and taste: naming,
-mixed concerns, interface width, and the six smells — rigidity, fragility,
-immobility, needless complexity, needless repetition, opacity. The arithmetic
-was already settled by the gates.
+tool. The reviewer is a non-builder grader, chosen live by capability and
+availability from the configured rung matrix (the authoring execution that
+built is recorded as provenance and disqualified; a same model, rung, or
+family reviewer in a fresh, author-disjoint session is permitted where the
+configured runtime allows) — the builder never grades its own work. It judges
+only design and taste: naming, mixed concerns, interface width, and the six
+smells — rigidity, fragility, immobility, needless complexity, needless
+repetition, opacity. The arithmetic was already settled by the gates.
 
 Craft floor the review holds: functions small, doing one thing, few arguments,
 no flag arguments, honest names; deep modules — a small interface hiding real

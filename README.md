@@ -185,7 +185,10 @@ it claims to prove.
 **Builder is not grader.** [red-first](skills/red-first/SKILL.md) commits a
 proven-failing test before the build starts, and the builder may not touch it.
 [blind-tribunal](skills/blind-tribunal/SKILL.md) puts the change in front of eight
-blind jurors from different model families, one lens each. Nothing here grades its own
+blind jurors, one lens each, routed by tier to the cheapest sufficient model.
+The authoring execution that built is recorded as provenance and disqualified;
+a same model, rung, or family juror in a fresh, author-disjoint session is
+permitted where the configured runtime allows. Nothing here grades its own
 homework.
 
 ## What breaks it
@@ -206,7 +209,7 @@ homework.
 | --- | --- |
 | [absorb](skills/absorb/SKILL.md) | Adopt an existing open-source capability and re-engineer it as a native skill, instead of building a duplicate. |
 | [blind-eval](skills/blind-eval/SKILL.md) | Judge a change on its merits with authorship hidden, then keep or revert. Only proven uplift lands. |
-| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Eight blind jurors from different model families grade the change, one lens each, routed by tier to the cheapest sufficient model. Every finding becomes a failing test. Loop until all pass. |
+| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Eight blind jurors grade the change, one lens each, routed by tier to the cheapest sufficient model. The authoring execution that built is recorded as provenance and disqualified; a same model, rung, or family juror in a fresh, author-disjoint session is permitted where the configured runtime allows. Every finding becomes a failing test. Loop until all pass. |
 | [bounded-loops](skills/bounded-loops/SKILL.md) | Budget ceilings, checkpoints, and kill-switches on every loop. Makes hammering an API structurally impossible. |
 | [clean-code-gauntlet](skills/clean-code-gauntlet/SKILL.md) | A deterministic quality bar: sniper tests, the CRAP score (complexity x coverage), bounded mutation testing, then a light taste review. |
 | [decision-bar](skills/decision-bar/SKILL.md) | One bar for every decision: only taste, vision, or destructive risk reach the human. Everything else executes. |
@@ -282,7 +285,9 @@ Same rules the pack teaches.
 1. **Write the failing test first.** It has to fail for the reason you say.
 2. **Then the change.** Smallest edit that turns it green.
 3. **Do not grade your own work.** Something that did not write the change has to pass
-   it. If a model reviews, use a different family than the one that wrote it.
+   it. If a model reviews, the authoring execution that built cannot be the one
+   that grades — a same model, rung, or family reviewer in a fresh,
+   author-disjoint session is permitted where the configured runtime allows.
 4. **No mock theater.** Assert the real side effect — a real file, a real evaluator run.
 5. **Keep the credits intact.** Scaffold credits are not optional.
 

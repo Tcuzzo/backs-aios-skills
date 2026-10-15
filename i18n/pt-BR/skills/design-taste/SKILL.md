@@ -82,7 +82,7 @@ portão na acessibilidade — duro.
 - [intent-compiler](../intent-compiler/SKILL.md) — a disciplina completa de ler o brief.
 - [blind-eval](../blind-eval/SKILL.md) — manter-ou-reverter quando a questão é gosto.
 - [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) — endurecendo o código atrás dos pixels.
-- [blind-tribunal](../blind-tribunal/SKILL.md) — avaliação cross-family antes de aterrissar.
+- [blind-tribunal](../blind-tribunal/SKILL.md) — avaliação independente, não-autor, antes de aterrissar.
 
 > Crédito de scaffold: W3C Design Tokens Community Group (formato de tokens);
 > WCAG 2.2, W3C (portão de acessibilidade); UICrit, UIST 2024 (crítica de UI

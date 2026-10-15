@@ -30,7 +30,8 @@ The build, at a glance:
 |   | 6 clean-code-gauntlet  mutate decision     |   | judge, loop back    |
 |   |   paths to zero survivors                  |   | until the gate is   |
 |   +--------------------------------------------+   | green. a lane never |
-|   | 7 blind-tribunal  cross-family graders     |-->| lands its own work. |
+|   | 7 blind-tribunal  independent juror       |-->| lands its own work. |
+|   |   panel; capability-resolved graders      |   |                    |
 |   +--------------------------------------------+   +---------------------+
 |             |
 |             | every juror passes
@@ -39,8 +40,8 @@ The build, at a glance:
 |   | LANDING GATE -- all green or no ship:      |
 |   | no fail-open boundary, silent fallback,    |
 |   | or swallowed error . zero mutation         |
-|   | survivors in decision paths . cross-       |
-|   | family pass; the builder never grades .    |
+|   | survivors in decision paths . independent  |
+|   | pass; the builder never grades .           |
 +---| zero primitives = invalid -> redesign      |
     +--------------------------------------------+
 ```
@@ -64,9 +65,15 @@ The build, at a glance:
    handlers and decision functions pass the gauntlet: risk score under your
    ceiling, then mutation over the decision paths to zero survivors. Branch logic
    that survives a flipped comparison was never really tested.
-7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — cross-family graders pass
-   the agent before it ships. The builder never grades its own work. Every juror
-   finding becomes a new red test; re-convene until every juror passes.
+7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — independent juror panel
+   passes the agent before it ships. The grader runs in a fresh, author-disjoint
+   session that did not see the builder's conversation or inherit its context,
+   chosen live by capability and availability from the configured rung matrix
+   (the authoring execution that built is recorded as provenance and excluded;
+   a same model, rung, or family reviewer in a fresh, author-disjoint session
+   is permitted where the configured runtime allows). The builder never grades
+   its own work. Every juror finding becomes a new red test; re-convene until
+   every juror passes.
 
 ## The doctrine (what the build must satisfy)
 
@@ -97,11 +104,17 @@ The build, at a glance:
 - Zero primitives = invalid design; go back to step 2.
 - Any fail-open boundary, silent fallback, or swallowed error blocks the ship.
 - Mutation survivors in decision paths block the ship.
-- Cross-family grade must pass; builder is never the grader.
+- Independent grade passes; the grader runs in a fresh, author-disjoint session
+  that did not see the builder's conversation or inherit its context, chosen
+  live by capability and availability from the rung matrix. The authoring
+  execution that built is recorded as provenance (`--builder`, `builder_family`
+  where the runner carries them) and excluded from the grade; a same model,
+  rung, or family reviewer in a fresh, author-disjoint session is permitted
+  where the configured runtime allows.
 
 ## Works well with
 
 - [root-cause-first](../skills/root-cause-first/SKILL.md) — when the agent misbehaves
 - [session-handoff](../skills/session-handoff/SKILL.md) — durable state done right
 
-**Weight:** mostly free discipline plus one light design gate; the heavy spend is the gauntlet's mutation runs and the cross-family tribunal — it pays on any agent that will act with nobody watching.
+**Weight:** mostly free discipline plus one light design gate; the heavy spend is the gauntlet's mutation runs and the blind-tribunal panel — it pays on any agent that will act with nobody watching.

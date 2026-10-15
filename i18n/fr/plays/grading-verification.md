@@ -21,8 +21,8 @@ La notation, en un coup d'œil :
 | 2 sniper-testing  scoped runs verified;    |  re-convene               |
 |   no mock theater on the changed seam      |                           |
 +--------------------------------------------+   +---------------------+ |
-| 3 cross-family grade -- a model from a     |   |  LORD OF THE LOOP   |-+
-|   DIFFERENT family than the builder        |   | one hand drives the |
+| 3 independent grade  a non-builder grader, |   |  LORD OF THE LOOP   |-+
+|   chosen live by capability + availability |   | one hand drives the |
 +--------------------------------------------+   | loop: dispatch,     |
 | 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
 |   author-redacted envelope                 |   | until the gate is   |
@@ -37,7 +37,7 @@ La notation, en un coup d'œil :
 | LANDING GATE -- the two-sided proof:       |
 | fail-to-pass AND pass-to-pass, run         |
 | hermetically . no fake-green tell .        |
-| builder + grader families differ . the     |
+| author-disjoint grader session . the       |
 | grader re-ran the checks itself            |
 +--------------------------------------------+
 ```
@@ -52,10 +52,14 @@ La notation, en un coup d'œil :
 2. [sniper-testing](../skills/sniper-testing/SKILL.md) — vérifie que le builder
    a utilisé des tests ciblés pendant l'itération et n'a fait aucun théâtre de
    mocks sur la couture qu'il a changée.
-3. Notation inter-famille — confie le travail à un modèle d'une famille
-   DIFFÉRENTE de celle du builder. La notation intra-famille gonfle les taux de
-   victoire de façon mesurable — les graders favorisent les leurs ; une autre
-   instance de la même famille ne suffit pas.
+3. Notation disjointe de l'auteur — confie le travail à un correcteur dont
+   l'exécution autrice n'a pas construit le changement, choisi en direct par
+   capacité et disponibilité depuis la matrice de barreaux configurée ; un
+   correcteur de même modèle, même barreau ou même famille dans une session
+   vierge et disjointe de l'auteur est permis là où le runtime configuré le
+   permet. L'auto-signature de la note par l'exécution qui a construit est
+   disqualifiée à la racine ; l'auto-préférence mesurable entre exécutions
+   d'une même famille gonfle les taux de victoire.
 4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — pour les changements à
    conséquences, convoque des jurés sur une enveloppe dont l'auteur est masqué.
    Chaque trouvaille devient un nouveau test rouge, et le tribunal se reconvoque
@@ -92,7 +96,8 @@ Le socle mécanique du juge vit dans la section « Débiaiser le juge » de
 
 ## Barrières dures — une seule suffit à faire échouer le play
 
-- Le builder et le grader partagent une famille de modèles.
+- L'exécution autrice qui a construit le changement signe elle-même la
+  note.
 - La suite ne peut pas être montrée rouge avant le correctif.
 - Le fail-to-pass ou le pass-to-pass manque au run noté.
 - Un des aveux de faux vert ci-dessus est présent.

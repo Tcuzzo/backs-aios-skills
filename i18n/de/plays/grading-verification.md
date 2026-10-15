@@ -21,8 +21,8 @@ Die Benotung auf einen Blick:
 | 2 sniper-testing  scoped runs verified;    |  re-convene               |
 |   no mock theater on the changed seam      |                           |
 +--------------------------------------------+   +---------------------+ |
-| 3 cross-family grade -- a model from a     |   |  LORD OF THE LOOP   |-+
-|   DIFFERENT family than the builder        |   | one hand drives the |
+| 3 independent grade  a non-builder grader, |   |  LORD OF THE LOOP   |-+
+|   chosen live by capability + availability |   | one hand drives the |
 +--------------------------------------------+   | loop: dispatch,     |
 | 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
 |   author-redacted envelope                 |   | until the gate is   |
@@ -37,7 +37,7 @@ Die Benotung auf einen Blick:
 | LANDING GATE -- the two-sided proof:       |
 | fail-to-pass AND pass-to-pass, run         |
 | hermetically . no fake-green tell .        |
-| builder + grader families differ . the     |
+| author-disjoint grader session . the       |
 | grader re-ran the checks itself            |
 +--------------------------------------------+
 ```
@@ -52,10 +52,14 @@ Die Benotung auf einen Blick:
 2. [sniper-testing](../skills/sniper-testing/SKILL.md) — verifiziere, dass der
    Builder während der Iteration gescopte Tests benutzt hat und kein Mock-Theater
    auf der Seam lief, die er geändert hat.
-3. Familienfremde Benotung — gib die Arbeit einem Modell aus einer ANDEREN Familie
-   als der Builder. Benotung innerhalb derselben Familie bläht die Gewinnraten
-   messbar auf — Prüfer bevorzugen die eigene Verwandtschaft; eine andere Instanz
-   derselben Familie reicht nicht.
+3. Autor-disjunkte Benotung — gib die Arbeit einem Prüfer, dessen ausführende
+   Session die Änderung NICHT gebaut hat, live nach Fähigkeit und Verfügbarkeit
+   aus der konfigurierten Sprossen-Matrix gewählt; ein Prüfer gleichen Modells,
+   gleicher Sprosse oder gleicher Familie in einer frischen, autor-disjunkten
+   Session ist zulässig, wo die konfigurierte Laufzeit es erlaubt. Die
+   Selbst-Benotung durch die ausführende Session, die gebaut hat, ist von
+   Grund auf disqualifiziert; die messbare Eigen-Bevorzugung zwischen
+   Ausführungen derselben Familie bläht die Gewinnraten auf.
 4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — berufe bei folgenschweren
    Änderungen Juroren über ein Envelope ohne Autorenangabe ein. Jeder Fund wird
    ein neuer roter Test, und das Tribunal tagt neu, bis alle Juroren die Änderung
@@ -85,13 +89,14 @@ Die Benotung auf einen Blick:
 
 ## Den Richter ent-biasen
 
-Der Boden der Richter-Mechanik steht im Abschnitt „De-bias the judge“ („den Richter
-ent-biasen“) von [blind-eval](../skills/blind-eval/SKILL.md) — wende ihn als Ganzes
+Der Boden der Richter-Mechanik steht im Abschnitt „De-bias the judge" („den Richter
+ent-biasen") von [blind-eval](../skills/blind-eval/SKILL.md) — wende ihn als Ganzes
 an.
 
 ## Harte Gates — eines reicht, und das Play ist gescheitert
 
-- Builder und Prüfer teilen eine Modellfamilie.
+- Die ausführende Session, die die Änderung gebaut hat, signiert die
+  Benotung selbst.
 - Die Suite lässt sich nicht als rot vor dem Fix zeigen.
 - Fail-to-pass oder pass-to-pass fehlt im benoteten Lauf.
 - Eines der Fake-Grün-Zeichen oben ist vorhanden.

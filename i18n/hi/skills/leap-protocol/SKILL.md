@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # LEAP Protocol
-**Effort:** heavy — isolated worktrees में parallel builders, और हर ball पर blind cross-family reviewers; इसे सिर्फ़ उन seams पर खर्च करें जो एक builder के लिए बहुत बड़ी हों — वहाँ fan-out वह wall-clock वापस कमा देता है जो अकेली lane serially जला देती। हटाता है: shared files पर builders की टक्कर, और वह एक विशाल unreviewable diff जिसे कोई roll back नहीं कर सकता।
+**Effort:** heavy — isolated worktrees में parallel builders, और हर ball पर blind, capability-resolved reviewers; इसे सिर्फ़ उन seams पर खर्च करें जो एक builder के लिए बहुत बड़ी हों — वहाँ fan-out वह wall-clock वापस कमा देता है जो अकेली lane serially जला देती। हटाता है: shared files पर builders की टक्कर, और वह एक विशाल unreviewable diff जिसे कोई roll back नहीं कर सकता।
 
 LEAP एक bounded stateless-handoff तरीक़ा है। Seam को **balls** में तोड़ो। हर
 ball एक fresh builder के पास जाती है, जिसके पास कोई छिपा context नहीं होता।
@@ -88,9 +88,14 @@ Builder अपनी ball ख़ुद कभी grade नहीं करता
 2. **Keep-or-revert** — candidate बनाम champion, ball के declared metric पर,
    declared field order में। Tie या regression हारता है। देखो
    [blind-eval](../blind-eval/SKILL.md)।
-3. **Blind cross-family review** — builder से अलग model families के कम से कम
-   दो reviewers, हर एक को वही candidate hash और वही author-redacted envelope
-   दिखे। जिस reviewer ने बुरा जवाब दिया — garbage, non-JSON, refusal text —
+3. **Independent reviewer panel** — कम से कम दो reviewers जिन्होंने ball
+   नहीं बनाया, हर एक को वही candidate hash और वही author-redacted envelope
+   दिखे। जिस seat ने build किया वह provenance के रूप में दर्ज है और
+   बाहर रखी गई है; एक fresh, author-disjoint session में same-seat या
+   same-rung reviewer की अनुमति है जहाँ configured runtime अनुमति देता है।
+   Reviewers को live capability और availability के आधार पर configured rung
+   matrix से चुना जाता है; model identity provenance है, authority नहीं।
+   जिस reviewer ने बुरा जवाब दिया — garbage, non-JSON, refusal text —
    वह एक valid refusal है: `-1`। जिस reviewer ने कभी जवाब ही नहीं दिया
    (transport failure, unreachable) वह `0` है: hold करो और fleet ladder से
    नई seat दो — pass कभी fake नहीं होता। देखो

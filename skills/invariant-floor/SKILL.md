@@ -27,8 +27,9 @@ the work — it drives the repair loop until the law IS true, then the change la
 2. **Verification floor.** Failing test first → make it green → prove it live.
    A suite that mocks the exact seam under change proves nothing.
 3. **Builder never grades its own work.** An independent grader (a model or
-   agent that did not author the change, ideally a different model family)
-   must pass it before it lands.
+   agent whose authoring execution did not build the change) must pass it
+   before it lands; a same model, rung, or family reviewer in a fresh,
+   author-disjoint session is permitted where the configured runtime allows.
 4. **No fake green.** Never claim a capability off a proxy probe while the real
    surface is broken. Proof happens on the real path, not a stand-in.
 5. **Loud failures, never a silent fallback.** Errors raise or return a loud

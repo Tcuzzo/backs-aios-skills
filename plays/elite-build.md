@@ -44,7 +44,6 @@ The loop, at a glance:
 | 10 clean-code-gauntlet  measure + mutate   |   | until the gate is   |
 +--------------------------------------------+   | green. a lane never |
 | 11 blind-eval, then blind-tribunal         |-->| lands its own work. |
-+--------------------------------------------+   +---------------------+
           |
           | every juror passes
           v
@@ -102,10 +101,14 @@ The loop, at a glance:
     then mutation testing to zero survivors. Measure the code; never eyeball it.
 11. [blind-eval](../skills/blind-eval/SKILL.md), then
     [blind-tribunal](../skills/blind-tribunal/SKILL.md) — an author-redacted envelope
-    goes to graders from a different model family than the builder. The builder never
-    grades its own work. Every juror finding becomes a new red test; re-convene until
-    every juror passes. Solo rig? Degrade per blind-tribunal's Solo rig rule — and
-    name the weakened gate in the landing report.
+    goes to a grader seat that did not build the change, chosen live by capability
+    and availability from the rung matrix. The builder's identity, when the
+    portable runner records it as provenance (`--builder`, `builder_family`),
+    is carried only as far as that runner carries it — provenance, not a
+    universal capability gate. The seat that built never grades its own work.
+    Every juror finding becomes a new red test; re-convene until every juror
+    passes. Solo rig? Degrade per blind-tribunal's Solo rig rule — and name the
+    weakened gate in the landing report.
 12. Land: merge cleanly, run ONE full pass over the touched modules' suites, restart
     the real service, and prove the behavior on the human's own surface (the page
     they load, the command they run) — never a proxy probe. Then report.
@@ -114,7 +117,10 @@ The loop, at a glance:
 
 - The failing test was committed before the build and is untouched — the grader
   verifies the test-file diff is empty.
-- Builder is never grader, and the grader is a different model family.
+- The grader seat did not build the change: the rung matrix resolves a
+  capability-sufficient non-builder seat. The builder's identity, when the
+  portable runner records it (`--builder`, `builder_family`), stays as
+  provenance on the run.
 - Every surfaced finding is closed, or adjudicated "not a bug" with recorded
   evidence. Never silently deferred. Whole-seam closure (the seam is the shared
   spot in the code where this class of bug lives) or no landing.

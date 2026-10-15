@@ -95,8 +95,13 @@ complejidad y de CRAP contra la línea base previa al cambio:
 ## La revisión de gusto (al final, y ligera)
 
 Las puertas deterministas van primero; gasta un modelo solo donde razonar es la
-única herramienta. El revisor es un modelo de una familia distinta a la del
-constructor — el que construye nunca califica su propio trabajo. Juzga solo diseño
+única herramienta. El revisor es un evaluador que no sea del constructor,
+elegido en vivo por capacidad y disponibilidad desde la matriz de peldaños
+configurada; la ejecución autora que construyó queda descalificada, igual que
+cualquier sesión que haya heredado la conversación o el contexto del
+constructor, y un revisor del mismo modelo, peldaño o familia en una sesión
+fresca y disjunta del autor se permite donde el runtime configurado lo admita
+— el que construye nunca califica su propio trabajo. Juzga solo diseño
 y gusto: nombres, responsabilidades mezcladas, ancho de interfaz, y los seis
 olores — rigidez, fragilidad, inmovilidad, complejidad innecesaria, repetición
 innecesaria, opacidad. La aritmética ya la resolvieron las puertas.

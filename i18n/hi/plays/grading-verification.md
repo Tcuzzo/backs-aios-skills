@@ -20,8 +20,8 @@ Adversarial grading का play। इसका एक ही विश्वा
 | 2 sniper-testing  scoped runs verified;    |  re-convene               |
 |   no mock theater on the changed seam      |                           |
 +--------------------------------------------+   +---------------------+ |
-| 3 cross-family grade -- a model from a     |   |  LORD OF THE LOOP   |-+
-|   DIFFERENT family than the builder        |   | one hand drives the |
+| 3 independent grade  a non-builder seat,   |   |  LORD OF THE LOOP   |-+
+|   chosen live by capability + availability |   | one hand drives the |
 +--------------------------------------------+   | loop: dispatch,     |
 | 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
 |   author-redacted envelope                 |   | until the gate is   |
@@ -51,9 +51,9 @@ Adversarial grading का play। इसका एक ही विश्वा
 2. [sniper-testing](../skills/sniper-testing/SKILL.md) — जाँचें कि builder ने
    iteration के दौरान scoped tests चलाए और जिस seam को बदला, उस पर कोई mock
    theater नहीं किया।
-3. Cross-family grade — काम को builder से एक ALAG family के model के हाथ में दें।
-   एक ही family के भीतर grading नापे जाने लायक़ हद तक win-rates फुलाती है — grader
-   अपने ही खानदान का पक्ष लेते हैं; उसी family का दूसरा instance काफ़ी नहीं है।
+3. Independent grade — grader seat को live capability और availability के आधार पर configured rung matrix से चुनें (जिस seat ने build किया वह provenance के रूप में दर्ज है और बाहर रखी गई है; एक fresh, author-disjoint session में same-seat या same-rung reviewer की अनुमति है जहाँ configured runtime अनुमति देता है)।
+   Builder की identity provenance है, authority नहीं; model family होना
+   automatic independence guarantee नहीं है।
 4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — गंभीर नतीजों वाले बदलावों
    के लिए, jurors को एक author-redacted envelope पर बिठाएँ। हर finding एक नया red
    test बनती है, और tribunal तब तक दोबारा बैठता है जब तक सारे jurors pass न दें।
@@ -85,7 +85,7 @@ the judge" section में है — उसे पूरा लागू क�
 
 ## Hard gates — कोई एक भी टूटा तो play fail
 
-- builder और grader एक ही model family से हैं।
+- Builder और grader एक ही seat / context से हैं, या builder ने अपना ही काम grade किया है।
 - fix से पहले suite को red दिखाया नहीं जा सकता।
 - graded run में fail-to-pass या pass-to-pass गायब है।
 - ऊपर वाला कोई भी fake-green सुराग़ मौजूद है।
