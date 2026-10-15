@@ -158,6 +158,22 @@ class FloorAutoloadTest(unittest.TestCase):
                 for name in ('optimus','yoke')})
             self.assertFalse((state/'backs_ground_floor').exists())
 
+    def test_opencode_existing_kill_switch_warns_without_loading_or_denial(self):
+        script = """
+import plugin from './hooks/opencode-plugin.mjs';
+const hooks = await plugin({});
+const output = {system:['existing system']};
+await hooks['experimental.chat.system.transform']({sessionID:'disabled-context'}, output);
+console.log(JSON.stringify(output));
+"""
+        result = subprocess.run(['node','--input-type=module','--eval',script], cwd=self.pack,
+            env={**self.env,'AIOS_GATE':'off','BACKS_AIOS_RUNTIME_ROOT':str(self.pack)},
+            text=True,capture_output=True,timeout=10)
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertEqual(json.loads(result.stdout), {'system':['existing system']})
+        self.assertIn('disabled', result.stderr)
+        self.assertFalse((self.root/'home/.aios/state/aios_floor_disabled-context.state').exists())
+
     def test_opencode_real_adapter_delivers_context_before_recording(self):
         script = '''
 import plugin from './hooks/opencode-plugin.mjs';

@@ -122,7 +122,7 @@ async function systemTransform(input, output) {
   }
   if (!Array.isArray(output?.system)) return;
   try {
-    await evaluate(
+    const result = await evaluate(
       {session_id: input?.sessionID, hook_event_name: "SessionStart"},
       {emit: false, deliverContext(context) {
         // The host retains this array. Merge into its leading system block.
@@ -130,6 +130,7 @@ async function systemTransform(input, output) {
         else output.system.push(context);
       }},
     );
+    handleDisabled(result);
   } catch (err) {
     warnOnce("context", `aios-plugin: grounding unavailable (${err?.name || "Error"}); allowing`);
   }
