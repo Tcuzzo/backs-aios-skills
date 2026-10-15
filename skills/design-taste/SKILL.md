@@ -78,7 +78,7 @@ give the builder eyes with a screenshot loop, and gate on accessibility — hard
 - [intent-compiler](../intent-compiler/SKILL.md) — the full read-the-brief discipline.
 - [blind-eval](../blind-eval/SKILL.md) — keep-or-revert when taste is the question.
 - [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) — hardening the code behind the pixels.
-- [blind-tribunal](../blind-tribunal/SKILL.md) — cross-family grading before landing.
+- [blind-tribunal](../blind-tribunal/SKILL.md) — fresh author-disjoint review before landing.
 
 > Scaffold credit: W3C Design Tokens Community Group (token format); WCAG 2.2, W3C
 > (accessibility gate); UICrit, UIST 2024 (axis-scored UI critique); AI Jason, &

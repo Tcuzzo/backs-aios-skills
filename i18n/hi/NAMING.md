@@ -96,7 +96,7 @@ green न हो जाए। कोई lane कभी अपना काम �
 | --- | --- |
 | absorb | बाहरी capability को अंदर लेकर native की तरह re-engineer करने का अनुशासन, नक़ल बनाने की जगह। |
 | blind-eval | लेखक छिपाकर evaluation — अंधापन ही mechanism है। |
-| blind-tribunal | jurors का एक panel, लेखक से अंधा, अलग-अलग model families से। tribunal = panel और verdict, दोनों। |
+| blind-tribunal | jurors का एक panel, लेखक से अंधा, fresh author-disjoint sessions से। tribunal = panel और verdict, दोनों। |
 | bounded-loops | जो गुण लागू होता है वही नाम है: हर loop एक bound रखता है — budget, checkpoint, kill-switch। |
 | clean-code-gauntlet | gauntlet सख़्त जाँचों की एक कतार है; clean code वह है जो उससे बचकर निकलता है। |
 | decision-bar | एक bar जिस पर हर फ़ैसला नापा जाता है, इंसान तक पहुँचने से पहले। |

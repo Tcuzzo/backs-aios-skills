@@ -88,7 +88,7 @@ VRAM ceilings (ladder): 4090 <=22000 MB; 4080 <=16376 MB; 5070 <=12288 MB.
 | builder premium | `premium_codex_builder` / `frontier_codex_builder` | gpt-5.6-sol / gpt-6-astra | heavy / planner-adjacent |
 | builder prepaid | `minimax_prepaid_builder` | MiniMax-M3 | MiniMax API build/verify |
 | builder local | `local_4080_builder` then `local_4090_builder` | qwen2.5-coder:14b / qwen2.5:14b | dual-local; distinct weights_sha |
-| grader | `cloud_secondary_grader` lead | deepseek-v4-pro:0813 | family-disjoint from builder |
+| grader | `cloud_secondary_grader` lead | deepseek-v4-pro:0813 | fresh author-disjoint review session |
 | grader | `cloud_independent_grader` | kimi-k2.7-code | index-matched independence |
 | grader prepaid | `minimax_prepaid_grader` | MiniMax-M3 | verify |
 | grader survival | `local_4080_grader` | deepseek-coder-v2:16b-lite | **4090 must not grade** |

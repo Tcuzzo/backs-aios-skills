@@ -43,7 +43,7 @@ seats:
     pack_role: tip_board_rca
     storm_seat: patch
     ladder_role: builder         # flash_codex_builder (glm-5.3-flash) via ladder
-    verify_ladder_role: grader   # family-disjoint
+    verify_ladder_role: grader   # fresh author-disjoint review session
     dual_local: true
     a2a: [bridge_observe]
     honest_gap: profile_thin_199c — absorb PATCH_MASTER_UPLIFT.md before GREEN
