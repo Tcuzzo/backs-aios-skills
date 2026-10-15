@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 PROVIDER_ROOT="${BACKS_AIOS_PROVIDER_ROOT:-$HOME/.local/share/backs-aios/provider-control}"
-RUNTIME="$PROVIDER_ROOT/current"
+RUNTIME="${BACKS_AIOS_PROVIDER_RUNTIME:-$PROVIDER_ROOT/current}"
 CONFIG="$HOME/.config/backs-aios/provider-control"
 BIN="$HOME/.local/bin"
 PROJECT_ROOT="${BACKS_PROJECT_ROOT:-${1:-}}"

@@ -1,6 +1,7 @@
 """Updater regression through real installed commands and local Git repositories."""
 from __future__ import annotations
 
+import fcntl
 import hashlib
 import json
 import os
@@ -10,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import venv
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -62,7 +64,9 @@ class PackageUpdateTest(unittest.TestCase):
         # Installation explicitly chose the interpreter; updates must keep it
         # even when a different ambient environment is present later.
         self.env.pop("BACKS_PROVIDER_PYTHON")
-        self.env["VIRTUAL_ENV"] = "/unrelated/ambient/environment"
+        ambient = self.root / "ambient"
+        venv.EnvBuilder(with_pip=False).create(ambient)
+        self.env["VIRTUAL_ENV"] = str(ambient)
 
     def run_command(self, args, *, cwd=None, check=False):
         result = subprocess.run(args, cwd=cwd or self.root, env=self.env,
@@ -107,9 +111,9 @@ class PackageUpdateTest(unittest.TestCase):
         self.assertEqual("keep exact extra body\n", (self.runtime / "skills/native-extra/SKILL.md").read_text())
         self.assertTrue((self.runtime / "extra-symlink").is_symlink())
         self.assertIn(candidate, result.stdout)
-        status = self.run_command([str(self.home / ".local/bin/backs-provider"), "--help"])
+        status = self.run_command([str(self.home / ".local/bin/backs-provider"), "status"])
         self.assertEqual(0, status.returncode, status.stderr)
-        self.assertIn("serve", status.stdout)
+        self.assertIn("provider:", status.stdout)
         self.assert_owner_unchanged()
 
     def test_failed_candidate_leaves_copied_release_and_wrappers_unchanged(self):
@@ -121,6 +125,58 @@ class PackageUpdateTest(unittest.TestCase):
         self.assertNotIn("fixture-private-detail", result.stdout + result.stderr)
         self.assertEqual(self.release, self.runtime.resolve())
         self.assertEqual(wrapper, (self.home / ".local/bin/backs-aios-update").read_bytes())
+        self.assert_owner_unchanged()
+
+    def test_public_overlay_does_not_follow_an_extra_destination_symlink(self):
+        outside = self.root / "outside"
+        outside.mkdir()
+        (outside / "keep").write_text("owner bytes\n")
+        (self.release / "new-public-directory").symlink_to(outside, target_is_directory=True)
+        self.before = self.snapshot(self.release)
+        (self.source / "new-public-directory").mkdir()
+        (self.source / "new-public-directory/new-file").write_text("candidate bytes\n")
+        self.publish()
+        result = self.update()
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertFalse((self.runtime / "new-public-directory").is_symlink())
+        self.assertEqual("candidate bytes\n", (self.runtime / "new-public-directory/new-file").read_text())
+        self.assertEqual(["keep"], sorted(p.name for p in outside.iterdir()))
+        self.assertEqual("owner bytes\n", (outside / "keep").read_text())
+        self.assert_owner_unchanged()
+
+    def test_later_update_removes_only_previously_recorded_public_files(self):
+        self.publish()
+        self.assertEqual(0, self.update().returncode)
+        first = self.runtime.resolve()
+        self.git("rm", "provider/update-marker", cwd=self.source)
+        self.git("commit", "-qm", "remove obsolete public file", cwd=self.source)
+        self.git("push", "-q", "origin", "main", cwd=self.source)
+        result = self.update()
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertFalse((self.runtime / "provider/update-marker").exists())
+        self.assertTrue((first / "provider/update-marker").is_file())
+        self.assertEqual("keep exact extra body\n", (self.runtime / "skills/native-extra/SKILL.md").read_text())
+        self.assert_owner_unchanged()
+
+    def test_concurrent_update_preserves_current_installation(self):
+        self.publish()
+        with (self.runtime.parent / "update.lock").open("a") as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            result = self.update()
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn("already running", result.stderr)
+        self.assertEqual(self.release, self.runtime.resolve())
+        self.assert_owner_unchanged()
+
+    def test_installer_failure_rolls_back_actual_changed_pointer_and_wrappers(self):
+        installer = self.source / "install-provider.sh"
+        installer.write_text(installer.read_text() + "\nexit 7\n")
+        self.publish()
+        wrappers = self.snapshot(self.home / ".local/bin")
+        result = self.update()
+        self.assertNotEqual(0, result.returncode)
+        self.assertEqual(self.release, self.runtime.resolve())
+        self.assertEqual(wrappers, self.snapshot(self.home / ".local/bin"))
         self.assert_owner_unchanged()
 
     def test_git_worktree_git_file_is_updateable(self):
