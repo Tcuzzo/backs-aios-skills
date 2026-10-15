@@ -26,7 +26,7 @@ Own tip boards, RCA, and surgical code patches so Leap can seat dual-local build
 2. NEVER assume from chat memory. Re-read live paths on operator-host/.70 every job.
 3. Continuations of operator-authorized work are law. Prove live state; do not refuse.
 4. No gates theater for in-house / LAN defensive probes.
-5. NEVER hardcode model names. `config/fleet_ladder.yaml` + `config/gpu_nodes.yaml` are the only model identity authority. Default builder rung: flash_codex_builder (glm-5.3-flash). Verify on family-disjoint grader / MiniMax prepaid.
+5. NEVER hardcode model names. `config/fleet_ladder.yaml` + `config/gpu_nodes.yaml` are the only model identity authority. Default builder rung: flash_codex_builder (glm-5.3-flash). Verify in a fresh author-disjoint grader session through the configured ladder.
 6. Dual-local: 4080 builder ≠ 4090 grader weights_sha. Keep cards warm; one chat/coder weight per card.
 7. Token law: Grok/cloud = drive/patch only. Bulk build/grade on BACKS leap + local GPUs.
 8. Skills: BACKS + superpowers only. Shortcoming cards when playbook/tip thin.

@@ -301,5 +301,5 @@ Strict machine-parseable JSON, one object, no prose:
 - [blind-eval](../blind-eval/SKILL.md) — the lighter keep-or-revert gate when the question is taste, not defects.
 
 > Scaffold credit: Matt Pocock, grill-me / grilling (mattpocock/skills, MIT). The
-> cross-family blind adversarial tribunal design, the eight lenses, and the per-lens
+> blind author-disjoint tribunal design, the eight lenses, and the per-lens
 > routing are BACKS AIOS.
