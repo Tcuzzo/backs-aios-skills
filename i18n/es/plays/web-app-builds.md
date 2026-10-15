@@ -86,7 +86,7 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
    antes del deploy; corre mutación sobre los predicados de validación y auth hasta
    que nada sobreviva. Un chequeo de frontera cuya comparación invertida igual pasa
    la suite es una puerta abierta en una superficie pública.
-8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — calificación entre familias
+8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — calificación independiente en sesiones nuevas y disjuntas del autor
    antes del deploy.
    Cada hallazgo de un jurado se vuelve un nuevo test en rojo; reconvoca hasta que todos los jurados aprueben.
 

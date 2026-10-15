@@ -82,8 +82,8 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
 
 ## Puertas duras (propias de la jugada — las reglas duras de la skill aplican encima)
 
-- El crítico es una familia de modelos DISTINTA a la del constructor, resuelta en
-  vivo a través de la escalera de flota — nunca un id de modelo fijado (un pin
+- El crítico trabaja en una sesión nueva y disjunta del autor; su modelo se resuelve en
+  vivo a través de la escalera de flota; se permite la misma familia de modelos — nunca un id de modelo fijado (un pin
   retirado mata en silencio al crítico entero).
 
 ## Combina bien con

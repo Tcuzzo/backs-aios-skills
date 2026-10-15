@@ -91,7 +91,7 @@ Le build, en un coup d'œil :
    validation et d'authentification jusqu'à ce que rien ne survive. Un check de
    frontière dont la comparaison inversée passe encore la suite est une porte
    ouverte sur une surface publique.
-8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — notation inter-famille
+8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — notation indépendante dans des sessions vierges et disjointes de l'auteur
    avant le déploiement.
    Chaque constat d'un juré devient un nouveau test rouge ; reconvoque jusqu'à ce que chaque juré valide.
 

@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # LEAP Protocol
-**Effort:** heavy — parallele Builder in isolierten Worktrees plus blinde familienfremde Reviewer pro Ball; investier das nur in Nähte, die für einen Builder zu groß sind — dort zahlt der Fan-out die Wanduhr-Zeit zurück, die eine einzelne Lane seriell verbrennen würde. Beseitigt: Builder, die auf geteilten Dateien kollidieren, und den einen riesigen, unreviewbaren Diff, den niemand zurückrollen kann.
+**Effort:** heavy — parallele Builder in isolierten Worktrees plus blinde, unabhängige Reviewer pro Ball; investier das nur in Nähte, die für einen Builder zu groß sind — dort zahlt der Fan-out die Wanduhr-Zeit zurück, die eine einzelne Lane seriell verbrennen würde. Beseitigt: Builder, die auf geteilten Dateien kollidieren, und den einen riesigen, unreviewbaren Diff, den niemand zurückrollen kann.
 
 LEAP ist eine begrenzte Methode für zustandslose Übergaben. Du teilst eine Naht
 in **Balls**. Jeder Ball geht an einen frischen Builder, der keinen versteckten
@@ -94,9 +94,9 @@ Der Builder bewertet seinen eigenen Ball nie. Vor jeder `1`:
 2. **Keep-or-Revert** — Kandidat gegen Champion auf der erklärten Metrik des
    Balls vergleichen, in erklärter Feld-Reihenfolge. Gleichstand oder
    Rückschritt verliert. Siehe [blind-eval](../blind-eval/SKILL.md).
-3. **Blinder Review über Modellfamilien hinweg** — mindestens zwei Reviewer aus
-   anderen Modellfamilien als der des Builders, jeder mit demselben
-   Kandidaten-Hash und demselben autor-geschwärzten Umschlag. Ein Reviewer, der
+3. **Unabhängiger blinder Review** — mindestens zwei Reviewer in frischen,
+   vom Autor getrennten Sitzungen; dieselbe Modellfamilie ist zulässig. Jeder sieht denselben
+   Kandidaten-Hash und denselben autor-geschwärzten Umschlag. Ein Reviewer, der
    schlecht GEANTWORTET hat — Müll, kein JSON, Verweigerungstext — ist ein
    gültiges Refuse: `-1`. Ein Reviewer, der NIE geantwortet hat
    (Transportfehler, nicht erreichbar), ist `0`: halten und über die

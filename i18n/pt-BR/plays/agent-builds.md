@@ -70,8 +70,8 @@ O build, num relance:
    risco abaixo do seu teto, depois mutação sobre os caminhos de decisão até
    zero sobreviventes. Lógica de branch que sobrevive a uma comparação invertida
    nunca foi testada de verdade.
-7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — avaliadores de outra
-   família de modelos aprovam o agente antes da entrega. Quem constrói nunca
+7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — avaliadores independentes em sessões
+   novas e disjuntas do autor aprovam o agente antes da entrega. Quem constrói nunca
    avalia o próprio trabalho.
    Cada achado de jurado vira um novo teste vermelho; reconvoque até todos os jurados passarem.
 
@@ -109,8 +109,8 @@ O build, num relance:
 - Qualquer fronteira fail-open, fallback silencioso ou erro engolido bloqueia a
   entrega.
 - Mutantes sobreviventes em caminhos de decisão bloqueiam a entrega.
-- A avaliação de outra família precisa passar; quem constrói nunca é quem
-  avalia.
+- A avaliação independente precisa passar; a execução que constrói nunca
+  avalia a si mesma.
 
 ## Funciona bem com
 
