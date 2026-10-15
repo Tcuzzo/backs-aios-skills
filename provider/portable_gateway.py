@@ -115,7 +115,6 @@ class Selector:
         if selected != AUTO_MODEL:
             return {**self.upstream, "model": selected}, {"source": "explicit", "fallback_reason": None}
         started = time.monotonic()
-        deadline = started + float(self.config.get("decision_timeout_s", 8))
         human_text = task_text(body)
         eligible = [name for name in self.routes if name in self.policy["criteria"] and name != "none"]
         needle = {"status": "unconfigured"}
@@ -124,34 +123,28 @@ class Selector:
             try:
                 text = human_text[:self.policy.get("max_task_chars", 4000)]
 
-                def needle_call(end):
+                def needle_call(phase_timeout):
                     if not self.needle:
                         return {"status": "unconfigured"}
                     try:
-                        remaining = end - time.monotonic()
-                        if remaining <= .01:
-                            raise DecisionUnavailable("routing_deadline")
                         result, needle_id = self.needle.decide(
                             {"task": text, "criteria": self.policy["criteria"]},
-                            request_id=request_id, cancelled=cancelled, timeout_s=remaining)
+                            request_id=request_id, cancelled=cancelled, timeout_s=phase_timeout)
                         return {**result, "request_id": needle_id}
                     except DecisionUnavailable as error:
                         return {"status": str(error)}
                     except Exception:
                         return {"status": "invalid_response", "reason": "needle_inference_failed"}
 
-                def decision_call(end):
+                def decision_call(needle_evidence, phase_timeout):
                     if not self.typed:
                         return {"status": "unconfigured", "transport": "systemone"}
                     try:
-                        remaining = end - time.monotonic()
-                        if remaining <= .01:
-                            raise DecisionUnavailable("routing_deadline")
                         payload = json.loads(decision_spec(
-                            text, {"status": "pending_parallel_evidence"}, eligible, self.policy))
+                            text, needle_evidence, eligible, self.policy))
                         payload["model"] = self.config["typed_decision"]["model"]
                         answer, typed_id = self.typed.decide(
-                            payload, request_id=request_id, cancelled=cancelled, timeout_s=remaining)
+                            payload, request_id=request_id, cancelled=cancelled, timeout_s=phase_timeout)
                         if answer.get("model") != payload["model"]:
                             raise ValueError("typed_model_mismatch")
                         return {"status": "ready", "transport": "systemone", "request_id": typed_id,
@@ -163,7 +156,10 @@ class Selector:
                     except Exception:
                         return {"status": "invalid_response", "transport": "systemone"}
 
-                needle, typed = collect_evidence(needle_call, decision_call, deadline=deadline)
+                needle, typed = collect_evidence(
+                    needle_call, decision_call,
+                    needle_timeout_s=float(self.config.get("needle", {}).get("timeout_s", 8)),
+                    decision_timeout_s=float(self.config.get("typed_decision", {}).get("timeout_s", 8)))
             finally:
                 self.lock.release()
         else:

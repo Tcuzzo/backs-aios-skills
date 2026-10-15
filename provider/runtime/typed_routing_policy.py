@@ -7,7 +7,6 @@ from __future__ import annotations
 import json
 import math
 import re
-import concurrent.futures
 import time
 from typing import Any
 
@@ -117,13 +116,16 @@ def score_embeddings(query: list, vectors: dict) -> dict:
     return {"scores": scores, "choice": ordered[0], "margin": scores[ordered[0]] - scores[ordered[1]]}
 
 
-def collect_evidence(needle_call, decision_call, *, deadline):
-    """Independent evidence shares one deadline and physically settles before return.
+def collect_evidence(needle_call, decision_call, *, needle_timeout_s, decision_timeout_s):
+    """Preserve Needle-then-typed routing with independent execution budgets.
 
-    Each callable receives the same monotonic deadline and owns its process/HTTP
-    cancellation. There is no deferred task queue and no first-finisher shortcut.
+    Callbacks physically settle their owned work. Startup and bounded cleanup
+    are reported in elapsed time; they do not shorten the next phase's budget.
     """
-    with concurrent.futures.ThreadPoolExecutor(max_workers=2, thread_name_prefix="routing-evidence") as pool:
-        needle = pool.submit(needle_call, deadline)
-        decision = pool.submit(decision_call, deadline)
-        return needle.result(), decision.result()
+    started = time.monotonic()
+    needle = dict(needle_call(needle_timeout_s))
+    needle.update(phase_elapsed_s=time.monotonic()-started, phase_budget_s=needle_timeout_s)
+    started = time.monotonic()
+    decision = dict(decision_call(needle, decision_timeout_s))
+    decision.update(phase_elapsed_s=time.monotonic()-started, phase_budget_s=decision_timeout_s)
+    return needle, decision

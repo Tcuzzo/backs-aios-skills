@@ -27,6 +27,5 @@
     "idle_timeout_s": 120
   },
   "receipt_path": "~/.local/state/backs-aios/portable-routing.jsonl",
-  "request_timeout_s": 180,
-  "decision_timeout_s": 8
+  "request_timeout_s": 180
 }

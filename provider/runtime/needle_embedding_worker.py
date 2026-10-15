@@ -36,10 +36,8 @@ def main():
         raise RuntimeError('Needle isolated weights/CPU engine missing')
     os.environ.update(NEEDLE3_LIB_PATH=str(library), NEEDLE_TELEMETRY='0', DO_NOT_TRACK='1')
     signal.signal(signal.SIGTERM, terminate)
-    # Constrain only this owned worker and its SDK child to the requested CPU budget.
-    if hasattr(os, 'sched_getaffinity'):
-        cpus=sorted(os.sched_getaffinity(0))[:max(1,int(config.get('cpu_threads',2)))]
-        os.sched_setaffinity(0,cpus)
+    # The pinned C engine owns its native thread pool. Preserve inherited
+    # scheduler affinity; imposing fewer cores than its pool causes spin waits.
     model=None
     try:
         with contextlib.redirect_stdout(sys.stderr):
