@@ -38,7 +38,7 @@ A avaliação, num relance:
 | LANDING GATE -- the two-sided proof:       |
 | fail-to-pass AND pass-to-pass, run         |
 | hermetically . no fake-green tell .        |
-| builder + grader families differ . the     |
+| fresh author-disjoint review . the         |
 | grader re-ran the checks itself            |
 +--------------------------------------------+
 ```

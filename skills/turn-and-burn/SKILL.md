@@ -68,11 +68,12 @@ lanes (inv 0: organize, never delete).
 - **Do not start building without a quick tribunal.** A blind review of the
   plan catches more defects than the build itself; skipping it means the
   defects land.
-- **Do not park decisions in a file.** The operator's 3-laws gate (taste,
+- **Do not park decisions in a file.** The existing decision bar (taste,
   vision, destructive risk) is the only reason to ask. Anything below the
   bar EXECUTES from invariants + memory + intent.
 - **Do not bench a model for a single 429.** The dispatch doctrine says
-  ollama sparse → local fleet. Swap to a cross-family LAN pair (qwen +
+  ollama sparse → local fleet. Swap to another configured, live-preflighted rung only when it is sufficient
+  for the task; preserve the checkpoint and bounded backoff when cloud is hammered.
 
 ## Cross-references
 
