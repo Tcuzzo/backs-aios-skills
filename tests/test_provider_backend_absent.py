@@ -28,3 +28,16 @@ def test_install_backend_absent_preserves_explicit_provider(tmp_path):
                             capture_output=True, text=True, timeout=20)
     assert status.returncode == 0, status.stderr
     assert json.loads(settings.read_text()) == original
+
+
+def test_copy_install_contains_portable_provider_assets(tmp_path):
+    env = fixture_env(tmp_path)
+    result = subprocess.run(["bash", str(ROOT / "install.sh"), "--target", "portable", "--copy"],
+                            env=env, capture_output=True, text=True, timeout=30)
+    assert result.returncode == 0, result.stderr
+    installed = tmp_path / ".local/share/backs-aios/current"
+    for relative in ("provider/portable_gateway.py", "provider/routing-policy.json",
+                     "provider/runtime/typed_decision_worker.py", "provider/runtime/typed_routing_policy.py",
+                     "scripts/install_typed_decision.py", "config/typed_decision_install.json",
+                     "install-provider.sh", "bin/backs-provider"):
+        assert (installed / relative).read_bytes() == (ROOT / relative).read_bytes()

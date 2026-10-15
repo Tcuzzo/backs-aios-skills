@@ -1,0 +1,21 @@
+{
+  "criteria": {
+    "build": "Implement, fix, test, debug or modify software; execute an engineering change end to end.",
+    "none": "The task does not clearly fit any of the capability descriptions.",
+    "plan": "Analyze, research, design an architecture or plan; explain tradeoffs before implementation.",
+    "work": "Summarize, extract, format, answer a routine question or perform a straightforward task."
+  },
+  "decision_ttl_s": 3600,
+  "failure_ttl_s": 60,
+  "fallback_order": [
+    "build",
+    "work",
+    "plan"
+  ],
+  "max_task_chars": 4000,
+  "min_confidence": 0.4,
+  "min_probability": 0.7,
+  "needle_min_margin": 0.08,
+  "needle_min_similarity": 0.5,
+  "version": "needle-jev.v1"
+}

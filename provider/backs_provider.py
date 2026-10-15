@@ -34,7 +34,12 @@ PROFILE_FILE = Path(__file__).resolve().parent / "profiles" / "ollama.json"
 KEY_HELPER = HOME / ".local" / "bin" / "backs-ollama-key"
 MINIMAX_PROFILE_FILE = Path(__file__).resolve().parent / "profiles" / "minimax.json"
 MINIMAX_KEY_HELPER = HOME / ".local" / "bin" / "backs-minimax-key"
+NEEDLE_PROFILE_FILE = Path(__file__).resolve().parent / "profiles" / "needle.json"
+FLEET_PROFILE_FILE = Path(__file__).resolve().parent / "profiles" / "fleet.json"
+NEEDLE_KEY_HELPER = HOME / ".local" / "bin" / "backs-needle-key"
 API_PROVIDERS = ("ollama", "minimax")
+# Compatibility commands select the same Automatic IDE router slot.
+NEEDLE_SLOT_ALIASES = ("needle", "kev", "jev", "fleet")
 MANAGED_ENV_KEYS = (
     "ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_API_KEY",
     "ANTHROPIC_MODEL", "ANTHROPIC_DEFAULT_OPUS_MODEL",
@@ -133,8 +138,8 @@ def find_backs_project_root() -> Path:
     explicit = os.environ.get("BACKS_PROJECT_ROOT", "").strip()
     if explicit:
         root = Path(explicit).expanduser().resolve()
-        if not valid_project(root):
-            raise ProviderError("BACKS_PROJECT_ROOT is not a valid BACKS runtime project.")
+        if not root.is_dir():
+            raise ProviderError("BACKS_PROJECT_ROOT is not an existing project directory.")
         return root
     cwd = Path.cwd().resolve()
     for root in (cwd, *cwd.parents):
@@ -142,13 +147,30 @@ def find_backs_project_root() -> Path:
             return root
     if PROJECT_FILE.is_file():
         root = Path(PROJECT_FILE.read_text(encoding="utf-8").strip()).expanduser().resolve()
-        if valid_project(root):
+        if root.is_dir():
             return root
-    raise ProviderError("BACKS project not found. Run install-provider.sh with the workspace root.")
+    return cwd
 
 
 def read_api_key(provider: str = "ollama") -> str:
     root = find_backs_project_root()
+    if not valid_project(root):
+        names = (("CLOUD_OLLAMA_API_KEY", *OLLAMA_KEY_ALIASES) if provider == "ollama"
+                 else ("MINIMAX_API_KEY",) if provider == "minimax" else ())
+        if not names:
+            raise ProviderError("Unknown credential provider.")
+        value = next((os.environ[name].strip() for name in names if os.environ.get(name)), "")
+        if not value:
+            file_names = ("OLLAMA_API_KEY_FILE", "CLOUD_OLLAMA_API_KEY_FILE") if provider == "ollama" else ("MINIMAX_API_KEY_FILE",)
+            filename = next((os.environ[name] for name in file_names if os.environ.get(name)), "")
+            if filename:
+                try:
+                    value = Path(filename).expanduser().read_text().strip()
+                except (OSError, UnicodeError):
+                    raise ProviderError("Configured credential file cannot be read; contents withheld.") from None
+        if not value or any(char.isspace() or ord(char) < 32 for char in value):
+            raise ProviderError("Provider credential unavailable in configured environment or credential file; no values displayed.")
+        return value
     backend = str(root / "backend")
     sys.path.insert(0, backend)
     try:
@@ -401,6 +423,158 @@ def extend_baseline(baseline: dict[str, Any], settings: dict[str, Any]) -> None:
             baseline.setdefault(group, {}).setdefault(key, value)
 
 
+
+def _backs_project_root_for_needle() -> Path | None:
+    with contextlib.suppress(Exception):
+        root = find_backs_project_root()
+        if valid_project(root):
+            return root
+    return None
+
+
+def fetch_needle_engineer_rungs(need: str = "ide_provider") -> dict[str, Any]:
+    """Live IDE provider-router resolve via Needle/Jev (vault = credit fuel only).
+
+    Prefer HTTP GET /api/system/needle_engineer_rungs on the local BACKS gateway.
+    Fall back to in-process services.needle_runtime.resolve_engineer_rungs when
+    BACKS_PROJECT_ROOT is a valid workspace. Never hardcode model IDs.
+    """
+    base = os.environ.get("BACKS_ANTHROPIC_GATEWAY_URL", "http://127.0.0.1:8000").rstrip("/")
+    url = f"{base}/api/system/needle_engineer_rungs?need={urllib.parse.quote(need)}"
+    try:
+        req = urllib.request.Request(url, method="GET")
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            payload = json.loads(resp.read().decode("utf-8"))
+        if isinstance(payload, dict) and payload.get("selected"):
+            return payload
+    except (OSError, ValueError, urllib.error.URLError, TimeoutError, json.JSONDecodeError):
+        pass
+
+    root = _backs_project_root_for_needle()
+    if root is None:
+        raise ProviderError(
+            "Configured gateway discovery is unreachable. Start the native or portable gateway "
+            "and set BACKS_ANTHROPIC_GATEWAY_URL; configuration was not activated."
+        )
+    import sys as _sys
+    backend = str(root / "backend")
+    if backend not in _sys.path:
+        _sys.path.insert(0, backend)
+    try:
+        from services.needle_runtime import (  # type: ignore
+            escalate_plan,
+            needle_runtime_status,
+            resolve_engineer_rungs,
+        )
+    except Exception as exc:  # noqa: BLE001
+        raise ProviderError(
+            "needle_runtime import failed in BACKS workspace; configuration was not activated."
+        ) from exc
+    engineer = resolve_engineer_rungs(need)
+    status = needle_runtime_status()
+    plan = escalate_plan(need)
+    selected = engineer.get("selected")
+    return {
+        "ok": bool(selected and selected.get("available") and selected.get("model")),
+        "source": "needle_runtime.resolve_engineer_rungs",
+        "need": need,
+        "selected": selected,
+        "escalate_plan": plan,
+        "status": status,
+        "vault_done_gate": False,
+        "note": "Done = live engineer rung; vault is credit fuel only",
+    }
+
+
+def apply_needle(settings: dict[str, Any], selected: dict[str, str], base: str) -> None:
+    """Point IDE at BACKS Anthropic-format gateway; discovery ON; Needle key helper."""
+    env = settings.setdefault("env", {})
+    if not isinstance(env, dict):
+        raise ProviderError("settings.env must be an object.")
+    env.update({
+        "ANTHROPIC_AUTH_TOKEN": "",
+        "ANTHROPIC_API_KEY": "",
+        "CLAUDE_CODE_OAUTH_TOKEN": "",
+        "ANTHROPIC_BASE_URL": base,
+        "CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY": "1",
+        "CLAUDE_CODE_SUBAGENT_MODEL": selected["default"],
+    })
+    for role, key in ROLE_ENV.items():
+        env[key] = selected[role]
+    settings["apiKeyHelper"] = shlex.quote(str(NEEDLE_KEY_HELPER))
+    settings["model"] = selected["default"]
+
+
+def activate_needle_slot(settings: dict[str, Any], state: dict[str, Any], alias: str) -> None:
+    """Explicitly select the configured gateway's Automatic picker."""
+    if alias not in NEEDLE_SLOT_ALIASES:
+        raise ProviderError("Unknown Needle/Jev/fleet alias.")
+    root = find_backs_project_root()
+    check_policy(root)
+    local_path = root / ".claude/settings.local.json"
+    local = load_json(local_path, {}) if local_path.exists() else {}
+    if local_path.exists() and not isinstance(local, dict):
+        raise ProviderError("Invalid project overlay settings.")
+    if not isinstance(local, dict):
+        local = {}
+
+    payload = fetch_needle_engineer_rungs("ide_provider")
+    rung = payload.get("selected")
+    if not isinstance(rung, dict) or not rung.get("available") or not rung.get("model"):
+        raise ProviderError(
+            "No live available engineer rung from Needle/fleet_ladder; "
+            "configuration was not activated (vault is not Done)."
+        )
+    picker = str(payload.get("picker_model") or "backs/claude-auto")
+    selected = {role: picker for role in ROLE_ENV}
+    base = os.environ.get("BACKS_ANTHROPIC_GATEWAY_URL", "http://127.0.0.1:8000").rstrip("/")
+
+    # Preserve native baseline across third-party / Needle switches.
+    if not isinstance(state.get("baseline"), dict):
+        state["baseline"] = snapshot(settings)
+    overlay_meta = state.get("project_overlay") if isinstance(state.get("project_overlay"), dict) else {}
+    if not isinstance(overlay_meta.get("baseline"), dict):
+        overlay_meta = {
+            "existed": local_path.exists(),
+            "path": str(local_path),
+            "baseline": snapshot(local),
+        }
+
+    restored = restore_snapshot(dict(settings), state["baseline"])
+    settings.clear()
+    settings.update(restored)
+    apply_needle(settings, selected, base)
+
+    local_restored = restore_snapshot(dict(local), overlay_meta["baseline"])
+    apply_needle(local_restored, selected, base)
+
+    slot_name = "fleet" if alias == "fleet" else "needle"
+    new_state = {
+        "provider": slot_name,
+        "profile": slot_name,
+        "selected": selected,
+        "fallbacks": {role: [] for role in ROLE_ENV},
+        "catalog_size": 1,
+        "messages_preflight": "not_run",
+        "discovery_preflight": "gateway_catalog_resolved",
+        "baseline": state["baseline"],
+        "project_overlay": overlay_meta,
+        "needle_rung": {
+            "identity": rung.get("identity"),
+            "model": rung.get("model"),
+            "provider": rung.get("provider"),
+            "transport": rung.get("transport"),
+            "role": rung.get("role"),
+            "available": rung.get("available"),
+            "source": payload.get("source"),
+        },
+        "alias_requested": alias,
+    }
+    commit_changes({CLAUDE_SETTINGS: settings, local_path: local_restored, STATE_FILE: new_state})
+    state.clear()
+    state.update(new_state)
+
+
 def activate_provider(settings: dict[str, Any], state: dict[str, Any], provider: str) -> None:
     root = find_backs_project_root()
     check_policy(root)
@@ -468,7 +642,12 @@ def activate_claude(settings: dict[str, Any], state: dict[str, Any]) -> None:
 def status(settings: dict[str, Any], state: dict[str, Any]) -> int:
     provider = state.get("provider", "unmanaged")
     print("provider:", provider)
-    if provider in API_PROVIDERS:
+    if provider in NEEDLE_SLOT_ALIASES or provider == "needle":
+        print("endpoint: BACKS Anthropic-format gateway (Needle/Jev/fleet_ladder live probe)")
+        rung = state.get("needle_rung") if isinstance(state.get("needle_rung"), dict) else {}
+        print("needle_rung:", rung.get("identity"), rung.get("model"), rung.get("provider"))
+        print("discovery_preflight:", state.get("discovery_preflight"))
+    elif provider in API_PROVIDERS:
         print("endpoint:", "official MiniMax Anthropic API" if provider == "minimax" else "official Ollama cloud")
         for role, model in state.get("selected", {}).items():
             print(f"{role:7}: {model}")
@@ -619,11 +798,18 @@ def apply_minimax(settings: dict[str, Any], selected: dict[str, str], base: str,
 
 def main() -> int:
     args = sys.argv[1:]
+    if args and args[0] == "serve":
+        isolated = Path.home() / ".local/share/backs-aios/typed-decision/current/venv/bin/python"
+        if isolated.is_file() and Path(sys.prefix).resolve() != isolated.parent.parent.resolve():
+            os.execv(str(isolated), [str(isolated), "-B", str(Path(__file__).resolve()), *args])
+        from portable_gateway import main as serve
+        return serve(args[1:])
     action = args[0].strip().lower() if args else "status"
     target = args[1] if len(args) == 2 else None
-    actions = {"__key", "__minimax_key", "claude", "ollama", "minimax", "status", "models", "doctor", "update"}
-    if len(args) > 2 or action not in actions or (target is not None and (action not in ("models", "doctor") or target not in API_PROVIDERS)):
-        print("usage: backs-provider [claude|ollama|minimax|status|models [ollama|minimax]|doctor [ollama|minimax]|update]", file=sys.stderr)
+    actions = {"__key", "__minimax_key", "claude", "ollama", "minimax", "needle", "kev", "jev", "fleet", "status", "models", "doctor", "update"}
+    doctor_targets = set(API_PROVIDERS) | set(NEEDLE_SLOT_ALIASES)
+    if len(args) > 2 or action not in actions or (target is not None and (action not in ("models", "doctor") or target not in doctor_targets)):
+        print("usage: backs-provider [claude|ollama|minimax|needle|kev|jev|fleet|status|models [ollama|minimax|needle]|doctor [ollama|minimax|needle]|update]", file=sys.stderr)
         return 2
     try:
         if action in ("__key", "__minimax_key"):
@@ -635,7 +821,42 @@ def main() -> int:
             state = load_json(STATE_FILE, {})
             if not isinstance(state, dict):
                 raise ProviderError("Invalid provider state root.")
-            provider = target or (state.get("provider") if state.get("provider") in API_PROVIDERS else "ollama")
+            provider = target or (
+                state.get("provider")
+                if state.get("provider") in (set(API_PROVIDERS) | set(NEEDLE_SLOT_ALIASES))
+                else "ollama"
+            )
+            if provider in NEEDLE_SLOT_ALIASES or provider == "needle":
+                payload = fetch_needle_engineer_rungs("ide_provider")
+                rung = payload.get("selected") if isinstance(payload.get("selected"), dict) else {}
+                if action == "doctor":
+                    if not (rung.get("available") and rung.get("model")):
+                        raise ProviderError("Needle doctor: no live available engineer rung.")
+                    print("PASS: configured gateway discovery responded; inference is not proven by discovery.")
+                    print("selected_identity:", rung.get("identity"))
+                    print("selected_model:", rung.get("model"))
+                    print("selected_provider:", rung.get("provider"))
+                    print("No Claude settings were changed. IDE session remains to be tested.")
+                else:
+                    roles = (payload.get("escalate_plan") or {}).get("engineer_rungs", {}).get("roles")
+                    if not isinstance(roles, dict):
+                        roles = {}
+                    print("gateway catalog source:", payload.get("source"))
+                    for role_name, rows in roles.items():
+                        print(f"role:{role_name}")
+                        for row in rows or []:
+                            if not isinstance(row, dict):
+                                continue
+                            print(
+                                "  ",
+                                row.get("identity"),
+                                row.get("model"),
+                                row.get("provider"),
+                                "available=" + str(bool(row.get("available"))),
+                            )
+                    if rung:
+                        print("selected:", rung.get("identity"), rung.get("model"), rung.get("provider"))
+                return 0
             profile = load_profile() if provider == "ollama" else load_profile(provider)
             # The documented MiniMax list needs no credential or invented catalog API.
             key = None if action == "models" and provider == "minimax" else helper_key(provider)
@@ -667,7 +888,11 @@ def main() -> int:
                 raise ProviderError("Invalid settings/state root.")
             if action == "status":
                 return status(settings, state)
-            if action in API_PROVIDERS:
+            if action in NEEDLE_SLOT_ALIASES:
+                activate_needle_slot(settings, state, action)
+                print("PASS: configured gateway discovery resolved; Automatic picker selected.")
+                print("Start a new local host session to use Automatic routing.")
+            elif action in API_PROVIDERS:
                 activate_provider(settings, state, action)
                 print("PASS: installed credential helper and real Messages API preflight.")
                 if action == "minimax":
