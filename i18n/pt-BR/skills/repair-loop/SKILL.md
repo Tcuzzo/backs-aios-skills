@@ -46,8 +46,9 @@ mas quebrado" estruturalmente difícil de sair.
    de mutação limitado. Um mutante que sobrevive ao seu conserto significa
    que o teste nunca alcançou o branch que você mudou — verde falso; continue
    iterando.
-7. **Avaliação independente.** Um avaliador que não escreveu a mudança — de
-   preferência um modelo de família diferente da do builder — precisa
+7. **Avaliação independente.** Um avaliador que não escreveu a mudança — em
+   uma sessão nova e disjunta do autor; o mesmo modelo ou família é permitido
+   onde o runtime configurado o permita — precisa
    aprová-la. O builder nunca avalia o próprio trabalho. Veja
    [blind-tribunal](../blind-tribunal/SKILL.md).
 8. **Cheque o trabalho concorrente.** Antes de alterar estado compartilhado,

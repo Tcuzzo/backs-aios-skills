@@ -46,8 +46,8 @@ pass कराया जा सकता है। इसलिए test पह�
   आएगा।
 - **Builder कभी test edit नहीं करता।** Red baseline के बाद से test file का
   ख़ाली diff landing gate का हिस्सा है, शिष्टाचार की जाँच नहीं।
-- **Builder कभी grader नहीं।** अलग इंसान, अलग agent, या builder से अलग
-  family का model लो।
+- **Builder कभी grader नहीं।** स्वतंत्र reviewer को fresh, author-disjoint session में लो; configured
+  runtime की अनुमति हो तो वही model या family भी मान्य है।
 - **अकेला green proof नहीं है।** Green + अनछुआ test + independent grade —
   यह proof है।
 - **जब defect की पूरी class खेल में हो, class को guard करो।** Point tests

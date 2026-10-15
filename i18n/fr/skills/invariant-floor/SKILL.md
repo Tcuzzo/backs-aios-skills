@@ -31,8 +31,8 @@ SOIT vraie, et alors le changement part.
    prouver en vif. Une suite qui mocke la couture exacte en cours de changement ne
    prouve rien.
 3. **Le builder ne note jamais son propre travail.** Un correcteur indépendant — un
-   modèle ou un agent qui n'a pas écrit le changement, idéalement d'une autre famille
-   de modèles — doit le valider avant qu'il parte.
+   correcteur dans une session vierge et disjointe de l'auteur ; le même modèle ou
+   la même famille est permis là où le runtime configuré le permet — doit le valider avant qu'il parte.
 4. **Pas de faux vert.** Ne revendique jamais une capacité sur une sonde de
    substitution pendant que la vraie surface est cassée. La preuve se fait sur le vrai
    chemin, pas sur un remplaçant.

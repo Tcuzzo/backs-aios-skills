@@ -44,8 +44,8 @@ discipline से बाँधता है जो "green पर टूटा �
    चलाओ: scoped tests, complexity-बनाम-coverage score, bounded mutation
    testing। तुम्हारे fix से बच निकला mutant मतलब test उस branch तक पहुँचा ही
    नहीं जो तुमने बदली — fake green; iterate करते रहो।
-7. **Independent grade।** ऐसा grader जिसने बदलाव नहीं लिखा — बेहतर हो तो
-   builder से अलग family का model — उसे pass करे। Builder अपना काम कभी grade
+7. **Independent grade।** ऐसा grader जिसने बदलाव नहीं लिखा — fresh, author-disjoint session में; configured runtime
+   की अनुमति हो तो वही model या family भी मान्य है — उसे pass करे। Builder अपना काम कभी grade
    नहीं करता। देखो [blind-tribunal](../blind-tribunal/SKILL.md)।
 8. **साथ चल रहा काम देखो।** Shared state बदलने से पहले verify करो कि किसी
    दूसरे session का in-flight काम बचा हुआ है (किसी branch या commit पर)। जो

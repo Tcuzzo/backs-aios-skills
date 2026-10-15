@@ -65,7 +65,7 @@ license: "MIT"
 - [intent-compiler](../intent-compiler/SKILL.md)——完整的读题纪律。
 - [blind-eval](../blind-eval/SKILL.md)——问题是品味时的保留或回滚。
 - [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md)——加固像素背后的代码。
-- [blind-tribunal](../blind-tribunal/SKILL.md)——合入前的跨家族评审。
+- [blind-tribunal](../blind-tribunal/SKILL.md)——合入前的独立评审。
 
 > Scaffold credit: W3C Design Tokens Community Group (token format); WCAG 2.2, W3C
 > (accessibility gate); UICrit, UIST 2024 (axis-scored UI critique); AI Jason, &

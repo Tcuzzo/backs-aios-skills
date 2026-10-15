@@ -54,8 +54,8 @@ fato, não um enfeite.
    no banco, saída de verdade. Mocke só o transporte de uma API externa paga, nunca
    a lógica.
 6. **Reconstrua red-first.** Commite os testes falhando, depois construa até ficar
-   verde na costura inteira. Um modelo de família diferente da do builder avalia o
-   resultado — o builder nunca avalia o próprio trabalho.
+   verde na costura inteira. Um avaliador em uma sessão nova e disjunta do autor avalia o
+   resultado; o mesmo modelo ou família é permitido onde o runtime configurado o permita — o builder nunca avalia o próprio trabalho.
 7. **Cite e registre.** Escreva o crédito do scaffold onde a capacidade agora vive:
    autor, projeto, licença, o que é emprestado (o scaffold) e o que é seu (a
    reengenharia). Nunca invente um crédito. Nunca apague um.

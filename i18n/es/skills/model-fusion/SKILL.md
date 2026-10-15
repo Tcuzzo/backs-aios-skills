@@ -71,8 +71,8 @@ que de verdad se pidió.
 ## Reglas duras — rompes una y la skill falló
 
 - **El que construye nunca juzga.** El juez no escribió ningún candidato. El
-  evaluador final es un modelo distinto (idealmente de otra familia) del que
-  construyó al ganador.
+  evaluador final trabaja en una sesión nueva y disjunta del autor. El mismo
+  modelo o familia se permite donde el runtime configurado lo admita.
 - **Nada de nombres de modelos en duro** en ningún punto de llamada. Roles en el
   código, modelos en la config.
 - **Nada de degradación silenciosa.** Redactores descartados, el fallback del

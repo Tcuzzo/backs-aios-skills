@@ -28,8 +28,8 @@ então a mudança aterrissa.
 2. **Piso de verificação.** Teste falhando primeiro → deixe verde → prove ao vivo.
    Uma suite que mocka exatamente a costura sob mudança não prova nada.
 3. **O builder nunca avalia o próprio trabalho.** Um avaliador independente — um
-   modelo ou agente que não escreveu a mudança, idealmente de outra família de
-   modelo — tem que aprovar antes de aterrissar.
+   avaliador em uma sessão nova e disjunta do autor; o mesmo modelo ou família
+   é permitido onde o runtime configurado o permita — tem que aprovar antes de aterrissar.
 4. **Sem falso verde.** Nunca alegue uma capacidade a partir de uma sonda proxy
    enquanto a superfície real está quebrada. A prova acontece no caminho real, não
    num substituto.

@@ -29,8 +29,8 @@ el cambio aterriza.
 2. **Piso de verificación.** Test que falla primero → llevarlo a verde → probarlo
    en vivo. Una suite que mockea la costura exacta bajo cambio no prueba nada.
 3. **El constructor nunca califica su propio trabajo.** Un evaluador
-   independiente — un modelo o agente que no escribió el cambio, idealmente de
-   otra familia de modelos — debe aprobarlo antes de aterrizar.
+   independiente — un evaluador en una sesión nueva y disjunta del autor; el mismo modelo
+   o familia se permite donde el runtime configurado lo admita — debe aprobarlo antes de aterrizar.
 4. **Sin verdes falsos.** Nunca reclames una capacidad desde una sonda
    intermediaria mientras la superficie real está rota. La prueba ocurre en el
    camino real, no en un sustituto.

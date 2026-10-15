@@ -70,7 +70,8 @@ parallel में draft करता है। एक judge — ऐसा model
 ## Hard rules — एक भी तोड़ा तो skill fail
 
 - **Builder कभी judge नहीं।** Judge ने कोई candidate नहीं लिखा। आख़िरी
-  grader उससे अलग model है (बेहतर हो तो अलग family) जिसने जीतने वाला बनाया।
+  grader एक fresh, author-disjoint session में काम करता है; configured runtime
+  की अनुमति हो तो वही model या family भी मान्य है।
 - **किसी call site पर hardcoded model names नहीं।** Code में roles, config
   में models।
 - **कोई silent degradation नहीं।** Drop हुए drafters, judge का fallback, gate

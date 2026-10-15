@@ -53,10 +53,11 @@ A avaliação, num relance:
 2. [sniper-testing](../skills/sniper-testing/SKILL.md) — verifique que o builder
    usou testes com escopo durante a iteração e não fez teatro de mock na costura
    que mudou.
-3. Avaliação entre famílias — entregue o trabalho a um modelo de família
-   DIFERENTE da do builder. Avaliar dentro da mesma família infla as taxas de
-   vitória de forma mensurável — avaliadores favorecem a própria linhagem;
-   outra instância da mesma família não basta.
+3. Avaliação independente — entregue o trabalho a uma sessão nova e disjunta
+   do autor, sem conversa, raciocínio ou identidade do autor. A execução que
+   construiu não pode aprovar a si mesma; o mesmo modelo, degrau ou família é
+   permitido onde o runtime configurado o permita. Escolha pela capacidade
+   medida para a tarefa e registre a rota real como proveniência.
 4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — para mudanças de
    consequência, convoque jurados sobre um envelope com a autoria apagada. Cada
    achado vira um novo teste vermelho, e o tribunal reconvoca até todos os
@@ -91,7 +92,7 @@ O piso da mecânica de julgamento vive na seção "De-bias the judge" de
 
 ## Gates duros — qualquer um reprova o play
 
-- Builder e avaliador da mesma família de modelos.
+- A execução autora avalia a si mesma, ou a sessão avaliadora herda conversa, raciocínio ou identidade do autor.
 - Não dá para mostrar a suíte vermelha antes do fix.
 - Falta fail-to-pass ou pass-to-pass na execução avaliada.
 - Qualquer sinal de verde falso acima está presente.

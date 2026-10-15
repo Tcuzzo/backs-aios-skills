@@ -28,8 +28,8 @@ autonomous बदलाव को उतरने से पहले पूर�
    failure है।
 2. **Verification floor.** पहले failing test → उसे green करो → live साबित करो।
    जो suite ठीक उसी seam को mock करती है जो बदल रहा है, वो कुछ साबित नहीं करती।
-3. **Builder अपना काम खुद कभी grade नहीं करता।** एक स्वतंत्र grader — ऐसा model
-   या agent जिसने बदलाव नहीं लिखा, बेहतर हो अलग model family का — उसे उतरने से
+3. **Builder अपना काम खुद कभी grade नहीं करता।** एक स्वतंत्र grader — ऐसा reviewer जो fresh, author-disjoint session में काम करे; configured
+   runtime की अनुमति हो तो वही model या family भी मान्य है — उसे उतरने से
    पहले pass करे।
 4. **Fake green नहीं।** असली surface टूटी हो, तो proxy probe के दम पर capability
    का दावा कभी नहीं। Proof असली रास्ते पर होता है, किसी बदली पर नहीं।
