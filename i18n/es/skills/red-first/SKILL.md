@@ -47,8 +47,12 @@ capacidades nuevas.
 - **El constructor nunca edita el test.** El diff vacío del archivo de test
   desde la línea base roja es parte de la compuerta de aterrizaje, no un chequeo
   de cortesía.
-- **El constructor nunca es el evaluador.** Usa otra persona, otro agente, o un
-  modelo de una familia distinta a la del constructor.
+- **El constructor nunca es el evaluador.** Usa un evaluador que no sea del
+  constructor, elegido en vivo por capacidad y disponibilidad desde la matriz
+  de peldaños configurada; la ejecución autora que construyó queda descalificada,
+  igual que cualquier sesión que haya heredado la conversación o el contexto del
+  constructor, y un evaluador del mismo modelo, peldaño o familia en una sesión
+  fresca y disjunta del autor se permite donde el runtime configurado lo admita.
 - **El verde solo no es prueba.** Verde + test intacto + calificación
   independiente es prueba.
 - **Cuando hay una clase entera de defecto en juego, guarda la clase.** Los

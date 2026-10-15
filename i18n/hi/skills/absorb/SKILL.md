@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # Absorb — पहले से बना हुआ अपनाओ, दोबारा मत बनाओ
-**Effort:** light — एक repo ingest (metadata probe + shallow clone) और port की एक cross-family grade। हटाता है: उस capability को दोबारा गढ़ना जिसे prior art पहले ही हल कर चुका है — वह from-scratch डुप्लिकेट जिसके हर bug का बोझ आप पर होता।
+**Effort:** light — एक repo ingest (metadata probe + shallow clone) और port की एक independent, capability-resolved grade। हटाता है: उस capability को दोबारा गढ़ना जिसे prior art पहले ही हल कर चुका है — वह from-scratch डुप्लिकेट जिसके हर bug का बोझ आप पर होता।
 
 **Capability ही राजा है।** Repo तो बस capability को ढोने वाली गाड़ी है। जब आपको कुछ ऐसा
 चाहिए जो कोई मौजूदा project पहले से करता है, तो न शून्य से डुप्लिकेट बनाओ, न
@@ -70,5 +70,5 @@ Citation एक तथ्य है, सजावट नहीं।
 
 - [red-first](../red-first/SKILL.md) — हर capability की रखवाली करने वाले contract tests.
 - [sniper-testing](../sniper-testing/SKILL.md) — असली side-effects, mock theater नहीं।
-- [blind-tribunal](../blind-tribunal/SKILL.md) — port की cross-family grading.
+- [blind-tribunal](../blind-tribunal/SKILL.md) — port की independent non-author grading।
 - [decision-bar](../decision-bar/SKILL.md) — license के blockers और taste के फ़ैसले आपके human तक जाते हैं; बाक़ी सब execute होता है।

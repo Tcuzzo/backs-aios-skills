@@ -32,7 +32,8 @@ Der Build auf einen Blick:
 |   | 6 clean-code-gauntlet  mutate decision     |   | judge, loop back    |
 |   |   paths to zero survivors                  |   | until the gate is   |
 |   +--------------------------------------------+   | green. a lane never |
-|   | 7 blind-tribunal  cross-family graders     |-->| lands its own work. |
+|   | 7 blind-tribunal  independent juror       |-->| lands its own work. |
+|   panel; capability-resolved graders      |   |                    |
 |   +--------------------------------------------+   +---------------------+
 |             |
 |             | every juror passes
@@ -42,7 +43,7 @@ Der Build auf einen Blick:
 |   | no fail-open boundary, silent fallback,    |
 |   | or swallowed error . zero mutation         |
 |   | survivors in decision paths . cross-       |
-|   | family pass; the builder never grades .    |
+|   | independent pass; the builder never grades .           |
 +---| zero primitives = invalid -> redesign      |
     +--------------------------------------------+
 ```

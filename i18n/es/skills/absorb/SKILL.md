@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # Absorb — Adopta el arte previo, no lo reinventes
-**Effort:** light — una ingesta del repo (sondeo de metadatos + clon superficial) y una calificación cross-family del port. Elimina: reinventar una capacidad que el arte previo ya resolvió — el duplicado desde cero cuyos bugs cargarías todos tú.
+**Effort:** light — una ingesta del repo (sondeo de metadatos + clon superficial) y una calificación independiente (asiento no autor, resuelto por capacidad) del port. Elimina: reinventar una capacidad que el arte previo ya resolvió — el duplicado desde cero cuyos bugs cargarías todos tú.
 
 **La capacidad manda.** Un repo es un vehículo para una capacidad. Cuando necesitas
 algo que un proyecto existente ya hace, no construyas un duplicado desde cero, y
@@ -57,9 +57,14 @@ hecho, no un adorno.
    fila en la base de datos, salida de verdad. Mockea solo el transporte de una API
    externa de pago, nunca la lógica.
 6. **Reconstruye en rojo primero.** Haz commit de los tests que fallan y luego
-   construye hasta el verde en toda la costura. Un modelo de una familia distinta a
-   la del constructor evalúa el resultado — el que construye nunca califica su
-   propio trabajo.
+   construye hasta el verde en toda la costura. Un evaluador que no sea del
+   constructor, elegido en vivo por capacidad y disponibilidad desde la matriz
+   de peldaños configurada, evalúa el resultado; la ejecución autora que
+   construyó queda descalificada, igual que cualquier sesión que haya heredado
+   la conversación o el contexto del constructor, y un evaluador del mismo
+   modelo, peldaño o familia en una sesión fresca y disjunta del autor se
+   permite donde el runtime configurado lo admita — el que construye nunca
+   califica su propio trabajo.
 7. **Cita y registra.** Escribe el crédito del andamiaje donde ahora vive la
    capacidad: autor, proyecto, licencia, qué es prestado (el andamiaje) y qué es
    tuyo (la reingeniería). Nunca inventes un crédito. Nunca borres uno.

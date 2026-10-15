@@ -44,8 +44,11 @@ behavior. This is the default for bug fixes and new capabilities alike.
 - **Red must be proven red.** Run it, watch it fail, before it counts.
 - **The builder never edits the test.** The empty test-file diff since the
   red baseline is part of the landing gate, not a courtesy check.
-- **Builder is never the grader.** Use a different person, agent, or a
-  model from a different family than the builder.
+- **Builder is never the grader.** Use a non-builder grader, chosen live by
+  capability and availability from the configured rung matrix (the authoring
+  execution that built is recorded as provenance and disqualified; a same
+  model, rung, or family grader in a fresh, author-disjoint session is permitted
+  where the configured runtime allows).
 - **Green alone is not proof.** Green + untouched test + independent grade
   is proof.
 - **When a whole class of defect is in play, guard the class.** Point tests

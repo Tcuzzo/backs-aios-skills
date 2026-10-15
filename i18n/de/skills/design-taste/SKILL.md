@@ -50,10 +50,16 @@ Screenshot-Schleife, und gate auf Barrierefreiheit — hart.
    in einem Headless-Browser bei Mobil- und Desktop-Breiten rendern, screenshotten
    und von einem Vision-Modell bewerten lassen — dann fixen, in getrennten
    Durchgängen (Kritik → strukturelle Korrektur → Audit → Politur), nie in einem
-   Rutsch. Der Kritiker ist ein Grader: Nimm ein Modell aus einer anderen Familie
-   als der Builder, mit benannten Achsen, nie einem holistischen Gesamtscore.
-   Löse das Kritiker-Modell zur Laufzeit aus der Config auf — eine gepinnte
-   Modell-ID geht irgendwann in Rente und reißt die ganze Schleife mit.
+   Rutsch. Der Kritiker ist ein Grader: ein nicht-vom-Builder stammender
+   Prüfer, live nach Fähigkeit und Verfügbarkeit aus der konfigurierten
+   Sprossen-Matrix gewählt; die ausführende Session, die gebaut hat, und jede
+   Session, die die Konversation oder den Kontext des Builders geerbt hat, sind
+   disqualifiziert, und ein Kritiker gleichen Modells, gleicher Sprosse oder
+   gleicher Familie in einer frischen, autor-disjunkten Session ist zulässig,
+   wo die konfigurierte Laufzeit es erlaubt, mit benannten Achsen, nie einem
+   holistischen Gesamtscore. Löse das Kritiker-Modell zur Laufzeit aus der Config
+   auf — eine gepinnte Modell-ID geht irgendwann in Rente und reißt die ganze
+   Schleife mit.
 7. **Score die 8-Achsen-Geschmacksrubrik.** 0–3 pro Achse, und jede Achse muss
    ≥ 2 erreichen: Token-Treue · Layout/Hierarchie · Typografie · Farbe/Kontrast ·
    Motion · Dark-Light-Parität · Barrierefreiheit · Designed-vs-Durchschnitt-
@@ -88,7 +94,7 @@ Screenshot-Schleife, und gate auf Barrierefreiheit — hart.
 - [intent-compiler](../intent-compiler/SKILL.md) — die volle Briefing-Disziplin.
 - [blind-eval](../blind-eval/SKILL.md) — Keep-or-Revert, wenn Geschmack die Frage ist.
 - [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) — das Härten des Codes hinter den Pixeln.
-- [blind-tribunal](../blind-tribunal/SKILL.md) — Cross-Family-Bewertung vor dem Landen.
+- [blind-tribunal](../blind-tribunal/SKILL.md) — unabhängige, nicht-autorisierte Bewertung vor dem Landen.
 
 > Gerüst-Credit: W3C Design Tokens Community Group (Token-Format); WCAG 2.2, W3C
 > (Barrierefreiheits-Gate); UICrit, UIST 2024 (achsen-bewertete UI-Kritik);

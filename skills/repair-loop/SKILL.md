@@ -40,9 +40,13 @@ discipline that makes "green but broken" structurally hard to ship.
    scoped tests, complexity-vs-coverage score, bounded mutation testing. A mutant that
    survives your fix means the test never reached the branch you changed — fake green;
    keep iterating.
-7. **Independent grade.** A grader that did not author the change (ideally a model
-   from a different family than the builder) must pass it. The builder never grades
-   its own work. See [blind-tribunal](../blind-tribunal/SKILL.md).
+7. **Independent grade.** A grader that did not author the change — chosen live
+   by capability and availability from the configured rung matrix; the
+   authoring execution that built is recorded as provenance and disqualified,
+   and a same model, rung, or family reviewer in a fresh, author-disjoint
+   session is permitted where the configured runtime allows — must pass it.
+   The builder never grades its own work. See
+   [blind-tribunal](../blind-tribunal/SKILL.md).
 8. **Check concurrent work.** Before altering shared state, verify any other session's
    in-flight work is preserved (on a branch or commit). Never commit or clean up work
    that is not yours.

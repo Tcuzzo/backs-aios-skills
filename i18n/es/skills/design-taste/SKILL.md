@@ -52,9 +52,14 @@ accesibilidad — dura.
    renderízalo en un navegador headless en anchos móvil y escritorio, toma
    capturas, y haz que un modelo con visión lo puntúe — luego arregla, en pasadas
    separadas (crítica → arreglo estructural → auditoría → pulido), nunca de un
-   solo tiro. El crítico es un evaluador: usa un modelo de una familia distinta a
-   la del constructor, puntuando ejes con nombre, nunca un puntaje holístico
-   único. Resuelve el modelo crítico desde la config al momento de llamar — un id
+   solo tiro. El crítico es un evaluador que no sea del constructor, elegido
+   en vivo por capacidad y disponibilidad desde la matriz de peldaños
+   configurada; la ejecución autora que construyó queda descalificada, igual
+   que cualquier sesión que haya heredado la conversación o el contexto del
+   constructor, y un crítico del mismo modelo, peldaño o familia en una
+   sesión fresca y disjunta del autor se permite donde el runtime configurado
+   lo admita, puntuando ejes con nombre, nunca un puntaje holístico único.
+   Resuelve el modelo crítico desde la config al momento de llamar — un id
    de modelo clavado se retira algún día y se lleva el loop entero con él.
 7. **Puntúa la rúbrica de gusto de 8 ejes.** 0–3 por eje, y cada eje debe puntuar
    ≥ 2: adhesión a tokens · layout/jerarquía · tipografía · color/contraste ·

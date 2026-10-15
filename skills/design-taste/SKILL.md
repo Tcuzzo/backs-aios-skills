@@ -42,8 +42,12 @@ give the builder eyes with a screenshot loop, and gate on accessibility — hard
 6. **Close the screenshot → vision-critic loop.** For anything rendered: render it in
    a headless browser at mobile and desktop widths, screenshot, and have a vision
    model score it — then fix, in separate passes (critique → structural fix → audit →
-   polish), never one-shot. The critic is a grader: use a model from a different
-   family than the builder, scoring named axes, never one holistic score. Resolve the
+   polish), never one-shot. The critic is a grader: pick a non-builder grader,
+   chosen live by capability and availability from the configured rung matrix
+   (the authoring execution that built is recorded as provenance and
+   disqualified; a same model, rung, or family reviewer in a fresh,
+   author-disjoint session is permitted where the configured runtime allows),
+   scoring named axes, never one holistic score. Resolve the
    critic model from config at call time — a pinned model id retires someday and
    takes the whole loop down with it.
 7. **Score the 8-axis taste rubric.** 0–3 per axis, and every axis must score ≥ 2:

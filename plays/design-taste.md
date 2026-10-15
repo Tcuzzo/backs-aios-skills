@@ -42,8 +42,9 @@ The taste loop, at a glance:
 | LANDING GATE -- all green or no ship:      |
 | WCAG 2.2 passes . 8-axis rubric scored .   |
 | zero surviving mutants behind the pixels   |
-| . critic family != builder family, live-   |
-| resolved via fleet-ladder, never pinned    |
+| . critic is a non-builder seat chosen      |
+| live by capability + availability, no      |
+| pinned ids                              |
 +--------------------------------------------+
 ```
 
@@ -73,9 +74,9 @@ The taste loop, at a glance:
 
 ## Hard gates (play-specific — the skill's own hard rules apply on top)
 
-- The critic is a DIFFERENT model family than the builder, resolved live through
-  the fleet ladder — never a pinned model id (a retired pin silently kills the
-  whole critic).
+- The critic is a non-builder seat resolved live through the fleet ladder by
+  capability and availability — never a pinned model id (a retired pin silently
+  kills the whole critic).
 
 ## Works well with
 

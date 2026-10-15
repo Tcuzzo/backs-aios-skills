@@ -30,7 +30,8 @@ La construcción, de un vistazo:
 |   | 6 clean-code-gauntlet  mutate decision     |   | judge, loop back    |
 |   |   paths to zero survivors                  |   | until the gate is   |
 |   +--------------------------------------------+   | green. a lane never |
-|   | 7 blind-tribunal  cross-family graders     |-->| lands its own work. |
+|   | 7 blind-tribunal  independent juror       |-->| lands its own work. |
+|   panel; capability-resolved graders      |   |                    |
 |   +--------------------------------------------+   +---------------------+
 |             |
 |             | every juror passes
@@ -40,7 +41,7 @@ La construcción, de un vistazo:
 |   | no fail-open boundary, silent fallback,    |
 |   | or swallowed error . zero mutation         |
 |   | survivors in decision paths . cross-       |
-|   | family pass; the builder never grades .    |
+|   | independent pass; the builder never grades .           |
 +---| zero primitives = invalid -> redesign      |
     +--------------------------------------------+
 ```
@@ -114,4 +115,4 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
 - [root-cause-first](../skills/root-cause-first/SKILL.md) — cuando el agente se porta mal
 - [session-handoff](../skills/session-handoff/SKILL.md) — el estado durable bien hecho
 
-**Weight:** mayormente disciplina free más una puerta de diseño light; el gasto heavy son las corridas de mutación del gauntlet y el tribunal cross-family — se paga en cualquier agente que va a actuar sin nadie mirando.
+**Weight:** mayormente disciplina free más una puerta de diseño light; el gasto heavy son las corridas de mutación del gauntlet y el panel blind-tribunal — se paga en cualquier agente que va a actuar sin nadie mirando.

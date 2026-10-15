@@ -9,23 +9,24 @@ builder:                        # implements and repairs
   - mid-cloud-model             # solid and cheaper; the usual fallback
   - local-coder-model           # survival tail: your own hardware
 
-grader:                         # independent review — never the model that built
-  - other-family-strong-model   # a DIFFERENT family from the builder rungs
-  - other-family-mid-model
+grader:                         # independent review — the authoring execution that built is disqualified; same model, rung, or family in a fresh, author-disjoint session is permitted
+  - independent-strong-model    # a SEPARATE execution from the builder rungs
+  - independent-mid-model
   - local-review-model
 
 worker:                         # bounded, well-specified jobs; cheap rungs fine
   - fast-cheap-model
   - local-small-model
 
-# --- Solo variant: only one model family available -------------------------
-# Builder and grader still must not resolve to the SAME model for the same
-# change. Split within the family (different model or size) and say so in
-# the dispatch log — it is the weakest legal separation, not the ideal.
+# --- Solo variant: only one configured execution available ---------------
+# Builder and grader must run in DIFFERENT executions (the authoring execution
+# that built cannot approve its own work). Split within the same family when
+# you have to, and say so in the dispatch log — it is the weakest legal
+# separation, not the ideal.
 #
 # builder:
 #   - family-large-model
 # grader:
-#   - family-small-model        # same family, different model — log it
+#   - family-small-model        # different execution in the same family — log it
 # worker:
 #   - family-small-model

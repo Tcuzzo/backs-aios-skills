@@ -1,11 +1,11 @@
 ---
 name: "blind-tribunal"
-description: "Nutze das, wenn eine autonome Änderung vor dem Landen eine unabhängige Bewertung braucht und kein Mensch in der Schleife ist. Beruft blinde Cross-Family-Juroren ein — eine Linse pro Kopf — über einen autor-geschwärzten Umschlag ganzer Dateien; jeder Befund wird ein neuer fehlschlagender Test; Schleife, bis jeder Juror passt. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing, Tribunal, Juroren, blinde Bewertung, unabhängige Bewertung, vor dem Landen bewerten."
+description: "Nutze das, wenn eine autonome Änderung vor dem Landen eine unabhängige Bewertung braucht und kein Mensch in der Schleife ist. Beruft blinde, fähigkeits-aufgelöste Juroren ein — eine Linse pro Kopf — über einen autor-geschwärzten Umschlag ganzer Dateien; jeder Befund wird ein neuer fehlschlagender Test; Schleife, bis jeder Juror passt. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, independent grade, convene, blind grade, independent grade, grade before landing, Tribunal, Juroren, blinde Bewertung, unabhängige Bewertung, vor dem Landen bewerten."
 license: "MIT"
 ---
 
 # Blind Tribunal
-**Effort:** heavy — acht Juroren, eine Linse pro Kopf, nach Stufe an die günstigste ausreichende Modellfamilie geroutet, jede Runde auf frischen Umschlägen neu einberufen, bis sie einstimmig sind; investier das in autonome Änderungen, die ohne menschliches Review landen. Beseitigt: entgleiste Landungen, die nichts bewacht außer dem eigenen Wort des Builders.
+**Effort:** heavy — acht Juroren, eine Linse pro Kopf, nach Stufe an die günstigste ausreichende Modell-Sprosse geroutet, jede Runde auf frischen Umschlägen neu einberufen, bis sie einstimmig sind; investier das in autonome Änderungen, die ohne menschliches Review landen. Beseitigt: entgleiste Landungen, die nichts bewacht außer dem eigenen Wort des Builders.
 
 Die Bewertungsschleife, mit der der Mensch weggehen kann, ohne dass der Agent
 entgleist. Ein Panel aus Juroren prüft die Änderung blind, mit entfernter
@@ -21,9 +21,9 @@ bis jeder Juror passt. Nichts landet allein auf das Wort des Builders.
 
 ## Die Sitze
 
-Acht Juroren, eine Linse pro Kopf. Jeder ist ein Modell aus einer ANDEREN Familie als
-der Builder (gleicher Hersteller = gleiche Familie). Ein Juror, der alles prüfen soll,
-prüft nichts richtig.
+Acht Juroren, eine Linse pro Kopf. Die ausführende Session, die den Kandidaten gebaut hat, ist
+als Provenienz vermerkt und disqualifiziert; jede Session, die die Konversation oder den Kontext
+des Builders geerbt hat, ebenso. Ein Juror, der alles prüfen soll, prüft nichts richtig.
 
 | Juror | Linsen-Id | Stufe | Die Frage, die er stellt |
 | --- | --- | --- | --- |
@@ -38,21 +38,29 @@ prüft nichts richtig.
 
 **Routing-Stufen (die günstigste ausreichende Route zuerst):** Deep State → größter
 Kontext und tiefstes Reasoning, idealerweise durch einen Harness, der das Repo LIEST
-(nie schreibt); schnell-strukturell → erst eine freie lokale GPU, FUSIONIERT mit einem
-billigen Cloud-Verifizierer, der denselben Prompt beurteilt: die Linse besteht nur, wenn
-beide bestehen; ohne Cloud bleibt das lokale Urteil, markiert UNVERIFIED, nie stillschweigend
-„verifiziert"; und das lokale Modell muss das GANZE Artefakt sehen (`num_ctx` auf den
-Prompt dimensionieren — Ollamas Default 4096 kürzt stillschweigend — und vor dem Senden
-ablehnen, was nicht passt); der Verifizierer stammt nie aus der Familie des Primärsitzes, und ein UNVERIFIED-Sitz ist ein Halt (nie Einstimmigkeit); Harness-Juroren laufen read-only, und jede Einberufung trägt eine `run_id` und schreibt ihre Zusammenfassung zuletzt; danach die Cloud-Modelle mit niedriger Latenz; Operator-Sicherheit →
-dein stärkster Coder mit Sicherheits-Grounding; Generalist → ein großer, zuverlässiger
-Generalist. Jede Leiter endet auf einer lokalen Überlebens-Sprosse.
+(nie schreibt); schnell-strukturell → erst eine freie lokale GPU; ein unabhängig
+hinreichendes lokales Urteil darf PASSEN, auch wenn kein Cloud- oder optionaler
+Verifizierer verfügbar ist und der Auftrag keinen verlangt. Wenn ein optionaler
+Verifizierer mit dem Primärsitz FUSIONIERT ist, beurteilt er denselben Prompt; ist der
+Verifizierer nicht erreichbar (keine Cloud-Sprosse live), steht das lokale
+Primärurteil auf eigener Evidenz, markiert UNVERIFIED in der Bewertung und der
+Zusammenfassung — nie stillschweigend „verifiziert". Ein vom Auftrag VERLANGTER
+Verifizierer, der fehlt, ist HALT unabhängig von lokal/Cloud. Das lokale Modell muss
+das GANZE Artefakt sehen (`num_ctx` auf den Prompt dimensionieren — Ollamas Default
+4096 kürzt stillschweigend — und vor dem Senden ablehnen, was nicht passt); ein
+Harness-Juror läuft read-only, und jede Einberufung trägt eine `run_id` und schreibt
+ihre Zusammenfassung zuletzt; danach die Cloud-Modelle mit niedriger Latenz;
+Operator-Sicherheit → dein stärkster Coder mit Sicherheits-Grounding; Generalist →
+ein großer, zuverlässiger Generalist. Jede Leiter endet auf einer lokalen
+Überlebens-Sprosse.
 
-**Solo-Rig.** Wenn nur eine Modellfamilie verfügbar ist, degradiere EXPLIZIT: Ein
+**Solo-Rig.** Wenn nur eine Modell-Sprosse verfügbar ist, degradiere EXPLIZIT: Ein
 frischer Kontext oder eine frische Session, die die Konversation des Autors nie
 gesehen hat, agiert als blinder Grader, oder der Mensch prüft den geschwärzten
-Umschlag. Der Bericht muss das geschwächte Gate benennen — „same-family-blind
-bewertet, nicht cross-family" — und nie still so tun, als hätte das
-Cross-Family-Gate gehalten.
+Umschlag. Ein Prüfer gleichen Modells, gleicher Sprosse oder gleicher Familie ist
+in einer frischen, autor-disjunkten Session zulässig, wo die konfigurierte
+Laufzeit es erlaubt. Der Bericht muss das geschwächte Gate benennen — niemals
+still so tun, als hätte ein stärkeres Gate gehalten.
 
 ## Der Builder wird deklariert, und der Ausschluss ist strukturell
 
@@ -62,11 +70,14 @@ hatte, und nichts hat es erfasst oder ausgeschlossen: Der Autor hat zwei Runden 
 Arbeit benotet. Also:
 
 - **Einberufen mit benanntem Builder** (`--builder <modell-oder-familie>`). Der Lauf trägt
-  `builder_family`. Jede Sprosse dieser Familie wird laut abgelehnt, vor jedem Versand, auf jeder
-  Leiter. Eine Linse ohne Sprosse HÄLT — fällt nie auf den Builder zurück.
-- **Gleicher Anbieter = gleiche Familie.** Eine Deklaration schließt den ganzen Anbieter aus.
-- **Beweise es auf der lebenden Leiter, nicht im Test:** Die Routing-Tabelle muss zeigen, dass seine
-  Sitze an eine andere Familie gefallen sind. Sonst ist der Ausschluss Dekoration.
+  `builder_family` als Provenienz, wo der Läufer es aufzeichnet. Jede ausführende Session, die den
+  Kandidaten gebaut hat, und jede Session, die die Konversation oder den Kontext des Builders geerbt
+  hat, werden laut abgelehnt, vor jedem Versand, auf jeder Leiter. Eine Linse ohne Sprosse HÄLT —
+  fällt nie auf den Builder zurück. Provenienz, kein pauschales Modell-, Sprossen-, Familien- oder
+  Anbieter-Gate.
+- **Beweise es auf der lebenden Leiter, nicht im Test:** Die Routing-Tabelle muss zeigen, dass die
+  Sitze auf live verfügbare Sprossen gefallen sind, und der Bericht benennt die ausgewählte Sprosse
+  pro Linse. Sonst ist der Ausschluss Dekoration.
 
 ## Der Umschlag
 
@@ -128,8 +139,13 @@ Striktes, maschinenlesbares JSON, ein Objekt, keine Prosa:
    ([red-first](../red-first/SKILL.md)).
 2. Baue bis grün.
 3. Baue den Umschlag aus den AKTUELLEN Dateien.
-4. Besetze die acht Juroren, nach Stufe, — andere Familien als der Builder
-   ([fleet-ladder](../fleet-ladder/SKILL.md) klärt, was live ist).
+4. Besetze die acht Juroren, nach Stufe, gewählt live nach Fähigkeit und
+   Verfügbarkeit aus der konfigurierten Sprossen-Matrix
+   ([fleet-ladder](../fleet-ladder/SKILL.md) klärt, was live ist). Die ausführende
+   Session, die gebaut hat, und jede Session, die die Konversation oder den
+   Kontext des Builders geerbt hat, sind disqualifiziert; ein Prüfer gleichen
+   Modells, gleicher Sprosse oder gleicher Familie in einer frischen,
+   autor-disjunkten Session ist zulässig, wo die konfigurierte Laufzeit es erlaubt.
 5. Jeder Juror verifiziert auch, statt nur zu lesen: Die neuen Tests bestehen; die
    Regressions-Suite ist nicht schlechter als die Baseline; und ein
    Fake-Green-Check — ein Test, der fehlschlagen SOLLTE (der Bug wieder
@@ -143,20 +159,23 @@ Striktes, maschinenlesbares JSON, ein Objekt, keine Prosa:
    Leck, das dieser Skill stopfen soll. Ein Befund endet GEFIXT oder mit
    dokumentierter Evidenz widerlegt, nie geparkt.
 
-## Die Fußzeile nennt die Linse, eine abgelehnte Sprosse behält ihre Worte, und der Boden ist drei Sprossen tief
+## Die Fußzeile nennt die Linse, eine abgelehnte Sprosse behält ihre Worte, und die Routentiefe ist eine gemessene Kapazität
 
 Runde 4 hielt zwei Linsen mit null Ablehnungen, und jedes Glied stand im Protokoll. Drei Gesetze kamen heraus:
 
 - **Nenne die Antwortform neben der Antwort.** Die Protokoll-Fußzeile trägt den wörtlichen Linsennamen (`"lens": "defect"`), nie den Platzhalter `<your lens>`. Ein Juror, der die Linse aus 350 KB Abstand erinnern sollte, in einem Artefakt, das alle acht Linsen nennt, antwortete dreimal in zwei Runden mit der falschen Linse. Fülle den Platzhalter beim Rendern.
 - **Eine abgelehnte Sprosse hinterlässt ihre Worte im Protokoll.** Eine Antwort mit falscher Linse oder ein annulliertes Urteil trägt ein begrenztes `raw_tail` am abgelehnten Eintrag, damit die nächste Runde die Ursache liest statt sie zu erraten.
-- **Zwei Cloud-Sprossen sind kein Boden.** Jede Stufe hält mindestens drei Sprossen ohne deklarierte `context_tokens` (sie tragen ein 120k-Token-Artefakt) vor ihrem lokalen Ende. Eine falsche Linse plus eine Annullierung dürfen nie eine Linse aufhalten.
-- **Ein strukturiertes Urteil teilt sein Budget nie mit dem Nachdenken.** Ein Reasoning-Modell, das um ein nacktes JSON-Urteil gebeten wurde, verbrauchte sein ganzes Budget von 65536 Tokens mit Nachdenken über ein 131k-Token-Artefakt und gab nichts aus (`finish_reason=length`); die Zeitgrenze der Rolle tötete dann die nächste Sprosse mitten im Lauf. Jede Cloud-Sprosse, die ein JSON-Objekt-Urteil verlangt, läuft mit abgeschaltetem Reasoning-Kanal (`reasoning_effort: none`), und die Prüfer-Leiter hält dahinter eine dritte Familie über schlichtes HTTP.
+- **Routentiefe ist eine gemessene Kapazität, kein magischer „drei Cloud-Sprossen"-Boden.** Jede Stufe hält ausreichend Sprossen für das Artefakt, das sie tragen muss (`context_tokens` und `num_ctx` auf Ollama; der Default 4096 kürzt stillschweigend). Eine falsche Linse plus eine Annullierung dürfen nie eine Linse aufhalten.
+- **Reasoning-Kanal und Budget folgen der Route und der Antwortform.** Ein Reasoning-Modell, das um ein nacktes JSON-Urteil gebeten wurde, verbrauchte sein Budget über einem 131k-Token-Artefakt und gab nichts aus (`finish_reason=length`); die Zeitgrenze der Rolle tötete dann die nächste Sprosse mitten im Lauf. Manche Clouds deaktivieren Reasoning für JSON (`reasoning_effort: none`), andere lassen medium; der historische Vorfall ist als Evidenz vermerkt, nicht als universelle Regel.
 - **Nichts anderes schreibt in das Repo des Tribunals, während es tagt.** Die Statusdatei eines gleichzeitigen Bewerters im Checkout änderte Bytes unter einem Sitz, und das Organ annullierte dieses Urteil ehrlich: es kann eine Änderung nicht zuordnen. Serialisiere Schreiber, oder tage auf einem separaten Worktree desselben Commits.
 
 ## Harte Regeln — eine gebrochen, und die Bewertung ist nichtig
 
-- Der Builder bewertet nie die eigene Arbeit: nicht dieselbe Instanz, nicht
-  dieselbe Familie.
+- Der Builder bewertet nie die eigene Arbeit: die ausführende Session, die
+  gebaut hat, und jede Session, die die Konversation oder den Kontext des
+  Builders geerbt hat, sind disqualifiziert; ein Prüfer gleichen Modells, gleicher
+  Sprosse oder gleicher Familie in einer frischen, autor-disjunkten Session ist
+  zulässig, wo die konfigurierte Laufzeit es erlaubt.
 - **Ein Juror-Refuse ist nur so gut wie der Umschlag.** Bevor du aus einem Befund
   einen Test schreibst, prüfe den Befund gegen die tatsächlichen Dateien. Ein
   Befund über Code, den der Umschlag nie enthielt, heißt: den Umschlag fixen,

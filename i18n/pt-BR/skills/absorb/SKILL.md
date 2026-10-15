@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # Absorb — Adote a Arte Prévia, Não Reinvente
-**Effort:** light — uma ingestão de repo (sonda de metadados + clone raso) e uma avaliação cross-family do código portado. Remove: reinventar uma capacidade que a arte prévia já resolveu — a duplicata feita do zero cujos bugs todos seriam dívida sua.
+**Effort:** light — uma ingestão de repo (sonda de metadados + clone raso) e uma avaliação independente (assento não-autor, resolvido por capacidade) do código portado. Remove: reinventar uma capacidade que a arte prévia já resolveu — a duplicata feita do zero cujos bugs todos seriam dívida sua.
 
 **Capacidade é rei.** Um repo é um veículo para uma capacidade. Quando você precisa
 de algo que um projeto existente já faz, não construa uma cópia do zero, e não faça
@@ -75,5 +75,5 @@ fato, não um enfeite.
 
 - [red-first](../red-first/SKILL.md) — os testes de contrato que guardam cada capacidade.
 - [sniper-testing](../sniper-testing/SKILL.md) — efeitos colaterais reais, sem teatro de mock.
-- [blind-tribunal](../blind-tribunal/SKILL.md) — avaliação cross-family do porte.
+- [blind-tribunal](../blind-tribunal/SKILL.md) — avaliação independente, não-autor, do porte.
 - [decision-bar](../decision-bar/SKILL.md) — bloqueios de licença e decisões de gosto vão para o seu humano; todo o resto executa.

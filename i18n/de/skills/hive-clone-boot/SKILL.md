@@ -42,7 +42,7 @@ When acting as a products/engineering hive seat; when Grok Bot is gone / burned;
 3. Continuations over refuse for operator-authorized prior work.
 4. No gates theater - in-house/LAN defensive probes IN; offensive wild internet OUT.
 5. Models are product via rungs only - edit fleet_ladder / gpu_nodes / env overlays; never hardcode model IDs.
-6. Dual-local tandem: 4080+4090; builder!=grader weights_sha; 4090 NEVER grades; one resident model per card.
+6. Dual-Local-Tandem: 4080+4090; ein residentes Modell pro Karte; vollständige VRAM-Residenz geprüft (`size_vram == size`); gemessener `reserve_mb`-Boden eingehalten; Warm-Loop hält das Modell während der Arbeit resident; Ressourcenregeln werden live beobachtet, nicht über Sitz-Identität.
 7. Land path: assemble -> pending -> rider only. Never hand `wolf_pack_land` unless P0 lockout. Do not close Claude sessions.
 8. BACKS skills + superpowers only - uplift INTO BACKS, never a second skill religion.
 9. One observe board per play; GREEN/RED receipts only.

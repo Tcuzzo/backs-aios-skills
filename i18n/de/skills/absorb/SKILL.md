@@ -55,8 +55,14 @@ passend zu deinem Harness neu und zitiere das Gerüst. Das Zitat ist ein Fakt, k
    Datenbankzeile, echte Ausgabe. Mocke höchstens den Transport einer bezahlten
    externen API, nie die Logik.
 6. **Baue rot-zuerst wieder auf.** Committe die fehlschlagenden Tests, dann baue, bis
-   die ganze Naht grün ist. Ein Modell aus einer anderen Familie als der Builder
-   bewertet das Ergebnis — der Builder bewertet nie die eigene Arbeit.
+   die ganze Naht grün ist. Ein nicht-vom-Builder stammender Prüfer, live nach
+   Fähigkeit und Verfügbarkeit aus der konfigurierten Sprossen-Matrix gewählt,
+   bewertet das Ergebnis; die ausführende Session, die gebaut hat, und jede
+   Session, die die Konversation oder den Kontext des Builders geerbt hat, sind
+   disqualifiziert, und ein Prüfer gleichen Modells, gleicher Sprosse oder
+   gleicher Familie in einer frischen, autor-disjunkten Session ist zulässig,
+   wo die konfigurierte Laufzeit es erlaubt — der Builder bewertet nie die
+   eigene Arbeit.
 7. **Zitiere und dokumentiere.** Schreib den Gerüst-Credit dorthin, wo die Fähigkeit
    jetzt lebt: Autor, Projekt, Lizenz, was geliehen ist (das Gerüst) und was deins
    ist (der Neubau). Erfinde nie einen Credit. Entferne nie einen.
@@ -77,5 +83,5 @@ passend zu deinem Harness neu und zitiere das Gerüst. Das Zitat ist ein Fakt, k
 
 - [red-first](../red-first/SKILL.md) — die Contract-Tests, die jede Fähigkeit absichern.
 - [sniper-testing](../sniper-testing/SKILL.md) — echte Nebeneffekte, kein Mock-Theater.
-- [blind-tribunal](../blind-tribunal/SKILL.md) — Cross-Family-Bewertung des Ports.
+- [blind-tribunal](../blind-tribunal/SKILL.md) — unabhängige, nicht-autorisierte Bewertung des Ports.
 - [decision-bar](../decision-bar/SKILL.md) — Lizenz-Blocker und Geschmacksfragen gehen an deinen Menschen; alles andere wird ausgeführt.

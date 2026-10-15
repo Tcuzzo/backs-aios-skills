@@ -33,7 +33,8 @@
 | 7 clean-code-gauntlet  mutate validation   |   | judge, loop back    |
 |   + auth predicates until none survive     |   | until the gate is   |
 +--------------------------------------------+   | green. a lane never |
-| 8 blind-tribunal  cross-family grade       |-->| lands its own work. |
+| 8 blind-tribunal  independent juror       |-->| lands its own work. |
+|   panel; capability-resolved grader        |   |                    |
 +--------------------------------------------+   +---------------------+
           |
           | every juror passes
@@ -86,7 +87,7 @@
    की उलटी comparison को suite फिर भी pass कर दे, वह किसी public surface पर खुला
    दरवाज़ा है।
 8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — deploy से पहले
-   cross-family grade।
+   independent juror panel; capability-resolved non-author grade।
    हर juror finding एक नया red test बनती है; tribunal तब तक दोबारा बिठाएँ जब तक हर juror pass न कर दे।
 
 ## Doctrine (build को क्या-क्या पूरा करना है)

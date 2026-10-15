@@ -19,8 +19,8 @@
 | 2 sniper-testing  scoped runs verified;    |  re-convene               |
 |   no mock theater on the changed seam      |                           |
 +--------------------------------------------+   +---------------------+ |
-| 3 cross-family grade -- a model from a     |   |  LORD OF THE LOOP   |-+
-|   DIFFERENT family than the builder        |   | one hand drives the |
+| 3 independent grade  a non-builder grader, |   |  LORD OF THE LOOP   |-+
+|   chosen live by capability + availability |   | one hand drives the |
 +--------------------------------------------+   | loop: dispatch,     |
 | 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
 |   author-redacted envelope                 |   | until the gate is   |
@@ -35,7 +35,7 @@
 | LANDING GATE -- the two-sided proof:       |
 | fail-to-pass AND pass-to-pass, run         |
 | hermetically . no fake-green tell .        |
-| builder + grader families differ . the     |
+| author-disjoint grader session . the       |
 | grader re-ran the checks itself            |
 +--------------------------------------------+
 ```
@@ -49,8 +49,12 @@
 2. [sniper-testing](../skills/sniper-testing/SKILL.md) —— 核实构建者迭代期间
    用的是限定范围的测试，并且没有在它改动的接缝上搞 mock 剧场
    （测试全靠 mock 演出来的通过）。
-3. 跨家族评审——把活交给与构建者不同家族的模型。同家族评审会明显抬高
-   胜率——评审偏袒自家亲戚；同家族的另一个实例也不够。
+3. 与作者无关的评审——把活交给一个评审者：其构建候选的作者执行
+   没有构建本次变更；按能力与可用性从配置好的梯级矩阵里在线
+   选出；同一模型、同一梯级或同一家族的评审者，只要处于一个全新的、
+   与之作者无关的会话中，且配置好的运行时允许，就放行。作者自己签
+   评分，是从根子上取消资格的；同一模型家族内不同执行之间的自
+   偏袒，经验上会明显抬高胜率。
 4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) —— 重大变更要开庭：
    陪审员评审一份抹去作者信息的卷宗。每条发现都变成一条新的红测试，
    法庭反复开庭，直到所有陪审员都放行。
@@ -80,7 +84,7 @@
 
 ## 硬门槛——踩中任何一条，整场战术判负
 
-- 构建者和评审同属一个模型家族。
+- 构建本次变更的作者执行，自己签了评分。
 - 无法展示修复前套件是红的。
 - 被评审的运行里缺 fail-to-pass 或缺 pass-to-pass。
 - 出现上面任何一条假绿马脚。

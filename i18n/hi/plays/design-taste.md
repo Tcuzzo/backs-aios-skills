@@ -43,7 +43,7 @@ taste loop, एक नज़र में:
 | LANDING GATE -- all green or no ship:      |
 | WCAG 2.2 passes . 8-axis rubric scored .   |
 | zero surviving mutants behind the pixels   |
-| . critic family != builder family, live-   |
+| . critic != builder seat, capability-    |
 | resolved via fleet-ladder, never pinned    |
 +--------------------------------------------+
 ```

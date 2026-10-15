@@ -1,16 +1,16 @@
 ---
 name: "blind-tribunal"
-description: "À utiliser quand un changement autonome a besoin d'une note indépendante avant d'atterrir et qu'aucun humain n'est dans la boucle. Convoque des jurés à l'aveugle, de familles de modèles différentes — un angle chacun — sur une enveloppe de fichiers entiers expurgée de l'auteur ; chaque constat devient un nouveau test en échec ; boucle jusqu'à ce que chaque juré valide. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing, tribunal à l'aveugle, jurés, note inter-familles, convoquer, noter avant de livrer, verdict indépendant."
+description: "À utiliser quand un changement autonome a besoin d'une note indépendante avant d'atterrir et qu'aucun humain n'est dans la boucle. Convoque des jurés à l'aveugle, résolus par capacité — un angle chacun — sur une enveloppe de fichiers entiers expurgée de l'auteur ; chaque constat devient un nouveau test en échec ; boucle jusqu'à ce que chaque juré valide. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, independent grade, convene, blind grade, independent grade, grade before landing, tribunal à l'aveugle, jurés, note indépendante, convoquer, noter avant de livrer, verdict indépendant."
 license: "MIT"
 ---
 
 # Blind Tribunal — le tribunal à l'aveugle
-**Effort:** heavy — huit jurés, un angle chacun, routés par palier vers la famille de modèles la moins chère qui suffit, reconvoqués sur des enveloppes fraîches à chaque tour jusqu'à l'unanimité ; à dépenser sur les changements autonomes qui atterrissent sans revue humaine. Élimine : les atterrissages sauvages que rien ne garde, sinon la parole du builder lui-même.
+**Effort:** heavy — huit jurés, un angle chacun, routés par palier vers le barreau de modèle le moins cher qui suffit, reconvoqués sur des enveloppes fraîches à chaque tour jusqu'à l'unanimité ; à dépenser sur les changements autonomes qui atterrissent sans revue humaine. Élimine : les atterrissages sauvages que rien ne garde, sinon la parole du builder lui-même.
 
 La boucle de notation qui permet à l'humain de s'éloigner sans que l'agent parte en
 roue libre. Un panel de jurés examine le changement à l'aveugle, auteur effacé. Chaque
 constat devient un nouveau test en échec. La boucle recommence jusqu'à ce que chaque
-juré valide. Rien n'est livré sur la seule parole du builder.
+jury valide. Rien n'est livré sur la seule parole du builder.
 
 ## Quand le convoquer
 
@@ -21,9 +21,10 @@ juré valide. Rien n'est livré sur la seule parole du builder.
 
 ## Les sièges
 
-Huit jurés, un angle chacun. Chacun est un modèle d'une famille DIFFÉRENTE de celle du
-builder (même éditeur = même famille). Un juré à qui on demande de tout vérifier ne
-vérifie rien correctement.
+Huit jurés, un angle chacun. L'exécution autrice qui a construit le candidat est
+consignée comme provenance et disqualifiée ; toute session qui a hérité de la
+conversation ou du contexte du builder l'est aussi. Un juré à qui on demande de tout
+vérifier ne vérifie rien correctement.
 
 | Juré | Id d'angle | Palier | La question qu'il pose |
 | --- | --- | --- | --- |
@@ -38,21 +39,27 @@ vérifie rien correctement.
 
 **Paliers de routage (la route la moins chère qui suffit d'abord) :** état profond → le
 plus grand contexte et le raisonnement le plus profond, idéalement via un harness qui LIT
-le repo (n'écrit jamais) ; structurel rapide → d'abord un GPU local gratuit, FUSIONNÉ avec
-un vérificateur cloud bon marché qui juge le même prompt : la lentille ne passe que si les
-deux passent ; sans cloud, le verdict local reste, marqué UNVERIFIED, jamais « vérifié » en
-silence ; et le modèle local doit voir TOUT l'artefact (dimensionne `num_ctx` sur le prompt
-— le défaut d'Ollama, 4096, tronque en silence — et refuse avant l'envoi ce qui ne tient
-pas) ; le vérificateur n'est jamais de la même famille que le siège primaire, et un siège UNVERIFIED est une mise en attente (jamais l'unanimité) ; les jurés par harness tournent en read-only, et chaque convocation porte un `run_id` et écrit son résumé en dernier ; ensuite les modèles cloud à faible latence ; sécurité opérateur → ton
-codeur le plus fort ancré sur la sécurité ; généraliste → un grand généraliste fiable.
-Chaque échelle finit sur un barreau local de survie.
+le repo (n'écrit jamais) ; structurel rapide → d'abord un GPU local gratuit ; un verdict
+local indépendant et suffisant peut PASSER sans un vérificateur cloud ou fusionné quand
+le contrat de la tâche ne l'exige pas. Si un vérificateur optionnel est FUSIONNÉ avec le
+siège primaire, il juge le même prompt ; si le vérificateur n'est pas disponible (aucun
+barreau cloud en vie), le verdict primaire local tient sur sa propre preuve, marqué
+UNVERIFIED dans la revue et le résumé — jamais « vérifié » en silence. Un vérificateur
+REQUIS par la tâche qui est absent est un HOLD indépendamment de local/cloud. Le modèle
+local doit voir TOUT l'artefact (dimensionne `num_ctx` sur le prompt — le défaut d'Ollama,
+4096, tronque en silence — et refuse avant l'envoi ce qui ne tient pas) ; les jurés par
+harness tournent en read-only, et chaque convocation porte un `run_id` et écrit son
+résumé en dernier ; ensuite les modèles cloud à faible latence ; sécurité opérateur →
+ton codeur le plus fort ancré sur la sécurité ; généraliste → un grand généraliste
+fiable. Chaque échelle finit sur un barreau local de survie.
 
-**Montage solo.** Quand une seule famille de modèles est disponible, dégrade
+**Montage solo.** Quand un seul barreau de modèle est disponible, dégrade
 EXPLICITEMENT : un contexte ou une session vierge qui n'a jamais vu la conversation de
-l'auteur joue le correcteur aveugle, ou l'humain relit l'enveloppe expurgée. Le rapport
-doit nommer la barrière affaiblie — « noté même-famille-à-l'aveugle, pas
-inter-familles » — jamais faire semblant, en silence, que la barrière inter-familles a
-tenu.
+l'auteur joue le correcteur aveugle, ou l'humain relit l'enveloppe expurgée. Un
+correcteur de même modèle, même barreau ou même famille dans une session vierge et
+disjointe de l'auteur est permis là où le runtime configuré le permet. Le rapport
+doit nommer la barrière affaiblie — jamais faire semblant, en silence, qu'une
+barrière plus forte a tenu.
 
 ## Le constructeur est déclaré, et l'exclusion est structurelle
 
@@ -62,11 +69,14 @@ construit le candidat, et rien ne l'a enregistré ni exclu : l'auteur a noté so
 pendant deux tours. Donc :
 
 - **Convoquez avec le constructeur nommé** (`--builder <modèle-ou-famille>`). Le registre porte
-  `builder_family`. Chaque barreau de cette famille est refusé à voix haute, avant tout envoi, sur
-  chaque échelle. Une lentille sans barreau est EN ATTENTE — jamais renvoyée au constructeur.
-- **Même fournisseur = même famille.** Une déclaration exclut tout le fournisseur.
+  `builder_family` comme provenance là où le coureur l'enregistre. L'exécution autrice qui a
+  construit le candidat, et toute session qui a hérité de la conversation ou du contexte du
+  builder, sont disqualifiées à voix haute, avant tout envoi, sur chaque échelle. Une lentille
+  sans barreau est EN ATTENTE — jamais renvoyée au constructeur. Provenance, pas un veto
+  aveugle par modèle, barreau, famille ou fournisseur.
 - **Prouvez-le sur l'échelle vivante, pas dans un test :** la table de routage doit montrer que
-  ses sièges sont passés à une autre famille. Sinon l'exclusion est décorative.
+  les sièges sont tombés sur des barreaux disponibles en vie, et le rapport nomme le barreau
+  choisi par lentille. Sinon l'exclusion est décorative.
 
 ## L'enveloppe
 
@@ -126,8 +136,13 @@ Du JSON strict, lisible par une machine, un seul objet, pas de prose :
    ([red-first](../red-first/SKILL.md)).
 2. Construis jusqu'au vert.
 3. Construis l'enveloppe à partir des fichiers COURANTS.
-4. Assieds les huit jurés, par palier, — des familles différentes de celle du builder
-   ([fleet-ladder](../fleet-ladder/SKILL.md) résout ce qui est en vie).
+4. Assieds les huit jurés, par palier, choisis en direct par capacité et
+   disponibilité depuis la matrice de barreaux configurée
+   ([fleet-ladder](../fleet-ladder/SKILL.md) résout ce qui est en vie). L'exécution
+   autrice qui a construit est disqualifiée, de même que toute session qui a hérité
+   de la conversation ou du contexte du builder ; un correcteur de même modèle, même
+   barreau ou même famille dans une session vierge et disjointe de l'auteur est
+   permis là où le runtime configuré le permet.
 5. Chaque juré vérifie aussi, il ne se contente pas de lire : les nouveaux tests
    passent ; la suite de régression n'est pas pire que la base ; et un contrôle
    anti-faux-vert — un test qui DEVRAIT échouer (le bug réintroduit) échoue bien. Un
@@ -141,20 +156,23 @@ Du JSON strict, lisible par une machine, un seul objet, pas de prose :
    exactement la fuite que ce skill existe pour stopper. Un constat finit CORRIGÉ ou
    réfuté avec preuve consignée, jamais garé.
 
-## Le pied nomme la lentille, un barreau rejeté garde ses mots, et le plancher a trois barreaux
+## Le pied nomme la lentille, un barreau rejeté garde ses mots, et la profondeur de route est une capacité mesurée
 
 Le tour 4 a mis deux lentilles en attente avec zéro refus, et chaque maillon était au dossier. Trois lois en sont sorties :
 
 - **Énonce la forme de la réponse à côté de la réponse.** Le pied du protocole porte le nom littéral de la lentille (`"lens": "defect"`), jamais le marqueur `<your lens>`. Un juré à qui l'on demandait de se rappeler la lentille énoncée 350 KB plus haut, dans un artefact qui nomme les huit lentilles, a répondu la mauvaise lentille trois fois en deux tours. Remplis le marqueur au rendu.
 - **Un barreau rejeté laisse ses mots au dossier.** Une réponse à la mauvaise lentille ou un verdict annulé porte un `raw_tail` borné sur l'entrée rejetée, pour que le tour suivant lise la cause au lieu de la deviner.
-- **Deux barreaux cloud ne font pas un plancher.** Chaque niveau tient au moins trois barreaux sans `context_tokens` déclaré (ils portent un artefact de 120k tokens) avant sa queue locale. Une mauvaise lentille plus une annulation ne doivent jamais mettre une lentille en attente.
-- **Un verdict structuré ne partage jamais son budget avec la réflexion.** Un modèle raisonneur à qui l'on demandait un verdict JSON nu a dépensé tout son budget de 65536 tokens à réfléchir sur un artefact de 131k tokens et n'a rien émis (`finish_reason=length`) ; le plafond de temps du rôle a ensuite tué le barreau suivant en plein parcours. Chaque barreau cloud qui demande un verdict en objet JSON tourne avec le canal de raisonnement coupé (`reasoning_effort: none`), et l'échelle du vérificateur garde derrière une troisième famille en HTTP simple.
+- **La profondeur de route est une capacité mesurée, pas un plancher magique de « trois barreaux cloud ».** Chaque niveau tient assez de barreaux pour l'artefact qu'il doit porter (`context_tokens` et `num_ctx` sur Ollama ; le défaut 4096 tronque en silence). Une mauvaise lentille plus une annulation ne doivent jamais mettre une lentille en attente.
+- **Le canal de raisonnement et le budget suivent la route et la forme de la réponse.** Un modèle raisonneur à qui l'on demandait un verdict JSON nu a dépensé son budget sur un artefact de 131k tokens et n'a rien émis (`finish_reason=length`) ; le plafond de temps du rôle a ensuite tué le barreau suivant en plein parcours. Certains clouds désactivent le raisonnement pour le JSON (`reasoning_effort: none`), d'autres laissent medium ; l'incident historique est consigné comme preuve, pas comme règle universelle.
 - **Rien d'autre n'écrit dans le dépôt du tribunal pendant qu'il siège.** Le fichier d'état d'un correcteur concurrent, dans le checkout, a changé des octets sous un siège, et l'organe a annulé ce verdict honnêtement : il ne peut pas attribuer un changement. Sérialise les écrivains, ou siège sur un worktree séparé du même commit.
 
 ## Règles dures — une seule enfreinte annule la note
 
-- Le builder ne note jamais son propre travail : ni la même instance, ni la même
-  famille.
+- Le builder ne note jamais son propre travail : l'exécution autrice qui a
+  construit, et toute session qui a hérité de la conversation ou du contexte du
+  builder, sont disqualifiées ; un correcteur de même modèle, même barreau ou
+  même famille dans une session vierge et disjointe de l'auteur est permis là
+  où le runtime configuré le permet.
 - **Un refus de juré ne vaut que ce que vaut l'enveloppe.** Avant d'écrire un test à
   partir d'un constat, vérifie le constat contre les fichiers réels. Un constat sur du
   code que l'enveloppe n'a jamais porté veut dire : corrige l'enveloppe, pas le code.
@@ -180,4 +198,4 @@ Le tour 4 a mis deux lentilles en attente avec zéro refus, et chaque maillon é
 - [blind-eval](../blind-eval/SKILL.md) — la barrière garder-ou-annuler, plus légère, quand la question est le goût, pas les défauts.
 
 > Crédit d'échafaudage : Matt Pocock, grill-me / grilling (mattpocock/skills, MIT).
-> Le design du tribunal adversarial aveugle inter-familles est BACKS AIOS.
+> Le design du tribunal adversarial aveugle est BACKS AIOS.

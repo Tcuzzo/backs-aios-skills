@@ -1,11 +1,11 @@
 ---
 name: "blind-tribunal"
-description: "Úsala cuando un cambio autónomo necesita una calificación independiente antes de aterrizar y no hay humano en el circuito. Convoca jurados ciegos de familias distintas — una lente cada uno — sobre un sobre con archivos completos y autoría borrada; cada hallazgo se vuelve un nuevo test que falla; se repite hasta que todos los jurados aprueban. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing. Disparadores: tribunal ciego, jurados, calificación entre familias, convocar, calificar a ciegas, calificación independiente, calificar antes de aterrizar."
+description: "Úsala cuando un cambio autónomo necesita una calificación independiente antes de aterrizar y no hay humano en el circuito. Convoca jurados ciegos resueltos por capacidad — una lente cada uno — sobre un sobre con archivos completos y autoría borrada; cada hallazgo se vuelve un nuevo test que falla; se repite hasta que todos los jurados aprueban. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, independent grade, convene, blind grade, independent grade, grade before landing. Disparadores: tribunal ciego, jurados, calificación independiente, convocar, calificar a ciegas, calificación independiente, calificar antes de aterrizar."
 license: "MIT"
 ---
 
 # Blind Tribunal
-**Effort:** heavy — ocho jurados, una lente cada uno, enrutados por nivel a la familia de modelos más barata que basta, reconvocados con sobres frescos en cada ronda hasta la unanimidad; gástalo en cambios autónomos que aterrizan sin revisión humana. Elimina: aterrizajes rebeldes sin más puerta que la palabra del propio constructor.
+**Effort:** heavy — ocho jurados, una lente cada uno, enrutados por nivel al peldaño de modelo más barato que basta, reconvocados con sobres frescos en cada ronda hasta la unanimidad; gástalo en cambios autónomos que aterrizan sin revisión humana. Elimina: aterrizajes rebeldes sin más puerta que la palabra del propio constructor.
 
 El loop de calificación que deja al humano irse sin que el agente se descarrile.
 Un panel de jurados revisa el cambio a ciegas, con la autoría borrada. Cada
@@ -20,9 +20,10 @@ todos los jurados aprueban. Nada aterriza solo con la palabra del constructor.
 
 ## Los asientos
 
-Ocho jurados, una lente cada uno. Cada uno es un modelo de una familia DISTINTA a la
-del constructor (misma marca = misma familia). Un jurado al que le piden revisar todo
-no revisa nada bien.
+Ocho jurados, una lente cada uno. La ejecución autora que construyó al candidato queda
+registrada como procedencia y queda descalificada; cualquier sesión que haya heredado
+la conversación o el contexto del constructor, también. Un jurado al que le piden
+revisar todo no revisa nada bien.
 
 | Jurado | Id de lente | Nivel | La pregunta que hace |
 | --- | --- | --- | --- |
@@ -37,21 +38,28 @@ no revisa nada bien.
 
 **Niveles de enrutamiento (primero la ruta más barata que basta):** estado profundo →
 el mayor contexto y razonamiento más profundo, idealmente por un harness que LEA el repo
-(nunca escriba); estructural rápido → primero una GPU local gratis, FUSIONADA con un
-verificador de nube barato que juzga el mismo prompt: la lente pasa solo si ambos pasan;
-sin nube, el veredicto local queda marcado UNVERIFIED, nunca «verificado» en silencio; y el
-modelo local debe ver TODO el artefacto (dimensiona `num_ctx` al prompt — el valor por
-defecto de Ollama, 4096, trunca en silencio — y rechaza antes de enviar lo que no cabe); el verificador nunca es de la misma familia que el asiento primario, y un asiento UNVERIFIED es una retención (nunca unanimidad); los jurados por harness corren read-only, y cada convocatoria lleva un `run_id` y escribe su resumen al final;
+(nunca escriba); estructural rápido → primero una GPU local gratis; un veredicto local
+independiente y suficiente puede PASAR sin un verificador de nube o fusionado cuando
+el contrato de la tarea no lo exige. Si un verificador opcional está FUSIONADO con el
+asiento primario, juzga el mismo prompt; si el verificador no está disponible (ningún
+peldaño de nube vivo), el veredicto primario local se sostiene sobre su propia
+evidencia, marcado UNVERIFIED en la revisión y el resumen — nunca «verificado» en
+silencio. Un verificador REQUERIDO por la tarea que está ausente es RETENCIÓN
+independiente de local/nube. El modelo local debe ver TODO el artefacto
+(dimensiona `num_ctx` al prompt — el valor por defecto de Ollama, 4096, trunca en
+silencio — y rechaza antes de enviar lo que no cabe); los jurados por harness corren
+read-only, y cada convocatoria lleva un `run_id` y escribe su resumen al final;
 después los modelos de nube de baja latencia; seguridad del operador →
 tu coder más fuerte con base en seguridad; generalista → un generalista grande y fiable.
 Cada escalera termina en un peldaño local de supervivencia.
 
-**Equipo solo.** Cuando solo hay una familia de modelos disponible, degrada
+**Equipo solo.** Cuando solo hay un peldaño de modelo disponible, degrada
 EXPLÍCITAMENTE: un contexto o sesión fresca que nunca vio la conversación del
 autor actúa como evaluador ciego, o el humano revisa el sobre con la autoría
-borrada. El reporte debe nombrar la puerta debilitada — "calificado a ciegas
-misma-familia, no entre familias" — nunca fingir en silencio que la puerta entre
-familias se sostuvo.
+borrada. Un revisor del mismo modelo, peldaño o familia en una sesión fresca y
+disjunta del autor se permite donde el runtime configurado lo admita. El reporte
+debe nombrar la puerta debilitada — nunca fingir en silencio que una puerta más
+fuerte se sostuvo.
 
 ## El constructor se declara, y la exclusión es estructural
 
@@ -61,11 +69,14 @@ había construido el candidato, y nada lo registró ni lo excluyó: el autor cal
 trabajo durante dos rondas. Así que:
 
 - **Convoca con el constructor nombrado** (`--builder <modelo-o-familia>`). El registro lleva
-  `builder_family`. Cada peldaño de esa familia se rechaza en voz alta, antes de despachar, en
-  cada escalera. Una lente sin peldaño QUEDA EN ESPERA — nunca vuelve al constructor.
-- **Mismo proveedor = misma familia.** Una declaración excluye al proveedor entero.
-- **Pruébalo en la escalera viva, no en un test:** la tabla de rutas debe mostrar que sus
-  asientos pasaron a otra familia. Si no, la exclusión es decoración.
+  `builder_family` como procedencia donde el corredor lo registre. La ejecución autora que construyó
+  al candidato y cualquier sesión que haya heredado la conversación o el contexto del constructor
+  quedan descalificadas en voz alta, antes de despachar, en cada escalera. Una lente sin peldaño
+  QUEDA EN ESPERA — nunca vuelve al constructor. Procedencia, no un veto ciego por modelo, peldaño,
+  familia o proveedor.
+- **Pruébalo en la escalera viva, no en un test:** la tabla de rutas debe mostrar que los
+  asientos cayeron en peldaños disponibles en vivo, y el reporte nombra el peldaño elegido por
+  lente. Si no, la exclusión es decoración.
 
 ## El sobre
 
@@ -125,8 +136,13 @@ JSON estricto y parseable por máquina, un solo objeto, sin prosa:
    ([red-first](../red-first/SKILL.md)).
 2. Construye hasta el verde.
 3. Arma el sobre con los archivos ACTUALES.
-4. Sienta a los ocho jurados, por nivel, — de familias distintas a la del constructor
-   ([fleet-ladder](../fleet-ladder/SKILL.md) resuelve cuáles están vivos).
+4. Sienta a los ocho jurados, por nivel, elegidos en vivo por capacidad y
+   disponibilidad desde la matriz de peldaños configurada
+   ([fleet-ladder](../fleet-ladder/SKILL.md) resuelve cuáles están vivos). La
+   ejecución autora que construyó queda descalificada, igual que cualquier sesión
+   que haya heredado la conversación o el contexto del constructor; un revisor del
+   mismo modelo, peldaño o familia en una sesión fresca y disjunta del autor se
+   permite donde el runtime configurado lo admita.
 5. Cada jurado además verifica, no solo lee: los tests nuevos pasan; la suite de
    regresión no está peor que la línea base; y un chequeo de verde falso — un test
    que DEBERÍA fallar (el bug reintroducido) de verdad falla. Un verde falso es un
@@ -140,19 +156,23 @@ JSON estricto y parseable por máquina, un solo objeto, sin prosa:
    después" es exactamente la fuga que esta skill existe para frenar. Un hallazgo
    termina ARREGLADO o refutado con evidencia registrada, nunca estacionado.
 
-## El pie nombra el lente, un peldaño rechazado conserva sus palabras y el piso tiene tres peldaños
+## El pie nombra el lente, un peldaño rechazado conserva sus palabras, y la profundidad de ruta es una capacidad medida
 
 La ronda 4 dejó dos lentes en espera con cero rechazos, y cada eslabón quedó en el registro. Salieron tres leyes:
 
 - **Declara la forma de la respuesta junto a la respuesta.** El pie del protocolo lleva el nombre literal del lente (`"lens": "defect"`), nunca el marcador `<your lens>`. Un jurado al que se le pidió recordar el lente desde 350 KB antes, dentro de un artefacto que nombra los ocho lentes, respondió el lente equivocado tres veces en dos rondas. Rellena el marcador al renderizar.
 - **Un peldaño rechazado deja sus palabras en el registro.** Una respuesta con lente equivocado o un veredicto anulado lleva un `raw_tail` acotado en la entrada rechazada, para que la siguiente ronda lea la causa en vez de inferirla.
-- **Dos peldaños de nube no son un piso.** Cada nivel tiene al menos tres peldaños sin `context_tokens` declarado (pueden cargar un artefacto de 120k tokens) antes de su cola local. Un lente equivocado más una anulación nunca deben dejar un lente en espera.
-- **Un veredicto estructurado nunca comparte su presupuesto con el pensamiento.** Un modelo razonador al que se le pidió un veredicto JSON escueto gastó todo su presupuesto de 65536 tokens pensando en un artefacto de 131k tokens y no emitió nada (`finish_reason=length`); el tope de tiempo del rol mató después al siguiente peldaño a mitad de camino. Cada peldaño de nube que pide un veredicto en objeto JSON corre con el canal de razonamiento apagado (`reasoning_effort: none`), y la escalera del verificador guarda detrás una tercera familia por HTTP plano.
+- **La profundidad de ruta es una capacidad medida, no un piso mágico de "tres peldaños de nube".** Cada nivel mantiene suficientes peldaños para el artefacto que debe cargar (`context_tokens` y `num_ctx` en Ollama; el valor por defecto 4096 trunca en silencio). Un lente equivocado más una anulación nunca deben dejar un lente en espera.
+- **El canal de razonamiento y el presupuesto siguen a la ruta y a la forma de la respuesta.** Un modelo razonador al que se le pidió un veredicto JSON escueto gastó su presupuesto sobre un artefacto de 131k tokens y no emitió nada (`finish_reason=length`); el tope de tiempo del rol mató después al siguiente peldaño a mitad de camino. Algunas nubes desactivan el razonamiento para JSON (`reasoning_effort: none`), otras dejan medio; el incidente histórico se anota como evidencia, no como regla universal.
 - **Nada más escribe en el repo del tribunal mientras sesiona.** El archivo de estado de un calificador concurrente dentro del checkout cambió bytes bajo un asiento, y el órgano anuló ese veredicto con honestidad: no puede atribuir un cambio. Serializa los escritores, o sesiona en un worktree aparte del mismo commit.
 
 ## Reglas duras — romper una anula la calificación
 
-- El constructor nunca califica su propio trabajo: ni la misma instancia, ni la misma familia.
+- El constructor nunca califica su propio trabajo: la ejecución autora que
+  construyó y cualquier sesión que haya heredado la conversación o el contexto del
+  constructor quedan descalificadas; un revisor del mismo modelo, peldaño o
+  familia en una sesión fresca y disjunta del autor se permite donde el runtime
+  configurado lo admita.
 - **Un refuse de jurado vale lo que vale el sobre.** Antes de escribir un test a
   partir de un hallazgo, verifica el hallazgo contra los archivos reales. Un
   hallazgo sobre código que el sobre nunca llevó significa arreglar el sobre, no

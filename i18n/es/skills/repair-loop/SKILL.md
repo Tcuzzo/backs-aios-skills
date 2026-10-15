@@ -46,8 +46,12 @@ roto" sea estructuralmente difícil de entregar.
    testing acotado. Un mutante que sobrevive a tu fix significa que el test nunca
    llegó a la rama que cambiaste — verde falso; sigue iterando.
 7. **Calificación independiente.** Un evaluador que no escribió el cambio —
-   idealmente un modelo de una familia distinta a la del constructor — debe darle
-   el pase. El constructor nunca califica su propio trabajo. Ver
+   elegido en vivo por capacidad y disponibilidad desde la matriz de peldaños
+   configurada; la ejecución autora que construyó queda descalificada, igual que
+   cualquier sesión que haya heredado la conversación o el contexto del
+   constructor, y un evaluador del mismo modelo, peldaño o familia en una sesión
+   fresca y disjunta del autor se permite donde el runtime configurado lo admita
+   — debe darle el pase. El constructor nunca califica su propio trabajo. Ver
    [blind-tribunal](../blind-tribunal/SKILL.md).
 8. **Revisa el trabajo concurrente.** Antes de alterar estado compartido,
    verifica que el trabajo en vuelo de cualquier otra sesión está preservado (en

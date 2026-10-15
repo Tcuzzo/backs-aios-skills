@@ -32,7 +32,8 @@ O build, num relance:
 |   | 6 clean-code-gauntlet  mutate decision     |   | judge, loop back    |
 |   |   paths to zero survivors                  |   | until the gate is   |
 |   +--------------------------------------------+   | green. a lane never |
-|   | 7 blind-tribunal  cross-family graders     |-->| lands its own work. |
+|   | 7 blind-tribunal  independent juror       |-->| lands its own work. |
+|   panel; capability-resolved graders      |   |                    |
 |   +--------------------------------------------+   +---------------------+
 |             |
 |             | every juror passes
@@ -42,7 +43,7 @@ O build, num relance:
 |   | no fail-open boundary, silent fallback,    |
 |   | or swallowed error . zero mutation         |
 |   | survivors in decision paths . cross-       |
-|   | family pass; the builder never grades .    |
+|   | independent pass; the builder never grades .           |
 +---| zero primitives = invalid -> redesign      |
     +--------------------------------------------+
 ```
@@ -116,4 +117,4 @@ O build, num relance:
 - [root-cause-first](../skills/root-cause-first/SKILL.md) — quando o agente se comporta mal
 - [session-handoff](../skills/session-handoff/SKILL.md) — estado durável do jeito certo
 
-**Weight:** disciplina em sua maior parte free mais um portão light de design; o gasto heavy são as rodadas de mutação do gauntlet e o tribunal cross-family — ele se paga em qualquer agente que vai agir sem ninguém olhando.
+**Weight:** disciplina em sua maior parte free mais um portão light de design; o gasto heavy são as rodadas de mutação do gauntlet e o painel blind-tribunal — ele se paga em qualquer agente que vai agir sem ninguém olhando.

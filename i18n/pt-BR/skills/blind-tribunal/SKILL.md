@@ -1,11 +1,11 @@
 ---
 name: "blind-tribunal"
-description: "Use quando uma mudança autônoma precisa de avaliação independente antes de aterrissar e não há humano no loop. Convoca jurados cegos, cross-family — uma lente cada — sobre um envelope de arquivos inteiros com autoria removida; cada achado vira um teste novo falhando; repita até todos os jurados passarem. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, cross-family grade, convene, blind grade, independent grade, grade before landing, tribunal cego, jurados, avaliação cega, avaliação independente, convocar, avaliar antes de aterrissar."
+description: "Use quando uma mudança autônoma precisa de avaliação independente antes de aterrissar e não há humano no loop. Convoca jurados cegos, resolvidos por capacidade — uma lente cada — sobre um envelope de arquivos inteiros com autoria removida; cada achado vira um teste novo falhando; repita até todos os jurados passarem. Trigger words: blind tribunal, grill tribunal, tribunal, jurors, independent grade, convene, blind grade, independent grade, grade before landing, tribunal cego, jurados, avaliação cega, avaliação independente, convocar, avaliar antes de aterrissar."
 license: "MIT"
 ---
 
 # Blind Tribunal
-**Effort:** heavy — oito jurados, uma lente cada, roteados por camada para a família de modelo mais barata que basta, reconvocados sobre envelopes novos a cada rodada até a unanimidade; gaste em mudanças autônomas que pousam sem revisão humana. Remove: pousos desgovernados guardados por nada além da palavra do próprio builder.
+**Effort:** heavy — oito jurados, uma lente cada, roteados por camada para o degrau de modelo mais barato que basta, reconvocados sobre envelopes novos a cada rodada até a unanimidade; gaste em mudanças autônomas que pousam sem revisão humana. Remove: pousos desgovernados guardados por nada além da palavra do próprio builder.
 
 O loop de avaliação que deixa o humano sair da sala sem o agente sair dos trilhos.
 Um painel de jurados revisa a mudança às cegas, com a autoria arrancada. Cada
@@ -20,8 +20,9 @@ Nada aterrissa só na palavra do builder.
 
 ## As cadeiras
 
-Oito jurados, uma lente cada. Cada um é um modelo de uma família DIFERENTE da do builder
-(mesmo fornecedor = mesma família). Jurado mandado checar tudo não checa nada direito.
+Oito jurados, uma lente cada. A execução autora que construiu o candidato é registrada
+como proveniência e desqualificada; qualquer sessão que tenha herdado a conversa ou o
+contexto do builder também. Jurado mandado checar tudo não checa nada direito.
 
 | Jurado | Id da lente | Camada | A pergunta que ele faz |
 | --- | --- | --- | --- |
@@ -36,20 +37,27 @@ Oito jurados, uma lente cada. Cada um é um modelo de uma família DIFERENTE da 
 
 **Camadas de roteamento (primeiro a rota mais barata que basta):** estado profundo →
 maior contexto e raciocínio mais fundo, de preferência por um harness que LÊ o repo
-(nunca escreve); estrutural rápido → primeiro uma GPU local grátis, FUNDIDA com um
-verificador de nuvem barato que julga o mesmo prompt: a lente passa só se os dois passam;
-sem nuvem, o veredito local fica, marcado UNVERIFIED, nunca "verificado" em silêncio; e o
-modelo local precisa ver TODO o artefato (dimensione `num_ctx` pelo prompt — o padrão do
-Ollama, 4096, trunca em silêncio — e recuse antes de enviar o que não cabe); o verificador nunca é da mesma família do assento primário, e um assento UNVERIFIED é uma retenção (nunca unanimidade); jurados via harness rodam read-only, e cada convocação carrega um `run_id` e escreve seu resumo por último; depois os
-modelos de nuvem de baixa latência; segurança do operador →
-seu coder mais forte com base em segurança; generalista → um generalista grande e confiável.
-Toda escada termina num degrau local de sobrevivência.
+(nunca escreve); estrutural rápido → primeiro uma GPU local grátis; um veredito local
+independente e suficiente pode PASSAR sem um verificador de nuvem ou fundido quando o
+contrato da tarefa não o exige. Se um verificador opcional está FUNDIDO com o assento
+primário, julga o mesmo prompt; se o verificador não está disponível (nenhum degrau de
+nuva vivo), o veredito primário local se mantém por sua própria evidência, marcado
+UNVERIFIED na revisão e no resumo — nunca "verificado" em silêncio. Um verificador
+EXIGIDO pela tarefa que está ausente é uma RETENÇÃO independente de local/nuvem. O
+modelo local precisa ver TODO o artefato (dimensione `num_ctx` pelo prompt — o padrão
+do Ollama, 4096, trunca em silêncio — e recuse antes de enviar o que não cabe);
+jurados via harness rodam read-only, e cada convocação carrega um `run_id` e escreve
+seu resumo por último; depois os modelos de nuvem de baixa latência; segurança do
+operador → seu coder mais forte com base em segurança; generalista → um generalista
+grande e confiável. Toda escada termina num degrau local de sobrevivência.
 
-**Rig solo.** Quando só uma família de modelo está disponível, degrade
+**Rig solo.** Quando só um degrau de modelo está disponível, degrade
 EXPLICITAMENTE: um contexto ou sessão nova que nunca viu a conversa do autor age
-como avaliador cego, ou o humano revisa o envelope com autoria removida. O
-relatório tem que nomear o portão enfraquecido — "avaliado cego-mesma-família, não
-cross-family" — nunca fingir em silêncio que o portão cross-family segurou.
+como avaliador cego, ou o humano revisa o envelope com autoria removida. Um
+avaliador de mesmo modelo, degrau ou família em uma sessão nova e disjunta do
+autor é permitido onde o runtime configurado o permita. O relatório tem que
+nomear o portão enfraquecido — nunca fingir em silêncio que um portão mais
+forte segurou.
 
 ## O construtor é declarado, e a exclusão é estrutural
 
@@ -59,11 +67,14 @@ candidato, e nada o registrou ou excluiu: o autor avaliou o próprio trabalho po
 Então:
 
 - **Convoque com o construtor nomeado** (`--builder <modelo-ou-família>`). O registro carrega
-  `builder_family`. Cada degrau dessa família é recusado em voz alta, antes de despachar, em cada
-  escada. Uma lente sem degrau FICA EM ESPERA — nunca volta ao construtor.
-- **Mesmo fornecedor = mesma família.** Uma declaração exclui o fornecedor inteiro.
-- **Prove na escada viva, não num teste:** a tabela de rotas deve mostrar que seus assentos caíram
-  para outra família. Senão a exclusão é enfeite.
+  `builder_family` como proveniência onde o runner o registra. A execução autora que construiu o
+  candidato, e qualquer sessão que tenha herdado a conversa ou o contexto do builder, são
+  desqualificadas em voz alta, antes de despachar, em cada escada. Uma lente sem degrau FICA EM
+  ESPERA — nunca volta ao construtor. Proveniência, não um veto cego por modelo, degrau, família
+  ou fornecedor.
+- **Prove na escada viva, não num teste:** a tabela de rotas deve mostrar que os assentos caíram
+  em degraus disponíveis vivos, e o relatório nomeia o degrau escolhido por lente. Senão a
+  exclusão é enfeite.
 
 ## O envelope
 
@@ -119,8 +130,13 @@ JSON estrito, parseável por máquina, um objeto, sem prosa:
    registre esse commit. O builder não pode tocar no teste ([red-first](../red-first/SKILL.md)).
 2. Construa até o verde.
 3. Monte o envelope a partir dos arquivos ATUAIS.
-4. Sente os oito jurados, por camada, — famílias diferentes da do builder
-   ([fleet-ladder](../fleet-ladder/SKILL.md) resolve o que está vivo).
+4. Sente os oito jurados, por camada, escolhidos ao vivo por capacidade e
+   disponibilidade na matriz de degraus configurada
+   ([fleet-ladder](../fleet-ladder/SKILL.md) resolve o que está vivo). A execução
+   autora que construiu é desqualificada, e qualquer sessão que tenha herdado a
+   conversa ou o contexto do builder também; um avaliador de mesmo modelo, degrau
+   ou família em uma sessão nova e disjunta do autor é permitido onde o runtime
+   configurado o permita.
 5. Cada jurado também verifica, não só lê: os testes novos passam; a suite de
    regressão não está pior que a baseline; e um cheque de falso verde — um teste que
    DEVERIA falhar (o bug reintroduzido) falha mesmo. Falso verde é refuse.
@@ -133,19 +149,23 @@ JSON estrito, parseável por máquina, um objeto, sem prosa:
    exatamente o vazamento que esta skill existe para parar. Um achado termina
    CONSERTADO ou refutado com evidência registrada, nunca estacionado.
 
-## O rodapé nomeia a lente, um degrau rejeitado guarda suas palavras, e o piso tem três degraus
+## O rodapé nomeia a lente, um degrau rejeitado guarda suas palavras, e a profundidade de rota é uma capacidade medida
 
 A rodada 4 deixou duas lentes em espera com zero recusas, e cada elo ficou no registro. Três leis saíram dela:
 
 - **Declare a forma da resposta ao lado da resposta.** O rodapé do protocolo carrega o nome literal da lente (`"lens": "defect"`), nunca o marcador `<your lens>`. Um jurado que devia lembrar a lente declarada 350 KB antes, dentro de um artefato que nomeia as oito lentes, respondeu a lente errada três vezes em duas rodadas. Preencha o marcador ao renderizar.
 - **Um degrau rejeitado deixa suas palavras no registro.** Uma resposta com lente errada ou um veredito anulado carrega um `raw_tail` limitado na entrada rejeitada, para a próxima rodada ler a causa em vez de inferi-la.
-- **Dois degraus de nuvem não são um piso.** Cada nível tem pelo menos três degraus sem `context_tokens` declarado (eles carregam um artefato de 120k tokens) antes da cauda local. Uma lente errada mais uma anulação nunca devem deixar uma lente em espera.
-- **Um veredito estruturado nunca divide seu orçamento com o pensamento.** Um modelo raciocinador, ao qual se pediu um veredito JSON seco, gastou todo o orçamento de 65536 tokens pensando sobre um artefato de 131k tokens e não emitiu nada (`finish_reason=length`); o teto de tempo do papel então matou o degrau seguinte no meio do caminho. Todo degrau de nuvem que pede um veredito em objeto JSON roda com o canal de raciocínio desligado (`reasoning_effort: none`), e a escada do verificador guarda atrás uma terceira família por HTTP simples.
+- **A profundidade de rota é uma capacidade medida, não um piso mágico de "três degraus de nuvem".** Cada nível mantém degraus suficientes para o artefato que precisa carregar (`context_tokens` e `num_ctx` no Ollama; o padrão 4096 trunca em silêncio). Uma lente errada mais uma anulação nunca devem deixar uma lente em espera.
+- **O canal de raciocínio e o orçamento seguem a rota e a forma da resposta.** Um modelo raciocinador, ao qual se pediu um veredito JSON seco, gastou seu orçamento sobre um artefato de 131k tokens e não emitiu nada (`finish_reason=length`); o teto de tempo do papel então matou o degrau seguinte no meio do caminho. Algumas nuvens desativam raciocínio para JSON (`reasoning_effort: none`), outras mantêm medium; o incidente histórico fica registrado como evidência, não como regra universal.
 - **Nada mais escreve no repo do tribunal enquanto ele se reúne.** O arquivo de estado de um avaliador concorrente dentro do checkout mudou bytes sob um assento, e o órgão anulou aquele veredito com honestidade: ele não consegue atribuir uma mudança. Serialize os escritores, ou reúna em um worktree separado do mesmo commit.
 
 ## Regras duras — qualquer uma quebrada anula a avaliação
 
-- O builder nunca avalia o próprio trabalho: nem a mesma instância, nem a mesma família.
+- O builder nunca avalia o próprio trabalho: a execução autora que construiu, e
+  qualquer sessão que tenha herdado a conversa ou o contexto do builder, são
+  desqualificadas; um avaliador de mesmo modelo, degrau ou família em uma
+  sessão nova e disjunta do autor é permitido onde o runtime configurado o
+  permita.
 - **Um refuse de jurado vale o que o envelope vale.** Antes de escrever um teste a
   partir de um achado, verifique o achado contra os arquivos de verdade. Achado
   sobre código que o envelope nunca carregou significa consertar o envelope, não o código.
@@ -170,4 +190,4 @@ A rodada 4 deixou duas lentes em espera com zero recusas, e cada elo ficou no re
 - [blind-eval](../blind-eval/SKILL.md) — o portão manter-ou-reverter mais leve quando a questão é gosto, não defeito.
 
 > Scaffold credit: Matt Pocock, grill-me / grilling (mattpocock/skills, MIT). The
-> cross-family blind adversarial tribunal design is BACKS AIOS.
+> blind adversarial tribunal design is BACKS AIOS.

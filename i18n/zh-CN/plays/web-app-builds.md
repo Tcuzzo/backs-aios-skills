@@ -32,7 +32,8 @@
 | 7 clean-code-gauntlet  mutate validation   |   | judge, loop back    |
 |   + auth predicates until none survive     |   | until the gate is   |
 +--------------------------------------------+   | green. a lane never |
-| 8 blind-tribunal  cross-family grade       |-->| lands its own work. |
+| 8 blind-tribunal  independent juror       |-->| lands its own work. |
+|   panel; capability-resolved grader        |   |                    |
 +--------------------------------------------+   +---------------------+
           |
           | every juror passes

@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # Absorb — Adopt Prior Art, Don't Reinvent It
-**Effort:** light — a repo ingest (metadata probe + shallow clone) and a cross-family grade of the port. Removes: reinventing a capability prior art already solved — the from-scratch duplicate you'd owe every bug for.
+**Effort:** light — a repo ingest (metadata probe + shallow clone) and an independent grade of the port. Removes: reinventing a capability prior art already solved — the from-scratch duplicate you'd owe every bug for.
 
 **Capability is king.** A repo is a vehicle for a capability. When you need something
 an existing project already does, do not build a duplicate from scratch, and do not
@@ -49,8 +49,12 @@ fit your harness, and cite the scaffold. The citation is a fact, not a decoratio
    that asserts a real side-effect — a file, a database row, real output. Mock only a
    paid external API's transport, never the logic.
 6. **Reconstruct red-first.** Commit the failing tests, then build until green across
-   the whole seam. A model from a different family than the builder grades the result
-   — the builder never grades its own work.
+   the whole seam. An independent non-builder grader, chosen live by capability and
+   availability from the configured rung matrix, grades the result (the authoring
+   execution that built is recorded as provenance and disqualified; a same
+   model, rung, or family reviewer in a fresh, author-disjoint session is
+   permitted where the configured runtime allows). The builder never grades its
+   own work.
 7. **Cite and record.** Write the scaffold credit where the capability now lives:
    author, project, license, what is borrowed (the scaffold) and what is yours (the
    re-engineering). Never invent a credit. Never strip one.
@@ -70,5 +74,5 @@ fit your harness, and cite the scaffold. The citation is a fact, not a decoratio
 
 - [red-first](../red-first/SKILL.md) — the contract tests that guard each capability.
 - [sniper-testing](../sniper-testing/SKILL.md) — real side-effects, no mock theater.
-- [blind-tribunal](../blind-tribunal/SKILL.md) — cross-family grading of the port.
+- [blind-tribunal](../blind-tribunal/SKILL.md) — independent non-author grading of the port.
 - [decision-bar](../decision-bar/SKILL.md) — license blockers and taste calls go to your human; everything else executes.

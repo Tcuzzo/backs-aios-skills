@@ -47,8 +47,13 @@ kaputt" strukturell schwer auslieferbar macht.
    begrenztes Mutation-Testing. Überlebt ein Mutant deinen Fix, hat der Test
    den geänderten Zweig nie erreicht — Fake-Green; weiter iterieren.
 7. **Unabhängige Bewertung.** Ein Bewerter, der die Änderung nicht geschrieben
-   hat — ideal ein Modell aus einer anderen Familie als der Builder — muss sie
-   durchwinken. Der Builder bewertet seine eigene Arbeit nie. Siehe
+   hat — live nach Fähigkeit und Verfügbarkeit aus der konfigurierten
+   Sprossen-Matrix gewählt; die ausführende Session, die gebaut hat, und jede
+   Session, die die Konversation oder den Kontext des Builders geerbt hat, sind
+   disqualifiziert, und ein Prüfer gleichen Modells, gleicher Sprosse oder
+   gleicher Familie in einer frischen, autor-disjunkten Session ist zulässig,
+   wo die konfigurierte Laufzeit es erlaubt — muss sie durchwinken. Der
+   Builder bewertet seine eigene Arbeit nie. Siehe
    [blind-tribunal](../blind-tribunal/SKILL.md).
 8. **Nebenläufige Arbeit prüfen.** Bevor du geteilten Zustand änderst,
    verifizier, dass die laufende Arbeit anderer Sessions gesichert ist (auf

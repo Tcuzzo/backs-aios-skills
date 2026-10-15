@@ -32,7 +32,8 @@ action लेती हो।
 |   | 6 clean-code-gauntlet  mutate decision     |   | judge, loop back    |
 |   |   paths to zero survivors                  |   | until the gate is   |
 |   +--------------------------------------------+   | green. a lane never |
-|   | 7 blind-tribunal  cross-family graders     |-->| lands its own work. |
+|   | 7 blind-tribunal  independent juror       |-->| lands its own work. |
+|   panel; capability-resolved graders      |   |                    |
 |   +--------------------------------------------+   +---------------------+
 |             |
 |             | every juror passes
@@ -42,7 +43,7 @@ action लेती हो।
 |   | no fail-open boundary, silent fallback,    |
 |   | or swallowed error . zero mutation         |
 |   | survivors in decision paths . cross-       |
-|   | family pass; the builder never grades .    |
+|   | independent pass; the builder never grades .           |
 +---| zero primitives = invalid -> redesign      |
     +--------------------------------------------+
 ```
@@ -70,7 +71,7 @@ action लेती हो।
    branch logic उलटी comparison के बाद भी ज़िंदा बच जाए, वह असल में कभी test हुई
    ही नहीं थी।
 7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — ship से पहले
-   cross-family graders agent को पास करें। builder कभी अपने ही काम का grade नहीं
+   independent juror panel (capability-resolved, non-author seat) agent को पास करें। builder कभी अपने ही काम का grade नहीं
    करता।
    हर juror finding एक नया red test बनती है; tribunal तब तक दोबारा बिठाएँ जब तक हर juror pass न कर दे।
 
@@ -104,11 +105,11 @@ action लेती हो।
 - Zero primitives = design ही अमान्य; step 2 पर वापस जाएँ।
 - कोई भी fail-open boundary, silent fallback, या निगला हुआ error ship को रोक देता है।
 - decision paths में बचे हुए mutation survivors ship को रोक देते हैं।
-- cross-family grade पास होना ज़रूरी है; builder कभी grader नहीं होता।
+- independent non-author grade पास होना ज़रूरी है; builder कभी grader नहीं होता।
 
 ## इनके साथ अच्छा चलता है
 
 - [root-cause-first](../skills/root-cause-first/SKILL.md) — जब agent बहकने लगे
 - [session-handoff](../skills/session-handoff/SKILL.md) — टिकाऊ state, सही तरीके से
 
-**Weight:** ज़्यादातर free अनुशासन और एक light design gate; heavy खर्च gauntlet के mutation runs और cross-family tribunal का है — यह हर उस agent पर वसूल होता है जो बिना किसी की निगरानी के काम करेगा।
+**Weight:** ज़्यादातर free अनुशासन और एक light design gate; heavy खर्च gauntlet के mutation runs और blind-tribunal panel का है — यह हर उस agent पर वसूल होता है जो बिना किसी की निगरानी के काम करेगा।

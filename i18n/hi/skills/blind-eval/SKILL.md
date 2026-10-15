@@ -55,7 +55,7 @@ REVERT करो। Tie का मतलब revert। सिर्फ साब�
   signal और तुक़्क़े में फ़र्क़ नहीं कर सकता — readings बढ़ाओ या कोई स्थिर measure चुनो।
 - **Solo rig.** दूसरी model family नहीं है? एक ताज़ा blind session जो author की
   बातचीत ने कभी नहीं देखी, judge बनता है — और report कमज़ोर हुए gate का नाम लेती
-  है ("judged same-family-blind, not cross-family")।
+  है ("graded on a single configured rung")।
 - **भरोसेमंद bar नहीं? Dominance इस्तेमाल करो।** जब baseline का level अनजान या
   शोर-भरा हो, absolute bar छोड़ो और सिर्फ वही रखो जो मौजूदा champion को साफ़ हराए।
   Regression कभी dominate नहीं कर सकता, इसलिए किसी floor की ज़रूरत नहीं।

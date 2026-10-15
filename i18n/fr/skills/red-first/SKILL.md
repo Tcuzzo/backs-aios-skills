@@ -50,8 +50,13 @@ capacités.
 - **Le builder n'édite jamais le test.** Le diff vide du fichier de test depuis
   la base rouge fait partie de la porte d'atterrissage, ce n'est pas un check
   de courtoisie.
-- **Le builder n'est jamais le correcteur.** Prends une autre personne, un
-  autre agent, ou un modèle d'une famille différente de celle du builder.
+- **Le builder n'est jamais le correcteur.** Prends un correcteur qui ne
+  vient pas du builder, choisi en direct par capacité et disponibilité depuis
+  la matrice de barreaux configurée ; l'exécution autrice qui a construit est
+  disqualifiée, et toute session qui a hérité de la conversation ou du
+  contexte du builder l'est aussi ; un correcteur de même modèle, même barreau
+  ou même famille dans une session vierge et disjointe de l'auteur est permis
+  là où le runtime configuré le permet.
 - **Le vert seul n'est pas une preuve.** Vert + test intact + note
   indépendante, ça c'est une preuve.
 - **Quand toute une classe de défaut est en jeu, garde la classe.** Les tests

@@ -64,7 +64,7 @@ wird verworfen. Nur bewiesener Uplift landet.
   oder ein stabileres Maß.
 - **Solo-Rig.** Keine zweite Modellfamilie verfügbar? Dann urteilt eine frische
   Blind-Session, die die Konversation des Autors nie gesehen hat — und der Bericht
-  benennt das geschwächte Gate („same-family-blind bewertet, nicht cross-family“).
+  benennt das geschwächte Gate („auf einer einzigen konfigurierten Sprosse bewertet“).
 - **Keine verlässliche Latte? Nimm Dominanz.** Wenn das Baseline-Niveau unbekannt
   oder verrauscht ist, lass die absolute Latte weg und behalte nur, was den
   aktuellen Champion strikt schlägt. Eine Regression kann nie dominieren, also
