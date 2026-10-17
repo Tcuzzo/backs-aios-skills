@@ -21,7 +21,7 @@ jobs:
           # full history: the hygiene guard scans commit metadata, and a
           # shallow clone would make that scan pass vacuously
           fetch-depth: 0
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
       - name: install test dependencies
