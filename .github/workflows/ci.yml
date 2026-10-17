@@ -16,7 +16,7 @@ jobs:
       matrix:
         python: ["3.11", "3.12"]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           # full history: the hygiene guard scans commit metadata, and a
           # shallow clone would make that scan pass vacuously
@@ -35,7 +35,7 @@ jobs:
     name: installers parse clean
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: shell installer syntax
         run: bash -n install.sh
       - name: benchmark script syntax
@@ -52,7 +52,7 @@ jobs:
     name: gate evaluator runs on node
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v5
         with:
           node-version: "20"
