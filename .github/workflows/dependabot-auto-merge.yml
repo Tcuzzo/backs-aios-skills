@@ -1,0 +1,41 @@
+name: dependabot auto-merge
+
+# The operator's ruling 2026-10-17: "the pull request and bump in dependencies
+# needs to happen autonomously for saftey". Security bumps that wait on a human
+# are not safe — they are a window.
+#
+# CI IS THE GATE. Auto-merge only completes once every required check passes, so
+# this delegates the CLICK, never the judgement. A red suite still blocks, which
+# is exactly what happened before this existed: six stale authorship trailers
+# held four dependency PRs hostage behind a red test.
+#
+# Scoped to Dependabot only. No other author's PR is touched.
+
+on: pull_request_target
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: read the bump metadata
+        id: meta
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: approve
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: enable auto-merge (squash) — merges only when checks pass
+        run: gh pr merge --squash --auto "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
