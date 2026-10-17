@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# One command, and it finishes: point git at this repo's hooks.
+set -euo pipefail
+cd "$(git rev-parse --show-toplevel)"
+git config core.hooksPath .githooks
+chmod +x .githooks/* 2>/dev/null || true
+echo "hooks enabled: core.hooksPath=.githooks"
