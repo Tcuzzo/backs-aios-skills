@@ -20,14 +20,12 @@ class VisualDocumentationContractTest(unittest.TestCase):
         }
         plays = {path.stem for path in (ROOT / "plays").glob("*.md")}
 
-        self.assertEqual(51, len(skills))
-        self.assertEqual(8, len(plays))
-        for skill in sorted(skills):
-            with self.subTest(skill=skill):
-                self.assertIn(f"../skills/{skill}/SKILL.md", guide)
-        for play in sorted(plays):
-            with self.subTest(play=play):
-                self.assertIn(f"../plays/{play}.md", guide)
+        self.assertTrue(skills, "No skills discovered; check the source directory")
+        self.assertTrue(plays, "No plays discovered; check the source directory")
+        linked_skills = set(re.findall(r"\]\(\.\./skills/([^/]+)/SKILL\.md\)", guide))
+        linked_plays = set(re.findall(r"\]\(\.\./plays/([^/]+)\.md\)", guide))
+        self.assertEqual(skills, linked_skills, "Skill links must match the live inventory")
+        self.assertEqual(plays, linked_plays, "Play links must match the live inventory")
 
     def test_each_chart_is_accessible_and_has_a_terminal_fallback(self) -> None:
         guide = (ROOT / "docs" / "FLOWCHARTS.md").read_text(encoding="utf-8")

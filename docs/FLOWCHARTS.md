@@ -40,6 +40,7 @@ Shapes carry meaning so the guide never depends on color:
 [root-cause-first](../skills/root-cause-first/SKILL.md) ·
 [seam-engineering](../skills/seam-engineering/SKILL.md) ·
 [session-handoff](../skills/session-handoff/SKILL.md) ·
+[backs-session-rollover](../skills/backs-session-rollover/SKILL.md) ·
 [sniper-testing](../skills/sniper-testing/SKILL.md) ·
 [understanding-gates](../skills/understanding-gates/SKILL.md) ·
 [wayfinder](../skills/wayfinder/SKILL.md) ·
@@ -136,7 +137,7 @@ Proof decides whether the result may land. Chart 9 maps the adapters.
 
 ```mermaid
 flowchart TB
-  accTitle: Complete map of all twenty-eight BACKS AIOS skills
+  accTitle: Map of the core BACKS AIOS skill layers
   accDescr: Four connected layers show the grounding, delivery, scale, and proof skills that carry a request from session boot to live closure.
 
   subgraph Grounding["Grounding: know the job before acting"]
