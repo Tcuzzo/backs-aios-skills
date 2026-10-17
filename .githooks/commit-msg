@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# commit-msg — strip tool/model authorship trailers (inv 21).
+#
+# This repo's CI enforces tests/test_public_hygiene.py
+# ::test_no_model_coauthor_trailers_in_history, which scans the last 200 commit
+# messages. Without this hook, a coding tool's default trailer lands in history,
+# the test goes red, and EVERY Dependabot PR is blocked behind it — which is
+# exactly what happened on 2026-10-17 (6 trailers, 4 PRs stuck).
+#
+# The repo owns its commit messages. Tools are not authors. The hook SCRUBS
+# rather than rejects, so a trailer never becomes the operator's homework.
+# Self-contained on purpose: pure bash + sed, no imports, so it works in a
+# fresh clone with nothing installed.
+set -euo pipefail
+MSG_FILE="${1:?commit-msg hook needs the message file}"
+[ -f "$MSG_FILE" ] || exit 0
+
+BEFORE_HASH=$(cksum < "$MSG_FILE")
+TMP="$(mktemp)"
+trap 'rm -f "$TMP"' EXIT
+
+sed -E '/^[[:space:]]*[Cc]o-[Aa]uthored-[Bb]y:[[:space:]]*/d; /Generated with \[/d' \
+  "$MSG_FILE" > "$TMP"
+
+# Trim trailing blank lines the removal may have left.
+while [ -s "$TMP" ] && [ -z "$(tail -n1 "$TMP")" ]; do
+  sed -i '$d' "$TMP"
+done
+printf '\n' >> "$TMP"
+
+if [ "$(cksum < "$TMP")" != "$BEFORE_HASH" ]; then
+  echo "  commit-msg: stripped model/tool authorship trailer(s) (inv 21)" >&2
+fi
+cp "$TMP" "$MSG_FILE"
+
+# Fail-closed guard: if anything survived, refuse rather than ship it to CI.
+if grep -qiE '^[[:space:]]*Co-[Aa]uthored-[Bb]y:|Generated with \[' "$MSG_FILE"; then
+  echo "  ✗ commit-msg: an authorship trailer survived the scrub — refusing" >&2
+  exit 1
+fi
+exit 0
