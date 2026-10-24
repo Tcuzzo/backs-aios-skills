@@ -269,7 +269,7 @@ def prune_retired_managed_skills(source: Path, home: Path) -> list[str]:
             marker = candidate / SKILL_MARKER
             if candidate.is_symlink() or not marker.is_file():
                 raise RuntimeError(f"Retired skill is not managed; preserving {candidate}")
-            if not marker.read_text(encoding="utf-8").strip().startswith("backs-aios-managed "):
+            if not marker.read_text(encoding="utf-8-sig").strip().startswith("backs-aios-managed "):
                 raise RuntimeError(f"Retired skill marker differs; preserving {candidate}")
             files = [p for p in candidate.rglob("*") if p.is_file() and p.name != SKILL_MARKER]
             directories = {p for p in candidate.rglob("*") if p.is_dir()}
