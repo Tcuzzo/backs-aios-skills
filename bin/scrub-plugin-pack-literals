@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 # scrub-plugin-pack-literals
 # Closes the public-publish leak class for the plugin pack. Replaces
-# /opt/<word>/, /mnt/<word>/, /home/<word>/, private IP literals, the
-# operator workstation/host references, and the operator first names
-# with placeholder equivalents in every tracked text file under skills/.
+# generic /opt, /mnt, and /home paths and private IP literals with
+# placeholders in every text file under skills/.
 #
 # Modes:
 #   --dry-run    list files that would change (default)
@@ -15,7 +14,12 @@
 
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+if [[ "$SCRIPT_DIR" == */skills/scrub-plugin-pack-literals/scripts ]]; then
+  ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd -P)"
+else
+  ROOT="$(cd "$SCRIPT_DIR/.." && pwd -P)"
+fi
 MODE="dry-run"
 case "${1:-}" in
   --apply) MODE="apply" ;;
@@ -24,21 +28,12 @@ case "${1:-}" in
   *) echo "usage: $0 [--apply|--hook|--dry-run]" >&2; exit 2 ;;
 esac
 
-# Order matters: longer prefixes first so /opt/JarvisAI/JarvisAI is not
-# pre-empted by a generic /opt rule. The /home, /mnt, /opt rules are
-# generic; IP rules use a placeholder; SSH user form drops the username
-# to operator@; operator first names are folded to 'operator'.
+# The path rules are generic. No private hostnames, user names, or machine
+# paths belong in a public guard script.
 RULES=(
-  's|/opt/JarvisAI/JarvisAI/|[candidate-tree-root]/|g'
   's|/opt/[A-Za-z][A-Za-z0-9_.-]*/|[candidate-tree-root]/|g'
   's|/mnt/[A-Za-z][A-Za-z0-9_.-]*/|<placeholder-mount>/|g'
   's|/home/[A-Za-z][A-Za-z0-9_.-]*/|[operator-home]/|g'
-  's|cuzzo-server|operator-host|g'
-  's|CUZZO-NZXT|operator-workstation|g'
-  's|cuzzo@|operator@|g'
-  's|Truett/Cuzzo|operator|g'
-  's|Cuzzo|operator|g'
-  's|Truett|operator|g'
   's|192\.168\.[0-9]+\.[0-9]+|[private-ip]|g'
   's|10\.[0-9]+\.[0-9]+\.[0-9]+|[private-ip]|g'
   's#172\.(1[6-9]|2[0-9]|3[01])\.[0-9]+\.[0-9]+#[private-ip]#g'
@@ -55,10 +50,6 @@ mapfile -t targets < <(
 total_files=0
 changed_files=0
 leaked_files=0
-
-# Hook-mode diagnostic pattern: matches the same classes as the public
-# hygiene test (built at runtime so the literals never appear in source).
-DIAG="$(printf '%s' '/mnt/|/opt/[A-Za-z]+|/home/[A-Za-z]+|cuzzo-server|CUZZO-NZXT')"
 
 for f in "${targets[@]}"; do
   total_files=$((total_files + 1))
@@ -80,7 +71,6 @@ for f in "${targets[@]}"; do
       hook)
         leaked_files=$((leaked_files + 1))
         echo "  LEAK: ${f#$ROOT/}"
-        grep -nE "$DIAG" "$f" | head -5
         ;;
     esac
   fi
