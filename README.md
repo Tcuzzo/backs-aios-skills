@@ -16,7 +16,7 @@ before it has read the rules. A hook checks. The tool does not run, and the agen
 told why. Not a prompt asking it to behave — a gate it cannot argue with.
 
 This pack is that discipline pulled out of a running agent platform and rebuilt as
-plain markdown: **28 skills, 8 named plays, 10 command entry points.** Any agent can
+plain markdown: **56 public skill folders, 8 named plays, 15 command entry points.** Any agent can
 load them. Claude Code, Codex, Cursor, OpenCode, or a bare API loop.
 
 Two of the skills are the load-bearing ones. **No mock theater** — a test that passes
@@ -133,7 +133,7 @@ in [INSTALL.md](INSTALL.md).
   wireframe marks a **Lord of the Loop** — the loop owner who drives iteration
   until the landing gate is green; the role is defined in
   [NAMING.md](NAMING.md#lord-of-the-loop).
-- **Commands** are the 10 action entries that load a play or skill and run it.
+- **Commands** are the 15 action entries that load a play or skill and run it.
   Cursor receives native slash commands from `command-adapters/`. OpenCode receives
   the same native commands plus the `~/.config/opencode/plugins/backs-aios.js` ESM
   adapter, which forwards `tool.execute.before` and `tool.execute.after` events to

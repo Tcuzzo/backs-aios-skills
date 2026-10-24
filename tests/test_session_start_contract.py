@@ -3,15 +3,17 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+TEST_TEMP = ROOT / "sandbox" / "hook-tests"
 GATES = (
     ("node", str(ROOT / "hooks" / "aios_gate.js")),
-    ("python3", str(ROOT / "hooks" / "aios_gate.py")),
+    (sys.executable, str(ROOT / "hooks" / "aios_gate.py")),
 )
 SESSION_IDENTITY_KEYS = (
     "CLAUDE_CODE_SESSION_ID", "CURSOR_SESSION_ID", "CURSOR_CONVERSATION_ID",
@@ -27,7 +29,7 @@ class SessionStartContractTest(unittest.TestCase):
         merged_env = os.environ.copy()
         for key in SESSION_IDENTITY_KEYS:
             merged_env.pop(key, None)
-        merged_env.update({"HOME": home, "BACKS_DEPLOY_ROOT": str(Path(home)/"missing-deploy"), "AIOS_GATE": "on", **env})
+        merged_env.update({"HOME": home, "USERPROFILE": home, "BACKS_DEPLOY_ROOT": str(Path(home)/"missing-deploy"), "AIOS_GATE": "on", **env})
         return subprocess.run(
             (*gate, *arguments),
             input=payload if isinstance(payload, str) else json.dumps(payload),
@@ -39,7 +41,8 @@ class SessionStartContractTest(unittest.TestCase):
 
     def test_claude_start_delivers_floor_and_preserves_grounding(self) -> None:
         for gate in GATES:
-            with self.subTest(gate=gate[1]), tempfile.TemporaryDirectory() as home:
+            TEST_TEMP.mkdir(parents=True, exist_ok=True)
+            with self.subTest(gate=gate[1]), tempfile.TemporaryDirectory(dir=TEST_TEMP) as home:
                 session = f"claude-start-{Path(gate[1]).suffix.lstrip('.')}"
                 loaded = self.run_gate(
                     gate, home, "", "--load", "backs-aios:optimus",

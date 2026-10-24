@@ -1,0 +1,33 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "backs-aios",
+  "version": "0.9.4",
+  "description": "Portable BACKS AIOS skills for grounded coding, repair, review, and delivery.",
+  "author": {
+    "name": "Tcuzzo",
+    "url": "https://github.com/Tcuzzo"
+  },
+  "homepage": "https://github.com/Tcuzzo/backs-aios-skills",
+  "repository": "https://github.com/Tcuzzo/backs-aios-skills",
+  "license": "MIT",
+  "keywords": ["agent-skills", "coding", "repair-loop", "code-review"],
+  "extensions": {
+    "com.openai": {
+      "hooks": "./hooks/hooks.json",
+      "interface": {
+        "displayName": "BACKS AIOS",
+        "shortDescription": "Grounded agent build skills",
+        "longDescription": "A portable skill pack for grounded agent sessions, root-cause repair, parallel work, verification, and independent review.",
+        "developerName": "Tcuzzo",
+        "category": "Developer Tools",
+        "capabilities": ["Read", "Write"],
+        "websiteURL": "https://github.com/Tcuzzo/backs-aios-skills",
+        "defaultPrompt": [
+          "Load BACKS AIOS optimus and ground this coding session.",
+          "Use the BACKS AIOS repair loop on this bug.",
+          "Review this change with the BACKS AIOS blind tribunal."
+        ]
+      }
+    }
+  }
+}

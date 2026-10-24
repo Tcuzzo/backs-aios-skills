@@ -21,14 +21,16 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+TEST_TEMP = ROOT / "sandbox" / "hook-tests"
 GATES = (
     ("node", str(ROOT / "hooks" / "aios_gate.js")),
-    ("python3", str(ROOT / "hooks" / "aios_gate.py")),
+    (sys.executable, str(ROOT / "hooks" / "aios_gate.py")),
 )
 SESSION_IDENTITY_KEYS = (
     "BACKS_BUILD_SESSION",
@@ -46,14 +48,15 @@ class SessionIdPriorityTest(unittest.TestCase):
     """When BOTH CODEX_SESSION_ID and CODEX_THREAD_ID are set, SESSION_ID wins."""
 
     def setUp(self) -> None:
-        self.home = tempfile.TemporaryDirectory()
+        TEST_TEMP.mkdir(parents=True, exist_ok=True)
+        self.home = tempfile.TemporaryDirectory(dir=TEST_TEMP)
         self.addCleanup(self.home.cleanup)
 
     def _scrubbed_env(self, **overrides: str) -> dict[str, str]:
         merged = os.environ.copy()
         for key in SESSION_IDENTITY_KEYS:
             merged.pop(key, None)
-        merged.update({"HOME": self.home.name, **overrides})
+        merged.update({"HOME": self.home.name, "USERPROFILE": self.home.name, **overrides})
         return merged
 
     def test_session_id_wins_when_both_codex_env_vars_set(self):

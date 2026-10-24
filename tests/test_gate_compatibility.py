@@ -3,15 +3,17 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+TEST_TEMP = ROOT / "sandbox" / "hook-tests"
 GATES = (
     ("node", str(ROOT / "hooks" / "aios_gate.js")),
-    ("python3", str(ROOT / "hooks" / "aios_gate.py")),
+    (sys.executable, str(ROOT / "hooks" / "aios_gate.py")),
 )
 SESSION_IDENTITY_KEYS = (
     "BACKS_BUILD_SESSION",
@@ -27,7 +29,8 @@ SESSION_IDENTITY_KEYS = (
 
 class GateCompatibilityTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.home = tempfile.TemporaryDirectory()
+        TEST_TEMP.mkdir(parents=True, exist_ok=True)
+        self.home = tempfile.TemporaryDirectory(dir=TEST_TEMP)
         self.addCleanup(self.home.cleanup)
 
     def run_gate(
@@ -46,7 +49,7 @@ class GateCompatibilityTest(unittest.TestCase):
         # the test's own **env wins — the gate under test is unchanged.
         for key in SESSION_IDENTITY_KEYS:
             merged_env.pop(key, None)
-        merged_env.update({"HOME": self.home.name, "BACKS_DEPLOY_ROOT": str(Path(self.home.name)/"missing-deploy"), "AIOS_GATE": "on", **env})
+        merged_env.update({"HOME": self.home.name, "USERPROFILE": self.home.name, "BACKS_DEPLOY_ROOT": str(Path(self.home.name)/"missing-deploy"), "AIOS_GATE": "on", **env})
         return subprocess.run(
             (*gate, *arguments),
             input=value,
@@ -308,6 +311,7 @@ console.log(JSON.stringify({{denied, allowed}}));
             env={
                 **os.environ,
                 "HOME": self.home.name,
+                "USERPROFILE": self.home.name,
                 "BACKS_AIOS_RUNTIME_ROOT": str(ROOT),
                 "BACKS_DEPLOY_ROOT": str(Path(self.home.name)/"missing-deploy"),
                 "AIOS_GATE": "on",

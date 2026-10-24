@@ -9,9 +9,6 @@ ROOT = Path(__file__).resolve().parents[1]
 ACTIVE_SURFACES = (
     "skills/blind-tribunal/SKILL.md",
     "skills/design-taste/SKILL.md",
-    "skills/hive-clone-boot/references/PATCH_MASTER_UPLIFT.md",
-    "skills/hive-clone-boot/references/HIVE_CLONE_HANDOFF.md",
-    "skills/hive-clone-boot/references/hive_pack_seats.yaml",
     "i18n/hi/NAMING.md",
 )
 FORBIDDEN = (
