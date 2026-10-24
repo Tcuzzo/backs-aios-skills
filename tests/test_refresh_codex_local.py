@@ -89,7 +89,7 @@ def test_retired_skill_prune_requires_marker_containment_and_exact_snapshot(tmp_
     claude = home / ".claude" / "skills" / "hive-clone-boot"
     for directory in (codex, claude):
         directory.mkdir(parents=True)
-        (directory / REFRESH.SKILL_MARKER).write_text("backs-aios-managed 0.8.1\n", encoding="utf-8")
+        (directory / REFRESH.SKILL_MARKER).write_text("\ufeffbacks-aios-managed 0.8.1\n", encoding="utf-8")
         for n in range(26):
             (directory / f"file-{n:02d}.md").write_text(f"original {n}\n", encoding="utf-8")
     monkeypatch.setattr(REFRESH, "RETIRED_SNAPSHOTS", {"hive-clone-boot": REFRESH.digest(codex, exclude_marker=REFRESH.SKILL_MARKER)})
