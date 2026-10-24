@@ -47,7 +47,7 @@ class ProviderPublicSafetyTest(unittest.TestCase):
                 self.assertIsNone(ABSOLUTE_USER_PATH.search(text))
                 self.assertIsNone(SECRET_LITERAL.search(text))
                 self.assertIsNone(EMAIL.search(text))
-                self.assertNotIn("/opt/JarvisAI", text)
+                self.assertNotIn("/opt/", text)
                 self.assertNotIn("/mnt/", text)
 
     def test_profiles_never_embed_api_keys(self) -> None:
