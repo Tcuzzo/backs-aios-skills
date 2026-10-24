@@ -1,6 +1,6 @@
 # Install BACKS AIOS
 
-BACKS AIOS ships one canonical set of 28 Agent Skills, 8 named plays, and 10 command
+BACKS AIOS ships 56 public skill folders, 8 named plays, and 15 command
 entry points with native packaging for Claude Code, Codex, Cursor, and OpenCode.
 There is no build step and no runtime dependency for the skills themselves.
 
@@ -32,10 +32,10 @@ Supported `--target` / `-Target` values:
 
 | Target | Registration path | What loads it |
 | --- | --- | --- |
-| `codex` | `~/.codex/skills/<name>/SKILL.md` | Codex CLI, app, and IDE extension; 28 skills + 8 command-skill adapters; arming requires the explicit gate loader — no native Codex skill lifecycle |
+| `codex` | `~/.codex/skills/<name>/SKILL.md` | Codex CLI, app, and IDE extension; all 56 public skill folders; arming requires the explicit gate loader — no native Codex skill lifecycle |
 | `cursor` | `~/.cursor/plugins/local/backs-aios` | Cursor IDE and Cursor CLI (`agent`); full plugin with skills, commands, and native hook |
-| `opencode` | `~/.config/opencode/skills/<name>/SKILL.md` + `commands/*.md` + `~/.config/opencode/plugins/backs-aios.js` | OpenCode terminal and desktop, including all 10 slash commands and the ESM adapter that calls the shared JavaScript gate evaluator |
-| `claude` | `~/.claude/skills/<name>/SKILL.md` | Claude Code loads all 36 skills directly; no duplicate legacy commands and no hook; the marketplace plugin adds the hook |
+| `opencode` | `~/.config/opencode/skills/<name>/SKILL.md` + `commands/*.md` + `~/.config/opencode/plugins/backs-aios.js` | OpenCode terminal and desktop, including all 15 slash commands and the ESM adapter that calls the shared JavaScript gate evaluator |
+| `claude` | `~/.claude/skills/<name>/SKILL.md` | Claude Code loads all 56 public skills directly; no duplicate legacy commands and no hook; the marketplace plugin adds the hook |
 | `portable` | `~/.agents/skills/<name>/SKILL.md` | Agent Skills runtimes, including the 8 play adapters and 2 canonical command equivalents |
 | `all` | Every native and portable path above | Claude Code, Codex, Cursor, OpenCode, and Agent Skills runtimes |
 
@@ -45,7 +45,7 @@ stable English invocation keys; skill-only targets use the selected language.
 
 ## Claude Code: full plugin
 
-The full Claude Code plugin carries all 28 skills, all 10 slash commands, and the
+The full Claude Code plugin carries all 56 public skills, all 15 slash commands, and the
 grounding hook:
 
 ```text
@@ -63,6 +63,11 @@ grounding hook and namespaced plugin lifecycle.
 
 ## Codex: plugin or plain skills
 
+For the local Codex plugin, global skill instructions, and automatic refresh,
+follow [the Codex skills guide](docs/CODEX_SKILLS.md). The installed `codex`
+CLI on this workstation does not currently expose plugin commands; the guide
+uses the desktop local marketplace and the managed plain skills path.
+
 The richer local plugin development flow can point a Codex marketplace entry at this clone and run:
 
 ```bash
@@ -77,8 +82,8 @@ For a direct GitHub clone, the portable route is:
 ./install.sh --target codex
 ```
 
-Codex discovers the 28 canonical skill folders plus 8 command adapters on the next
-thread. `optimus` and `design-taste` already exist as canonical skills, so all 10
+Codex discovers the 56 public skill folders on the next
+thread. `optimus` and `design-taste` already exist as canonical skills, so all 15
 command capabilities are invocable without duplicate adapters. Codex plugins do not
 ingest `command-adapters/`; invoke the matching namespaced skill (for example,
 `backs-aios:elite-build`).
@@ -110,7 +115,7 @@ the full bundle with:
 
 This creates `~/.cursor/plugins/local/backs-aios` as a symlink to the clone. Restart
 Cursor or run **Developer: Reload Window**. In Cursor CLI, start a new `agent`
-session. The 28 skills appear in skill discovery, the 10 commands appear in `/`,
+session. The 56 public skills appear in skill discovery, the 15 commands appear in `/`,
 and `hooks/cursor-hooks.json` drives the same grounding gate through Cursor's native
 lowercase event protocol.
 
@@ -126,7 +131,7 @@ OpenCode discovers one `SKILL.md` per folder and native command markdown from
 ./install.sh --target opencode
 ```
 
-The installer registers all 10 commands and the ESM adapter at
+The installer registers all 15 commands and the ESM adapter at
 `~/.config/opencode/plugins/backs-aios.js` (a symlink by default; pinned copies
 with `--copy`), and renders play paths against the managed runtime root at
 `~/.local/share/backs-aios/current`. The adapter uses
@@ -222,7 +227,7 @@ command files or ESM adapter change.
   nonzero.
 - **Cursor:** Customize → Plugins/Skills, then `/optimus` in the IDE or `agent` CLI.
 - **OpenCode:** `opencode debug skill`, `opencode debug config`, then `/optimus` in a
-  fresh session; the resolved config must contain all 10 command names, and the
+  fresh session; the resolved config must contain all 15 command names, and the
   adapter file must exist at `~/.config/opencode/plugins/backs-aios.js`.
 
 The canonical format is `skills/<name>/SKILL.md`. Every `name` is lowercase

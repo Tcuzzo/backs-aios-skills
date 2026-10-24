@@ -5,14 +5,18 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+TEST_TEMP = ROOT / 'sandbox' / 'hook-tests'
+RUNTIMES = {'js': 'node', 'py': sys.executable}
 
 class FloorAutoloadTest(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        TEST_TEMP.mkdir(parents=True, exist_ok=True)
+        self.tmp = tempfile.TemporaryDirectory(dir=TEST_TEMP)
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         self.pack = self.root / 'pack'
@@ -29,11 +33,12 @@ class FloorAutoloadTest(unittest.TestCase):
         for name, body in self.bodies.items():
             target = self.deploy / name
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(body)
-        self.env = {**os.environ, 'HOME': str(self.root / 'home'), 'BACKS_DEPLOY_ROOT': str(self.deploy), 'AIOS_GATE': 'on'}
+            target.write_bytes(body.encode())
+        home = str(self.root / 'home')
+        self.env = {**os.environ, 'HOME': home, 'USERPROFILE': home, 'BACKS_DEPLOY_ROOT': str(self.deploy), 'AIOS_GATE': 'on'}
 
     def run_gate(self, suffix, event, **payload):
-        return subprocess.run([{'js':'node','py':'python3'}[suffix], str(self.pack / 'hooks' / ('aios_gate.'+suffix))], input=json.dumps({'session_id': 'floor-contract', 'hook_event_name':event, **payload}), text=True, capture_output=True, env=self.env, timeout=10)
+        return subprocess.run([RUNTIMES[suffix], str(self.pack / 'hooks' / ('aios_gate.'+suffix))], input=json.dumps({'session_id': 'floor-contract', 'hook_event_name':event, **payload}), text=True, capture_output=True, env=self.env, timeout=10)
 
     def context(self, result):
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -81,9 +86,10 @@ class FloorAutoloadTest(unittest.TestCase):
         receipt = json.loads(Path(str(marker) + '.load.json').read_text())
         self.assertEqual(receipt['session_id'], session)
         self.assertEqual(receipt['kind'], 'context_delivery')
-        self.assertEqual({row['path'] for row in receipt['bodies']}, set(expected))
+        expected_paths = {Path(path): body for path, body in expected.items()}
+        self.assertEqual({Path(row['path']) for row in receipt['bodies']}, set(expected_paths))
         for row in receipt['bodies']:
-            self.assertEqual(row['sha256'], hashlib.sha256(expected[row['path']].encode()).hexdigest())
+            self.assertEqual(row['sha256'], hashlib.sha256(expected_paths[Path(row['path'])].encode()).hexdigest())
 
     def test_receipt_binds_exact_delivered_unicode_and_line_endings(self):
         name = 'skills/optimus/SKILL.md'
@@ -120,7 +126,7 @@ class FloorAutoloadTest(unittest.TestCase):
                 reader, writer = os.pipe()
                 os.close(reader)
                 try:
-                    result = subprocess.run([{'js':'node','py':'python3'}[suffix], str(self.pack/'hooks'/('aios_gate.'+suffix)), *args],
+                    result = subprocess.run([RUNTIMES[suffix], str(self.pack/'hooks'/('aios_gate.'+suffix)), *args],
                         input=json.dumps({'session_id':'floor-contract','hook_event_name':'SessionStart'}),
                         text=True, stdout=writer, stderr=subprocess.PIPE, env=self.env, timeout=10)
                 finally:
@@ -142,7 +148,7 @@ class FloorAutoloadTest(unittest.TestCase):
     def test_explicit_loader_emits_every_recorded_digest_and_sanitizes_session(self):
         for suffix in ('js', 'py'):
             shutil.rmtree(self.root/'home', ignore_errors=True)
-            result = subprocess.run([{'js':'node','py':'python3'}[suffix],
+            result = subprocess.run([RUNTIMES[suffix],
                 str(self.pack/'hooks'/('aios_gate.'+suffix)), '--load', 'optimus', 'floor/session'],
                 capture_output=True, env=self.env, timeout=10)
             self.assertEqual(result.returncode, 0, result.stderr)

@@ -28,6 +28,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
@@ -38,14 +39,54 @@ ALIASES = {
     "context-compiler": "context-engineer",
     "operator_intent_deduction": "operator-intent-deduction",
 }
-# bin/ script -> skill that documents it. The rest move to tools/maintenance/.
+# Only scripts that a published skill needs are allowed into the archive.
 BIN_OWNERS = {
     "backs-pack-sync": "backs-pack-sync",
     "scrub-plugin-pack-literals": "scrub-plugin-pack-literals",
     "reload-vsc-and-verify": "reload-vsc-and-verify",
 }
-# Host plugin manifests that are not claude.ai's.
-DROP = (".cursor-plugin", ".codex-plugin", "claude-skills/provider/.claude-plugin")
+PUBLIC_TOP_LEVEL = frozenset({
+    ".claude-plugin", "skills", "hooks", "plays", "command-adapters", "LICENSE",
+})
+# This seat boot encodes private BACKS topology and operator-specific handoffs.
+PRIVATE_SKILLS = frozenset({"hive-clone-boot"})
+
+
+def prune_to_public_payload(stage: pathlib.Path) -> None:
+    """Allowlist the archive so repository scaffolding and runtime data cannot ship."""
+    if stage.is_symlink():
+        raise SystemExit("archive stage cannot be a symlink")
+    root = stage.absolute()
+    for path in stage.iterdir():
+        if path.is_symlink():
+            raise SystemExit(f"symlink at archive root: {path.name}")
+        if path.name in PUBLIC_TOP_LEVEL:
+            continue
+        if path.absolute().parent != root:
+            raise SystemExit(f"archive path escapes stage: {path.name}")
+        if path.is_dir():
+            shutil.rmtree(path)
+        else:
+            path.unlink()
+    manifest_dir = stage / ".claude-plugin"
+    for path in manifest_dir.iterdir():
+        if path.name == "plugin.json" and path.is_file() and not path.is_symlink():
+            continue
+        if path.is_symlink() or path.is_file():
+            path.unlink()
+        elif path.is_dir() and path.absolute().parent == manifest_dir.absolute():
+            shutil.rmtree(path)
+        else:
+            raise SystemExit(f"unexpected manifest entry: {path.name}")
+    skill_root = stage / "skills"
+    for name in PRIVATE_SKILLS:
+        private_dir = skill_root / name
+        if private_dir.is_symlink():
+            raise SystemExit(f"private skill is a symlink: {name}")
+        if private_dir.is_dir():
+            if private_dir.absolute().parent != skill_root.absolute():
+                raise SystemExit(f"private skill path escapes archive: {name}")
+            shutil.rmtree(private_dir)
 
 
 def frontmatter(path: pathlib.Path) -> str:
@@ -67,23 +108,25 @@ def build(stage: pathlib.Path) -> None:
     if bin_dir.is_dir():
         for script in sorted(bin_dir.iterdir()):
             owner = BIN_OWNERS.get(script.name)
-            dest = (stage / "skills" / owner / "scripts") if owner else (stage / "tools" / "maintenance")
+            if owner is None:
+                continue
+            dest = stage / "skills" / owner / "scripts"
             dest.mkdir(parents=True, exist_ok=True)
             shutil.move(str(script), dest / script.name)
-            if owner:
-                skill = stage / "skills" / owner / "SKILL.md"
-                text = skill.read_text(encoding="utf-8")
-                text = text.replace(f"bash bin/{script.name}",
-                                    f"bash ${{CLAUDE_PLUGIN_ROOT}}/skills/{owner}/scripts/{script.name}")
-                text = text.replace(f"`bin/{script.name}`",
-                                    f"`skills/{owner}/scripts/{script.name}`")
-                text = text.replace(f"~/backs-aios-skills/bin/{script.name}",
-                                    f"${{CLAUDE_PLUGIN_ROOT}}/skills/{owner}/scripts/{script.name}")
-                skill.write_text(text, encoding="utf-8")
-        bin_dir.rmdir()
+            skill = stage / "skills" / owner / "SKILL.md"
+            text = skill.read_text(encoding="utf-8")
+            text = text.replace(f"bash bin/{script.name}",
+                                f"bash ${{CLAUDE_PLUGIN_ROOT}}/skills/{owner}/scripts/{script.name}")
+            text = text.replace(f"`bin/{script.name}`",
+                                f"`skills/{owner}/scripts/{script.name}`")
+            text = text.replace(f"~/backs-aios-skills/bin/{script.name}",
+                                f"${{CLAUDE_PLUGIN_ROOT}}/skills/{owner}/scripts/{script.name}")
+            skill.write_text(text, encoding="utf-8")
+        if bin_dir.absolute().parent != stage.absolute():
+            raise SystemExit("bin path escapes archive stage")
+        shutil.rmtree(bin_dir)
 
-    for rel in DROP:
-        shutil.rmtree(stage / rel, ignore_errors=True)
+    prune_to_public_payload(stage)
 
     # claude.ai rejects angle brackets in a description: they parse as XML tags.
     for skill in sorted((stage / "skills").glob("*/SKILL.md")):
@@ -120,6 +163,16 @@ def verify(stage: pathlib.Path) -> None:
     print(f"verified: {len(seen)} unique skills, one plugin.json, no top-level bin/")
 
 
+def write_archive(stage: pathlib.Path, out: pathlib.Path) -> None:
+    """Build the plugin ZIP with Python so Windows and Unix produce the same payload."""
+    with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        for path in sorted(stage.rglob("*")):
+            if path.is_symlink():
+                raise SystemExit(f"plugin payload contains a symlink: {path.relative_to(stage)}")
+            if path.is_file():
+                archive.write(path, path.relative_to(stage).as_posix())
+
+
 def main() -> int:
     out = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "backs-aios.plugin").resolve()
     with tempfile.TemporaryDirectory() as tmp:
@@ -128,7 +181,7 @@ def main() -> int:
         build(stage)
         if out.exists():
             out.unlink()
-        subprocess.run(["zip", "-qr", str(out), "."], cwd=stage, check=True)
+        write_archive(stage, out)
     print(f"wrote {out} ({out.stat().st_size // 1024} KiB)")
     return 0
 

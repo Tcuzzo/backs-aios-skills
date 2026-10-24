@@ -14,6 +14,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "tools"))
@@ -36,6 +37,12 @@ class ClaudePluginBuildTest(unittest.TestCase):
 
     def test_no_top_level_bin_directory(self) -> None:
         self.assertFalse((self.stage / "bin").exists())
+
+    def test_private_runtime_skill_is_not_published(self) -> None:
+        self.assertFalse((self.stage / "skills" / "hive-clone-boot").exists())
+        for hook in (self.stage / "hooks").glob("aios_gate.*"):
+            with self.subTest(hook=hook.name):
+                self.assertFalse("hive-clone-boot" in hook.read_text(encoding="utf-8"))
 
     def test_skill_names_are_unique(self) -> None:
         names = [
@@ -94,3 +101,50 @@ class AliasDriftTest(unittest.TestCase):
                 if name != canon[0]:
                     declared.add((name, canon[0]))
         self.assertEqual(declared, set(bp.ALIASES.items()))
+
+
+class PublicPayloadTest(unittest.TestCase):
+    def test_archive_is_portable_and_contains_only_stage_files(self) -> None:
+        local_sandbox = ROOT / "sandbox"
+        with tempfile.TemporaryDirectory(dir=local_sandbox if local_sandbox.is_dir() else None) as tmp:
+            stage = pathlib.Path(tmp) / "stage"
+            (stage / "skills" / "example").mkdir(parents=True)
+            (stage / "skills" / "example" / "SKILL.md").write_text("public", encoding="utf-8")
+            output = pathlib.Path(tmp) / "pack.plugin"
+            bp.write_archive(stage, output)
+            with zipfile.ZipFile(output) as archive:
+                self.assertEqual(["skills/example/SKILL.md"], archive.namelist())
+
+    def test_build_prunes_private_runtime_and_repo_scaffolding(self) -> None:
+        local_sandbox = ROOT / "sandbox"
+        with tempfile.TemporaryDirectory(dir=local_sandbox if local_sandbox.is_dir() else None) as tmp:
+            stage = pathlib.Path(tmp)
+            for rel in (
+                "skills/example/SKILL.md",
+                "hooks/aios_gate.js",
+                "plays/repair-loop.md",
+                "command-adapters/repair-loop.md",
+                ".claude-plugin/plugin.json",
+                "LICENSE",
+                "provider/private-runtime.json",
+                "config/internal-routing.json",
+                "tests/customer-fixture.json",
+                "docs/operator-notes.md",
+                "tools/secret-helper.py",
+            ):
+                path = stage / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("synthetic private fixture" if "private" in rel else "public", encoding="utf-8")
+
+            bp.prune_to_public_payload(stage)
+
+            expected = {
+                "skills/example/SKILL.md",
+                "hooks/aios_gate.js",
+                "plays/repair-loop.md",
+                "command-adapters/repair-loop.md",
+                ".claude-plugin/plugin.json",
+                "LICENSE",
+            }
+            actual = {p.relative_to(stage).as_posix() for p in stage.rglob("*") if p.is_file()}
+            self.assertEqual(expected, actual)

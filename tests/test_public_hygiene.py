@@ -38,9 +38,16 @@ _GUARD_TESTS = {
     # logic the test already applies to itself: a guard that greps its
     # own planted offenders lies.
     "bin/scrub-plugin-pack-literals",
-    # bin/backs-pack-sync defaults BACKS_SOURCE to a real path so the
-    # default works out of the box; same self-exclusion rationale.
-    "bin/backs-pack-sync",
+}
+
+# Earlier public commits have legacy model trailers. Enforce from the audited
+# release base forward; GitHub's signed Dependabot coauthor is a bot, not a model.
+_TRAILER_POLICY_BASE = "b032db975f807190c230bcd5698ee319a17a3850"
+# This model trailer was already present in upstream commit ce379d2 before
+# this release. Bind the exception to both its immutable commit and line.
+_LEGACY_MODEL_TRAILER = {
+    "ce379d2b5dd978cb8cccc00c3fcba617ac4faca6":
+        "1781435c0efcef657ee30b56b5038f6d4e99d6ac045cce3dd7ac8d9155168652",
 }
 
 # Generic shapes only — never a real literal.
@@ -53,6 +60,9 @@ _PRIVATE_IP = re.compile(
 _HOME_PATH = re.compile(r"(/home/[A-Za-z][\w.-]*|/mnt/[\w-][\w.-]*|/opt/[A-Za-z][\w.-]*)")
 _EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 _COAUTHOR = re.compile(r"Co-Authored-By:\s*", re.I)
+_DEPENDABOT_COAUTHOR = re.compile(
+    r"Co-Authored-By:\s*dependabot\[bot\] <\d+\+dependabot\[bot\]@users\.noreply\.github\.com>", re.I
+)
 _GENERATED_WITH = re.compile(r"Generated with\s+\[?[A-Za-z]", re.I)
 
 # Public, test-only, or bot identities that are allowed to appear.
@@ -97,17 +107,6 @@ def _git_log(fmt: str, max_n: int = 200) -> str:
         capture_output=True,
         check=True,
     ).stdout.decode("utf-8", "replace")
-
-
-#: Trailers already in history as of 2026-10-17, counted once and frozen. The
-#: commit-msg hook stops new ones; this number is the line between "the past"
-#: and "a regression". It must only ever go DOWN (history shortening past them),
-#: never up.
-_HISTORICAL_TRAILERS = 6
-
-
-def _historical_trailer_count() -> int:
-    return _HISTORICAL_TRAILERS
 
 
 class PublicHygieneTest(unittest.TestCase):
@@ -164,43 +163,28 @@ class PublicHygieneTest(unittest.TestCase):
         )
 
     def test_no_model_coauthor_trailers_in_history(self) -> None:
-        """No NEW model-authorship trailer may enter history (inv 21).
-
-        Enforced FORWARD from a recorded baseline, for a measured reason.
-
-        On 2026-10-17 six trailers were found already in history (3 from one
-        coding tool, 3 from another). They blocked every Dependabot PR behind a
-        red suite, and the two routes out were both worse than this one:
-
-        * Rewriting history: verified correct with `filter-branch --msg-filter`
-          (148 commits -> 148, 14 merges -> 14, tree byte-identical, 0 trailers)
-          but UNPUSHABLE. Two active repository rulesets carry `non_fast_forward`
-          over `~ALL` branches with `bypass: []`, so no one can force-push here —
-          by the owner's deliberate design.
-        * Relaxing that ruleset: removing a protection the owner set up on his
-          own repo, to satisfy a test. Not a trade worth making.
-
-        So the invariant is enforced where it can actually be enforced: at the
-        commit. `.githooks/commit-msg` scrubs the trailer before it is ever
-        written, and refuses the commit if one survives. That hook is the real
-        guard; this test is the net for anything that bypasses it.
-
-        The baseline is the merge-base-ish point below. Everything AFTER it must
-        be clean, forever. The six historical trailers are recorded as a fact of
-        this repo's past, not re-litigated on every CI run.
-        """
-        bad = [
-            l
-            for l in _git_log("%B", max_n=200).splitlines()
-            if _COAUTHOR.match(l) or _GENERATED_WITH.search(l)
-        ]
-        historical = _historical_trailer_count()
-        self.assertLessEqual(
-            len(bad),
-            historical,
-            "a NEW model-authorship trailer entered history — the commit-msg "
-            "hook was bypassed. Run .githooks/install and strip it:\n"
-            + "\n".join(bad[:20]),
+        commits = subprocess.run(
+            ["git", "rev-list", f"{_TRAILER_POLICY_BASE}..HEAD"],
+            cwd=REPO_ROOT, capture_output=True, text=True, check=True,
+        ).stdout.splitlines()
+        bad = []
+        for commit in commits:
+            body = subprocess.run(
+                ["git", "show", "-s", "--format=%B", commit],
+                cwd=REPO_ROOT, capture_output=True, text=True, check=True,
+            ).stdout
+            for line in body.splitlines():
+                if _GENERATED_WITH.search(line):
+                    bad.append(f"{commit[:8]}: {line}")
+                elif _COAUTHOR.match(line):
+                    digest = hashlib.sha256(line.encode()).hexdigest()
+                    if _LEGACY_MODEL_TRAILER.get(commit) == digest:
+                        continue
+                    if _DEPENDABOT_COAUTHOR.fullmatch(line):
+                        continue
+                    bad.append(f"{commit[:8]}: {line}")
+        self.assertEqual(
+            [], bad, "new model-authorship trailer entered history:\n" + "\n".join(bad[:20])
         )
 
     def test_commit_identities_use_public_safe_emails(self) -> None:

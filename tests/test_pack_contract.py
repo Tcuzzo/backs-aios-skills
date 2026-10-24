@@ -25,8 +25,16 @@ COMMAND_NAMES = {
     "secure-delivery",
     "tribunal",
     "web-build",
+    "building-with-backs",
+    "fix-shit",
+    "karpathy",
+    "debugging-engineer",
+    "design-critique",
 }
-COMMAND_SKILL_NAMES = COMMAND_NAMES - {"design-taste", "optimus"}
+COMMAND_SKILL_NAMES = {
+    "agent-build", "bughunt", "elite-build", "grade", "parallel-work",
+    "secure-delivery", "tribunal", "web-build",
+}
 
 
 def frontmatter(path: Path) -> dict:
@@ -81,7 +89,7 @@ class PackContractTest(unittest.TestCase):
             "duplicate the canonical skills and can fail before the gate arms.",
         )
         commands = sorted((ROOT / "command-adapters").glob("*.md"))
-        self.assertEqual(10, len(commands))
+        self.assertEqual(len(COMMAND_NAMES), len(commands))
         self.assertEqual(COMMAND_NAMES, {command.stem for command in commands})
         for command in commands:
             with self.subTest(command=command.name):
@@ -146,6 +154,7 @@ class PackContractTest(unittest.TestCase):
             self.assertIn(".claude/skills", text)
             self.assertIn(".local/share/backs-aios/current", text)
 
+    @unittest.skipIf(os.name == "nt", "Unix shell installer is not executable on Windows")
     def test_unix_all_install_registers_real_host_commands(self) -> None:
         with tempfile.TemporaryDirectory() as home:
             env = {**os.environ, "HOME": home}
@@ -194,6 +203,7 @@ class PackContractTest(unittest.TestCase):
                 }
                 self.assertTrue(COMMAND_NAMES <= installed, relative)
 
+    @unittest.skipIf(os.name == "nt", "Unix shell installer is not executable on Windows")
     def test_copy_install_excludes_repository_internals(self) -> None:
         with tempfile.TemporaryDirectory() as home:
             env = {**os.environ, "HOME": home}

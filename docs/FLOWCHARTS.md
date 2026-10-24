@@ -15,7 +15,13 @@ Shapes carry meaning so the guide never depends on color:
 
 ## Quick links
 
-**Skills:** [absorb](../skills/absorb/SKILL.md) ·
+**Skills:** [building-with-backs](../skills/building-with-backs/SKILL.md) ·
+[fix-shit](../skills/fix-shit/SKILL.md) ·
+[karpathy](../skills/karpathy/SKILL.md) ·
+[debugging-engineer](../skills/debugging-engineer/SKILL.md) ·
+[design-critique](../skills/design-critique/SKILL.md) ·
+[harness-optimizer](../skills/harness-optimizer/SKILL.md) ·
+[absorb](../skills/absorb/SKILL.md) ·
 [blind-eval](../skills/blind-eval/SKILL.md) ·
 [blind-tribunal](../skills/blind-tribunal/SKILL.md) ·
 [bounded-loops](../skills/bounded-loops/SKILL.md) ·
@@ -48,7 +54,6 @@ Shapes carry meaning so the guide never depends on color:
 [cam-iot-inventory](../skills/cam-iot-inventory/SKILL.md) ·
 [co-health](../skills/co-health/SKILL.md) ·
 [conscientious-objector](../skills/conscientious-objector/SKILL.md) ·
-[hive-clone-boot](../skills/hive-clone-boot/SKILL.md) ·
 [osha-bot](../skills/osha-bot/SKILL.md) ·
 [scrub-plugin-pack-literals](../skills/scrub-plugin-pack-literals/SKILL.md) ·
 [backs-pack-sync](../skills/backs-pack-sync/SKILL.md) ·

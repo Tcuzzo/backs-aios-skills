@@ -1,152 +1,71 @@
 #!/usr/bin/env bash
-# backs-pack-sync
-# Sync organ for the BACKS AIOS plugin pack. Diff the BACKS source
-# skills/ against the plugin pack skills/ and propose bridges for any
-# skill the operator wants mirrored. Closes the drift class at the
-# primitive so a missing skill in the plugin pack stops being a manual
-# add-it-by-hand cycle.
-#
-# Usage:
-#   bash bin/backs-pack-sync                       # dry-run; shows drift
-#   bash bin/backs-pack-sync --bridge <name>       # mirror one skill from BACKS
-#   bash bin/backs-pack-sync --bridge-all-missing  # mirror every BACKS-only skill
-#
-# Where "missing" = skill exists at BACKS_SOURCE/skills/<name>/SKILL.md
-#                  but NOT at plugin pack skills/<name>/SKILL.md.
-#
-# Configuration:
-#   BACKS_SOURCE  default /opt/JarvisAI/JarvisAI   (the IDE worktree)
-#                 override with BACKS_SOURCE=...
-
+# Compare private BACKS skill coverage to this public pack without disclosing
+# private names, paths, descriptions, or bodies. Publishing uses only a
+# separately authored public bridge file; the private source is never copied.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
-BACKS_SOURCE="${BACKS_SOURCE:-/opt/JarvisAI/JarvisAI}"
-PLUGIN_SKILLS="$ROOT/skills"
-BACKS_SKILLS="$BACKS_SOURCE/skills"
-
-if [[ ! -d "$BACKS_SKILLS" ]]; then
-  printf 'FATAL: BACKS_SOURCE=%s has no skills/ directory\n' "$BACKS_SKILLS" >&2
-  exit 1
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+if [[ "$SCRIPT_DIR" == */skills/backs-pack-sync/scripts ]]; then
+  ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd -P)"
+  SCRUBBER="$ROOT/skills/scrub-plugin-pack-literals/scripts/scrub-plugin-pack-literals"
+else
+  ROOT="$(cd "$SCRIPT_DIR/.." && pwd -P)"
+  SCRUBBER="$ROOT/bin/scrub-plugin-pack-literals"
 fi
+PLUGIN_SKILLS="$ROOT/skills"
+PUBLIC_BRIDGES="$ROOT/public-bridges"
+BACKS_SOURCE="${BACKS_SOURCE:-}"
 
-red()   { printf '\033[31m%s\033[0m\n' "$*"; }
-green() { printf '\033[32m%s\033[0m\n' "$*"; }
-cyan()  { printf '\033[36m%s\033[0m\n' "$*"; }
-bold()  { printf '\033[1m%s\033[0m\n' "$*"; }
+fail() { printf 'FATAL: %s\n' "$1" >&2; exit 1; }
 
-# Emit the AIOS-portable SKILL.md body that points to the canonical BACKS
-# implementation. Description is the BACKS skill's description (verbatim
-# if it fits the 1-1024 trigger-word budget, otherwise truncated to fit).
-write_aios_skill() {
-  local name="$1"
-  local src="$BACKS_SKILLS/$name/SKILL.md"
-  local dst="$PLUGIN_SKILLS/$name/SKILL.md"
-  mkdir -p "$PLUGIN_SKILLS/$name"
-
-  local desc
-  desc="$(awk '/^description:/{flag=1; sub(/^description:[[:space:]]*/,""); sub(/^"|"$/,""); print; exit}' "$src")"
-  if [[ -z "$desc" ]]; then
-    desc="BACKS skill mirrored to AIOS for live IDE load."
-  fi
-  if (( ${#desc} > 1024 )); then
-    desc="${desc:0:1010}..."
-  fi
-
-  cat > "$dst" <<EOF
----
-name: "$name"
-description: "$desc"
-license: "MIT"
----
-
-# $name
-
-This is the AIOS-pack load-side surface. The full implementation lives in
-the BACKS runtime at:
-
-- \`$BACKS_SKILLS/$name/SKILL.md\`
-- any backend service referenced by that skill
-
-## When this skill is the right organ
-
-When the operator (or any agent in an IDE that has loaded the BACKS AIOS
-pack) needs the discipline this skill teaches. This pack entry is the
-address the IDE routes to; the canonical body lives in the BACKS repo so
-the implementation is always in lockstep with the operator's actual
-runtime.
-
-## What this pack skill is, and what it isn't
-
-- **Is** — the AIOS-portable load-side surface that lets the IDE discover
-  the skill via this pack and route \`/$name\` invocations to the BACKS
-  implementation when this session is inside the BACKS repo.
-- **Isn't** — the full skill body. The full skill lives in the BACKS
-  source. This skill is the address; that one is the body.
-
-When this session is inside the BACKS repo, the runtime resolves the
-canonical version from the BACKS source. When this session is outside
-BACKS, this skill is the trailer that points the agent to use BACKS
-to get the full discipline.
-EOF
-
-  echo "  bridged: $dst"
-}
-
-# ---- main ----------------------------------------------------------------
 case "${1:-}" in
   "")
-    cyan "=== Plugin pack sync drift ==="
-    printf '  plugin pack:    %s\n' "$PLUGIN_SKILLS"
-    printf '  BACKS source:   %s\n' "$BACKS_SKILLS"
-    echo ""
-
-    missing=()
+    [[ -n "$BACKS_SOURCE" && -d "$BACKS_SOURCE/skills" ]] ||
+      fail 'Set BACKS_SOURCE to a readable runtime tree before comparing coverage.'
+    missing=0
     while IFS= read -r -d '' skill; do
-      s="$(basename "$(dirname "$skill")")"
-      [[ ! -f "$PLUGIN_SKILLS/$s/SKILL.md" ]] && missing+=("$s")
-    done < <(find "$BACKS_SKILLS" -mindepth 2 -maxdepth 2 -name SKILL.md -print0)
-
-    if (( ${#missing[@]} == 0 )); then
-      green "  drift: 0 — every BACKS skill is mirrored in the plugin pack"
-    else
-      bold "  drift: ${#missing[@]} BACKS skill(s) missing from plugin pack:"
-      for s in "${missing[@]}"; do
-        printf '    - %s\n' "$s"
-      done
-      echo ""
-      bold "  next: bash bin/backs-pack-sync --bridge <name>"
-      bold "  or:   bash bin/backs-pack-sync --bridge-all-missing"
-    fi
+      name="$(basename "$(dirname "$skill")")"
+      [[ -f "$PLUGIN_SKILLS/$name/SKILL.md" ]] || missing=$((missing + 1))
+    done < <(find "$BACKS_SOURCE/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -print0)
+    printf 'Private-only skill count: %d (names and source path withheld).\n' "$missing"
+    printf 'Publish only a separately authored file under public-bridges/<name>/SKILL.md.\n'
     ;;
 
   --bridge)
-    [[ -n "${2:-}" ]] || { red "usage: $0 --bridge <name>"; exit 2; }
+    [[ $# -eq 2 ]] || fail 'Usage: backs-pack-sync --bridge <public-name>'
     name="$2"
-    src="$BACKS_SKILLS/$name/SKILL.md"
-    [[ -f "$src" ]] || { red "BACKS has no skill: $name"; exit 1; }
-    if [[ -f "$PLUGIN_SKILLS/$name/SKILL.md" ]]; then
-      red "plugin pack already has: $name/SKILL.md"; exit 1
+    [[ "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] || fail 'Invalid public skill name.'
+    src="$PUBLIC_BRIDGES/$name/SKILL.md"
+    dst_dir="$PLUGIN_SKILLS/$name"
+    dst="$dst_dir/SKILL.md"
+    [[ -d "$PUBLIC_BRIDGES" && ! -L "$PUBLIC_BRIDGES" &&
+       -d "$PUBLIC_BRIDGES/$name" && ! -L "$PUBLIC_BRIDGES/$name" &&
+       -f "$src" && ! -L "$src" ]] ||
+      fail 'No separately authored public bridge exists for that name.'
+    [[ ! -e "$dst_dir" && ! -L "$dst_dir" ]] || fail 'Public skill already exists.'
+    # Never read or copy a private runtime body to make a public bridge.
+    grep -Eq "^name:[[:space:]]*\\\"?$name\\\"?[[:space:]]*$" "$src" ||
+      fail 'Public bridge frontmatter name does not match.'
+    if grep -Eiq '(/home/[[:alnum:]_.-]+|/mnt/[[:alnum:]_.-]+|/opt/[[:alnum:]_.-]+|[[:alpha:]]:[/\\]|(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.)[0-9.]+|[[:alnum:]_.%+-]+@[[:alnum:].-]+\.[[:alpha:]]{2,})' "$src"; then
+      fail 'Public bridge failed the private literal preflight.'
     fi
-    write_aios_skill "$name"
-    bash "$ROOT/bin/scrub-plugin-pack-literals" --hook >/dev/null
-    green "bridged + hygiene clean: $name"
+    mkdir "$dst_dir"
+    # The existing scrubber treats Windows CRLF as a rewrite. Normalize the
+    # curated text once, before the guard; this changes no words or metadata.
+    tr -d '\r' < "$src" > "$dst"
+    if ! bash "$SCRUBBER" --hook >/dev/null 2>&1; then
+      rm -f -- "$dst"
+      rmdir -- "$dst_dir"
+      fail 'Public bridge failed the pack hygiene guard.'
+    fi
+    printf 'One curated public skill bridged. Run the full public hygiene suite before release.\n'
     ;;
 
   --bridge-all-missing)
-    bridged=0
-    while IFS= read -r -d '' skill; do
-      s="$(basename "$(dirname "$skill")")"
-      [[ ! -f "$PLUGIN_SKILLS/$s/SKILL.md" ]] || continue
-      write_aios_skill "$s"
-      bridged=$((bridged + 1))
-    done < <(find "$BACKS_SKILLS" -mindepth 2 -maxdepth 2 -name SKILL.md -print0)
-    bash "$ROOT/bin/scrub-plugin-pack-literals" --hook >/dev/null
-    green "bridged $bridged skill(s); hygiene clean"
+    fail 'Bulk bridging private runtime skills into a public pack is disabled.'
     ;;
 
   *)
-    red "usage: $0 [--bridge <name>|--bridge-all-missing]"
-    exit 2
+    fail 'Usage: backs-pack-sync [--bridge <public-name>]'
     ;;
 esac

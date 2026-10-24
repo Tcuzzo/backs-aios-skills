@@ -17,11 +17,8 @@ $ManagedCommandMarker = "backs-aios-managed-command"
 $ManagedMarkerFile = "backs-aios-managed"
 $ManagedMarkerContent = "backs-aios-managed 0.8.1"
 $PackEntries = @(
-    ".claude-plugin", ".codex-plugin", ".cursor-plugin", ".gitignore",
-    "command-adapters", "docs", "hooks", "i18n", "plays", "skills",
-    "CITATION.cff", "INSTALL.md", "LICENSE", "NAMING.md", "NOTICE.md", "README.md",
-    "install.sh", "install.ps1", "install-provider.sh",
-    "provider", "bin", "claude-skills", "scripts", "config"
+    ".claude-plugin", ".codex-plugin", ".cursor-plugin",
+    "command-adapters", "hooks", "i18n", "plays", "skills", "LICENSE"
 )
 $script:Conflicts = 0
 
