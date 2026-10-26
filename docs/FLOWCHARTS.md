@@ -48,6 +48,7 @@ Shapes carry meaning so the guide never depends on color:
 [session-handoff](../skills/session-handoff/SKILL.md) ·
 [backs-session-rollover](../skills/backs-session-rollover/SKILL.md) ·
 [sniper-testing](../skills/sniper-testing/SKILL.md) ·
+[truth-audit](../skills/truth-audit/SKILL.md) ·
 [understanding-gates](../skills/understanding-gates/SKILL.md) ·
 [wayfinder](../skills/wayfinder/SKILL.md) ·
 [architecture-engineer](../skills/architecture-engineer/SKILL.md) ·
