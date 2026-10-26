@@ -116,7 +116,8 @@ python scripts/ledger.py --ledger AUD/ledger.jsonl render    # STATUS.md, genera
 Statuses move one step at a time, OPEN, PLANNED, IN-BUILD, PROVEN, CLOSED, or end as
 ADJUDICATED-NOT-A-BUG with evidence. The tool refuses duplicate ids, skipped or backward
 moves, PROVEN or CLOSED without evidence, a P0/P1 going IN-BUILD without a plan task,
-the IN-BUILD actor proving its own entry, and a closer who built or proved it. A lane
+the IN-BUILD actor proving its own entry, and anyone who built or proved an entry
+closing, adjudicating, or amending it. A lane
 re-imported with different evidence is refused until the change is recorded with
 `amend`. `check` replays every rule over the whole log, verifies the hash chain (an
 edited, inserted or removed line), and compares the head file (truncation at the end).
@@ -172,7 +173,8 @@ items with the deduced default.
 Two scripts gate the plan: `scripts/ball_scope_check.py --disjoint --plan PLAN.md`
 fails when two balls of one wave own the same file, and
 `scripts/ball_scope_check.py <ball> --plan PLAN.md` fails a branch that touched
-anything outside its ball's scope.
+anything outside its ball's scope, or whose pinned files (`path@sha256:<hex>`, the
+LEAP content hash) changed at the base since the ball was cut.
 
 ### 9. Two output modes
 

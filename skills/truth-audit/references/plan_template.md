@@ -115,7 +115,8 @@ empty in every product checkout. **Budget:** 15 min.
 - [ ] Aggregate tribunal over the merged diff (whole files).
 - [ ] Native day: one full working day with no builder session open; proof = watchdog rows.
 - [ ] Owner walk (15 min) on the real surfaces. Any miss is a new ledger entry.
-- [ ] Close-out: `ledger.py list --open` prints only adjudicated items; `ledger.py check` passes.
+- [ ] Close-out: `ledger.py list --open` prints nothing (every entry is CLOSED or ADJUDICATED-NOT-A-BUG);
+  review the adjudicated ones with `ledger.py list`, which shows every entry; `ledger.py check` passes.
 
 ## Ledger mechanism (how anyone adds to it)
 <the five ledger.py commands, with this plan's paths>
@@ -135,7 +136,7 @@ Every ball carries all of these. A missing one is a plan defect the tribunal wil
 | title line | `#### Ball <id> · <outcome> — <ledger ids>` |
 | Goal | the outcome in one sentence a human can check |
 | Gate | a metric or observable that is true only when the goal is met |
-| Scope | exact files as backticked relative paths; may wrap over lines until a blank line or the next bold field; symbols go in parentheses after their file (`api/health.py` (`health`)); routes, absolute paths and `..` are refused. Balls in one wave never share a file; `ball_scope_check.py --disjoint` proves it |
+| Scope | exact files as backticked relative paths. A wrapped line must be indented or start with a backticked path or a comma; prose ends the field. Symbols go in parentheses after their file (`api/health.py` (`health`)); a path-like token in parentheses still counts. Routes, absolute paths and `..` are refused. Optionally pin each existing file to its content at the base, the LEAP hash: `api/health.py@sha256:3f9a1c0d` (8+ hex digits of `git show <base>:<path> \| sha256sum`); the scope check reports drift. Balls in one wave never share a file in the same repo; `ball_scope_check.py --disjoint` proves it |
 | Interfaces | exact signatures other balls rely on, produced or consumed |
 | Red tests | by name, each with its assertion in a parenthesis |
 | Decisions | only where the tests leave a real choice; say what was deduced and from what |
@@ -164,7 +165,7 @@ loop, health turns red, and the human sees one plain message telling them what t
 one owner event within 90 s; a 500 backs off 60/120/300 s and recovers on the next 200.
 **Budget:** 2 h wall clock, 4 build rounds, 0 paid calls.
 
-**Scope:** `runtime/loop_guard.py` (new), `runtime/sync_worker.py` (`run_forever` only),
+**Scope:** `runtime/loop_guard.py` (new), `runtime/sync_worker.py@sha256:9c1e4b7a20d3` (`run_forever` only),
 `api/health.py` (`health`), `tests/runtime/test_loop_guard.py` (new),
 `tests/runtime/test_sync_auth_fault.py` (new)
 

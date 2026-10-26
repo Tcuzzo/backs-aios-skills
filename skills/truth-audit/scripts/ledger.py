@@ -31,8 +31,8 @@ Rules (enforced on every write AND replayed over the whole log by `check`):
     ADJUDICATED-NOT-A-BUG may end any open entry and needs evidence; terminal is terminal
   - PROVEN and CLOSED need evidence
   - a P0/P1 entry needs a plan task before it may go IN-BUILD
-  - the actor who set IN-BUILD may not set PROVEN; the actor who closes an entry is
-    not anyone who set it IN-BUILD or PROVEN
+  - the actor who set IN-BUILD may not set PROVEN; no actor who set an entry IN-BUILD
+    or PROVEN may close, adjudicate or amend it
   - the hash chain is intact and the head file matches the log
 """
 from __future__ import annotations
@@ -151,6 +151,10 @@ def apply(entries: dict[str, dict], ev: dict) -> str | None:
     cur = e["status"]
     if cur in TERMINAL:
         return f"{eid} is {cur} (terminal)"
+    # Whoever built or proved an entry may not rewrite it, adjudicate it, or close it.
+    hands = {who for st, who in e["history"] if st in {"IN-BUILD", "PROVEN"}}
+    if kind == "amend" and by in hands:
+        return f"{by} built or proved {eid}; a different actor must amend it"
     if kind == "amend":
         changes = {f: ev[f] for f in AMENDABLE if _norm(ev.get(f))}
         if not changes:
@@ -163,6 +167,8 @@ def apply(entries: dict[str, dict], ev: dict) -> str | None:
     if new == ADJUDICATED:
         if not evidence:
             return f"{eid}: adjudication needs --evidence"
+        if by in hands:
+            return f"{by} built or proved {eid}; a different actor must adjudicate it"
     elif new not in ORDER or ORDER.index(new) != ORDER.index(cur) + 1:
         nxt = ORDER[ORDER.index(cur) + 1]
         return f"{eid}: {cur} -> {new} is not allowed; the next status is {nxt} (or {ADJUDICATED})"
@@ -175,10 +181,8 @@ def apply(entries: dict[str, dict], ev: dict) -> str | None:
         builders = {who for st, who in e["history"] if st == "IN-BUILD"}
         if by in builders:
             return f"{by} set {eid} IN-BUILD; a different actor must prove it"
-    if new == "CLOSED":
-        builders = {who for st, who in e["history"] if st in {"IN-BUILD", "PROVEN"}}
-        if by in builders:
-            return f"{by} built or proved {eid}; a different actor must close it"
+    if new == "CLOSED" and by in hands:
+        return f"{by} built or proved {eid}; a different actor must close it"
     e["status"] = new
     e["history"].append((new, by))
     if ev.get("task"):
@@ -348,9 +352,12 @@ def cmd_import_lane(a: argparse.Namespace) -> int:
             e = entries[f["id"]]
             changed = [k for k in AMENDABLE if _norm(f[k]) != _norm(e.get(k))]
             if changed:
-                print(f"refused {f['id']}: the lane's {', '.join(changed)} differs from the ledger. Record the "
-                      f"change with `ledger.py amend {f['id']} --by <you> --{changed[0].replace('_', '-')} ...`",
-                      file=sys.stderr)
+                # Print the exact normalized values (whitespace collapsed, as compared), so an
+                # amend carrying them verbatim matches on the next import.
+                lines = [f"refused {f['id']}: the lane's {', '.join(changed)} differs from the ledger. "
+                         f"Run `ledger.py amend {f['id']} --by <you>` with these exact values:"]
+                lines += [f"  --{k.replace('_', '-')}: {_norm(f[k])}" for k in changed]
+                print("\n".join(lines), file=sys.stderr)
                 refused += 1
             else:
                 skipped += 1
