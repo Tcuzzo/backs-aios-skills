@@ -14,7 +14,7 @@ regenerated from the log, never edited.
   python ledger.py import-lane lanes/SVC_SERVICE.md --by ledger-keeper
   python ledger.py amend SVC-03 --by ledger-keeper --evidence "recounted: ..." --note "why"
   python ledger.py status SVC-03 PLANNED  --by coordinator --task 1A
-  python ledger.py status SVC-03 IN-BUILD --by coordinator
+  python ledger.py status SVC-03 IN-BUILD --by coordinator --builder ball-1A-builder
   python ledger.py status SVC-03 PROVEN   --by reader --evidence "watchdog row ..."
   python ledger.py status SVC-03 CLOSED   --by grader --evidence "tribunal run ..."
   python ledger.py status DATA-02 ADJUDICATED-NOT-A-BUG --by coordinator --evidence "..."
@@ -31,8 +31,9 @@ Rules (enforced on every write AND replayed over the whole log by `check`):
     ADJUDICATED-NOT-A-BUG may end any open entry and needs evidence; terminal is terminal
   - PROVEN and CLOSED need evidence
   - a P0/P1 entry needs a plan task before it may go IN-BUILD
-  - the actor who set IN-BUILD may not set PROVEN; no actor who set an entry IN-BUILD
-    or PROVEN may close, adjudicate or amend it
+  - IN-BUILD records the builder (--builder); neither that builder nor the actor who set
+    IN-BUILD may set PROVEN, and no builder, IN-BUILD actor or prover of an entry may
+    close, adjudicate or amend it
   - the hash chain is intact and the head file matches the log
 """
 from __future__ import annotations
@@ -152,7 +153,9 @@ def apply(entries: dict[str, dict], ev: dict) -> str | None:
     if cur in TERMINAL:
         return f"{eid} is {cur} (terminal)"
     # Whoever built or proved an entry may not rewrite it, adjudicate it, or close it.
-    hands = {who for st, who in e["history"] if st in {"IN-BUILD", "PROVEN"}}
+    # "Built" means both the actor who moved it IN-BUILD and the builder that move recorded.
+    built = {who for st, who in e["history"] if st == "IN-BUILD"} | e.get("builders", set())
+    hands = built | {who for st, who in e["history"] if st == "PROVEN"}
     if kind == "amend" and by in hands:
         return f"{by} built or proved {eid}; a different actor must amend it"
     if kind == "amend":
@@ -175,16 +178,19 @@ def apply(entries: dict[str, dict], ev: dict) -> str | None:
     if new in {"PROVEN", "CLOSED"} and not evidence:
         return f"{eid}: {new} needs --evidence"
     task = ev.get("task") or e.get("task")
+    builder = _norm(ev.get("builder"))
+    if new == "IN-BUILD" and not builder:
+        return f"{eid}: IN-BUILD must record who builds it (pass --builder <builder id>)"
     if new == "IN-BUILD" and e["sev"] in {"P0", "P1"} and not task:
         return f"{eid} is {e['sev']} and has no plan task (pass --task)"
-    if new == "PROVEN":
-        builders = {who for st, who in e["history"] if st == "IN-BUILD"}
-        if by in builders:
-            return f"{by} set {eid} IN-BUILD; a different actor must prove it"
+    if new == "PROVEN" and by in built:
+        return f"{by} built {eid} or moved it IN-BUILD; a different actor must prove it"
     if new == "CLOSED" and by in hands:
         return f"{by} built or proved {eid}; a different actor must close it"
     e["status"] = new
     e["history"].append((new, by))
+    if new == "IN-BUILD":
+        e.setdefault("builders", set()).add(builder)
     if ev.get("task"):
         e["task"] = ev["task"]
     return None
@@ -400,7 +406,8 @@ def cmd_status(a: argparse.Namespace) -> int:
     entries, _ = fold(read_events(a.path))
     cur = entries.get(a.id, {}).get("status", "?")
     rc = _write(a.path, {"kind": "status", "id": a.id, "status": a.new_status, "by": a.by,
-                         "evidence": a.evidence, "note": a.note, "task": a.task})
+                         "evidence": a.evidence, "note": a.note, "task": a.task,
+                         "builder": a.builder})
     if rc == 0:
         print(f"{a.id}: {cur} -> {a.new_status}")
     return rc
@@ -483,6 +490,7 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--evidence", default="")
     s.add_argument("--note", default="")
     s.add_argument("--task")
+    s.add_argument("--builder", default="", help="required for IN-BUILD: the id of whoever builds the fix")
     s.set_defaults(fn=cmd_status)
 
     s = sub.add_parser("amend", help="append an update to an entry's evidence, fix seam or proof")

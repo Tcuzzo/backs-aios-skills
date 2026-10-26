@@ -43,7 +43,7 @@ class TruthAuditToolsTest(unittest.TestCase):
         texts += [p.read_text(encoding="utf-8") for p in (SKILL / "evals").rglob("*.md")]
         texts += [p.read_text(encoding="utf-8") for p in (SKILL / "scripts").glob("*.py")]
         self.assertGreater(len(texts), 10)
-        for token in ("price bars", "/v2/bars", "bar data", "buyers", '"positions"', "money path",
+        for token in ("price bars", "/v2/bars", "bar data", "/api/positions", "buyers", '"positions"', "money path",
                       "paper or sandbox"):
             for text in texts:
                 with self.subTest(token=token):
@@ -55,6 +55,13 @@ class TruthAuditToolsTest(unittest.TestCase):
         self.assertNotIn("prints only adjudicated", tpl)
         self.assertIn("`ledger.py list --open` prints nothing", tpl)
         self.assertIn("`ledger.py list`", tpl)
+
+    def test_recorded_builder_is_documented(self):
+        # IN-BUILD must name the builder; every doc that shows the move says how.
+        for path in (SKILL / "SKILL.md", SKILL / "references" / "plan_template.md",
+                     SKILL / "references" / "coder_prompt.md"):
+            with self.subTest(doc=path.name):
+                self.assertIn("--builder", path.read_text(encoding="utf-8"))
 
     def test_scope_hash_contract_is_documented(self):
         for name in ("plan_template.md", "coder_prompt.md"):

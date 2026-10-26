@@ -101,26 +101,26 @@ class LedgerTest(unittest.TestCase):
     def to(self, status: str, by: str = "coordinator", eid: str = "SVC-09", *extra: str) -> int:
         return self.run_ledger("status", eid, status, "--by", by, *extra)
 
-    def walk_to_in_build(self, builder: str = "builder") -> None:
+    def walk_to_in_build(self, builder: str = "builder", by: str | None = None) -> None:
         self.assertEqual(0, self.to("PLANNED"))
-        self.assertEqual(0, self.to("IN-BUILD", builder))
+        self.assertEqual(0, self.to("IN-BUILD", by or builder, "SVC-09", "--builder", builder))
 
     def test_backward_move_refused(self) -> None:
         self.add(task="1A")
         self.assertEqual(0, self.to("PLANNED"))
-        self.assertEqual(0, self.run_ledger("status", "SVC-09", "IN-BUILD", "--by", "coordinator"))
+        self.assertEqual(0, self.run_ledger("status", "SVC-09", "IN-BUILD", "--by", "coordinator", "--builder", "b1"))
         self.assertEqual(1, self.run_ledger("status", "SVC-09", "PLANNED", "--by", "coordinator"))
 
     def test_p1_needs_task_before_in_build(self) -> None:
         self.add()
-        self.assertEqual(1, self.run_ledger("status", "SVC-09", "IN-BUILD", "--by", "coordinator"))
+        self.assertEqual(1, self.run_ledger("status", "SVC-09", "IN-BUILD", "--by", "coordinator", "--builder", "b1"))
         self.assertEqual(0, self.run_ledger("status", "SVC-09", "PLANNED", "--by", "coordinator", "--task", "1A"))
-        self.assertEqual(0, self.run_ledger("status", "SVC-09", "IN-BUILD", "--by", "coordinator"))
+        self.assertEqual(0, self.run_ledger("status", "SVC-09", "IN-BUILD", "--by", "coordinator", "--builder", "b1"))
 
     def test_p2_may_build_without_task(self) -> None:
         self.add(sev="P2")
         self.assertEqual(0, self.to("PLANNED"))
-        self.assertEqual(0, self.run_ledger("status", "SVC-09", "IN-BUILD", "--by", "coordinator"))
+        self.assertEqual(0, self.run_ledger("status", "SVC-09", "IN-BUILD", "--by", "coordinator", "--builder", "b1"))
 
     def test_proven_and_closed_need_evidence(self) -> None:
         self.add(task="1A")
@@ -201,14 +201,14 @@ class LedgerRegressionTest(LedgerTest):
     def test_skip_to_closed_refused(self) -> None:
         self.add(task="1A")
         self.assertEqual(1, self.to("CLOSED", "builder", "SVC-09", "--evidence", "x"))
-        self.assertEqual(1, self.to("IN-BUILD"))
+        self.assertEqual(1, self.to("IN-BUILD", "coordinator", "SVC-09", "--builder", "b1"))
         self.assertEqual(1, self.to("PROVEN", "reader", "SVC-09", "--evidence", "x"))
 
     def test_p0_cannot_reach_proven_without_task(self) -> None:
         self.add(sev="P0")
         self.assertEqual(1, self.to("PROVEN", "reader", "SVC-09", "--evidence", "x"))
         self.assertEqual(0, self.to("PLANNED"))
-        self.assertEqual(1, self.to("IN-BUILD"))
+        self.assertEqual(1, self.to("IN-BUILD", "coordinator", "SVC-09", "--builder", "b1"))
         self.assertEqual(1, self.to("PROVEN", "reader", "SVC-09", "--evidence", "x"))
         entries, _ = ledger.fold(ledger.read_events(self.path))
         self.assertEqual("PLANNED", entries["SVC-09"]["status"])
@@ -286,7 +286,8 @@ class LedgerRegressionTest(LedgerTest):
 class ScopeCheckTest(unittest.TestCase):
     def test_parse_and_scope(self) -> None:
         ball = ball_scope_check.find_ball(PLAN, "1B")
-        self.assertEqual(["health.py", "tests/test_health.py", "OPS/deploy/unit.service"],
+        # A (OPS) field normalizes away its own leading OPS/ (one key rule for both modes).
+        self.assertEqual(["health.py", "tests/test_health.py", "deploy/unit.service"],
                          ball_scope_check.scope_paths(ball["lines"]))
         self.assertEqual(["health.py", "tests/test_health.py", "deploy/unit.service"],
                          ball_scope_check.scope_paths(ball["lines"], "OPS"))
@@ -372,7 +373,7 @@ class ScopeRegressionTest(unittest.TestCase):
 
     # 2 + 6. a token that is not a relative path is refused by name
     def test_unparseable_scope_tokens_refused(self) -> None:
-        for bad in ("/api/positions", "../outside.py", "C:/abs/file.py", "/etc/passwd", "a b.py"):
+        for bad in ("/etc/example.conf", "../outside.py", "C:/abs/file.py", "/etc/passwd", "a b.py"):
             plan = f"#### Ball 9Z · bad\n**Scope:** `ok.py`, `{bad}`\n"
             with self.subTest(token=bad):
                 with self.assertRaises(ball_scope_check.ScopeError) as cm:
@@ -459,7 +460,7 @@ class ScopeRound3Test(unittest.TestCase):
     # 4. prose after Scope ends the field
     def test_prose_line_ends_scope(self) -> None:
         plan = ("#### Ball 1A · a\n**Scope:** `a.py`,\n  `b.py`\n, `c.py`\n"
-                "This ball also mentions `prose.py` in passing.\n`d.py`\n")
+                "This ball also mentions it in passing.\n`d.py`\n")
         ball = ball_scope_check.find_ball(plan, "1A")
         self.assertEqual(["a.py", "b.py", "c.py"], ball_scope_check.scope_paths(ball["lines"]))
 
@@ -522,6 +523,89 @@ class ScopeRound3Test(unittest.TestCase):
             self.assertEqual(0, ball_scope_check.main(args))
             plan.write_text("#### Ball 1A · a\n**Scope:** `health.py@sha256:deadbeef00`\n", encoding="utf-8")
             self.assertEqual(1, ball_scope_check.main(args))
+
+
+class LedgerRound4Test(LedgerTest):
+    """Grade findings on 2bcff70. Each test failed before its fix."""
+
+    # 6. IN-BUILD records the real builder, and every actor rule excludes it
+    def test_in_build_needs_builder(self) -> None:
+        self.add(sev="P2")
+        self.assertEqual(0, self.to("PLANNED"))
+        self.assertEqual(1, self.to("IN-BUILD", "coordinator"))
+        self.assertEqual(0, self.to("IN-BUILD", "coordinator", "SVC-09", "--builder", "b1"))
+
+    def test_recorded_builder_excluded_everywhere(self) -> None:
+        self.add(task="1A")
+        self.walk_to_in_build("b1", by="coordinator")
+        self.assertEqual(1, self.to("PROVEN", "b1", "SVC-09", "--evidence", "row 1"))
+        self.assertEqual(1, self.to("PROVEN", "coordinator", "SVC-09", "--evidence", "row 1"))
+        self.assertEqual(1, self.run_ledger("amend", "SVC-09", "--by", "b1", "--proof", "easier"))
+        self.assertEqual(1, self.to("ADJUDICATED-NOT-A-BUG", "b1", "SVC-09", "--evidence", "fine"))
+        self.assertEqual(0, self.to("PROVEN", "reader", "SVC-09", "--evidence", "row 1"))
+        self.assertEqual(1, self.to("CLOSED", "b1", "SVC-09", "--evidence", "run 1"))
+        self.assertEqual(0, self.to("CLOSED", "grader", "SVC-09", "--evidence", "run 1"))
+        self.assertEqual(0, self.run_ledger("check"))
+
+    def test_check_flags_in_build_without_builder(self) -> None:
+        self.add(sev="P2")
+        self.to("PLANNED")
+        ledger.append(self.path, {"kind": "status", "id": "SVC-09", "status": "IN-BUILD", "by": "coordinator"})
+        self.assertEqual(1, self.run_ledger("check"))
+
+
+class ScopeRound4Test(unittest.TestCase):
+    # 1. one repo-key rule for both modes
+    def plan(self, a: str, b: str) -> str:
+        return f"## Wave 1\n#### Ball 1A · a\n{a}\n\n#### Ball 1B · b\n{b}\n"
+
+    def test_untagged_clashes_with_tagged(self) -> None:
+        plan = self.plan("**Scope:** `api/health.py`", "**Scope (APP):** `api/health.py`")
+        self.assertEqual(1, len(ball_scope_check.overlaps(plan)))
+
+    def test_untagged_key_prefix_is_normalized(self) -> None:
+        plan = self.plan("**Scope:** `APP/api/health.py`", "**Scope (APP):** `api/health.py`")
+        self.assertEqual(1, len(ball_scope_check.overlaps(plan)))
+
+    def test_different_keys_never_clash(self) -> None:
+        plan = self.plan("**Scope (APP):** `api/health.py`", "**Scope (OPS):** `api/health.py`")
+        self.assertEqual([], ball_scope_check.overlaps(plan))
+
+    # 2 + 3. a line that ends the field but carries paths is refused by line
+    def test_prose_with_path_after_scope_refused(self) -> None:
+        plan = "#### Ball 1A · a\n**Scope:** `a.py`,\nalso touches `b.py` here\n"
+        with self.assertRaises(ball_scope_check.ScopeError) as cm:
+            ball_scope_check.scope_paths(ball_scope_check.find_ball(plan, "1A")["lines"])
+        self.assertIn("also touches", str(cm.exception))
+
+    def test_indented_prose_ends_field(self) -> None:
+        quiet = "#### Ball 1A · a\n**Scope:** `a.py`,\n    and nothing else\n"
+        self.assertEqual(["a.py"], ball_scope_check.scope_paths(ball_scope_check.find_ball(quiet, "1A")["lines"]))
+        loud = "#### Ball 1A · a\n**Scope:** `a.py`,\n    and also `lib/b.py`\n"
+        with self.assertRaises(ball_scope_check.ScopeError):
+            ball_scope_check.scope_paths(ball_scope_check.find_ball(loud, "1A")["lines"])
+
+    def test_refused_line_exits_2(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            plan = pathlib.Path(raw, "PLAN.md")
+            plan.write_text("## Wave 1\n#### Ball 1A · a\n**Scope:** `a.py`\nsee `b.py`\n", encoding="utf-8")
+            self.assertEqual(2, ball_scope_check.main(["1A", "--plan", str(plan)]))
+            self.assertEqual(2, ball_scope_check.main(["--disjoint", "--plan", str(plan)]))
+
+    # 4. hash algorithm suffix
+    def test_hash_suffix_case_and_algorithm(self) -> None:
+        ok = "#### Ball 1A · a\n**Scope:** `a.py@SHA256:0123ABCD`\n"
+        self.assertEqual({"a.py": "0123abcd"},
+                         ball_scope_check.scope_hashes(ball_scope_check.find_ball(ok, "1A")["lines"]))
+        bad = "#### Ball 1A · a\n**Scope:** `a.py@md5:0123abcd`\n"
+        with self.assertRaises(ball_scope_check.ScopeError):
+            ball_scope_check.scope_paths(ball_scope_check.find_ball(bad, "1A")["lines"])
+
+    # 5. a hash on a glob is refused at parse time
+    def test_hash_on_glob_refused(self) -> None:
+        plan = "#### Ball 1A · a\n**Scope:** `tests/*.py@sha256:0123abcd`\n"
+        with self.assertRaises(ball_scope_check.ScopeError):
+            ball_scope_check.scope_paths(ball_scope_check.find_ball(plan, "1A")["lines"])
 
 
 class CmpTreesTest(unittest.TestCase):
