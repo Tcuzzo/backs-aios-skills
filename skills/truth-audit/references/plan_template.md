@@ -68,9 +68,12 @@ helpers, what leaves the product path>.
 - **Tribunal.** Convened through the configured fleet ladder only, with the builder's
   execution recorded and excluded. Every finding becomes a failing test in the same ball.
 
-Ledger flow: PLANNED (coordinator, plan accepted) → IN-BUILD (coordinator, ball thrown)
-→ PROVEN (reader, native evidence) → CLOSED (ledger keeper, citing the tribunal run;
-the tool refuses a closer who built or proved the entry).
+Ledger flow: PLANNED (coordinator, plan accepted) → IN-BUILD (coordinator, ball thrown,
+recording who builds it: `ledger.py status <ID> IN-BUILD --by coordinator --builder <builder id>`)
+→ PROVEN (reader, native evidence) → CLOSED (ledger keeper, citing the tribunal run).
+The tool refuses an IN-BUILD move without `--builder`, and refuses the recorded builder,
+the IN-BUILD actor, or the prover when they try to prove, close, adjudicate, or amend
+the same entry.
 
 ## Root-cause classes (fix the class, sweep siblings)
 
@@ -119,7 +122,8 @@ empty in every product checkout. **Budget:** 15 min.
   review the adjudicated ones with `ledger.py list`, which shows every entry; `ledger.py check` passes.
 
 ## Ledger mechanism (how anyone adds to it)
-<the five ledger.py commands, with this plan's paths>
+<the ledger.py commands with this plan's paths: import-lane, status (IN-BUILD with
+`--builder <builder id>`), amend, check, render>
 
 ## Open items only the owner can answer (everything else was deduced)
 1. <decision> — deduced default: <...>. One word overrides: "<word>".
@@ -136,7 +140,7 @@ Every ball carries all of these. A missing one is a plan defect the tribunal wil
 | title line | `#### Ball <id> · <outcome> — <ledger ids>` |
 | Goal | the outcome in one sentence a human can check |
 | Gate | a metric or observable that is true only when the goal is met |
-| Scope | exact files as backticked relative paths. A wrapped line must be indented or start with a backticked path or a comma; prose ends the field. Symbols go in parentheses after their file (`api/health.py` (`health`)); a path-like token in parentheses still counts. Routes, absolute paths and `..` are refused. Optionally pin each existing file to its content at the base, the LEAP hash: `api/health.py@sha256:3f9a1c0d` (8+ hex digits of `git show <base>:<path> \| sha256sum`); the scope check reports drift. Balls in one wave never share a file in the same repo; `ball_scope_check.py --disjoint` proves it |
+| Scope | exact files as backticked relative paths. A wrapped line must start (after any indent) with a backticked path or a comma; anything else ends the field, and a line that ends it while still naming a path is refused. Symbols go in parentheses after their file (`api/health.py` (`health`)); a path-like token in parentheses still counts. Routes, absolute paths and `..` are refused. Optionally pin each existing file to its content at the base, the LEAP hash: `api/health.py@sha256:3f9a1c0d` (8+ hex digits of `git show <base>:<path> \| sha256sum`); the scope check reports drift. Tag a field with its repo key, **Scope (OPS):**; an untagged field belongs to every repo. Balls in one wave never share a file in the same repo; `ball_scope_check.py --disjoint` proves it |
 | Interfaces | exact signatures other balls rely on, produced or consumed |
 | Red tests | by name, each with its assertion in a parenthesis |
 | Decisions | only where the tests leave a real choice; say what was deduced and from what |

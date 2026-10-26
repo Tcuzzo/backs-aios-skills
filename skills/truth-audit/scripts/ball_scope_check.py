@@ -6,9 +6,11 @@
 A ball heading is any markdown heading that starts with "Ball <id>", e.g. `#### Ball 1A · title`.
 
 A ball's scope starts at a `**Scope:**` or `**Scope (KEY):**` field. It may wrap: a following
-line continues the field only when it is indented, or starts with a backticked path, a comma,
-or a list bullet followed by a backticked path. Anything else (a blank line, prose, a bold
-field, a heading, a checklist item) ends it.
+line continues the field only when it starts (after any indentation) with a backticked path,
+a comma, or a list bullet followed by a backticked path. Anything else ends it. A line that
+ends the field but still carries path-like backticked tokens (prose naming a file) is refused
+by line (exit 2), so a path is never silently dropped; blank lines, headings, bold fields and
+checklist items end the field quietly.
 
 Every backticked token outside parentheses is a path. Inside parentheses a token counts only
 when it looks like a path (it has a `/` or a file extension); other tokens there are symbols
@@ -18,8 +20,9 @@ segments and tokens with spaces are refused by name (exit 2), never silently dro
 
 A path may carry the content hash it had when the ball was cut (the LEAP ball contract):
 `api/health.py@sha256:3f9a1c0d...` (8 to 64 hex digits, a prefix of the SHA-256 of the blob
-at the base commit, i.e. `git show <base>:<path> | sha256sum`). Ball mode verifies it and
-reports drift. Hashed paths must be written relative to the repo root.
+at the base commit, i.e. `git show <base>:<path> | sha256sum`; `@SHA256:` is accepted too).
+Ball mode verifies it and reports drift. Hashed paths must be written relative to the repo
+root and cannot be globs; any other `@<algo>:` suffix is refused.
 
 Ball mode: compare the scope with what the branch changed (`git diff --name-only <base>...HEAD`
 plus staged, unstaged and untracked files). With --repo-key APP, only untagged Scope fields and
@@ -27,9 +30,13 @@ fields tagged (APP) count, and a leading "APP/" is stripped from each path.
 Exit 0 = in scope and no drift, 1 = out of scope or drift (files named),
 2 = unknown ball, no scope, unparseable scope, or git error.
 
-Disjoint mode: balls inside one `## Wave` section must own different files in the same repo.
-Fields tagged with different repo keys never collide; untagged fields share one key. Uses the
-same matcher as ball mode, in both directions. Exit 0 = disjoint, 1 = overlap, 2 = unparseable.
+Repo keys, one rule for both modes: an untagged Scope field belongs to every repo, so its
+paths can clash with any key; fields tagged with two different keys never clash. Within a
+key, a leading `KEY/` is stripped before comparing, so `APP/api/health.py` and (APP)
+`api/health.py` are the same file.
+
+Disjoint mode: balls inside one `## Wave` section must own different files. Uses the same
+matcher as ball mode, in both directions. Exit 0 = disjoint, 1 = overlap, 2 = unparseable.
 """
 from __future__ import annotations
 
@@ -45,11 +52,13 @@ HEADING_RE = re.compile(r"^(#{2,6})\s+(.*\S)\s*$")
 BALL_RE = re.compile(r"^Ball\s+([A-Za-z0-9][\w.-]*)")
 WAVE_RE = re.compile(r"^Wave\b", re.I)
 SCOPE_RE = re.compile(r"\*\*Scope(?:\s*\(([^)]*)\))?:\*\*(.*)")
-CONTINUATION_RE = re.compile(r"^(?:\s+\S|`|,|[-*]\s+`)")
+CONTINUATION_RE = re.compile(r"^\s*(?:`|,|[-*]\s+`)")
 CHECKBOX_RE = re.compile(r"^\s*[-*]\s+\[[ xX]\]")
 FIELD_START_RE = re.compile(r"^\s*(?:[-*]\s+)?\*\*[^*]+:\*\*")
 TOKEN_RE = re.compile(r"`([^`]+)`|([()])")
-HASH_RE = re.compile(r"^(.*)@sha256:([^@]*)$")
+HASH_RE = re.compile(r"^(.*)@([A-Za-z][A-Za-z0-9-]*):([^/@]*)$")
+GLOB_CHARS = set("*?[")
+PATH_TOKEN_RE = re.compile(r"`([^`]+)`")
 HEX_RE = re.compile(r"^[0-9a-fA-F]{8,64}$")
 EXT_RE = re.compile(r"\.[A-Za-z0-9]+$")
 DRIVE_RE = re.compile(r"^[A-Za-z]:")
@@ -99,11 +108,16 @@ def _scope_fields(lines: list[str]) -> list[tuple[str, str]]:
             continue
         if open_field is None:
             continue
-        if (CHECKBOX_RE.match(line) or FIELD_START_RE.match(line)
-                or not CONTINUATION_RE.match(line)):
-            open_field = None
+        if CONTINUATION_RE.match(line) and not CHECKBOX_RE.match(line):
+            open_field[1] += " " + line.strip()
             continue
-        open_field[1] += " " + line.strip()
+        quiet_end = (not line.strip() or line.lstrip().startswith("#") or CHECKBOX_RE.match(line)
+                     or FIELD_START_RE.match(line))
+        if not quiet_end and any(_path_like(tok) for tok in PATH_TOKEN_RE.findall(line)):
+            raise ScopeError(f"line after a Scope field names a path but is not a scope continuation: "
+                             f"{line.strip()!r} (start it with the backticked path, or end the scope "
+                             f"with a blank line first)")
+        open_field = None
     return [(tag, text) for tag, text in fields]
 
 
@@ -118,7 +132,11 @@ def check_token(token: str) -> tuple[str, str | None]:
     digest = None
     m = HASH_RE.match(raw)
     if m:
-        raw, digest = m.group(1), m.group(2)
+        raw, algo, digest = m.group(1), m.group(2), m.group(3)
+        if algo.lower() != "sha256":
+            raise ScopeError(f"scope token `{token}`: only @sha256: content hashes are supported")
+        if GLOB_CHARS & set(raw):
+            raise ScopeError(f"scope token `{token}`: a glob cannot carry a content hash")
         if not HEX_RE.match(digest):
             raise ScopeError(f"scope token `{token}`: a content hash is 8 to 64 hex digits after @sha256:")
         digest = digest.lower()
@@ -149,10 +167,14 @@ def scope_entries(lines: list[str], repo_key: str | None = None) -> list[tuple[s
             if depth and not _path_like(token):
                 continue  # a symbol qualifying the path before it
             path, digest = check_token(token)
-            if repo_key and path.startswith(repo_key + "/"):
-                path = path[len(repo_key) + 1:]
+            for key in {tag, repo_key} - {None, ""}:
+                path = _strip_key(path, key)
             out.append((tag, path, digest))
     return out
+
+
+def _strip_key(path: str, key: str | None) -> str:
+    return path[len(key) + 1:] if key and path.startswith(key + "/") else path
 
 
 def scope_paths(lines: list[str], repo_key: str | None = None) -> list[str]:
@@ -222,8 +244,12 @@ def overlaps(plan: str) -> list[str]:
             for b_id, b_entries in scopes[i + 1:]:
                 for ka, pa, _ in a_entries:
                     for kb, pb, _ in b_entries:
-                        if ka == kb and (matches(pa, pb) or matches(pb, pa)):
-                            where = f" ({ka})" if ka else ""
+                        if ka and kb and ka != kb:
+                            continue  # two different repos
+                        key = ka or kb
+                        na, nb = _strip_key(pa, key), _strip_key(pb, key)
+                        if matches(na, nb) or matches(nb, na):
+                            where = f" ({key})" if key else ""
                             problems.append(f"{wave or '(no wave)'}: balls {a_id} and {b_id} both own {pa}{where}"
                                             + ("" if pa == pb else f" ~ {pb}"))
     return problems

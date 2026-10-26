@@ -67,6 +67,7 @@ verdict: 1 | 0 | -1
   1 = done: every red test green, scope check 0, sandbox proof shown
   0 = hold: blocked or out of budget; checkpoint below says exactly where
  -1 = refuse: the ball is wrong or unsafe as written; say why in one paragraph
+builder id: <the id the coordinator recorded with `ledger.py status <ID> IN-BUILD --builder <builder id>`>
 branch: ball/<id> @ <sha>    red commit: <sha>
 tests: <command> -> <passed/failed counts>
 scope check: <exit code + summary line>
@@ -81,6 +82,10 @@ checkpoint (only for 0): <what is done, what is next, what blocks>
 ## Notes for the coordinator
 
 - One prompt per ball. Do not batch balls into one prompt; scopes and receipts blur.
+- Record the builder when you throw the ball:
+  `ledger.py status <ID> IN-BUILD --by coordinator --builder <builder id>`, and put the same
+  id in the prompt. The ledger then refuses that builder as prover, closer, adjudicator,
+  or amender of its own entries.
 - If the receiver is an agent with its own harness, the harness boot (for example the
   optimus skill) runs before this prompt; this prompt does not repeat the floor.
 - Do not name a model in the prompt or pick one for it. The configured fleet ladder

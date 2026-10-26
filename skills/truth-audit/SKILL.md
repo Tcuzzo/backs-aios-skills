@@ -108,6 +108,7 @@ records the event count and the last line's hash:
 ```
 python scripts/ledger.py --ledger AUD/ledger.jsonl import-lane AUD/lanes/SVC_SERVICE.md --by coordinator
 python scripts/ledger.py --ledger AUD/ledger.jsonl status SVC-03 PLANNED --by coordinator --task 1A
+python scripts/ledger.py --ledger AUD/ledger.jsonl status SVC-03 IN-BUILD --by coordinator --builder ball-1A-builder
 python scripts/ledger.py --ledger AUD/ledger.jsonl amend SVC-03 --by coordinator --evidence "recount: ..."
 python scripts/ledger.py --ledger AUD/ledger.jsonl check     # gate: exit 1 on any broken rule
 python scripts/ledger.py --ledger AUD/ledger.jsonl render    # STATUS.md, generated
@@ -116,8 +117,9 @@ python scripts/ledger.py --ledger AUD/ledger.jsonl render    # STATUS.md, genera
 Statuses move one step at a time, OPEN, PLANNED, IN-BUILD, PROVEN, CLOSED, or end as
 ADJUDICATED-NOT-A-BUG with evidence. The tool refuses duplicate ids, skipped or backward
 moves, PROVEN or CLOSED without evidence, a P0/P1 going IN-BUILD without a plan task,
-the IN-BUILD actor proving its own entry, and anyone who built or proved an entry
-closing, adjudicating, or amending it. A lane
+an IN-BUILD move that does not name its builder (`--builder`), the builder or the actor
+who moved it IN-BUILD proving it, and anyone who built or proved an entry closing,
+adjudicating, or amending it. A lane
 re-imported with different evidence is refused until the change is recorded with
 `amend`. `check` replays every rule over the whole log, verifies the hash chain (an
 edited, inserted or removed line), and compares the head file (truncation at the end).
