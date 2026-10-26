@@ -29,6 +29,10 @@ Ledger entries: <ids>. Their evidence, root cause and fix seam (verbatim from th
 <paste each block>
 
 SCOPE (you may change only these files)
+A path written `path@sha256:<hex>` was pinned when the ball was cut. Before you edit, check it:
+  git show <sha>:<path> | sha256sum   -> must start with <hex>
+If it does not, the file moved under you: stop and return 0 naming the file (the scope check
+below also reports it as DRIFT).
 <exact list, copied from the plan>
 Anything else you find broken: write it as a block in <audit dir>/lanes/NEW_<id>.md
 (format: ### N-<id>-NN · Pn · title, then status / surface / evidence / root cause /

@@ -39,10 +39,27 @@ class TruthAuditToolsTest(unittest.TestCase):
     def test_examples_carry_no_domain_residue(self):
         texts = [(SKILL / "SKILL.md").read_text(encoding="utf-8")]
         texts += [p.read_text(encoding="utf-8") for p in (SKILL / "references").glob("*.md")]
-        for token in ("price bars", "/v2/bars", "buyers", '"positions"', "money path", "paper or sandbox"):
+        # Fixtures teach by example too: eval inputs and script test fixtures are scanned.
+        texts += [p.read_text(encoding="utf-8") for p in (SKILL / "evals").rglob("*.md")]
+        texts += [p.read_text(encoding="utf-8") for p in (SKILL / "scripts").glob("*.py")]
+        self.assertGreater(len(texts), 10)
+        for token in ("price bars", "/v2/bars", "bar data", "buyers", '"positions"', "money path",
+                      "paper or sandbox"):
             for text in texts:
                 with self.subTest(token=token):
-                    self.assertNotIn(token, text)
+                    self.assertNotIn(token, text.lower())
+
+    def test_close_out_text_matches_list_semantics(self):
+        # `list --open` hides terminal entries, adjudicated ones included.
+        tpl = (SKILL / "references" / "plan_template.md").read_text(encoding="utf-8")
+        self.assertNotIn("prints only adjudicated", tpl)
+        self.assertIn("`ledger.py list --open` prints nothing", tpl)
+        self.assertIn("`ledger.py list`", tpl)
+
+    def test_scope_hash_contract_is_documented(self):
+        for name in ("plan_template.md", "coder_prompt.md"):
+            with self.subTest(reference=name):
+                self.assertIn("@sha256:", (SKILL / "references" / name).read_text(encoding="utf-8"))
 
     def test_eval_lane_fix_seams_sit_inside_the_ball_scope(self):
         sys.path.insert(0, str(SKILL / "scripts"))

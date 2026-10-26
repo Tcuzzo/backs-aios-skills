@@ -19,9 +19,9 @@ Isolation: logs and heartbeat read in place (read-only); no requests sent.
 * **Fix-seam**: `api/health.py` health()
 * **Proof:** health is red within one loop of the injected failure
 
-### SVC-03 · P3 · The bar data is real (checked against the provider)
+### SVC-03 · P3 · The synced notes are real (checked against the source API)
 - status: ADJUDICATED-NOT-A-BUG · confidence: high
-- evidence: 20 random rows match the provider's API byte for byte
+- evidence: 20 random notes from a copy of `notes.db` match the source API field for field
 
 ### SVC-04 · P1 · No evidence here
 - status: OPEN · confidence: low

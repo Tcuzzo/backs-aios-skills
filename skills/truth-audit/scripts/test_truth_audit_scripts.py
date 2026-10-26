@@ -38,9 +38,9 @@ Isolation: read-only.
 * **Fix-seam**: `health.py` health()
 * **Proof:** health is red within one loop of the injected failure
 
-### SVC-03 · P3 · The bar data is real (checked against the provider)
+### SVC-03 · P3 · The synced notes are real (checked against the source API)
 - status: ADJUDICATED-NOT-A-BUG · confidence: high
-- evidence: 20 random rows match the provider's API byte for byte
+- evidence: 20 random notes from a copy of `notes.db` match the source API field for field
 
 ### SVC-04 · P1 · No evidence here
 - status: OPEN · confidence: low
@@ -403,6 +403,125 @@ class ScopeRegressionTest(unittest.TestCase):
             self.addCleanup(plan.unlink)
             self.assertEqual(2, ball_scope_check.main(["1B", "--plan", str(plan), "--repo", str(repo),
                                                        "--base", "no-such-base"]))
+
+
+class LedgerRound3Test(LedgerTest):
+    """Grade findings on 2e19f22. Each test failed before its fix."""
+
+    # 1. adjudication follows the closer rule
+    def test_builder_cannot_adjudicate_own_entry(self) -> None:
+        self.add(sev="P0", task="1A")
+        self.walk_to_in_build("builder")
+        self.assertEqual(1, self.to("ADJUDICATED-NOT-A-BUG", "builder", "SVC-09", "--evidence", "fine"))
+
+    def test_prover_cannot_adjudicate(self) -> None:
+        self.add(task="1A")
+        self.walk_to_in_build("builder")
+        self.assertEqual(0, self.to("PROVEN", "reader", "SVC-09", "--evidence", "row 1"))
+        self.assertEqual(1, self.to("ADJUDICATED-NOT-A-BUG", "reader", "SVC-09", "--evidence", "fine"))
+        self.assertEqual(0, self.to("ADJUDICATED-NOT-A-BUG", "grader", "SVC-09", "--evidence", "fine"))
+
+    def test_check_flags_historical_self_adjudication(self) -> None:
+        self.add(task="1A")
+        self.walk_to_in_build("builder")
+        ledger.append(self.path, {"kind": "status", "id": "SVC-09", "status": "ADJUDICATED-NOT-A-BUG",
+                                  "by": "builder", "evidence": "fine"})
+        self.assertEqual(1, self.run_ledger("check"))
+
+    # 2. the refusal prints the exact value an amend must carry
+    def test_changed_lane_refusal_prints_expected_value(self) -> None:
+        import contextlib
+        import io
+        lane = self.dir / "SVC_SERVICE.md"
+        lane.write_text(LANE_OK, encoding="utf-8")
+        self.run_ledger("import-lane", str(lane), "--by", "k")
+        lane.write_text(LANE_OK.replace("602 of 602", "700   of\n  700"), encoding="utf-8")
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            self.assertEqual(1, self.run_ledger("import-lane", str(lane), "--by", "k"))
+        expected = [f for f in ledger.parse_lane(lane.read_text(encoding="utf-8")) if f["id"] == "SVC-01"][0]
+        printed = ledger._norm(expected["evidence"])
+        self.assertIn(printed, err.getvalue())
+        self.assertEqual(0, self.run_ledger("amend", "SVC-01", "--by", "k", "--evidence", printed))
+        self.assertEqual(0, self.run_ledger("import-lane", str(lane), "--by", "k"))
+
+    # 3. the builder or prover cannot amend
+    def test_builder_cannot_amend(self) -> None:
+        self.add(task="1A")
+        self.walk_to_in_build("builder")
+        self.assertEqual(1, self.run_ledger("amend", "SVC-09", "--by", "builder", "--proof", "easier proof"))
+        self.assertEqual(0, self.run_ledger("amend", "SVC-09", "--by", "keeper", "--proof", "sharper proof"))
+        self.assertEqual(0, self.to("PROVEN", "reader", "SVC-09", "--evidence", "row 1"))
+        self.assertEqual(1, self.run_ledger("amend", "SVC-09", "--by", "reader", "--evidence", "x"))
+
+
+class ScopeRound3Test(unittest.TestCase):
+    # 4. prose after Scope ends the field
+    def test_prose_line_ends_scope(self) -> None:
+        plan = ("#### Ball 1A · a\n**Scope:** `a.py`,\n  `b.py`\n, `c.py`\n"
+                "This ball also mentions `prose.py` in passing.\n`d.py`\n")
+        ball = ball_scope_check.find_ball(plan, "1A")
+        self.assertEqual(["a.py", "b.py", "c.py"], ball_scope_check.scope_paths(ball["lines"]))
+
+    # 5. path-like tokens inside parentheses count
+    def test_path_in_parentheses_counts(self) -> None:
+        plan = "#### Ball 1A · a\n**Scope:** `a.py` (`run` only, and `lib/helper.py`), `b.py` (`conf.yaml`)\n"
+        ball = ball_scope_check.find_ball(plan, "1A")
+        self.assertEqual(["a.py", "lib/helper.py", "b.py", "conf.yaml"],
+                         ball_scope_check.scope_paths(ball["lines"]))
+
+    # 6. disjoint honors repo keys
+    def test_disjoint_honors_repo_keys(self) -> None:
+        plan = ("## Wave 1\n#### Ball 1A · a\n**Scope (APP):** `deploy.sh`\n\n"
+                "#### Ball 1B · b\n**Scope (OPS):** `deploy.sh`\n\n"
+                "#### Ball 1C · c\n**Scope (OPS):** `deploy.sh`\n")
+        problems = ball_scope_check.overlaps(plan)
+        self.assertEqual(1, len(problems), problems)
+        self.assertIn("1B and 1C", problems[0])
+
+    # 7. an unknown ball is an error
+    def test_unknown_ball_exits_2(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            plan = pathlib.Path(raw, "PLAN.md")
+            plan.write_text(PLAN, encoding="utf-8")
+            try:
+                rc = ball_scope_check.main(["ZZ", "--plan", str(plan)])
+            except SystemExit as exc:
+                rc = exc.code if isinstance(exc.code, int) else 1
+            self.assertEqual(2, rc)
+
+    # 10. optional content hashes on scope paths detect drift at the base
+    def test_scope_hash_parses_to_plain_path(self) -> None:
+        plan = "#### Ball 1A · a\n**Scope:** `api/health.py@sha256:0123abcd`, `new.py`\n"
+        ball = ball_scope_check.find_ball(plan, "1A")
+        self.assertEqual(["api/health.py", "new.py"], ball_scope_check.scope_paths(ball["lines"]))
+        self.assertEqual({"api/health.py": "0123abcd"}, ball_scope_check.scope_hashes(ball["lines"]))
+        bad = "#### Ball 1B · b\n**Scope:** `x.py@sha256:12`\n"
+        with self.assertRaises(ball_scope_check.ScopeError):
+            ball_scope_check.scope_paths(ball_scope_check.find_ball(bad, "1B")["lines"])
+
+    def test_scope_hash_drift_exit_1(self) -> None:
+        import hashlib
+        with tempfile.TemporaryDirectory() as raw:
+            repo = pathlib.Path(raw)
+            env = {**os.environ, "GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@example.invalid",
+                   "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@example.invalid"}
+
+            def git(*a: str) -> None:
+                subprocess.run(["git", "-c", "safe.directory=*", "-c", "core.autocrlf=false", "-C", str(repo), *a],
+                               check=True, capture_output=True, env=env)
+            git("init", "-q", "-b", "main")
+            (repo / "health.py").write_bytes(b"x\n")
+            git("add", ".")
+            git("commit", "-q", "-m", "base")
+            good = hashlib.sha256(b"x\n").hexdigest()[:12]
+            plan = pathlib.Path(raw + "-plan.md")
+            self.addCleanup(plan.unlink)
+            args = ["1A", "--plan", str(plan), "--repo", str(repo), "--base", "main"]
+            plan.write_text(f"#### Ball 1A · a\n**Scope:** `health.py@sha256:{good}`\n", encoding="utf-8")
+            self.assertEqual(0, ball_scope_check.main(args))
+            plan.write_text("#### Ball 1A · a\n**Scope:** `health.py@sha256:deadbeef00`\n", encoding="utf-8")
+            self.assertEqual(1, ball_scope_check.main(args))
 
 
 class CmpTreesTest(unittest.TestCase):
