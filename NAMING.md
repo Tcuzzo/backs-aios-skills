@@ -114,5 +114,6 @@ the Lord lands it.
 | seam-engineering | Fixes land at the seam (the shared primitive), never as scattered point patches. |
 | session-handoff | Named for its artifact: one handoff file a cold session can continue from. |
 | sniper-testing | One shot, one target: run only the tests that cover what you touched. |
+| truth-audit | Named for its question: what is true about the running product, proven by command, before any fix. The audit is the mechanism; the repair spec is its output. |
 | understanding-gates | Gates on each build stage that check understanding, not just syntax. |
 | wayfinder | Finds the way when lost, instead of parking a question on the human. |
