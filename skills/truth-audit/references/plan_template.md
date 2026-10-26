@@ -45,7 +45,7 @@ helpers, what leaves the product path>.
 - No model names at call sites, in prompts or in configs. Code asks for a role and a
   capability; the configured fleet ladder seats the model.
 - Sandbox only for anything that writes: <the sandbox recipe: home dir, port, keyring,
-  schedulers off>. Paper/test accounts only for anything that spends.
+  schedulers off>. Test accounts only for anything that spends or sends.
 - Every loop is bounded: ceiling, backoff, then a loud human-visible state.
 - Failures are loud. No swallowed exceptions, no "complete" with zero work, no green
   health while a dependency fails.
@@ -135,7 +135,7 @@ Every ball carries all of these. A missing one is a plan defect the tribunal wil
 | title line | `#### Ball <id> · <outcome> — <ledger ids>` |
 | Goal | the outcome in one sentence a human can check |
 | Gate | a metric or observable that is true only when the goal is met |
-| Scope | exact files (backticked paths only, no routes or prose); balls in one wave never share a file. `ball_scope_check.py --disjoint` proves it |
+| Scope | exact files as backticked relative paths; may wrap over lines until a blank line or the next bold field; symbols go in parentheses after their file (`api/health.py` (`health`)); routes, absolute paths and `..` are refused. Balls in one wave never share a file; `ball_scope_check.py --disjoint` proves it |
 | Interfaces | exact signatures other balls rely on, produced or consumed |
 | Red tests | by name, each with its assertion in a parenthesis |
 | Decisions | only where the tests leave a real choice; say what was deduced and from what |

@@ -61,7 +61,7 @@ mental model here: the window the human uses defines "the product".
 
 ### 3. Fan out read-only lanes
 
-One lane per independent concern (authority and money path, callable API surface,
+One lane per independent concern (authority path: who can spend, delete, or publish; callable API surface,
 data quality, every input surface, UI walk with screenshots, remote hosts and jobs,
 test theater). Throw each with [the lane prompt](references/lane_prompt.md), following
 [leap-protocol](../leap-protocol/SKILL.md) handoff discipline: a complete unbiased spec,
@@ -102,20 +102,26 @@ enter the ledger. Lessons that are rules:
 ### 5. Append-only ledger with structural gates
 
 `scripts/ledger.py` keeps the ledger as one JSON event per line, each line chained to
-the hash of the one before it:
+the hash of the one before it, with a head file beside it (`ledger.jsonl.head`) that
+records the event count and the last line's hash:
 
 ```
 python scripts/ledger.py --ledger AUD/ledger.jsonl import-lane AUD/lanes/SVC_SERVICE.md --by coordinator
 python scripts/ledger.py --ledger AUD/ledger.jsonl status SVC-03 PLANNED --by coordinator --task 1A
+python scripts/ledger.py --ledger AUD/ledger.jsonl amend SVC-03 --by coordinator --evidence "recount: ..."
 python scripts/ledger.py --ledger AUD/ledger.jsonl check     # gate: exit 1 on any broken rule
 python scripts/ledger.py --ledger AUD/ledger.jsonl render    # STATUS.md, generated
 ```
 
-Statuses move OPEN, PLANNED, IN-BUILD, PROVEN, CLOSED, or end as
-ADJUDICATED-NOT-A-BUG with evidence. The tool refuses duplicate ids, backward moves,
-PROVEN or CLOSED without evidence, a P0/P1 going IN-BUILD without a plan task, and a
-closer who built or proved the entry. `check` replays every rule over the whole log
-and verifies the hash chain, so a hand edit fails the gate too.
+Statuses move one step at a time, OPEN, PLANNED, IN-BUILD, PROVEN, CLOSED, or end as
+ADJUDICATED-NOT-A-BUG with evidence. The tool refuses duplicate ids, skipped or backward
+moves, PROVEN or CLOSED without evidence, a P0/P1 going IN-BUILD without a plan task,
+the IN-BUILD actor proving its own entry, and a closer who built or proved it. A lane
+re-imported with different evidence is refused until the change is recorded with
+`amend`. `check` replays every rule over the whole log, verifies the hash chain (an
+edited, inserted or removed line), and compares the head file (truncation at the end).
+If someone rewrites the ledger and its head file together, only an outside copy of the
+head hash, kept in a receipt or a commit, can show it.
 
 ### 6. Root-cause classes, not a bug list
 
@@ -124,7 +130,7 @@ then sweep the siblings ([seam-engineering](../seam-engineering/SKILL.md)). Clas
 that recur across products:
 
 - many sources of truth (forks, stale clones, two runtime roots, uncommitted running code);
-- many authorities over one resource (two buyers, two kill switches, three "positions" answers);
+- many authorities over one resource (two workers writing one queue, two kill switches, three answers to "what is live");
 - silent failure dressed as success (endless retries, green health on a 401, "complete" with zero work);
 - inputs the engine never reads (settings with no reader, hard-coded lists, orphan pages);
 - undefined trust boundaries (unauthenticated routes, tokens served to any caller, a live path one flag away);
@@ -157,7 +163,7 @@ and **budget**. Every ball doubles as a [karpathy](../karpathy/SKILL.md) experim
 goal, metric gate, fair-game files, budget.
 
 The plan also carries: a repos and roots table; global constraints (no force push, no
-model names at call sites, paper or sandbox rules, bounded loops, loud failures, red
+model names at call sites, test-account and sandbox rules, bounded loops, loud failures, red
 first); roles (coordinator as single write spine, ledger keeper, builders, readers and
 testers, tribunal convened through the configured ladder only); a review focus of five
 unpinned failure modes, each with the test that pins it; and a short list of open owner

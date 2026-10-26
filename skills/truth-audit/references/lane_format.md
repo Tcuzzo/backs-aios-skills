@@ -45,14 +45,14 @@ if nobody knows which copy of the code.
 - **Fix seam.** The shared primitive where the fix closes the class, not the line
   where the symptom shows.
 - **Proof of done.** Observed on the real surface by something that is not the
-  builder: a scheduled watchdog row, a real click on the real page, a real paper
+  builder: a scheduled watchdog row, a real click on the real page, a real test-account
   or sandbox response, a reboot. "Tests pass" is never proof of done on its own.
 
 ## Severity
 
 | sev | meaning |
 |---|---|
-| P0 | wrong product, data loss, money or authority path wrong, or a safety fence down |
+| P0 | wrong product, data loss, an authority path wrong (spend, delete, publish), or a safety fence down |
 | P1 | a capability is broken on the human's own surface |
 | P2 | misleading or degraded: works, but says something false or loses detail |
 | P3 | polish |
@@ -71,9 +71,9 @@ When a lane checks something and it turns out true and healthy, it still writes 
 block. That stops the next auditor from re-checking it and records what was ruled out.
 
 ```
-### DATA-07 · P3 · Price bars are real (match the provider row for row)
+### DATA-07 · P3 · Synced records are real (match the source system row for row)
 - status: ADJUDICATED-NOT-A-BUG · confidence: high
-- evidence: 20 random rows from `bars.db` (copy) equal `GET /v2/bars?...` byte for byte
+- evidence: 20 random rows from a copy of `records.db` equal the source API's `GET /records/<id>` responses field for field
 ```
 
 `import-lane` records it and immediately marks it `ADJUDICATED-NOT-A-BUG` with that
@@ -87,7 +87,13 @@ coordinator must not refuse a block for them:
 - `- evidence (read-only, service log):` (a qualifier in parentheses, kept in the value)
 - `- surface and evidence:` (one merged field, counted as both)
 - `* **Evidence:**`, `- **fix-seam**:`, `- Proof:` (bullet, bold, case, dash variants)
-- `### SVC-02 | P2 | title` (pipe separators instead of `·`)
+- `### SVC-02 | P2 | title`, `### SVC-02 — P2 — title`, `### SVC-02: P2: title`
+  (pipe, dash, or colon separators instead of `·`)
+
+A `### <ID> ...` heading that still cannot be parsed is refused with its line number
+and the import exits 1; it is never skipped silently. Re-importing a lane whose
+evidence, fix seam, or proof changed is refused too: record the change with
+`ledger.py amend <ID> --evidence ...`, then re-import.
 
 A block that is really missing evidence, fix seam, or proof is refused and named on
 stderr. Fix the block in the lane file and re-import; the ledger skips IDs it already has.

@@ -9,7 +9,7 @@ Fill every `<...>`. Delete nothing in **Rules**; add to it if the product needs 
 ---
 
 ```
-You are lane <LANE> (<concern, e.g. "authority and money path">) in a read-only truth
+You are lane <LANE> (<concern, e.g. "authority path">) in a read-only truth
 audit of <product, one line on what it does and who uses it>. Other lanes cover other
 concerns in parallel. You never fix anything. You find out what is true and write it down.
 
@@ -70,7 +70,7 @@ anywhere except scratch.
 
 | lane | concern | typical probes |
 |---|---|---|
-| authority | who can take irreversible or paid actions; how many authorities act on one resource | order/payment/delete paths, kill switches, leases, keys in env |
+| authority | who can take irreversible or paid actions; how many authorities act on one resource | payment, delete, publish and deploy paths, kill switches, leases, keys in env |
 | api | the callable surface other agents and tools use | route inventory vs docs, auth on each route, schema drift |
 | data | is the data real, fresh, and the one the engine reads | copy DBs, sample rows vs source, freshness, duplicate stores |
 | inputs | every input surface: does the engine read it | each form/setting/flag traced to a reader; sandbox write/read-back |

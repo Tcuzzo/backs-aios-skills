@@ -11,12 +11,12 @@ Isolation: logs and heartbeat read in place (read-only); no requests sent.
   - heartbeat state is "error"
 - root cause (theater): the loop swallows every exception
 - root cause (product): the credential was rotated
-- fix seam: `runtime/loop.py` run_forever
+- fix seam: `runtime/sync_worker.py` run_forever, through a new `runtime/loop_guard.py`
 - proof of done: an injected 401 in a sandbox stops the loop and shows one alert
 
 ### SVC-02 | P2 | Health page says green while the worker is down
 * **Surface and evidence:** `GET /health` returns ok=true while heartbeat says error
-* **Fix-seam**: `health.py` health()
+* **Fix-seam**: `api/health.py` health()
 * **Proof:** health is red within one loop of the injected failure
 
 ### SVC-03 · P3 · The bar data is real (checked against the provider)

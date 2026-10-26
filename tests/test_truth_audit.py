@@ -1,6 +1,7 @@
 """Run the truth-audit tool regressions (ledger gates, scope gates, tree hashing) in CI."""
 from pathlib import Path
 import os
+import re
 import subprocess
 import sys
 import unittest
@@ -27,6 +28,43 @@ class TruthAuditToolsTest(unittest.TestCase):
             with self.subTest(script=name):
                 self.assertTrue((SKILL / "scripts" / name).is_file())
                 self.assertIn(f"scripts/{name}", body)
+
+    def test_ledger_tamper_claim_matches_the_tool(self):
+        # The skill may only claim what ledger.py check detects: edits via the hash
+        # chain, truncation via the head file kept beside the ledger.
+        body = (SKILL / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn(".head", body)
+        self.assertIn("truncat", body)
+
+    def test_examples_carry_no_domain_residue(self):
+        texts = [(SKILL / "SKILL.md").read_text(encoding="utf-8")]
+        texts += [p.read_text(encoding="utf-8") for p in (SKILL / "references").glob("*.md")]
+        for token in ("price bars", "/v2/bars", "buyers", '"positions"', "money path", "paper or sandbox"):
+            for text in texts:
+                with self.subTest(token=token):
+                    self.assertNotIn(token, text)
+
+    def test_eval_lane_fix_seams_sit_inside_the_ball_scope(self):
+        sys.path.insert(0, str(SKILL / "scripts"))
+        try:
+            import ball_scope_check
+            import ledger
+        finally:
+            sys.path.pop(0)
+        case = SKILL / "evals" / "coder-prompt-for-one-ball" / "files"
+        ball = ball_scope_check.find_ball((case / "PLAN.md").read_text(encoding="utf-8"), "1A")
+        scope = ball_scope_check.scope_paths(ball["lines"])
+        blocks = ledger.parse_lane((case / "lanes" / "SVC_SERVICE.md").read_text(encoding="utf-8"))
+        cited = [b for b in blocks if b["id"] in {"SVC-01", "SVC-02"}]
+        self.assertEqual(2, len(cited))
+        for block in cited:
+            for path in re.findall(r"`([^`\s]+\.[A-Za-z]+)`", block["fix_seam"]):
+                with self.subTest(finding=block["id"], path=path):
+                    self.assertTrue(ball_scope_check.in_scope(path, scope), scope)
+
+    def test_readme_catalog_lists_the_skill(self):
+        readme = (SKILL.parents[1] / "README.md").read_text(encoding="utf-8")
+        self.assertIn("| [truth-audit](skills/truth-audit/SKILL.md) |", readme)
 
 
 if __name__ == "__main__":
