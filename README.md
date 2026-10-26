@@ -233,6 +233,7 @@ homework.
 | [seam-engineering](skills/seam-engineering/SKILL.md) | Fix the flaw class once at its shared primitive, sweep every sibling, land a guard that catches the next offender. |
 | [session-handoff](skills/session-handoff/SKILL.md) | Compact a session into one flat file a brand-new agent can read cold and continue from. Secrets redacted. |
 | [sniper-testing](skills/sniper-testing/SKILL.md) | Run only the tests that cover what you touched. Kill mock theater — tests that pass while the capability is broken. |
+| [truth-audit](skills/truth-audit/SKILL.md) | Find out what is really running and what is really broken, read-only and proven by command, then hand off a repair spec any coder or agent can execute. |
 | [understanding-gates](skills/understanding-gates/SKILL.md) | Gate Design, Plan, Build, Test, and Ship with approve/revise/reject verdicts, so the build still matches the ask. |
 | [wayfinder](skills/wayfinder/SKILL.md) | When lost, chart a decision map to the destination instead of parking a question on the human. |
 ## The plays

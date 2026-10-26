@@ -1,13 +1,18 @@
 """Append-only, gated ledger for a truth audit.
 
 Every change is one JSON line in the ledger file. Nothing is rewritten: an entry's
-current state is the fold of its events, and every line carries the SHA-256 of the
-line before it, so an edit or a deleted line in the middle breaks the chain and
-`check` fails. A status board (STATUS.md) is regenerated from the log, never edited.
+current state is the fold of its events. Every line carries the SHA-256 of the line
+before it, and a head file beside the ledger (`<ledger>.head`) records the event count
+and the hash of the last line. `check` therefore catches a line that was edited,
+inserted or removed mid-log (broken chain) and a log cut short at the end (head file
+mismatch). Keep the head file with the ledger; if both are rewritten together, only an
+outside copy of the head hash (in a receipt or a commit) can tell. STATUS.md is
+regenerated from the log, never edited.
 
   python ledger.py add --id SVC-03 --sev P1 --title "..." --evidence "..." \\
                        --fix-seam "..." --proof "..." [--confidence med] [--task 1A] --by coordinator
   python ledger.py import-lane lanes/SVC_SERVICE.md --by ledger-keeper
+  python ledger.py amend SVC-03 --by ledger-keeper --evidence "recounted: ..." --note "why"
   python ledger.py status SVC-03 PLANNED  --by coordinator --task 1A
   python ledger.py status SVC-03 IN-BUILD --by coordinator
   python ledger.py status SVC-03 PROVEN   --by reader --evidence "watchdog row ..."
@@ -20,14 +25,15 @@ line before it, so an edit or a deleted line in the middle breaks the chain and
 The ledger path is --ledger, else $TRUTH_AUDIT_LEDGER, else ./ledger.jsonl.
 
 Rules (enforced on every write AND replayed over the whole log by `check`):
-  - ids are unique; an id is added once
+  - ids are unique; an id is added once; later changes to its evidence are `amend` events
   - every entry has evidence, a fix seam and a proof of done
-  - status moves forward only: OPEN -> PLANNED -> IN-BUILD -> PROVEN -> CLOSED;
+  - status moves one step at a time: OPEN -> PLANNED -> IN-BUILD -> PROVEN -> CLOSED;
     ADJUDICATED-NOT-A-BUG may end any open entry and needs evidence; terminal is terminal
   - PROVEN and CLOSED need evidence
   - a P0/P1 entry needs a plan task before it may go IN-BUILD
-  - the actor who closes an entry is not anyone who set it IN-BUILD or PROVEN
-  - the hash chain is intact (no line edited, inserted or removed mid-log)
+  - the actor who set IN-BUILD may not set PROVEN; the actor who closes an entry is
+    not anyone who set it IN-BUILD or PROVEN
+  - the hash chain is intact and the head file matches the log
 """
 from __future__ import annotations
 
@@ -46,13 +52,23 @@ TERMINAL = {"CLOSED", ADJUDICATED}
 SEVERITIES = ("P0", "P1", "P2", "P3")
 CONFIDENCE = ("high", "med", "low")
 GENESIS = "genesis"
-ID_RE = re.compile(r"^[A-Z][A-Z0-9]*(?:-[A-Za-z0-9]+)+$")
+ID_PATTERN = r"[A-Z][A-Z0-9]*(?:-[A-Za-z0-9]+)+"
+ID_RE = re.compile(rf"^{ID_PATTERN}$")
+AMENDABLE = ("evidence", "fix_seam", "proof")
+
+
+class LedgerError(Exception):
+    """The ledger file itself is unreadable; every command refuses instead of guessing."""
 
 
 # ---------------------------------------------------------------- storage
 
 def ledger_path(arg: str | None) -> pathlib.Path:
     return pathlib.Path(arg or os.environ.get("TRUTH_AUDIT_LEDGER") or "ledger.jsonl")
+
+
+def head_path(path: pathlib.Path) -> pathlib.Path:
+    return path.with_name(path.name + ".head")
 
 
 def _digest(line: str) -> str:
@@ -71,18 +87,37 @@ def read_lines(path: pathlib.Path) -> list[str]:
 
 
 def read_events(path: pathlib.Path) -> list[dict]:
-    return [json.loads(ln) for ln in read_lines(path)]
+    events = []
+    for n, line in enumerate(read_lines(path), 1):
+        try:
+            ev = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise LedgerError(f"{path.name} line {n} is not JSON ({exc.msg}); "
+                              "the ledger was edited by hand. Restore it from a copy.") from None
+        if not isinstance(ev, dict):
+            raise LedgerError(f"{path.name} line {n} is not an event object")
+        events.append(ev)
+    return events
 
 
 def append(path: pathlib.Path, event: dict) -> None:
     lines = read_lines(path)
     event = {**event, "at": _now(), "prev": _digest(lines[-1]) if lines else GENESIS}
+    line = json.dumps(event, ensure_ascii=False, sort_keys=True)
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8", newline="\n") as fh:
-        fh.write(json.dumps(event, ensure_ascii=False, sort_keys=True) + "\n")
+        fh.write(line + "\n")
+    head = head_path(path)
+    tmp = head.with_name(head.name + ".tmp")
+    tmp.write_text(json.dumps({"count": len(lines) + 1, "head": _digest(line)}) + "\n", encoding="utf-8")
+    os.replace(tmp, head)
 
 
 # ---------------------------------------------------------------- the rules (one place)
+
+def _norm(value: object) -> str:
+    return " ".join(str(value or "").split())
+
 
 def apply(entries: dict[str, dict], ev: dict) -> str | None:
     """Apply one event to the folded state. Return a refusal reason, or None when it is legal.
@@ -92,41 +127,54 @@ def apply(entries: dict[str, dict], ev: dict) -> str | None:
     kind = ev.get("kind")
     eid = ev.get("id", "")
     if kind == "add":
-        if not ID_RE.match(eid):
+        if not ID_RE.match(str(eid)):
             return f"{eid!r} is not a ledger id (want LANE-NN, e.g. SVC-03)"
         if eid in entries:
-            return f"{eid} already exists (append-only; use `status`)"
+            return f"{eid} already exists (append-only; use `status` or `amend`)"
         if ev.get("sev") not in SEVERITIES:
             return f"{eid}: severity must be one of {', '.join(SEVERITIES)}"
         if ev.get("confidence") not in CONFIDENCE:
             return f"{eid}: confidence must be one of {', '.join(CONFIDENCE)}"
-        for field in ("evidence", "fix_seam", "proof"):
-            if not str(ev.get(field) or "").strip():
+        for field in AMENDABLE:
+            if not _norm(ev.get(field)):
                 return f"{eid}: {field} is required"
         entries[eid] = {**ev, "status": "OPEN", "history": [("OPEN", ev.get("by") or "unattributed")]}
         return None
-    if kind != "status":
-        return f"unknown event kind {kind!r}"
     e = entries.get(eid)
+    if kind not in {"status", "amend"}:
+        return f"unknown event kind {kind!r}"
     if e is None:
         return f"no entry {eid}"
-    cur, new = e["status"], ev.get("status")
-    by = ev.get("by") or ""
-    evidence = str(ev.get("evidence") or "").strip()
+    by = _norm(ev.get("by"))
     if not by:
-        return f"{eid}: a status change needs --by"
+        return f"{eid}: a {kind} event needs --by"
+    cur = e["status"]
     if cur in TERMINAL:
         return f"{eid} is {cur} (terminal)"
+    if kind == "amend":
+        changes = {f: ev[f] for f in AMENDABLE if _norm(ev.get(f))}
+        if not changes:
+            return f"{eid}: amend needs at least one of --evidence, --fix-seam, --proof"
+        e.update(changes)
+        e["history"].append(("AMEND", by))
+        return None
+    new = ev.get("status")
+    evidence = _norm(ev.get("evidence"))
     if new == ADJUDICATED:
         if not evidence:
             return f"{eid}: adjudication needs --evidence"
-    elif new not in ORDER or ORDER.index(new) <= ORDER.index(cur):
-        return f"{eid}: {cur} -> {new} is not a forward move"
+    elif new not in ORDER or ORDER.index(new) != ORDER.index(cur) + 1:
+        nxt = ORDER[ORDER.index(cur) + 1]
+        return f"{eid}: {cur} -> {new} is not allowed; the next status is {nxt} (or {ADJUDICATED})"
     if new in {"PROVEN", "CLOSED"} and not evidence:
         return f"{eid}: {new} needs --evidence"
     task = ev.get("task") or e.get("task")
     if new == "IN-BUILD" and e["sev"] in {"P0", "P1"} and not task:
         return f"{eid} is {e['sev']} and has no plan task (pass --task)"
+    if new == "PROVEN":
+        builders = {who for st, who in e["history"] if st == "IN-BUILD"}
+        if by in builders:
+            return f"{by} set {eid} IN-BUILD; a different actor must prove it"
     if new == "CLOSED":
         builders = {who for st, who in e["history"] if st in {"IN-BUILD", "PROVEN"}}
         if by in builders:
@@ -154,14 +202,30 @@ def chain_problems(lines: list[str]) -> list[str]:
     for n, line in enumerate(lines, 1):
         try:
             got = json.loads(line).get("prev")
-        except json.JSONDecodeError:
-            problems.append(f"line {n}: not JSON")
+        except (json.JSONDecodeError, AttributeError):
+            problems.append(f"line {n}: not a JSON event")
             prev = _digest(line)
             continue
         if got != prev:
             problems.append(f"line {n}: hash chain broken (a line before it was edited, inserted or removed)")
         prev = _digest(line)
     return problems
+
+
+def head_problems(path: pathlib.Path, lines: list[str]) -> list[str]:
+    head = head_path(path)
+    if not head.exists():
+        return [f"{head.name} is missing: truncation cannot be ruled out"] if lines else []
+    try:
+        rec = json.loads(head.read_text(encoding="utf-8"))
+        count, digest = int(rec["count"]), rec["head"]
+    except (ValueError, KeyError, TypeError):
+        return [f"{head.name} is unreadable"]
+    last = _digest(lines[-1]) if lines else None
+    if count != len(lines) or digest != last:
+        return [f"ledger truncated or rewritten: {head.name} records {count} events, the file has {len(lines)}"
+                + ("" if count != len(lines) else " and a different last line")]
+    return []
 
 
 def _write(path: pathlib.Path, event: dict) -> int:
@@ -187,9 +251,10 @@ _KEYS = {
     "proof": "proof of done",
     "side effects": "side effects",
 }
-# "### SVC-03 · P1 · title" (also tolerates "|" or " - " as the separator)
-BLOCK_RE = re.compile(
-    r"^###\s+([A-Z][A-Z0-9]*(?:-[A-Za-z0-9]+)+)\s*(?:·|\||\s-\s)\s*(P[0-3])\s*(?:·|\||\s-\s)\s*(.+?)\s*$", re.M)
+# "### SVC-03 · P1 · title"; also "—", "–", "-", ":" or "|" as the separator.
+_SEP = r"\s*(?:·|—|–|\||:|-)\s*"
+BLOCK_RE = re.compile(rf"^###\s+({ID_PATTERN}){_SEP}(P[0-3]){_SEP}(.+?)\s*$", re.M)
+ID_HEADING_RE = re.compile(rf"^###\s+{ID_PATTERN}\b.*$", re.M)
 # "- evidence:", "- evidence (live, 18:24):", "* **Evidence:**", "- **fix-seam**:" ...
 FIELD_RE = re.compile(
     r"^[-*]\s+(?:\*\*)?([A-Za-z][A-Za-z -]*?)(?:\*\*)?(\s*\([^)\n]*\))?\s*(?:\*\*)?:(?:\*\*)?[ \t]*", re.M)
@@ -197,6 +262,16 @@ FIELD_RE = re.compile(
 
 def _key(raw: str) -> str | None:
     return _KEYS.get(" ".join(raw.lower().replace("-", " ").split()))
+
+
+def unparsed_headings(text: str) -> list[str]:
+    """`### <ID> ...` headings that are not a valid `### ID · Pn · title` block heading."""
+    good = {m.start() for m in BLOCK_RE.finditer(text)}
+    out = []
+    for m in ID_HEADING_RE.finditer(text):
+        if m.start() not in good:
+            out.append(f"line {text.count(chr(10), 0, m.start()) + 1}: {m.group(0).strip()}")
+    return out
 
 
 def parse_lane(text: str) -> list[dict]:
@@ -210,12 +285,12 @@ def parse_lane(text: str) -> list[dict]:
     for i, m in enumerate(heads):
         end = heads[i + 1].start() if i + 1 < len(heads) else len(text)
         body = text[m.end():end]
-        nxt = re.search(r"^##\s", body, re.M)
+        nxt = re.search(r"^##", body, re.M)
         if nxt:
             body = body[:nxt.start()]
         fields: dict[str, str] = {}
         marks = [(fm, _key(fm.group(1))) for fm in FIELD_RE.finditer(body)]
-        marks = [(fm, k) for fm, k in marks if k and not fm.group(0).startswith((" ", "\t"))]
+        marks = [(fm, k) for fm, k in marks if k]
         for j, (fm, k) in enumerate(marks):
             stop = marks[j + 1][0].start() if j + 1 < len(marks) else len(body)
             value = " ".join(((fm.group(2) or "").strip() + " " + body[fm.end():stop]).split())
@@ -226,13 +301,16 @@ def parse_lane(text: str) -> list[dict]:
             fields["evidence"] = (fields.get("evidence", "") + " " + merged).strip()
         status = fields.get("status", "")
         conf = re.search(r"confidence:\s*(high|med|low)", status, re.I)
+        adjudicated = ADJUDICATED in status.upper()
         out.append({
             "id": m.group(1), "sev": m.group(2), "title": m.group(3).strip(),
             "surface": fields.get("surface", ""), "evidence": fields.get("evidence", ""),
-            "root_cause": fields.get("root cause", ""), "fix_seam": fields.get("fix seam", ""),
-            "proof": fields.get("proof of done", ""),
+            "root_cause": fields.get("root cause", ""),
+            # A positive finding has nothing to fix; it still needs its evidence.
+            "fix_seam": fields.get("fix seam", "") or ("none (adjudicated not a bug)" if adjudicated else ""),
+            "proof": fields.get("proof of done", "") or ("re-run the evidence command" if adjudicated else ""),
             "confidence": conf.group(1).lower() if conf else "med",
-            "adjudicated": ADJUDICATED in status.upper(),
+            "adjudicated": adjudicated,
         })
     return out
 
@@ -251,10 +329,15 @@ def cmd_add(a: argparse.Namespace) -> int:
 
 def cmd_import_lane(a: argparse.Namespace) -> int:
     src = pathlib.Path(a.file)
-    blocks = parse_lane(src.read_text(encoding="utf-8"))
+    text = src.read_text(encoding="utf-8")
+    blocks = parse_lane(text)
     entries, _ = fold(read_events(a.path))
+    refused = 0
+    for bad in unparsed_headings(text):
+        print(f"refused {src.name} {bad}: not a '### ID · Pn · title' heading", file=sys.stderr)
+        refused += 1
     seen: set[str] = set()
-    added = skipped = refused = 0
+    added = skipped = 0
     for f in blocks:
         if f["id"] in seen:
             print(f"refused {f['id']}: duplicate id inside {src.name}", file=sys.stderr)
@@ -262,13 +345,17 @@ def cmd_import_lane(a: argparse.Namespace) -> int:
             continue
         seen.add(f["id"])
         if f["id"] in entries:
-            skipped += 1
+            e = entries[f["id"]]
+            changed = [k for k in AMENDABLE if _norm(f[k]) != _norm(e.get(k))]
+            if changed:
+                print(f"refused {f['id']}: the lane's {', '.join(changed)} differs from the ledger. Record the "
+                      f"change with `ledger.py amend {f['id']} --by <you> --{changed[0].replace('_', '-')} ...`",
+                      file=sys.stderr)
+                refused += 1
+            else:
+                skipped += 1
             continue
-        if f["adjudicated"]:
-            # A positive finding (the data is real, the path works) is recorded, not dropped.
-            f["fix_seam"] = f["fix_seam"] or "none (adjudicated not a bug)"
-            f["proof"] = f["proof"] or "re-run the evidence command"
-        missing = [k for k in ("evidence", "fix_seam", "proof") if not f[k]]
+        missing = [k for k in AMENDABLE if not f[k]]
         if missing:
             print(f"refused {f['id']}: missing {', '.join(missing)}", file=sys.stderr)
             refused += 1
@@ -282,14 +369,24 @@ def cmd_import_lane(a: argparse.Namespace) -> int:
             refused += 1
             continue
         if f["adjudicated"]:
-            _write(a.path, {"kind": "status", "id": f["id"], "status": ADJUDICATED, "by": a.by,
-                            "evidence": f["evidence"], "note": "imported as adjudicated", "task": None})
+            rc = _write(a.path, {"kind": "status", "id": f["id"], "status": ADJUDICATED, "by": a.by,
+                                 "evidence": f["evidence"], "note": "imported as adjudicated", "task": None})
+            refused += rc
+        entries, _ = fold(read_events(a.path))
         added += 1
-    print(f"{src.name}: {len(blocks)} blocks, added {added}, already present {skipped}, refused {refused}")
-    if not blocks:
+    print(f"{src.name}: {len(blocks)} blocks, added {added}, unchanged {skipped}, refused {refused}")
+    if not blocks and not refused:
         print(f"refused: {src.name} has no '### ID · Pn · title' blocks", file=sys.stderr)
         return 1
     return 1 if refused else 0
+
+
+def cmd_amend(a: argparse.Namespace) -> int:
+    rc = _write(a.path, {"kind": "amend", "id": a.id, "by": a.by, "evidence": a.evidence,
+                         "fix_seam": a.fix_seam, "proof": a.proof, "note": a.note})
+    if rc == 0:
+        print(f"{a.id}: amended")
+    return rc
 
 
 def cmd_status(a: argparse.Namespace) -> int:
@@ -319,13 +416,15 @@ def cmd_list(a: argparse.Namespace) -> int:
 
 def cmd_check(a: argparse.Namespace) -> int:
     lines = read_lines(a.path)
-    problems = chain_problems(lines)
+    problems = chain_problems(lines) + head_problems(a.path, lines)
     events = []
     for ln in lines:
         try:
-            events.append(json.loads(ln))
+            ev = json.loads(ln)
         except json.JSONDecodeError:
-            pass
+            continue
+        if isinstance(ev, dict):
+            events.append(ev)
     entries, replay = fold(events)
     problems += replay
     for p in problems:
@@ -379,6 +478,15 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--task")
     s.set_defaults(fn=cmd_status)
 
+    s = sub.add_parser("amend", help="append an update to an entry's evidence, fix seam or proof")
+    s.add_argument("id")
+    s.add_argument("--by", required=True)
+    s.add_argument("--evidence", default="")
+    s.add_argument("--fix-seam", dest="fix_seam", default="")
+    s.add_argument("--proof", default="")
+    s.add_argument("--note", default="")
+    s.set_defaults(fn=cmd_amend)
+
     s = sub.add_parser("import-lane")
     s.add_argument("file")
     s.add_argument("--by", required=True)
@@ -396,7 +504,11 @@ def main(argv: list[str] | None = None) -> int:
 
     a = p.parse_args(argv)
     a.path = ledger_path(a.ledger)
-    return a.fn(a)
+    try:
+        return a.fn(a)
+    except LedgerError as exc:
+        print(f"refused: {exc}", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":

@@ -98,8 +98,16 @@ class LedgerTest(unittest.TestCase):
     def test_missing_evidence_refused(self) -> None:
         self.assertEqual(1, self.add(evidence="  "))
 
+    def to(self, status: str, by: str = "coordinator", eid: str = "SVC-09", *extra: str) -> int:
+        return self.run_ledger("status", eid, status, "--by", by, *extra)
+
+    def walk_to_in_build(self, builder: str = "builder") -> None:
+        self.assertEqual(0, self.to("PLANNED"))
+        self.assertEqual(0, self.to("IN-BUILD", builder))
+
     def test_backward_move_refused(self) -> None:
         self.add(task="1A")
+        self.assertEqual(0, self.to("PLANNED"))
         self.assertEqual(0, self.run_ledger("status", "SVC-09", "IN-BUILD", "--by", "coordinator"))
         self.assertEqual(1, self.run_ledger("status", "SVC-09", "PLANNED", "--by", "coordinator"))
 
@@ -111,18 +119,19 @@ class LedgerTest(unittest.TestCase):
 
     def test_p2_may_build_without_task(self) -> None:
         self.add(sev="P2")
+        self.assertEqual(0, self.to("PLANNED"))
         self.assertEqual(0, self.run_ledger("status", "SVC-09", "IN-BUILD", "--by", "coordinator"))
 
     def test_proven_and_closed_need_evidence(self) -> None:
         self.add(task="1A")
-        self.run_ledger("status", "SVC-09", "IN-BUILD", "--by", "builder")
+        self.walk_to_in_build()
         self.assertEqual(1, self.run_ledger("status", "SVC-09", "PROVEN", "--by", "reader"))
         self.assertEqual(0, self.run_ledger("status", "SVC-09", "PROVEN", "--by", "reader", "--evidence", "row 7"))
         self.assertEqual(1, self.run_ledger("status", "SVC-09", "CLOSED", "--by", "grader"))
 
     def test_builder_or_prover_cannot_close(self) -> None:
         self.add(task="1A")
-        self.run_ledger("status", "SVC-09", "IN-BUILD", "--by", "builder")
+        self.walk_to_in_build()
         self.run_ledger("status", "SVC-09", "PROVEN", "--by", "reader", "--evidence", "row 7")
         self.assertEqual(1, self.run_ledger("status", "SVC-09", "CLOSED", "--by", "builder", "--evidence", "x"))
         self.assertEqual(1, self.run_ledger("status", "SVC-09", "CLOSED", "--by", "reader", "--evidence", "x"))
@@ -182,6 +191,98 @@ class LedgerTest(unittest.TestCase):
         self.assertIn("| SVC-09 | P1 | OPEN |", text)
 
 
+LANE_OK = LANE.split("### SVC-04")[0] + "## Side effects\nnone\n"
+
+
+class LedgerRegressionTest(LedgerTest):
+    """Grade findings on 3f492be. Each test failed before its fix."""
+
+    # 1. forward-only means next-only
+    def test_skip_to_closed_refused(self) -> None:
+        self.add(task="1A")
+        self.assertEqual(1, self.to("CLOSED", "builder", "SVC-09", "--evidence", "x"))
+        self.assertEqual(1, self.to("IN-BUILD"))
+        self.assertEqual(1, self.to("PROVEN", "reader", "SVC-09", "--evidence", "x"))
+
+    def test_p0_cannot_reach_proven_without_task(self) -> None:
+        self.add(sev="P0")
+        self.assertEqual(1, self.to("PROVEN", "reader", "SVC-09", "--evidence", "x"))
+        self.assertEqual(0, self.to("PLANNED"))
+        self.assertEqual(1, self.to("IN-BUILD"))
+        self.assertEqual(1, self.to("PROVEN", "reader", "SVC-09", "--evidence", "x"))
+        entries, _ = ledger.fold(ledger.read_events(self.path))
+        self.assertEqual("PLANNED", entries["SVC-09"]["status"])
+
+    def test_check_flags_historical_skip(self) -> None:
+        self.add(task="1A")
+        ledger.append(self.path, {"kind": "status", "id": "SVC-09", "status": "PROVEN", "by": "r",
+                                  "evidence": "row 1"})
+        self.assertEqual(1, self.run_ledger("check"))
+
+    # 3. heading separators and unparseable ID headings
+    def test_heading_separators_and_refusal(self) -> None:
+        lane = self.dir / "SEP_LANE.md"
+        body = "- status: OPEN · confidence: high\n- evidence: cmd -> out\n- fix seam: a.py\n- proof of done: seen\n"
+        lane.write_text(
+            "### SEP-01 — P0 — em dash separators\n" + body +
+            "### SEP-02: P1: colon separators\n" + body +
+            "### SEP-03 - P2 - hyphen separators\n" + body +
+            "### SEP-04 – P3 – en dash separators\n" + body +
+            "### SEP-05 ~~ P9 ~~ cannot parse\n" + body, encoding="utf-8")
+        rc = self.run_ledger("import-lane", str(lane), "--by", "k")
+        self.assertEqual(1, rc, "an unparseable ID heading must fail the import")
+        entries, _ = ledger.fold(ledger.read_events(self.path))
+        self.assertEqual({"SEP-01", "SEP-02", "SEP-03", "SEP-04"}, set(entries))
+        self.assertEqual("P0", entries["SEP-01"]["sev"])
+        self.assertEqual("colon separators", entries["SEP-02"]["title"])
+
+    # 8. truncation is detected through the head file
+    def test_truncation_detected(self) -> None:
+        self.add()
+        self.add(eid="SVC-10")
+        self.assertEqual(0, self.run_ledger("check"))
+        first = self.path.read_text(encoding="utf-8").splitlines()[0]
+        self.path.write_text(first + "\n", encoding="utf-8")
+        self.assertEqual(1, self.run_ledger("check"))
+
+    def test_missing_head_file_is_a_problem(self) -> None:
+        self.add()
+        pathlib.Path(str(self.path) + ".head").unlink()
+        self.assertEqual(1, self.run_ledger("check"))
+
+    # 9. a non-JSON line is a named refusal, not a traceback
+    def test_non_json_line_refused_by_every_command(self) -> None:
+        self.add()
+        with self.path.open("a", encoding="utf-8") as fh:
+            fh.write("not json at all\n")
+        for args in (("list",), ("status", "SVC-09", "PLANNED", "--by", "c"), ("render",), ("check",)):
+            with self.subTest(args=args):
+                self.assertEqual(1, self.run_ledger(*args))
+
+    # 10. changed evidence on re-import is refused; amend appends an update
+    def test_reimport_with_changed_evidence_needs_amend(self) -> None:
+        lane = self.dir / "SVC_SERVICE.md"
+        lane.write_text(LANE_OK, encoding="utf-8")
+        self.assertEqual(0, self.run_ledger("import-lane", str(lane), "--by", "k"))
+        lane.write_text(LANE_OK.replace("602 of 602", "700 of 700"), encoding="utf-8")
+        self.assertEqual(1, self.run_ledger("import-lane", str(lane), "--by", "k"))
+        new = [f for f in ledger.parse_lane(lane.read_text(encoding="utf-8")) if f["id"] == "SVC-01"][0]
+        self.assertEqual(1, self.run_ledger("amend", "SVC-01", "--by", "k"), "amend with no field is refused")
+        self.assertEqual(0, self.run_ledger("amend", "SVC-01", "--by", "k", "--evidence", new["evidence"],
+                                            "--note", "recount"))
+        entries, _ = ledger.fold(ledger.read_events(self.path))
+        self.assertIn("700 of 700", entries["SVC-01"]["evidence"])
+        self.assertEqual(0, self.run_ledger("import-lane", str(lane), "--by", "k"))
+        self.assertEqual(0, self.run_ledger("check"))
+
+    # 11. the builder cannot prove its own entry
+    def test_in_build_actor_cannot_prove(self) -> None:
+        self.add(task="1A")
+        self.walk_to_in_build("builder")
+        self.assertEqual(1, self.to("PROVEN", "builder", "SVC-09", "--evidence", "row 1"))
+        self.assertEqual(0, self.to("PROVEN", "reader", "SVC-09", "--evidence", "row 1"))
+
+
 class ScopeCheckTest(unittest.TestCase):
     def test_parse_and_scope(self) -> None:
         ball = ball_scope_check.find_ball(PLAN, "1B")
@@ -234,6 +335,76 @@ class ScopeCheckTest(unittest.TestCase):
             self.assertEqual(2, ball_scope_check.main(["0.1", "--plan", str(plan), "--repo", str(repo)]))
 
 
+WRAPPED_PLAN = """## Wave 1
+
+#### Ball 1A · Wrapped scope
+**Goal:** something.
+**Scope:** `runtime/loop_guard.py` (new), `runtime/sync_worker.py` (`run_forever` only),
+`api/health.py` (`health`), `tests/runtime/test_loop_guard.py` (new),
+`Makefile`
+
+**Interfaces:** `LoopGuard.run(fn)` returns `T | None`
+
+#### Ball 1B · Clash on a wrapped line
+**Scope:** `docs/notes.md`,
+`api/health.py`
+"""
+
+
+class ScopeRegressionTest(unittest.TestCase):
+    # 2. scope wraps over lines; 4. bare names count; symbols in parentheses do not
+    def test_wrapped_scope_is_read_whole(self) -> None:
+        ball = ball_scope_check.find_ball(WRAPPED_PLAN, "1A")
+        self.assertEqual(["runtime/loop_guard.py", "runtime/sync_worker.py", "api/health.py",
+                          "tests/runtime/test_loop_guard.py", "Makefile"],
+                         ball_scope_check.scope_paths(ball["lines"]))
+
+    def test_disjoint_sees_clash_on_wrapped_line(self) -> None:
+        problems = ball_scope_check.overlaps(WRAPPED_PLAN)
+        self.assertEqual(1, len(problems), problems)
+        self.assertIn("api/health.py", problems[0])
+
+    def test_template_worked_ball_scope_is_complete(self) -> None:
+        tpl = (HERE.parent / "references" / "plan_template.md").read_text(encoding="utf-8")
+        ball_md = tpl.split("## Worked example ball", 1)[1]
+        ball = ball_scope_check.find_ball(ball_md, "1A")
+        self.assertEqual(5, len(ball_scope_check.scope_paths(ball["lines"])))
+
+    # 2 + 6. a token that is not a relative path is refused by name
+    def test_unparseable_scope_tokens_refused(self) -> None:
+        for bad in ("/api/positions", "../outside.py", "C:/abs/file.py", "/etc/passwd", "a b.py"):
+            plan = f"#### Ball 9Z · bad\n**Scope:** `ok.py`, `{bad}`\n"
+            with self.subTest(token=bad):
+                with self.assertRaises(ball_scope_check.ScopeError) as cm:
+                    ball_scope_check.scope_paths(ball_scope_check.find_ball(plan, "9Z")["lines"])
+                self.assertIn(bad, str(cm.exception))
+
+    def test_unparseable_scope_exits_2(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            plan = pathlib.Path(raw, "PLAN.md")
+            plan.write_text("## Wave 1\n#### Ball 9Z · bad\n**Scope:** `../x.py`\n", encoding="utf-8")
+            self.assertEqual(2, ball_scope_check.main(["9Z", "--plan", str(plan)]))
+            self.assertEqual(2, ball_scope_check.main(["--disjoint", "--plan", str(plan)]))
+
+    # 5. one matcher for both modes
+    def test_disjoint_uses_the_ball_matcher(self) -> None:
+        plan = ("## Wave 1\n#### Ball 1A · a\n**Scope:** `runtime/loop.py`\n\n"
+                "#### Ball 1B · b\n**Scope:** `src/pkg/runtime/loop.py`\n")
+        self.assertTrue(ball_scope_check.in_scope("src/pkg/runtime/loop.py", ["runtime/loop.py"]))
+        self.assertEqual(1, len(ball_scope_check.overlaps(plan)))
+
+    # 7. a missing base is a clean error
+    def test_missing_base_exits_2(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            repo = pathlib.Path(raw)
+            subprocess.run(["git", "-c", "safe.directory=*", "-C", str(repo), "init", "-q"], check=True)
+            plan = pathlib.Path(raw + "-plan.md")
+            plan.write_text(PLAN, encoding="utf-8")
+            self.addCleanup(plan.unlink)
+            self.assertEqual(2, ball_scope_check.main(["1B", "--plan", str(plan), "--repo", str(repo),
+                                                       "--base", "no-such-base"]))
+
+
 class CmpTreesTest(unittest.TestCase):
     def test_crlf_is_equal_and_content_change_is_not(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
@@ -256,6 +427,50 @@ class CmpTreesTest(unittest.TestCase):
 
     def test_missing_dir_is_loud(self) -> None:
         self.assertEqual(2, cmp_trees.main(["no-such-dir-a", "no-such-dir-b"]))
+
+
+class CmpTreesRegressionTest(unittest.TestCase):
+    # 12. binary files are not CRLF-normalized; walk errors exit 2; dir symlinks reported
+    def test_binary_crlf_difference_is_a_change(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            a, b = pathlib.Path(raw, "a"), pathlib.Path(raw, "b")
+            a.mkdir()
+            b.mkdir()
+            (a / "blob.bin").write_bytes(b"\x00\x01\r\n\x02")
+            (b / "blob.bin").write_bytes(b"\x00\x01\n\x02")
+            self.assertEqual(1, cmp_trees.main([str(a), str(b)]))
+
+    def test_walk_error_exits_2_naming_path(self) -> None:
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as raw:
+            a, b = pathlib.Path(raw, "a"), pathlib.Path(raw, "b")
+            a.mkdir()
+            b.mkdir()
+            real_walk = os.walk
+
+            def failing_walk(top, *args, **kw):
+                onerror = kw.get("onerror")
+                if onerror and str(top) == str(a):
+                    onerror(PermissionError(13, "denied", str(a / "locked")))
+                yield from real_walk(top, *args, **kw)
+            with mock.patch.object(cmp_trees.os, "walk", failing_walk):
+                self.assertEqual(2, cmp_trees.main([str(a), str(b)]))
+
+    def test_dir_symlink_reported_not_silently_skipped(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            a, b, real = pathlib.Path(raw, "a"), pathlib.Path(raw, "b"), pathlib.Path(raw, "real")
+            a.mkdir()
+            b.mkdir()
+            real.mkdir()
+            (real / "f.txt").write_text("x", encoding="utf-8")
+            try:
+                os.symlink(real, a / "linked", target_is_directory=True)
+            except (OSError, NotImplementedError):
+                self.skipTest("cannot create a directory symlink here")
+            tree = cmp_trees.walk(str(a), cmp_trees.DEFAULT_SKIP)
+            self.assertIn("linked/", tree)
+            self.assertTrue(tree["linked/"].startswith("dirlink:"))
+            self.assertEqual(1, cmp_trees.main([str(a), str(b)]))
 
 
 if __name__ == "__main__":

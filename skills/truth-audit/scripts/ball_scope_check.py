@@ -3,17 +3,21 @@
   python ball_scope_check.py <ball-id> --plan PLAN.md [--repo .] [--base main] [--repo-key APP]
   python ball_scope_check.py --disjoint --plan PLAN.md
 
-Ball mode: read the ball's `**Scope:**` / `**Scope (KEY):**` lines, collect every backticked
-path, and compare them with what the branch changed (`git diff --name-only <base>...HEAD`, plus
-staged, unstaged and untracked files). A changed file is in scope when it equals a scope path,
-ends with "/<scope path>", or matches it as a glob. With --repo-key APP, only untagged Scope
-lines and lines tagged (APP) count, and a leading "APP/" is stripped from each path.
-Exit 0 = in scope, 1 = out of scope (files listed), 2 = the ball declares no scope.
-
-Disjoint mode: every ball inside one `## Wave` section must own different files. Prints each
-path two balls of the same wave both claim. Exit 0 = disjoint, 1 = overlap.
-
 A ball heading is any markdown heading that starts with "Ball <id>", e.g. `#### Ball 1A · title`.
+A ball's scope starts at a `**Scope:**` or `**Scope (KEY):**` field and runs until the next
+bold field (`**Interfaces:**`), a blank line, a heading or a checklist item, so a scope that
+wraps over several lines is read whole. Every backticked token in it is a path, except tokens
+inside parentheses, which qualify the path before them (`api/health.py` (`health` only)).
+A path must be relative and stay inside the repo: absolute paths, drive letters, `..`
+segments and tokens with spaces are refused by name (exit 2), never silently dropped.
+
+Ball mode: compare the scope with what the branch changed (`git diff --name-only <base>...HEAD`
+plus staged, unstaged and untracked files). With --repo-key APP, only untagged Scope fields and
+fields tagged (APP) count, and a leading "APP/" is stripped from each path.
+Exit 0 = in scope, 1 = out of scope (files listed), 2 = no scope, unparseable scope, or git error.
+
+Disjoint mode: balls inside one `## Wave` section must own different files. Uses the same
+matcher as ball mode, in both directions. Exit 0 = disjoint, 1 = overlap, 2 = unparseable scope.
 """
 from __future__ import annotations
 
@@ -28,11 +32,19 @@ HEADING_RE = re.compile(r"^(#{2,6})\s+(.*\S)\s*$")
 BALL_RE = re.compile(r"^Ball\s+([A-Za-z0-9][\w.-]*)")
 WAVE_RE = re.compile(r"^Wave\b", re.I)
 SCOPE_RE = re.compile(r"\*\*Scope(?:\s*\(([^)]*)\))?:\*\*(.*)")
-PATH_RE = re.compile(r"`([^`\s]+)`")
+FIELD_START_RE = re.compile(r"^\s*(?:[-*]\s+)?\*\*[^*]+:\*\*")
+CHECKBOX_RE = re.compile(r"^\s*[-*]\s+\[[ xX]\]")
+PAREN_RE = re.compile(r"\([^()]*\)")
+PATH_RE = re.compile(r"`([^`]+)`")
+DRIVE_RE = re.compile(r"^[A-Za-z]:")
+
+
+class ScopeError(ValueError):
+    """A scope token that is not a relative path inside the repo."""
 
 
 def parse_plan(plan: str) -> list[dict]:
-    """Return balls in order: {id, wave, lines}."""
+    """Return balls in order: {id, wave, level, lines}."""
     balls: list[dict] = []
     wave = ""
     current: dict | None = None
@@ -55,21 +67,50 @@ def parse_plan(plan: str) -> list[dict]:
     return balls
 
 
-def scope_paths(lines: list[str], repo_key: str | None = None) -> list[str]:
-    paths: list[str] = []
+def _scope_fields(lines: list[str]) -> list[tuple[str, str]]:
+    """(tag, text) for each Scope field, with its continuation lines joined."""
+    fields: list[list[str]] = []
+    open_field: list[str] | None = None
     for line in lines:
         s = SCOPE_RE.search(line)
-        if not s:
+        if s:
+            open_field = [(s.group(1) or "").strip(), s.group(2)]
+            fields.append(open_field)
             continue
-        tag = (s.group(1) or "").strip()
+        if open_field is None:
+            continue
+        if (not line.strip() or FIELD_START_RE.match(line) or CHECKBOX_RE.match(line)
+                or line.lstrip().startswith("#")):
+            open_field = None
+            continue
+        open_field[1] += " " + line.strip()
+    return [(tag, text) for tag, text in fields]
+
+
+def check_path(token: str) -> str:
+    p = token.strip().rstrip(",;")
+    if not p or any(c.isspace() for c in p):
+        raise ScopeError(f"scope token `{token}` is not a path (contains spaces)")
+    if p.startswith(("/", "\\")) or DRIVE_RE.match(p):
+        raise ScopeError(f"scope token `{token}` is absolute; scope paths are relative to the repo")
+    if ".." in re.split(r"[\\/]", p):
+        raise ScopeError(f"scope token `{token}` leaves the repo (`..`)")
+    return p.replace("\\", "/")
+
+
+def scope_paths(lines: list[str], repo_key: str | None = None) -> list[str]:
+    paths: list[str] = []
+    for tag, text in _scope_fields(lines):
         if repo_key and tag and tag != repo_key:
             continue
-        for p in PATH_RE.findall(s.group(2)):
-            p = p.rstrip(",;")
+        # Parenthesized tokens qualify the path before them; they are symbols, not files.
+        while PAREN_RE.search(text):
+            text = PAREN_RE.sub(" ", text)
+        for token in PATH_RE.findall(text):
+            p = check_path(token)
             if repo_key and p.startswith(repo_key + "/"):
                 p = p[len(repo_key) + 1:]
-            if "/" in p or "." in p or "*" in p:
-                paths.append(p)
+            paths.append(p)
     return paths
 
 
@@ -91,15 +132,18 @@ def changed_files(repo: str, base: str) -> set[str]:
     return files
 
 
+def matches(path: str, entry: str) -> bool:
+    """The one matcher: exact, suffix under a prefix dir, or glob (also under a prefix)."""
+    return (path == entry or path.endswith("/" + entry)
+            or fnmatch.fnmatch(path, entry) or fnmatch.fnmatch(path, "*/" + entry))
+
+
 def in_scope(path: str, scope: list[str]) -> bool:
-    for s in scope:
-        if path == s or path.endswith("/" + s) or fnmatch.fnmatch(path, s) or fnmatch.fnmatch(path, "*/" + s):
-            return True
-    return False
+    return any(matches(path, s) for s in scope)
 
 
 def overlaps(plan: str) -> list[str]:
-    """Paths two balls of the same wave both claim (exact or glob match)."""
+    """Paths two balls of the same wave both claim, by the same matcher ball mode uses."""
     problems = []
     by_wave: dict[str, list[dict]] = {}
     for b in parse_plan(plan):
@@ -110,7 +154,7 @@ def overlaps(plan: str) -> list[str]:
             for b_id, b_paths in scopes[i + 1:]:
                 for pa in a_paths:
                     for pb in b_paths:
-                        if pa == pb or fnmatch.fnmatch(pa, pb) or fnmatch.fnmatch(pb, pa):
+                        if matches(pa, pb) or matches(pb, pa):
                             problems.append(f"{wave or '(no wave)'}: balls {a_id} and {b_id} both own {pa}"
                                             + ("" if pa == pb else f" ~ {pb}"))
     return problems
@@ -127,20 +171,30 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     plan = pathlib.Path(a.plan).read_text(encoding="utf-8")
 
-    if a.disjoint:
-        problems = overlaps(plan)
-        for p in problems:
-            print("OVERLAP", p)
-        print(f"{len(parse_plan(plan))} balls, {len(problems)} overlaps")
-        return 1 if problems else 0
-
-    if not a.ball:
-        ap.error("give a ball id, or --disjoint")
-    scope = scope_paths(find_ball(plan, a.ball)["lines"], a.repo_key)
+    try:
+        if a.disjoint:
+            problems = overlaps(plan)
+            for p in problems:
+                print("OVERLAP", p)
+            print(f"{len(parse_plan(plan))} balls, {len(problems)} overlaps")
+            return 1 if problems else 0
+        if not a.ball:
+            ap.error("give a ball id, or --disjoint")
+        scope = scope_paths(find_ball(plan, a.ball)["lines"], a.repo_key)
+    except ScopeError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
     if not scope:
         print(f"ball {a.ball} declares no Scope (coordinator ball); nothing to check")
         return 2
-    out = sorted(f for f in changed_files(a.repo, a.base) if not in_scope(f, scope))
+    try:
+        changed = changed_files(a.repo, a.base)
+    except (subprocess.CalledProcessError, OSError) as exc:
+        detail = (getattr(exc, "stderr", "") or str(exc)).strip().splitlines()
+        print(f"error: git could not list changes against {a.base!r} in {a.repo}: "
+              f"{detail[0] if detail else exc}", file=sys.stderr)
+        return 2
+    out = sorted(f for f in changed if not in_scope(f, scope))
     for f in out:
         print("OUT OF SCOPE", f)
     print(f"ball {a.ball}: {len(scope)} scope paths, {len(out)} out-of-scope files")
