@@ -29,6 +29,7 @@ Shapes carry meaning so the guide never depends on color:
 [decision-bar](../skills/decision-bar/SKILL.md) ·
 [design-taste](../skills/design-taste/SKILL.md) ·
 [fleet-ladder](../skills/fleet-ladder/SKILL.md) ·
+[fleet-dispatch](../skills/fleet-dispatch/SKILL.md) ·
 [gpu-dispatch](../skills/gpu-dispatch/SKILL.md) ·
 [guided-steps](../skills/guided-steps/SKILL.md) ·
 [human-calibration](../skills/human-calibration/SKILL.md) ·

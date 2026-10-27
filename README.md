@@ -215,6 +215,7 @@ homework.
 | [decision-bar](skills/decision-bar/SKILL.md) | One bar for every decision: only taste, vision, or destructive risk reach the human. Everything else executes. |
 | [design-taste](skills/design-taste/SKILL.md) | Ship visual work that looks designed, not generated: design tokens first, screenshot critique, a hard accessibility gate. |
 | [fleet-ladder](skills/fleet-ladder/SKILL.md) | Resolve the live model ladder: probe what is up, fall back in order, fail loud when the ladder is exhausted. |
+| [fleet-dispatch](skills/fleet-dispatch/SKILL.md) | Answer a pack peer's dispatch request through the local fleet resolver and return the answer with its FLEET_RECEIPT; never pick a model by hand. |
 | [gpu-dispatch](skills/gpu-dispatch/SKILL.md) | One model per GPU, no spill to system RAM, keep the card warm through the loop, unload at loop end. |
 | [guided-steps](skills/guided-steps/SKILL.md) | Script the steps only a human can do (dashboards, credentials, secrets) stage by stage, capturing each value. |
 | [human-calibration](skills/human-calibration/SKILL.md) | Build a profile of how this human thinks, decides, and wants to be spoken to, then steer the whole build through it. |
