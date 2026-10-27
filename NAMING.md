@@ -96,6 +96,7 @@ the Lord lands it.
 | decision-bar | One bar every decision is measured against before it may reach the human. |
 | design-taste | The discipline of taste in visual work — gated and checked, not left to vibes. |
 | fleet-ladder | The model fleet resolved as a fallback ladder, climbed in order. |
+| fleet-dispatch | The peer-facing act of sending work down the fleet ladder and handing back the receipt. |
 | gpu-dispatch | The dispatch law for GPU work: one model per card, warm through the loop. |
 | guided-steps | Steps only a human can do, guided one stage at a time. |
 | human-calibration | Calibrating the build to the human it serves. (Was "yoke" — the old name survives as a trigger word.) |
