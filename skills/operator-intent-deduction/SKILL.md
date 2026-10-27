@@ -5,7 +5,6 @@ description: Use BEFORE handing the operator any build decision, dial, or "A or 
 license: MIT
 version: "1.0"
 preferred_mode: capability
-preferred_model: claude
 tags: [operator, intent, taste, deduction, autonomy, make-money, no-toys]
 ---
 
