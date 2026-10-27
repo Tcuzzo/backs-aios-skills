@@ -255,6 +255,33 @@ class PackContractTest(unittest.TestCase):
                 with self.subTest(path=str(path.relative_to(ROOT)), target=target):
                     self.assertTrue((path.parent / file_part).resolve().exists())
 
+    def test_no_hardcoded_model_in_skill_frontmatter(self) -> None:
+        # The pack is model-agnostic — model identity lives in fleet_ladder.yaml
+        # (deploy), never in skill frontmatter. A `preferred_model:` line in a
+        # skill pins an opinion that drifts the moment the operator changes the
+        # default. The harness owns that decision; the skill describes the
+        # procedure.
+        offenders: list[str] = []
+        for path in ROOT.rglob("skills/*/SKILL.md"):
+            if ".git" in path.parts:
+                continue
+            data = frontmatter(path)
+            for field in ("preferred_model", "model", "default_model"):
+                if field in data:
+                    offenders.append(f"{path.relative_to(ROOT)}: frontmatter carries `{field}:`")
+        self.assertEqual([], offenders, "hardcoded model fields found in skill frontmatter — model identity belongs to the fleet ladder, not the skill")
+
+    def test_skill_frontmatter_is_utf8_without_bom(self) -> None:
+        # A BOM at the start of a SKILL.md trips parsers and silently breaks
+        # YAML extraction; the file looks fine in editors but the harness sees
+        # garbage. Catch it before it lands.
+        for path in ROOT.rglob("skills/*/SKILL.md"):
+            if ".git" in path.parts:
+                continue
+            with self.subTest(path=str(path.relative_to(ROOT))):
+                head = path.read_bytes()[:3]
+                self.assertNotEqual(b"\xef\xbb\xbf", head, "SKILL.md starts with a UTF-8 BOM")
+
 
 if __name__ == "__main__":
     unittest.main()
