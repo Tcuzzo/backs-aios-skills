@@ -25,3 +25,16 @@ It is a repair skill, not a permission to hide a failing signal.
 If the error is intermittent, capture timing and a bounded reproduction rate;
 do not infer a cause from one green rerun. For code-location ambiguity, start
 with `building-with-backs` and its target check.
+
+## Evidence and independent review
+
+For shipped executables, packages, or requested runtime behavior, invoke
+[rea-investigation](../rea-investigation/SKILL.md) and the separately installed `reverse-engineer-anything` skill when its
+analysis is useful; use an existing Ghidra provider for supported native targets.
+Do not treat static evidence as live behavior or install a missing provider
+silently. For adopting an open-source capability, invoke [absorb](../absorb/SKILL.md).
+Use [fleet-ladder](../fleet-ladder/SKILL.md) to route by role and capability, never
+hardcoded model names. When a tribunal is required, follow
+[blind-tribunal](../blind-tribunal/SKILL.md): a fresh author-disjoint execution
+reviews an author-redacted frozen packet; model family is not session isolation.
+Report any missing resolver, reviewer, or evidence as a runtime gap.

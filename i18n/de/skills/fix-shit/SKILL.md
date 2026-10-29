@@ -25,3 +25,8 @@ It is a repair skill, not a permission to hide a failing signal.
 If the error is intermittent, capture timing and a bounded reproduction rate;
 do not infer a cause from one green rerun. For code-location ambiguity, start
 with `building-with-backs` and its target check.
+
+
+## Belege und unabhängige Prüfung
+
+Für ausgelieferte Programme, Pakete oder angefragtes Laufzeitverhalten nutze [rea-investigation](../rea-investigation/SKILL.md) und den separat installierten Skill `reverse-engineer-anything`, wenn dessen Analyse nützt; verwende bei unterstützten nativen Zielen einen vorhandenen Ghidra-Provider. Statische Befunde beweisen kein Live-Verhalten; installiere fehlende Provider nicht stillschweigend. Zur Übernahme von Open-Source-Fähigkeiten nutze [absorb](../absorb/SKILL.md). Wähle über [fleet-ladder](../fleet-ladder/SKILL.md) nach Rolle und Fähigkeit, ohne Modellnamen fest zu codieren. Wenn ein Tribunal nötig ist, befolge [blind-tribunal](../blind-tribunal/SKILL.md): Eine frische, vom Autor getrennte Ausführung prüft ein eingefrorenes, um Autorendaten bereinigtes Paket; die Modellfamilie beweist keine Sitzungsisolierung. Melde fehlende Resolver, Reviewer oder Belege als Laufzeitlücke.

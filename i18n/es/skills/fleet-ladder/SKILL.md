@@ -1,16 +1,13 @@
 ---
 name: "fleet-ladder"
-description: "Úsala antes de entregarle trabajo a un modelo — construir, calificar o un trabajo acotado de worker — o cuando un proveedor está caído y necesitas el orden de fallback. Resuelve la escalera VIVA de modelos: sondea lo que de verdad está arriba, elige el mejor disponible según un orden de fallback explícito, y falla con ruido cuando la escalera se agota. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability. Disparadores: flota, escalera, despacho, respaldo, modelo caído, proveedor caído, qué modelo, disponibilidad."
+description: "Guía de selección por rol y capacidad antes del despacho; el paquete público no incluye resolutor ni ejecutable Fleet. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability. Disparadores: flota, escalera, despacho, respaldo, modelo caído, proveedor caído, qué modelo, disponibilidad."
 license: "MIT"
 ---
 
 # Fleet Ladder
 **Effort:** light — un solo sondeo vivo, cacheado, del peldaño antes de cualquier despacho. Elimina: despachos a proveedores muertos, y nombres de modelo clavados en los puntos de llamada que se rompen el día que el modelo se retira.
 
-Nunca armes a mano una llamada a un proveedor, y nunca claves un nombre de modelo
-en un punto de llamada. Un solo resolutor es dueño de la pregunta "¿qué modelo
-hace este trabajo ahora mismo?" — y responde desde la verdad viva, no desde la
-opinión de un archivo de config.
+Esta skill describe la selección, pero no resuelve modelos por sí misma. El paquete público no incluye resolutor ni ejecutable Fleet; informa cualquier función ausente como una brecha de ejecución. No fijes identificadores de modelos en skills, prompts ni puntos de llamada.
 
 ## Cuándo ejecutarla
 
@@ -20,26 +17,9 @@ opinión de un archivo de config.
 
 ## Los pasos
 
-1. **Declara el rol, no el modelo.** Cada trabajo pide un rol — `builder`,
-   `grader` o `worker`. La escalera mapea roles a candidatos ordenados.
-   - `builder`: implementa y repara.
-   - `grader`: revisión independiente — estructuralmente nunca el mismo modelo que construyó.
-   - `worker`: trabajos acotados y bien especificados. Aquí los peldaños baratos están bien.
-2. **Lee la escalera desde la config.** Un archivo lista, por rol, los candidatos
-   en orden de fallback explícito: el más fuerte primero, bajando hasta tu cola
-   local de supervivencia (lo que puedas correr en tu propio hardware cuando todos
-   los proveedores de nube están a oscuras). Para cambiar o agregar un modelo,
-   edita ese archivo — nunca el código. Forma inicial:
-   [ladder.example.yaml](ladder.example.yaml) — cópialo y cambia los marcadores.
-3. **Sondea en vivo antes de confiar.** Un listado en la config es una afirmación,
-   no la verdad. Una entrada vieja lista modelos que están muertos; también omite
-   modelos que están vivos. Sondea al proveedor antes de despachar a un peldaño —
-   una llamada al endpoint de modelos o una petición de un token, p. ej.:
-   `curl -s "$PROVIDER_BASE_URL/v1/models" -H "Authorization: Bearer $API_KEY"`
-   (o la misma forma contra el endpoint de chat con `"max_tokens": 1`).
-   Cachea el resultado del sondeo por una ventana sensata — no martilles a los
-   proveedores re-sondeando en cada llamada. Refresca la caché solo cuando de
-   verdad necesites verdad fresca.
+1. **Declara rol y capacidades.** Lee la escalera configurada y su orden; elige un candidato apto según tarea, capacidad y disponibilidad. La configuración de ejemplo es solo una plantilla. Esta skill no clasifica ni filtra candidatos.
+2. **Comprueba la independencia.** La revisión usa una ejecución nueva y separada del autor, con un paquete congelado sin contexto del autor. Se permite el mismo modelo capaz o familia si el entorno configurado lo permite. Informa las restricciones adicionales como brechas del entorno.
+3. **Prueba inferencia real.** Una lista de modelos no demuestra inferencia, capacidad ni cuota. Ejecuta una inferencia real y acotada en el candidato; guarda el resultado en caché por un plazo razonable y respeta el backoff. Comprueba de nuevo la capacidad al cambiar de candidato.
 4. **Baja la escalera, con ruido.** Despacha al mejor peldaño DISPONIBLE. Ante una
    falla de transporte, reporta la falla con ruido, y luego prueba el siguiente
    peldaño. Nunca saltes en silencio — el registro debe mostrar qué peldaños
@@ -54,23 +34,14 @@ opinión de un archivo de config.
 
 ## Reglas duras — rompe una y la skill fracasó
 
-- **Ningún nombre de modelo en un punto de llamada.** El código pide un rol; la
-  escalera responde con un modelo. Haz grep de tu código buscando literales de
-  nombres de modelo — cada uno es un bug.
-- **El sondeo vivo le gana a la config.** Si el humano dice que un modelo existe y
-  la config lo niega, sondéalo. Comprobado-y-responde queda zanjado; una lista
-  vieja no.
-- **Builder y grader nunca se resuelven al mismo modelo** para el mismo cambio.
-  Si la escalera los colapsaría en un solo modelo, el grader toma el siguiente
-  peldaño independiente — o el trabajo falla con ruido.
-- **Sondeo acotado.** Los sondeos son baratos, van a caché y respetan el backoff.
-  Un loop apretado de reintentos contra un proveedor muerto está prohibido.
-- **Sin fallback silencioso.** Cada paso hacia abajo en la escalera es visible en
-  el log y en el reporte. Degradar calladito es como una ruta rota muere sin que
-  nadie lo note.
+- No fijes identificadores de modelos en skills, prompts ni llamadas; usa el rol y las capacidades de la configuración activa.
+- Una prueba de inferencia real y acotada es necesaria; un catálogo por sí solo no basta.
+- La revisión requiere una ejecución nueva separada del autor y un paquete congelado sin contexto del autor; otro modelo o familia no es requisito ni prueba de separación.
+- Registra fallos y alternativas; informa los resolutores o mecanismos de aislamiento ausentes como brechas del entorno.
+
 
 ## Combina bien con
 
-- [model-fusion](../model-fusion/SKILL.md) — el panel y el juez resuelven sus modelos a través de esta escalera.
-- [blind-tribunal](../blind-tribunal/SKILL.md) — los jurados vienen de familias distintas; la escalera elige los que están vivos.
-- [bounded-loops](../bounded-loops/SKILL.md) — cadencia de sondeo, backoff y kill-switches.
+- [blind-tribunal](../blind-tribunal/SKILL.md)
+- [bounded-loops](../bounded-loops/SKILL.md)
+- [model-fusion](../model-fusion/SKILL.md)
