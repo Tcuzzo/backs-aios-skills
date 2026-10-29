@@ -25,3 +25,8 @@ It is a repair skill, not a permission to hide a failing signal.
 If the error is intermittent, capture timing and a bounded reproduction rate;
 do not infer a cause from one green rerun. For code-location ambiguity, start
 with `building-with-backs` and its target check.
+
+
+## Evidencia y revisión independiente
+
+Para ejecutables distribuidos, paquetes o comportamiento de ejecución solicitado, invoca [rea-investigation](../rea-investigation/SKILL.md) y la skill `reverse-engineer-anything` instalada por separado cuando su análisis sea útil; usa un proveedor Ghidra existente para objetivos nativos compatibles. La evidencia estática no prueba comportamiento en vivo; no instales proveedores ausentes silenciosamente. Para adoptar capacidades de código abierto invoca [absorb](../absorb/SKILL.md). Usa [fleet-ladder](../fleet-ladder/SKILL.md) para elegir por rol y capacidad, sin fijar modelos. Cuando se requiera un tribunal, sigue [blind-tribunal](../blind-tribunal/SKILL.md): una ejecución nueva separada del autor revisa un paquete congelado sin datos del autor; la familia del modelo no demuestra aislamiento. Informa resolutores, revisores o pruebas ausentes como brechas del entorno.
