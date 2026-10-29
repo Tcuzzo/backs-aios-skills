@@ -1,16 +1,13 @@
 ---
 name: "fleet-ladder"
-description: "Use antes de entregar qualquer trabalho a um modelo — construir, avaliar ou um job limitado de worker — ou quando um provedor caiu e você precisa da ordem de fallback. Resolve a escada de modelos AO VIVO: sonda o que está de pé de verdade, escolhe o melhor disponível por uma ordem explícita de fallback, falha alto quando a escada esgota. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability, frota, escada, despacho, modelo fora, provedor fora, qual modelo, disponibilidade."
+description: "Guia de seleção por papel e capacidade antes do despacho; o pacote público não inclui resolvedor nem executável Fleet. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability, frota, escada, despacho, modelo fora, provedor fora, qual modelo, disponibilidade."
 license: "MIT"
 ---
 
 # Fleet Ladder
 **Effort:** light — uma sonda viva, com cache, do degrau antes de qualquer despacho. Remove: despachos para provedores mortos, e nomes de modelo hardcoded nos pontos de chamada que quebram no dia em que o modelo se aposenta.
 
-Nunca construa na mão uma chamada de provedor, e nunca hardcode um nome de modelo
-num ponto de chamada. Um resolvedor só é dono da pergunta "qual modelo faz este
-trabalho agora?" — e ele responde pela verdade ao vivo, não pela opinião de um
-arquivo de config.
+Esta skill descreve a seleção, mas não resolve modelos por conta própria. O pacote público não inclui resolvedor nem executável Fleet; registre qualquer função ausente como lacuna do runtime. Não fixe IDs de modelos em skills, prompts ou pontos de chamada.
 
 ## Quando rodar
 
@@ -20,26 +17,9 @@ arquivo de config.
 
 ## Os passos
 
-1. **Declare o papel, não o modelo.** Todo job pede um papel — `builder`,
-   `grader` ou `worker`. A escada mapeia papéis para candidatos ordenados de modelo.
-   - `builder`: implementa e conserta.
-   - `grader`: review independente — estruturalmente nunca o mesmo modelo que construiu.
-   - `worker`: jobs limitados e bem especificados. Degraus mais baratos servem aqui.
-2. **Leia a escada da config.** Um arquivo lista, por papel, os candidatos em ordem
-   explícita de fallback: o mais forte primeiro, descendo até a sua cauda local de
-   sobrevivência (o que você consegue rodar no seu próprio hardware quando todo
-   provedor de nuvem apaga). Para mudar ou adicionar um modelo, edite esse arquivo —
-   nunca o código. Formato inicial: [ladder.example.yaml](ladder.example.yaml) —
-   copie e troque os placeholders.
-3. **Sonde ao vivo antes de confiar.** Uma listagem de config é uma alegação, não
-   verdade. Uma entrada velha lista modelos mortos; e também omite modelos vivos.
-   Sonde o provedor antes de despachar para um degrau — uma chamada ao endpoint de
-   modelos ou uma requisição de um token, por exemplo:
-   `curl -s "$PROVIDER_BASE_URL/v1/models" -H "Authorization: Bearer $API_KEY"`
-   (ou o mesmo formato contra o endpoint de chat com `"max_tokens": 1`).
-   Cacheie o resultado da sonda por uma janela sensata — não martele provedores
-   re-sondando a cada chamada. Renove o cache só quando você realmente precisar de
-   verdade fresca.
+1. **Declare papel e capacidades.** Leia a escada configurada e sua ordem; escolha candidato adequado à tarefa, capacidade e disponibilidade. A configuração de exemplo é apenas um modelo. Esta skill não classifica nem filtra candidatos.
+2. **Verifique a independência.** A revisão usa uma execução nova e separada do autor, com um pacote congelado sem contexto do autor. O mesmo modelo capaz ou família é permitido se o runtime configurado permitir. Registre restrições adicionais como lacunas do runtime.
+3. **Teste inferência real.** Uma lista de modelos não prova inferência, capacidade ou cota. Execute inferência real e limitada no candidato; mantenha o resultado em cache por prazo razoável e respeite o backoff. Verifique novamente a capacidade no fallback.
 4. **Desça a escada, alto.** Despache para o melhor degrau DISPONÍVEL. Em falha de
    transporte, reporte a falha alto, depois tente o próximo degrau. Nunca pule em
    silêncio — o registro tem que mostrar quais degraus falharam e por quê.
@@ -52,21 +32,14 @@ arquivo de config.
 
 ## Regras duras — quebrou uma e a skill falhou
 
-- **Nenhum nome de modelo em ponto de chamada.** O código pede um papel; a escada
-  responde com um modelo. Dê grep no seu código por literais de nome de modelo —
-  cada um é um bug.
-- **A sonda ao vivo vence a config.** Se o humano diz que um modelo existe e a
-  config discorda, sonde. Checou-e-respondeu está resolvido; lista velha não está.
-- **Builder e grader nunca resolvem para o mesmo modelo** para a mesma mudança.
-  Se a escada os colapsaria num modelo só, o grader pega o próximo degrau
-  independente — ou o job falha alto.
-- **Sondagem limitada.** Sondas são baratas, cacheadas e com backoff. Loop
-  apertado de retry contra um provedor morto é proibido.
-- **Sem fallback silencioso.** Cada passo escada abaixo é visível no log e no
-  relatório. Degradar quieto é como uma rota quebrada morre sem ninguém notar.
+- Não fixe IDs de modelos em skills, prompts ou chamadas; use papel e capacidades da configuração ativa.
+- Uma inferência real e limitada é necessária; apenas o catálogo não basta.
+- A revisão exige execução nova separada do autor e pacote congelado sem contexto do autor; modelo ou família diferente não é requisito nem prova de separação.
+- Registre falhas e alternativas; reporte resolvedores ou isolamento ausentes como lacunas do runtime.
+
 
 ## Combina bem com
 
-- [model-fusion](../model-fusion/SKILL.md) — o painel e o juiz resolvem seus modelos por esta escada.
-- [blind-tribunal](../blind-tribunal/SKILL.md) — jurados vêm de famílias diferentes; a escada escolhe os vivos.
-- [bounded-loops](../bounded-loops/SKILL.md) — cadência de sonda, backoff e kill-switches.
+- [blind-tribunal](../blind-tribunal/SKILL.md)
+- [bounded-loops](../bounded-loops/SKILL.md)
+- [model-fusion](../model-fusion/SKILL.md)

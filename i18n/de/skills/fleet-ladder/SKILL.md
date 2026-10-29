@@ -1,16 +1,13 @@
 ---
 name: "fleet-ladder"
-description: "Nutze das, bevor Arbeit an ein Modell geht — Bauen, Bewerten oder ein begrenzter Worker-Job — oder wenn ein Provider down ist und du die Fallback-Reihenfolge brauchst. Löst die LIVE-Modellleiter auf: probe, was wirklich läuft, wähle das beste Verfügbare nach expliziter Fallback-Ordnung, scheitere laut, wenn die Leiter erschöpft ist. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability, Leiter, Modellleiter, Ausfall, welches Modell, Verfügbarkeit."
+description: "Leitfaden zur Auswahl nach Rolle und Fähigkeit vor einem Dispatch; das öffentliche Paket enthält keinen Resolver oder Fleet-Executable. Trigger words: fleet, ladder, dispatch, fallback, model down, provider down, which model, availability, Leiter, Modellleiter, Ausfall, welches Modell, Verfügbarkeit."
 license: "MIT"
 ---
 
 # Fleet Ladder
 **Effort:** light — eine gecachte Live-Probe der Sprosse vor jedem Dispatch. Beseitigt: Dispatches an tote Provider und an Call-Sites hartkodierte Modellnamen, die an dem Tag brechen, an dem das Modell in Rente geht.
 
-Bau nie einen Provider-Call von Hand, und codiere nie einen Modellnamen an einer
-Aufrufstelle hart. Ein Resolver besitzt die Frage „welches Modell macht diesen Job
-jetzt gerade?" — und er antwortet aus der Live-Wahrheit, nicht aus der Meinung
-einer Config-Datei.
+Diese Skill beschreibt Auswahlregeln, führt aber selbst keine Modellauflösung aus. Das öffentliche Paket enthält keinen Resolver und kein Fleet-Executable. Fehlt die nötige Laufzeitunterstützung, melde die Lücke. Modell-IDs gehören nicht fest in Skills, Prompts oder Aufrufstellen.
 
 ## Wann einsetzen
 
@@ -22,30 +19,9 @@ einer Config-Datei.
 
 ## Die Schritte
 
-1. **Deklariere die Rolle, nicht das Modell.** Jeder Job fragt nach einer Rolle —
-   `builder`, `grader` oder `worker`. Die Leiter mappt Rollen auf geordnete
-   Modellkandidaten.
-   - `builder`: implementiert und repariert.
-   - `grader`: unabhängiges Review — strukturell nie dasselbe Modell, das gebaut
-     hat.
-   - `worker`: begrenzte, gut spezifizierte Jobs. Billigere Sprossen sind hier
-     okay.
-2. **Lies die Leiter aus der Config.** Eine Datei listet pro Rolle die Kandidaten
-   in expliziter Fallback-Reihenfolge: das stärkste zuerst, runter bis zu deinem
-   lokalen Überlebensschwanz (was auch immer du auf eigener Hardware fahren
-   kannst, wenn jeder Cloud-Provider dunkel ist). Um ein Modell zu ändern oder
-   hinzuzufügen, editiere diese Datei — nie den Code. Starterform:
-   [ladder.example.yaml](ladder.example.yaml) — kopieren, Platzhalter tauschen.
-3. **Probe live, bevor du vertraust.** Ein Config-Eintrag ist eine Behauptung,
-   keine Wahrheit. Ein veralteter Eintrag listet Modelle, die tot sind; und er
-   verschweigt Modelle, die leben. Probe den Provider, bevor du auf eine Sprosse
-   dispatchst — ein Call auf den Models-Endpoint oder ein Ein-Token-Request,
-   z. B.:
-   `curl -s "$PROVIDER_BASE_URL/v1/models" -H "Authorization: Bearer $API_KEY"`
-   (oder dieselbe Form gegen den Chat-Endpoint mit `"max_tokens": 1`).
-   Cache das Probe-Ergebnis für ein vernünftiges Fenster — hämmere Provider nicht
-   durch Re-Proben bei jedem Call. Erneuere den Cache nur, wenn du wirklich
-   frische Wahrheit brauchst.
+1. **Rolle und Fähigkeiten festlegen.** Lies die konfigurierte Leiter und ihre Reihenfolge; wähle einen geeigneten Kandidaten nach Aufgabe, Fähigkeiten und Verfügbarkeit. Eine Beispielkonfiguration ist nur eine Vorlage. Die Skill selbst sortiert oder filtert keine Kandidaten.
+2. **Unabhängigkeit prüfen.** Die Begutachtung erfolgt in einer frischen, vom Autor getrennten Ausführung mit einem eingefrorenen, um Autorenkontext bereinigten Paket. Dasselbe geeignete Modell oder dieselbe Familie ist erlaubt, sofern die konfigurierte Laufzeit es zulässt. Zusätzliche Laufzeitbeschränkungen als Lücke benennen.
+3. **Live-Inferenz prüfen.** Eine Modellliste belegt weder Inferenz noch Fähigkeit oder Kontingent. Führe eine echte, begrenzte Inferenz auf dem vorgesehenen Kandidaten aus; cache das Ergebnis mit angemessenem Ablauf und Backoff. Bei Fallback die Fähigkeiten erneut prüfen.
 4. **Steig laut ab.** Dispatche auf die beste VERFÜGBARE Sprosse. Bei
    Transportfehler: den Fehler laut melden, dann die nächste Sprosse versuchen.
    Nie still überspringen — die Aufzeichnung muss zeigen, welche Sprossen
@@ -60,23 +36,14 @@ einer Config-Datei.
 
 ## Harte Regeln — eine gebrochen, und der Skill ist gescheitert
 
-- **Kein Modellname an einer Aufrufstelle.** Code fragt nach einer Rolle; die
-  Leiter antwortet mit einem Modell. Greppe deine Codebasis nach
-  Modellnamen-Literalen — jedes ist ein Bug.
-- **Die Live-Probe schlägt die Config.** Wenn der Mensch sagt, ein Modell
-  existiert, und die Config widerspricht: probe es. Geprüft-und-es-antwortet ist
-  erledigt; eine veraltete Liste nicht.
-- **Builder und Grader lösen nie auf dasselbe Modell auf** für dieselbe Änderung.
-  Würde die Leiter sie auf ein Modell kollabieren, nimmt der Grader die nächste
-  unabhängige Sprosse — oder der Job scheitert laut.
-- **Begrenztes Proben.** Probes sind billig, gecacht und Backoff-bewusst. Eine
-  enge Retry-Schleife gegen einen toten Provider ist verboten.
-- **Kein stiller Fallback.** Jeder Schritt die Leiter hinunter ist im Log und im
-  Bericht sichtbar. Leises Degradieren ist die Art, wie eine kaputte Route
-  unbemerkt stirbt.
+- Keine Modell-ID in Skills, Prompts oder Aufrufstellen fest codieren; Rolle und benötigte Fähigkeiten aus der Live-Konfiguration verwenden.
+- Nur reale, begrenzte Inferenz belegt die Erreichbarkeit; Kataloglisten allein genügen nicht.
+- Eine frische, vom Autor getrennte Review-Ausführung mit anonymisiertem, eingefrorenem Paket ist nötig; ein anderes Modell oder eine andere Familie ist keine Bedingung und kein Beweis der Trennung.
+- Fehler und Fallbacks sichtbar machen; fehlende Resolver oder Durchsetzung als Laufzeitlücke melden.
+
 
 ## Passt gut zu
 
-- [model-fusion](../model-fusion/SKILL.md) — Panel und Judge lösen ihre Modelle über diese Leiter auf.
-- [blind-tribunal](../blind-tribunal/SKILL.md) — Juroren kommen aus verschiedenen Familien; die Leiter wählt lebende.
-- [bounded-loops](../bounded-loops/SKILL.md) — Probe-Kadenz, Backoff und Kill-Switches.
+- [blind-tribunal](../blind-tribunal/SKILL.md)
+- [bounded-loops](../bounded-loops/SKILL.md)
+- [model-fusion](../model-fusion/SKILL.md)

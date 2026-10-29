@@ -25,3 +25,8 @@ It is a repair skill, not a permission to hide a failing signal.
 If the error is intermittent, capture timing and a bounded reproduction rate;
 do not infer a cause from one green rerun. For code-location ambiguity, start
 with `building-with-backs` and its target check.
+
+
+## साक्ष्य और स्वतंत्र समीक्षा
+
+प्रकाशित executables, packages या अनुरोधित runtime व्यवहार के लिए [rea-investigation](../rea-investigation/SKILL.md) और अलग से स्थापित `reverse-engineer-anything` skill का उपयोग करें जब उसका विश्लेषण उपयोगी हो; समर्थित native लक्ष्य पर मौजूदा Ghidra provider लें। Static साक्ष्य live व्यवहार का प्रमाण नहीं है; अनुपस्थित provider चुपचाप स्थापित न करें। Open-source क्षमता अपनाने के लिए [absorb](../absorb/SKILL.md) चलाएं। [fleet-ladder](../fleet-ladder/SKILL.md) से role और capability पर चयन करें, model नाम hardcode न करें। Tribunal आवश्यक हो तो [blind-tribunal](../blind-tribunal/SKILL.md) अपनाएं: नई, लेखक से अलग execution लेखक की जानकारी हटाए frozen packet की समीक्षा करे; model family session isolation का प्रमाण नहीं है। गायब resolver, reviewer या साक्ष्य को runtime gap बताएं।

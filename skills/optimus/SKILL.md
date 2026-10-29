@@ -83,4 +83,4 @@ builder seat, and HARD-gate realtime research seams (web + GitHub + Reddit + pap
 when the rung marks frontier / `research_seams`. Never hardcode model IDs; Patch owns yaml.
 Cite: `observe/SECURITY_OPERATOR_BUILDER_SEAT_ORDER_20260926.md`.
 
-Honor [fleet-ladder](../fleet-ladder/SKILL.md) thinking floor (medium FLOOR; ultra???medium; research???token_efficiency before MiniMax/5.6 heavy lift; no truncation hacks).
+Honor [fleet-ladder](../fleet-ladder/SKILL.md): use a medium-or-higher reasoning baseline where supported, research before heavy lifts, and do not truncate context.
