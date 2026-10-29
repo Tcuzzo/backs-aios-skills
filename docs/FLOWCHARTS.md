@@ -42,6 +42,7 @@ Shapes carry meaning so the guide never depends on color:
 [model-fusion](../skills/model-fusion/SKILL.md) ·
 [optimus](../skills/optimus/SKILL.md) ·
 [red-first](../skills/red-first/SKILL.md) ·
+[rea-investigation](../skills/rea-investigation/SKILL.md) ·
 [repair-loop](../skills/repair-loop/SKILL.md) ·
 [repo-map](../skills/repo-map/SKILL.md) ·
 [root-cause-first](../skills/root-cause-first/SKILL.md) ·
