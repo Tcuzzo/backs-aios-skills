@@ -21,6 +21,7 @@ Diese Skill beschreibt Auswahlregeln, führt aber selbst keine Modellauflösung 
 
 1. **Rolle und Fähigkeiten festlegen.** Lies die konfigurierte Leiter und ihre Reihenfolge; wähle einen geeigneten Kandidaten nach Aufgabe, Fähigkeiten und Verfügbarkeit. Eine Beispielkonfiguration ist nur eine Vorlage. Die Skill selbst sortiert oder filtert keine Kandidaten.
 2. **Unabhängigkeit prüfen.** Die Begutachtung erfolgt in einer frischen, vom Autor getrennten Ausführung mit einem eingefrorenen, um Autorenkontext bereinigten Paket. Einen geeigneten Prüfer über die konfigurierte Leiter wählen. Zusätzliche Laufzeitbeschränkungen als Lücke benennen.
+Jeder geeignete Prüfer kann diese Aufgabe in einer neuen, vom Autor getrennten Sitzung übernehmen; Modell und Anbieter sind keine Einschränkung.
 3. **Live-Inferenz prüfen.** Eine Modellliste belegt weder Inferenz noch Fähigkeit oder Kontingent. Führe eine echte, begrenzte Inferenz auf dem vorgesehenen Kandidaten aus; cache das Ergebnis mit angemessenem Ablauf und Backoff. Bei Fallback die Fähigkeiten erneut prüfen.
 4. **Steig laut ab.** Dispatche auf die beste VERFÜGBARE Sprosse. Bei
    Transportfehler: den Fehler laut melden, dann die nächste Sprosse versuchen.

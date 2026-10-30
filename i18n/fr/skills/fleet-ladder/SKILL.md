@@ -21,6 +21,7 @@ Ce skill décrit la sélection sans résoudre lui-même les modèles. Le pack pu
 
 1. **Déclare le rôle et les capacités.** Lis l’échelle configurée et son ordre ; choisis un candidat adapté à la tâche, aux capacités et à la disponibilité. La configuration d’exemple est seulement un modèle. Ce skill ne classe ni ne filtre les candidats.
 2. **Vérifie l’indépendance.** La revue utilise une nouvelle exécution séparée de l’auteur et un paquet figé sans contexte de l’auteur. Choisis un évaluateur capable via l’échelle configurée. Signale toute restriction supplémentaire comme une lacune du runtime.
+Tout évaluateur compétent peut effectuer la revue dans une nouvelle session séparée de celle de l’auteur ; le modèle et le fournisseur ne sont pas des restrictions.
 3. **Teste une inférence réelle.** Une liste de modèles ne prouve ni l’inférence, ni la capacité, ni le quota. Lance une inférence réelle et bornée sur le candidat ; mets le résultat en cache pour une durée raisonnable et respecte le backoff. Vérifie à nouveau la capacité lors d’un repli.
 4. **Descends, à voix haute.** Envoie au meilleur barreau DISPONIBLE. Sur une panne de
    transport, signale l'échec fort, puis tente le barreau suivant. Ne saute jamais en
