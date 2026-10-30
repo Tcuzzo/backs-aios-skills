@@ -33,13 +33,11 @@ prouvé est conservé.
 3. **Efface l'auteur.** Étiquette-les A et B, mélange l'ordre, retire chaque nom,
    chaque id de modèle et le raisonnement de l'auteur. Le juge ne voit que les
    artefacts et la grille.
-4. **Assieds un juge qui n'a écrit ni l'un ni l'autre** — un correcteur
-   non-constructeur, choisi en direct par capacité et disponibilité depuis la
-   matrice de barreaux configurée (l'exécution autrice qui a construit est
-   consignée comme provenance et disqualifiée ; un correcteur de même modèle,
-   même barreau ou même famille dans une session vierge et disjointe de
-   l'auteur est permis là où le runtime configuré le permet), ou un humain.
-   L'auteur ne note jamais son propre travail.
+4. **Assieds un juge qui n'a écrit ni l'un ni l'autre** — une session de revue
+   vierge et disjointe de l’auteur, choisie en direct selon la capacité et la
+   disponibilité dans la matrice configurée, ou un humain. L’exécution autrice
+   et toute session qui a hérité de la conversation ou du contexte de l’auteur
+   sont disqualifiées. L’auteur ne note jamais son propre travail.
 5. **Juge sur les mérites.** Note chaque axe de la grille. Cite une preuve tirée de
    l'artefact pour chaque note — un verdict sans preuve est une supposition.
 6. **GARDE seulement si le candidat franchit la barre ET bat strictement la base.**
@@ -68,8 +66,7 @@ prouvé est conservé.
   une mesure plus stable.
 - **Montage solo.** Un seul barreau configuré sous la main ? Une session
   vierge qui n'a jamais vu la conversation de l'auteur juge — et le rapport
-  enregistre la configuration à un seul barreau comme provenance
-  (« jugé même-famille-à-l'aveugle, pas inter-familles »), pas comme une
+  enregistre la configuration à un seul barreau comme provenance, pas comme une
   barrière affaiblie : la séparation, c'est la session, pas le nom du modèle.
 - **Pas de barre fiable ? Utilise la dominance.** Quand le niveau de la base est
   inconnu ou bruité, abandonne la barre absolue et ne garde que ce qui bat strictement

@@ -33,12 +33,11 @@ wird verworfen. Nur bewiesener Uplift landet.
    streiche jeden Namen, jede Modell-ID und die Begründung des Autors. Der Judge
    sieht nur die Artefakte und die Rubrik.
 4. **Setze einen Judge ein, der keins von beiden geschrieben hat** — eine
-   nicht-Builder-Prüfung, live nach Fähigkeit und Verfügbarkeit aus der
-   konfigurierten Sprossen-Matrix gewählt (die ausführende Session, die gebaut
-   hat, wird als Provenienz vermerkt und disqualified; ein Prüfer gleichen
-   Modells, gleicher Sprosse oder gleicher Familie in einer frischen,
-   autor-disjunkten Session ist zulässig, wo die konfigurierte Laufzeit es
-   erlaubt), oder einen Menschen. Der Autor bewertet nie die eigene Arbeit.
+   frische, autor-disjunkte Prüfsession, live nach Fähigkeit und Verfügbarkeit
+   aus der konfigurierten Sprossen-Matrix gewählt, oder einen Menschen. Die
+   ausführende Builder-Session und jede Session, die die Konversation oder den
+   Kontext des Autors geerbt hat, sind ausgeschlossen. Der Autor bewertet nie
+   die eigene Arbeit.
 5. **Urteile nach Substanz.** Punkte pro Rubrik-Achse. Belege jede Wertung mit
    Evidenz aus dem Artefakt — ein Urteil ohne Beleg ist geraten.
 6. **KEEP nur, wenn der Kandidat die Latte nimmt UND die Baseline strikt schlägt.**

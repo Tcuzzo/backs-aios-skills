@@ -85,9 +85,8 @@ The build, at a glance:
 8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — independent juror panel
    before the deploy, every juror chosen live by capability and availability
    from the configured rung matrix (the authoring execution that built is
-   recorded as provenance and excluded; a same model, rung, or family reviewer
-   in a fresh, author-disjoint session is permitted where the configured
-   runtime allows). Every juror finding becomes a new red test; re-convene
+   recorded as provenance and excluded; the reviewer uses a fresh
+   author-disjoint session). Every juror finding becomes a new red test; re-convene
    until every juror passes.
 
 ## The doctrine (what the build must satisfy)

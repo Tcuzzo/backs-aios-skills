@@ -60,27 +60,22 @@ capacidad realmente configurada, sin un orden de posición fijo.
 **Equipo solo.** Cuando solo hay un peldaño de modelo disponible, la independencia
 sigue viniendo de un contexto o sesión fresca y disjunta del autor que nunca vio
 la conversación del autor, con el sobre con la autoría borrada y los bytes de
-evidencia congelados. Un revisor del mismo modelo, peldaño o familia en una
-sesión fresca se permite donde el runtime configurado lo admita. El reporte
+evidencia congelados. Un revisor en una sesión fresca y disjunta del autor se permite donde el runtime configurado lo admita. El reporte
 registra la configuración de un solo peldaño como proveniencia, no como una
 puerta debilitada: la separación es la sesión, no el nombre del modelo.
 
 ## El constructor se declara, y la exclusión es estructural
 
-"Distinta familia que el constructor" era una regla que se pedía a los jurados recordar. En la
-propia prueba del tribunal, el asiento de seguridad del operador lo encabezó el mismo modelo que
-había construido el candidato, y nada lo registró ni lo excluyó: el autor calificó su propio
-trabajo durante dos rondas. Así que:
+Registra la sesión y su contexto en cada revisión. El nombre de un modelo no demuestra por sí solo la independencia de la revisión.
 
 - **Convoca con el constructor nombrado**, allí donde el corredor elegido lo admita
   realmente (p. ej. `--builder <identidad>` si el corredor conoce un flag así; si
   no, como campo de registro de carrera). El registro lleva la sesión autora del
-  constructor y `builder_family` como procedencia donde el corredor lo registre.
+  constructor como procedencia donde el corredor la registre.
   La ejecución autora que construyó al candidato y cualquier sesión que haya
   heredado la conversación o el contexto del constructor quedan descalificadas en
   voz alta, antes de despachar, en cada escalera. Una lente sin peldaño QUEDA EN
-  ESPERA — nunca vuelve al constructor. Procedencia, no un veto ciego por modelo,
-  peldaño, familia o proveedor.
+  ESPERA — nunca vuelve al constructor. La procedencia registra la ruta y no demuestra por sí sola el aislamiento.
 - **Pruébalo en la escalera viva, no en un test:** la tabla de rutas debe mostrar que los
   asientos cayeron en peldaños disponibles en vivo, y el reporte nombra el peldaño elegido por
   lente. Si no, la exclusión es decoración.
@@ -147,8 +142,7 @@ JSON estricto y parseable por máquina, un solo objeto, sin prosa:
    disponibilidad desde la matriz de peldaños configurada
    ([fleet-ladder](../fleet-ladder/SKILL.md) resuelve cuáles están vivos). La
    ejecución autora que construyó queda descalificada, igual que cualquier sesión
-   que haya heredado la conversación o el contexto del constructor; un revisor del
-   mismo modelo, peldaño o familia en una sesión fresca y disjunta del autor se
+   que haya heredado la conversación o el contexto del constructor; un revisor en una sesión fresca y disjunta del autor se
    permite donde el runtime configurado lo admita.
 5. Cada jurado además verifica, no solo lee: los tests nuevos pasan; la suite de
    regresión no está peor que la línea base; y un chequeo de verde falso — un test
@@ -177,8 +171,7 @@ La ronda 4 dejó dos lentes en espera con cero rechazos, y cada eslabón quedó 
 
 - El constructor nunca califica su propio trabajo: la ejecución autora que
   construyó y cualquier sesión que haya heredado la conversación o el contexto del
-  constructor quedan descalificadas; un revisor del mismo modelo, peldaño o
-  familia en una sesión fresca y disjunta del autor se permite donde el runtime
+  constructor quedan descalificadas; un revisor en una sesión fresca y disjunta del autor se permite donde el runtime
   configurado lo admita.
 - **Un refuse de jurado vale lo que vale el sobre.** Antes de escribir un test a
   partir de un hallazgo, verifica el hallazgo contra los archivos reales. Un
@@ -208,4 +201,4 @@ La ronda 4 dejó dos lentes en espera con cero rechazos, y cada eslabón quedó 
 - [blind-eval](../blind-eval/SKILL.md) — la puerta más ligera de conservar-o-revertir cuando la pregunta es de gusto, no de defectos.
 
 > Crédito de andamiaje: Matt Pocock, grill-me / grilling (mattpocock/skills, MIT).
-> El diseño del tribunal adversarial ciego entre familias es de BACKS AIOS.
+> El diseño del tribunal adversarial ciego es de BACKS AIOS.

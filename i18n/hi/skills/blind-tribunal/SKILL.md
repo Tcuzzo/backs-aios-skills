@@ -54,32 +54,26 @@ generalist → एक बड़ा भरोसेमंद generalist। local 
 
 **Solo rig.** जब सिर्फ एक configured rung उपलब्ध हो, तो भी independence एक
 ताज़ी, author-disjoint context या session से आती है जो author की बातचीत ने कभी
-नहीं देखी, साथ में redacted envelope और जमे हुए evidence bytes। same model, rung
-या family का reviewer एक ताज़ी session में इसलिए मान्य है जहाँ configured
+नहीं देखी, साथ में redacted envelope और जमे हुए evidence bytes। reviewer एक ताज़ी, author-disjoint session में मान्य है जहाँ configured
 runtime अनुमति देता है। Report एक-rung वाले config को provenience के रूप में
 दर्ज करता है, कमज़ोर हुए gate के रूप में नहीं — अलगाव session है, model का नाम नहीं।
 
 ## builder घोषित होता है, और बहिष्कार संरचनात्मक है
 
-"builder से अलग परिवार" एक नियम था जिसे jurors को याद रखना था। tribunal के अपने ही परीक्षण में operator-safety
-सीट का नेतृत्व उसी model ने किया जिसने candidate बनाया था, और किसी ने उसे दर्ज या बाहर नहीं किया: लेखक ने दो
-round तक अपना ही काम grade किया। इसलिए:
+हर review के लिए अलग session और उसका context दर्ज करें। केवल model का नाम review की स्वतंत्रता साबित नहीं करता।
 
 - **builder का नाम लेकर convene करें**, जहाँ चुना हुआ runner उसे वाक़ई सपोर्ट करता है
   (जैसे `--builder <पहचान>` अगर runner को ऐसा flag पता है; नहीं तो run-record field
-  के रूप में)। run record में builder की authoring session और `builder_family`
-  provenance के रूप में रहता है, जहाँ runner उन्हें दर्ज करता है। जिस execution ने
+  के रूप में)। run record में builder की authoring session provenance के रूप में रहती है,
+  जहाँ runner उसे दर्ज करता है। जिस execution ने
   candidate बनाया, और जिस session ने builder की बातचीत या context inherit किया,
   वो हर ladder पर, dispatch से पहले, ज़ोर से disqualify होती हैं। बिना rung वाला
-  lens HOLD पर जाता है — कभी builder पर नहीं लौटता। Provenance, model/rung/family/vendor का अंधा gate नहीं।
+  lens HOLD पर जाता है — कभी builder पर नहीं लौटता। Provenance route दर्ज करता है; session isolation अलग प्रमाण से साबित होता है।
 - **Session isolation साबित करें, नया model नाम नहीं:** पहली convene के बाद
   receipt दिखाए कि grader एक ताज़ी, author-disjoint session में चला जिसने
   builder की बातचीत नहीं देखी, और envelope author-redacted, जमा हुआ, और
-  किसी juror को paid करने से पहले receipt से bound था। `builder_family` (जहाँ
-  portable runner दर्ज करता है) provenance है, session identifier नहीं; same
-  model, rung या family का reviewer एक ताज़ी session में मान्य है जहाँ configured
-  runtime अनुमति देता है। इस matrix के नीचे बैठा हुआ कोई legacy model-name-only
-  या family-only identity filter एक unresolved runtime mismatch है — surface
+  किसी juror को paid करने से पहले receipt से bound था। Reviewer ताज़ी,
+  author-disjoint session में काम करता है। इस matrix के नीचे बैठा हुआ कोई legacy identity filter एक unresolved runtime mismatch है — surface
   करें, कभी silently fixed मत बताइए, कभी bypass मत करिए।
 
 ## Envelope
@@ -129,8 +123,7 @@ Jurors को repo, builder या बातचीत कभी नहीं द
 4. आठों jurors tier के हिसाब से बिठाओ, capability और availability के आधार पर live
    चुने गए, configured rung matrix से ([fleet-ladder](../fleet-ladder/SKILL.md)
    बताता है कौन live है)। जिस execution ने बनाया, और जिस session ने builder की
-   बातचीत या context inherit किया, वो disqualify हैं; same model, rung या family
-   का reviewer एक ताज़ी, author-disjoint session में इसलिए मान्य है जहाँ configured
+   बातचीत या context inherit किया, वो disqualify हैं; reviewer एक ताज़ी, author-disjoint session में इसलिए मान्य है जहाँ configured
    runtime अनुमति देता है।
 5. हर juror सिर्फ पढ़ता नहीं, verify भी करता है: नए tests pass होते हैं; regression
    suite baseline से बदतर नहीं; और एक fake-green जाँच — जिस test को fail होना
@@ -157,8 +150,7 @@ Round 4 में zero refusal के साथ दो lens hold पर रह �
 ## सख़्त नियम — कोई एक टूटा तो grade रद्द
 
 - Builder अपना काम खुद कभी grade नहीं करता: जिस execution ने बनाया, और जिस
-  session ने builder की बातचीत या context inherit किया, वो disqualify हैं; same
-  model, rung या family का reviewer एक ताज़ी, author-disjoint session में
+  session ने builder की बातचीत या context inherit किया, वो disqualify हैं; reviewer एक ताज़ी, author-disjoint session में
   इसलिए मान्य है जहाँ configured runtime अनुमति देता है।
 - **Juror का refuse उतना ही अच्छा है जितना envelope।** किसी finding से test लिखने
   से पहले, finding को असली files के आगे जाँचो। ऐसे code की finding जो envelope में

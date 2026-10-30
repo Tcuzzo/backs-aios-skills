@@ -90,7 +90,7 @@ the Lord lands it.
 | --- | --- |
 | absorb | The discipline of taking an external capability in and re-engineering it as native, instead of duplicating it. |
 | blind-eval | Evaluation with authorship hidden — the blindness is the mechanism. |
-| blind-tribunal | A panel of jurors, blind to the author, from different model families. Tribunal = panel plus verdict. |
+| blind-tribunal | A panel of jurors in fresh sessions, blind to the author. Tribunal = panel plus verdict. |
 | bounded-loops | The property enforced: every loop carries a bound — budget, checkpoint, kill-switch. |
 | clean-code-gauntlet | A gauntlet is a series of hard checks; clean code is what survives it. |
 | decision-bar | One bar every decision is measured against before it may reach the human. |

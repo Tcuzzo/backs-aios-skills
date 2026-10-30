@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # Blind Tribunal
-**Effort:** heavy — eight juror seats, one lens each, routed by tier to the cheapest sufficient model family and re-convened on fresh envelopes every round until unanimous; spend it on autonomous changes that land with no human review. Removes: rogue landings gated by nothing but the builder's own word.
+**Effort:** heavy — eight juror seats, one lens each, routed by tier to the cheapest sufficient route and re-convened on fresh envelopes every round until unanimous; spend it on autonomous changes that land with no human review. Removes: rogue landings gated by nothing but the builder's own word.
 
 The grading loop that lets the human walk away without the agent going rogue.
 A panel of jurors reviews the change blind, with authorship stripped. Every
@@ -22,13 +22,9 @@ Nothing lands on the builder's word alone.
 
 Eight jurors, one lens each. Each is picked live from a rung that carries the
 lens's required capability, with the authoring execution that built recorded as
-provenance on the run record (`--builder`, `builder_family`, where the runner
-the operator actually uses carries them) so the resolver — where one exists —
-can refuse that exact authoring execution out loud before any dispatch. The
-authoring execution and any session that inherited the builder's conversation
-or context are disqualified by recorded evidence, not by a model or family
-label; a fresh, author-disjoint session that carries none of that conversation
-may use the same model, rung, or family where the configured runtime permits.
+provenance on the run record where the runner supports it. Exclude the authoring
+execution and any session that inherited the builder's conversation or context.
+Each reviewer uses a fresh, author-disjoint session.
 A juror asked to check everything checks nothing well.
 
 | Juror | Lens id | Tier | The question it asks |
@@ -93,41 +89,19 @@ silently assert it fixed, never bypass.
 
 ## The builder is declared, and the exclusion is recorded session isolation
 
-"Different family than the builder" was a rule jurors were asked to remember. In the
-tribunal's own dogfood the operator-safety seat led with the very model that had built
-the candidate, and nothing recorded or excluded it — the author graded its own work for
-two rounds and every builder-is-not-grader claim on those rounds was unfounded. The
-fix is to require RECORDED session-context evidence; family or model-label flags alone
-cannot identify a session and the public pack ships none. What follows is therefore conditional on the runner the operator actually uses.
+Require RECORDED session-context evidence for every review. A model label alone
+cannot establish whether a reviewer inherited the authoring context, and the public
+pack does not fabricate this evidence. What follows depends on the runner actually used.
 
-- **Convene with the builder named**, where the runner actually supports it
-  (e.g. `--builder <identity>` where the runner knows such a flag; otherwise
-  as a run-record field where the runner records it). The run record carries
-  the authoring execution that built and `builder_family` for the resolver to
-  read where the runner supplies it. The authoring execution and any session
-  that inherited the builder's conversation or context are disqualified out
-  loud, before any dispatch, on every ladder. A lens left with no rung HOLDS —
-  it never falls back to the builder because the builder was the only seat
-  left. The exclusion is the recorded authoring execution that built; it is
-  recorded as provenance, not enforced as a blanket model, rung, family, or
-  vendor gate. Family/provider flags are not session identity and do not by
-  themselves exclude anyone.
-- **Same model, rung, or family in a fresh, author-disjoint session is allowed**
-  where the configured runtime permits. It is not categorically barred here.
-  What is barred: a juror inheriting the builder's conversation or context.
-- **Prove session isolation with recorded evidence, not a new model name:**
-  after the first convene with the builder declared, the receipt must show the
-  grader ran in a fresh, author-disjoint session that did not see the
-  builder's conversation or inherit its context — and the envelope was
-  author-redacted, frozen, and bound to the receipt before any juror was paid.
-  The proof is the recorded session-context evidence, not a model or family
-  label. `builder_family` (where the runner records it) is provenance, not a
-  session identifier; a same model, rung, or family reviewer in a fresh session
-  is permitted where the configured runtime allows. A legacy model-name-only or
-  family-only identity filter that sits underneath this matrix is an unresolved
-  runtime mismatch — surface it, never silently assert it fixed, never bypass.
-  The public pack ships no Fleet resolver; it does not enforce this exclusion
-  for you.
+- **Convene with the authoring execution recorded**, where the runner supports it.
+  Exclude that execution and any session that inherited its conversation or
+  context before dispatch. If a lens has no eligible rung, it holds and never
+  falls back to the authoring execution; report the gap.
+- **Prove session isolation with recorded evidence:** the receipt must show a
+  fresh author-disjoint reviewer session that did not inherit the author's
+  conversation or context, bound to the frozen, author-redacted envelope.
+  Record the actual model, provider, transport, host, and fallback reason.
+  The public pack ships no Fleet resolver; surface missing runtime support.
 
 ## The footer names the lens, a rejected rung keeps its words, and the receipt is exact
 
@@ -248,9 +222,8 @@ Strict machine-parseable JSON, one object, no prose:
 3. Build the envelope from the CURRENT files.
 4. Seat the eight jurors by tier, excluding the authoring execution that built
    ([fleet-ladder](../fleet-ladder/SKILL.md) resolves what is live; the authoring
-   execution that built is recorded as provenance and excluded, and a same model,
-   rung, or family reviewer in a fresh, author-disjoint session is permitted
-   where the configured runtime allows). Seat them in parallel; local cards
+   execution that built is recorded as provenance and excluded; reviewers use
+   fresh author-disjoint sessions). Seat them in parallel; local cards
    serialize themselves.
 5. The deep-state jurors also verify, not just read: the new tests pass; the regression
    suite is no worse than baseline; and a fake-green check — a test that SHOULD fail
@@ -268,9 +241,7 @@ Strict machine-parseable JSON, one object, no prose:
 
 - The builder never grades its own work: not the same authoring execution, not
   the same session that saw the builder's conversation, not the same context
-  that inherited it. A fresh, author-disjoint session is the floor — same model,
-  rung, or family in a fresh session is allowed where the configured runtime
-  permits.
+  that inherited it. A fresh, author-disjoint session is the floor.
 - The verifier, when one is fused with a primary, follows the configured runtime
   policy for author-execution continuity; a verifier that violates that policy,
   when one is set, holds instead.

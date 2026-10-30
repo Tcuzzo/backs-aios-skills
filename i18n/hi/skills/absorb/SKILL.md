@@ -49,7 +49,7 @@ Citation एक तथ्य है, सजावट नहीं।
    असली side-effect जाँचे — एक file, database की row, असली output। सिर्फ paid external
    API का transport mock करो, logic कभी नहीं।
 6. **Red-first दोबारा बनाओ।** Failing tests commit करो, फिर पूरे seam पर green होने तक
-   बनाओ। नतीजे को fresh, author-disjoint session में reviewer grade करता है; configured runtime की अनुमति हो तो वही model या family भी मान्य है — builder अपना काम
+   बनाओ। नतीजे को fresh, author-disjoint session में reviewer grade करता है; builder अपना काम
    खुद कभी grade नहीं करता।
 7. **Credit दो और दर्ज करो।** जहाँ capability अब रहती है वहीं scaffold credit लिखो:
    author, project, license, क्या उधार लिया (scaffold) और क्या आपका है

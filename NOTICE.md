@@ -22,7 +22,7 @@ pack's own (the re-engineering and composition).
   (2026-08-26):
   - `wayfinder` -> our wayfinder keeps his fog-of-war scaffold.
   - `grill-me` / `grilling` -> our blind-tribunal evolved the grill-me idea
-    into cross-family blind adversarial grading; the tribunal design is
+    into blind adversarial grading; the tribunal design is
     BACKS AIOS.
   - `diagnosing-bugs` -> scaffold for our root-cause-first.
   - `handoff` -> scaffold for our session-handoff.
@@ -121,13 +121,13 @@ Research cited inside the skills and plays:
   Processing Systems 37 (NeurIPS 2024)*.
   https://proceedings.neurips.cc/paper_files/paper/2024/hash/7f1f0218e45f5414c79c0679633e47bc-Abstract-Conference.html
   Establishes self-preference bias in LLM judges — why blind-tribunal hides
-  authorship and grades cross-family. The bias is established; its size
+  authorship and records reviewer-session provenance. The bias is established; its size
   varies by model, so this pack quotes no number for it.
 
 ## Prior art
 
 We found no existing public skill pack combining these three disciplines —
-agent-harness invariants, a blind multi-model cross-family tribunal, and
+agent-harness invariants, a blind author-disjoint tribunal, and
 red-first tamper-proof contract testing. Conceptually adjacent
 verification-first work includes abvx-agent-skills
 (markoblogo/abvx-agent-skills, MIT; verification-first gates, no tribunal)

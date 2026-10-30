@@ -99,8 +99,7 @@ Las puertas deterministas van primero; gasta un modelo solo donde razonar es la
 elegido en vivo por capacidad y disponibilidad desde la matriz de peldaños
 configurada; la ejecución autora que construyó queda descalificada, igual que
 cualquier sesión que haya heredado la conversación o el contexto del
-constructor, y un revisor del mismo modelo, peldaño o familia en una sesión
-fresca y disjunta del autor se permite donde el runtime configurado lo admita
+constructor. El revisor trabaja en una sesión fresca y disjunta del autor
 — el que construye nunca califica su propio trabajo. Juzga solo diseño
 y gusto: nombres, responsabilidades mezcladas, ancho de interfaz, y los seis
 olores — rigidez, fragilidad, inmovilidad, complejidad innecesaria, repetición

@@ -61,28 +61,23 @@ réellement configurée, sans ordre de position fixe.
 **Montage solo.** Quand un seul barreau de modèle est disponible, l'indépendance
 vient quand même d'un contexte ou d'une session vierge et disjointe de l'auteur
 qui n'a jamais vu la conversation de l'auteur, avec l'enveloppe expurgée et les
-octets de preuve gelés. Un correcteur de même modèle, même barreau ou même
-famille dans une session vierge est permis là où le runtime configuré le permet.
+octets de preuve gelés. Un correcteur dans une session vierge et disjointe de l’auteur est permis là où le runtime configuré le permet.
 Le rapport enregistre la configuration à un seul barreau comme provenance, pas
 comme une barrière affaiblie : la séparation, c'est la session, pas le nom du
 modèle.
 
 ## Le constructeur est déclaré, et l'exclusion est structurelle
 
-« Famille différente du constructeur » était une règle que les jurés devaient retenir. Lors du
-propre test du tribunal, le siège de sécurité opérateur était mené par le modèle même qui avait
-construit le candidat, et rien ne l'a enregistré ni exclu : l'auteur a noté son propre travail
-pendant deux tours. Donc :
+Consignez la session et son contexte pour chaque revue. Le nom du modèle ne prouve pas à lui seul l’indépendance de la revue.
 
 - **Convoquez avec le constructeur nommé**, là où le coureur choisi le supporte
   vraiment (p. ex. `--builder <identité>` si le coureur connaît un tel flag ;
   sinon, comme champ de registre de course). Le registre porte la session
-  autrice du constructeur et `builder_family` comme provenance là où le coureur
-  les enregistre. L'exécution autrice qui a construit le candidat, et toute
+  autrice du constructeur comme provenance là où le coureur l'enregistre. L'exécution autrice qui a construit le candidat, et toute
   session qui a hérité de la conversation ou du contexte du builder, sont
   disqualifiées à voix haute, avant tout envoi, sur chaque échelle. Une
   lentille sans barreau est EN ATTENTE — jamais renvoyée au constructeur.
-  Provenance, pas un veto aveugle par modèle, barreau, famille ou fournisseur.
+  La provenance décrit la route ; elle ne prouve pas l’isolation de la session.
 - **Prouvez-le sur l'échelle vivante, pas dans un test :** la table de routage doit montrer que
   les sièges sont tombés sur des barreaux disponibles en vie, et le rapport nomme le barreau
   choisi par lentille. Sinon l'exclusion est décorative.
@@ -149,8 +144,7 @@ Du JSON strict, lisible par une machine, un seul objet, pas de prose :
    disponibilité depuis la matrice de barreaux configurée
    ([fleet-ladder](../fleet-ladder/SKILL.md) résout ce qui est en vie). L'exécution
    autrice qui a construit est disqualifiée, de même que toute session qui a hérité
-   de la conversation ou du contexte du builder ; un correcteur de même modèle, même
-   barreau ou même famille dans une session vierge et disjointe de l'auteur est
+   de la conversation ou du contexte du builder ; un correcteur dans une session vierge et disjointe de l'auteur est
    permis là où le runtime configuré le permet.
 5. Chaque juré vérifie aussi, il ne se contente pas de lire : les nouveaux tests
    passent ; la suite de régression n'est pas pire que la base ; et un contrôle
@@ -179,8 +173,7 @@ Le tour 4 a mis deux lentilles en attente avec zéro refus, et chaque maillon é
 
 - Le builder ne note jamais son propre travail : l'exécution autrice qui a
   construit, et toute session qui a hérité de la conversation ou du contexte du
-  builder, sont disqualifiées ; un correcteur de même modèle, même barreau ou
-  même famille dans une session vierge et disjointe de l'auteur est permis là
+  builder, sont disqualifiées ; un correcteur dans une session vierge et disjointe de l'auteur est permis là
   où le runtime configuré le permet.
 - **Un refus de juré ne vaut que ce que vaut l'enveloppe.** Avant d'écrire un test à
   partir d'un constat, vérifie le constat contre les fichiers réels. Un constat sur du

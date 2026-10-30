@@ -61,9 +61,8 @@ hecho, no un adorno.
    constructor, elegido en vivo por capacidad y disponibilidad desde la matriz
    de peldaños configurada, evalúa el resultado; la ejecución autora que
    construyó queda descalificada, igual que cualquier sesión que haya heredado
-   la conversación o el contexto del constructor, y un evaluador del mismo
-   modelo, peldaño o familia en una sesión fresca y disjunta del autor se
-   permite donde el runtime configurado lo admita — el que construye nunca
+   la conversación o el contexto del constructor. El evaluador trabaja en una
+   sesión fresca y disjunta del autor — el que construye nunca
    califica su propio trabajo.
 7. **Cita y registra.** Escribe el crédito del andamiaje donde ahora vive la
    capacidad: autor, proyecto, licencia, qué es prestado (el andamiaje) y qué es

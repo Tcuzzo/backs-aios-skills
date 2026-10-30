@@ -53,9 +53,8 @@ Fähigkeiten.
   stammenden Prüfer, live nach Fähigkeit und Verfügbarkeit aus der
   konfigurierten Sprossen-Matrix gewählt; die ausführende Session, die gebaut
   hat, und jede Session, die die Konversation oder den Kontext des Builders
-  geerbt hat, sind disqualifiziert, und ein Prüfer gleichen Modells, gleicher
-  Sprosse oder gleicher Familie in einer frischen, autor-disjunkten Session ist
-  zulässig, wo die konfigurierte Laufzeit es erlaubt.
+  geerbt hat, sind disqualifiziert. Der Prüfer arbeitet in einer frischen,
+  autor-disjunkten Session.
 - **Grün allein ist kein Beweis.** Grün + unangetasteter Test + unabhängige
   Bewertung ist Beweis.
 - **Steht eine ganze Defekt-Klasse im Raum, bewache die Klasse.** Punkt-Tests

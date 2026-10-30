@@ -80,7 +80,7 @@ taste loop, एक नज़र में:
 ## Hard gates (इस play के अपने — skill के अपने hard rules इनके ऊपर लागू रहते हैं)
 
 - critic एक fresh, author-disjoint session में हो और fleet ladder से live resolve
-  हो; same model family की अनुमति है — कभी pinned model id नहीं (एक retire हो चुका pin पूरे critic को चुपचाप मार
+  हो; कभी pinned model id नहीं (एक retire हो चुका pin पूरे critic को चुपचाप मार
   देता है)।
 
 ## इनके साथ अच्छा चलता है

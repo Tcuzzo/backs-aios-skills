@@ -56,9 +56,8 @@ accesibilidad — dura.
    en vivo por capacidad y disponibilidad desde la matriz de peldaños
    configurada; la ejecución autora que construyó queda descalificada, igual
    que cualquier sesión que haya heredado la conversación o el contexto del
-   constructor, y un crítico del mismo modelo, peldaño o familia en una
-   sesión fresca y disjunta del autor se permite donde el runtime configurado
-   lo admita, puntuando ejes con nombre, nunca un puntaje holístico único.
+   constructor. El crítico trabaja en una sesión fresca y disjunta del autor,
+   puntuando ejes con nombre, nunca un puntaje holístico único.
    Resuelve el modelo crítico desde la config al momento de llamar — un id
    de modelo clavado se retira algún día y se lleva el loop entero con él.
 7. **Puntúa la rúbrica de gusto de 8 ejes.** 0–3 por eje, y cada eje debe puntuar

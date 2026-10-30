@@ -50,8 +50,7 @@ boucle de captures d'écran, et barre la sortie sur l'accessibilité — dur.
    affiche-le dans un navigateur headless aux largeurs mobile et desktop, capture, et
    fais noter par un modèle de vision — puis corrige, en passes séparées (critique →
    correction structurelle → audit → polish), jamais en un seul coup. Le critique est
-   un correcteur : un évaluateur dans une session vierge et disjointe de l'auteur ; le même modèle
-   ou la même famille est permis si le runtime configuré le permet. Il note des axes
+   un correcteur : un évaluateur dans une session vierge et disjointe de l'auteur . Il note des axes
    nommés, jamais une note holistique unique. Résous le modèle critique depuis la
    config au moment de l'appel — un id de modèle épinglé finit par prendre sa retraite
    et emporte toute la boucle avec lui.

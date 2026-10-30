@@ -32,8 +32,7 @@ das Gesetz wahr IST, und dann landet die Änderung.
    beweisen. Eine Suite, die genau die Naht mockt, die geändert wird, beweist
    nichts.
 3. **Der Builder benotet nie die eigene Arbeit.** Ein unabhängiger Grader — ein
-   Prüfer in einer frischen, vom Autor getrennten Sitzung; dasselbe Modell
-   oder dieselbe Familie ist zulässig, sofern die konfigurierte Laufzeit es erlaubt — muss sie durchwinken, bevor sie landet.
+   Prüfer in einer frischen, vom Autor getrennten Sitzung — muss sie durchwinken, bevor sie landet.
 4. **Kein Fake Green.** Behaupte nie eine Fähigkeit auf Basis einer Proxy-Probe,
    während die echte Oberfläche kaputt ist. Beweis passiert auf dem echten Pfad,
    nicht an einem Stellvertreter.

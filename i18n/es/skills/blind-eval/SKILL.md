@@ -30,13 +30,11 @@ aterriza la mejora probada.
 3. **Quita la autoría.** Etiquétalas A y B, baraja el orden, elimina cada nombre,
    id de modelo y el razonamiento del autor. El juez ve solo los artefactos y la
    rúbrica.
-4. **Sienta un juez que no escribió ninguna de las dos** — un revisor
-   no-constructor, elegido en vivo por capacidad y disponibilidad desde la matriz
-   de peldaños configurada (la ejecución autora que construyó se registra como
-   procedencia y queda descalificada; un revisor del mismo modelo, peldaño o
-   familia en una sesión fresca y disjunta del autor se permite donde el
-   runtime configurado lo admita), o un humano. El autor nunca califica su
-   propio trabajo.
+4. **Sienta un juez que no escribió ninguna de las dos** — una sesión de
+   revisión fresca y disjunta del autor, elegida en vivo por capacidad y
+   disponibilidad desde la matriz configurada, o un humano. La ejecución autora
+   y cualquier sesión que heredó la conversación o el contexto del autor quedan
+   descalificadas. El autor nunca califica su propio trabajo.
 5. **Juzga por méritos.** Puntúa cada eje de la rúbrica. Cita evidencia del
    artefacto para cada puntaje — un veredicto sin evidencia es una corazonada.
 6. **CONSERVA solo si la candidata supera la barra Y le gana estrictamente a la
@@ -65,9 +63,9 @@ aterriza la mejora probada.
   medida más estable.
 - **¿Equipo solo?** ¿Solo hay un peldaño configurado disponible? Una sesión
   ciega fresca que nunca vio la conversación del autor juzga — y el reporte
-  registra la configuración de un solo peldaño como proveniencia
-  ("juzgado a ciegas misma-familia, no entre familias"), no como una puerta
-  debilitada: la separación es la sesión, no el nombre del modelo.
+  registra la configuración de un solo peldaño como proveniencia, no como una
+  puerta debilitada: la separación
+  es la sesión, no el nombre del modelo.
 - **¿Sin barra confiable? Usa dominancia.** Cuando el nivel de la base es
   desconocido o ruidoso, suelta la barra absoluta y conserva solo lo que le gana
   estrictamente al campeón actual. Una regresión nunca puede dominar, así que no

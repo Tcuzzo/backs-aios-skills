@@ -98,7 +98,7 @@ próprio trabalho; o Lord é quem pousa.
 | --- | --- |
 | absorb | A disciplina de trazer uma capacidade externa para dentro e re-engenheirá-la como nativa, em vez de duplicá-la. |
 | blind-eval | Avaliação com a autoria escondida — a cegueira é o mecanismo. |
-| blind-tribunal | Um painel de jurados, cegos para o autor, de famílias de modelos diferentes. Tribunal = painel mais veredito. |
+| blind-tribunal | Um painel de jurados, cegos para o autor, em sessões novas independentes do autor. Tribunal = painel mais veredito. |
 | bounded-loops | A propriedade imposta: todo loop carrega um limite — orçamento, checkpoint, kill-switch. |
 | clean-code-gauntlet | Um gauntlet é uma sequência de provas duras; código limpo é o que sobrevive a ela. |
 | decision-bar | Uma régua contra a qual toda decisão é medida antes de poder chegar ao humano. |

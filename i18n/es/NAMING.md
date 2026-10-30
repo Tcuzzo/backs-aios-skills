@@ -97,7 +97,7 @@ nunca aterriza su propio trabajo; lo aterriza el Lord.
 | --- | --- |
 | absorb | La disciplina de tomar una capacidad externa y re-ingenierarla como nativa, en vez de duplicarla. |
 | blind-eval | Evaluación con la autoría oculta — la ceguera es el mecanismo. |
-| blind-tribunal | Un panel de jurados, ciegos al autor, de distintas familias de modelos. Tribunal = panel más veredicto. |
+| blind-tribunal | Un panel de jurados, ciegos al autor, en sesiones nuevas independientes del autor. Tribunal = panel más veredicto. |
 | bounded-loops | La propiedad que impone: cada bucle lleva un límite — presupuesto, checkpoint, kill-switch. |
 | clean-code-gauntlet | Un gauntlet es una serie de chequeos duros; el código limpio es lo que sobrevive. |
 | decision-bar | Una sola vara contra la que se mide cada decisión antes de poder llegar al humano. |

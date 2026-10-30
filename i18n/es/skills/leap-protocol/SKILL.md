@@ -91,7 +91,7 @@ El constructor jamás califica su propia bola. Antes de cualquier `1`:
    declarada de la bola, en el orden de campos declarado. Un empate o una
    regresión pierde. Ver [blind-eval](../blind-eval/SKILL.md).
 3. **Revisión ciega independiente** — al menos dos revisores en sesiones nuevas
-   y disjuntas del autor; se permite la misma familia de modelos. Cada uno ve el mismo hash de
+   y disjuntas del autor. Cada uno ve el mismo hash de
    candidato y el mismo sobre con autor censurado. Un revisor que RESPONDIÓ mal
    — basura, no-JSON, texto de negativa — es un rechazo válido: `-1`. Un revisor
    que NUNCA respondió (falla de transporte, inalcanzable) es `0`: espera y

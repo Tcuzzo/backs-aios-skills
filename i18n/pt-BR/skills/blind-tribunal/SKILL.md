@@ -59,27 +59,21 @@ uma ordem de posição fixa.
 **Rig solo.** Quando só um degrau de modelo está disponível, a independência
 mesmo assim vem de um contexto ou sessão nova e disjunta do autor que nunca viu
 a conversa do autor, junto com o envelope com autoria removida e os bytes de
-evidência congelados. Um avaliador de mesmo modelo, degrau ou família em uma
-sessão nova é permitido onde o runtime configurado o permita. O relatório
+evidência congelados. Um avaliador em uma sessão nova e disjunta do autor é permitido onde o runtime configurado o permita. O relatório
 registra a configuração de um único degrau como proveniência, não como um
 portão enfraquecido: a separação é a sessão, não o nome do modelo.
 
 ## O construtor é declarado, e a exclusão é estrutural
 
-"Família diferente do construtor" era uma regra que os jurados deviam lembrar. No próprio teste
-do tribunal, o assento de segurança do operador foi liderado pelo mesmo modelo que construiu o
-candidato, e nada o registrou ou excluiu: o autor avaliou o próprio trabalho por duas rodadas.
-Então:
+Registre a sessão e seu contexto em cada revisão. O nome do modelo, sozinho, não comprova a independência da revisão.
 
 - **Convoque com o construtor nomeado**, onde o runner escolhido realmente o
   suporte (p. ex. `--builder <identidade>` se o runner conhece tal flag; caso
   contrário, como campo de registro de execução). O registro carrega a sessão
-  autora da execução e `builder_family` como proveniência onde o runner os
-  registra. A execução autora que construiu o candidato, e qualquer sessão que
+  autora da execução como proveniência onde o runner a registra. A execução autora que construiu o candidato, e qualquer sessão que
   tenha herdado a conversa ou o contexto do builder, são desqualificadas em voz
   alta, antes de despachar, em cada escada. Uma lente sem degrau FICA EM ESPERA
-  — nunca volta ao construtor. Proveniência, não um veto cego por modelo, degrau,
-  família ou fornecedor.
+  — nunca volta ao construtor. A proveniência registra a rota; não comprova sozinha o isolamento da sessão.
 - **Prove na escada viva, não num teste:** a tabela de rotas deve mostrar que os assentos caíram
   em degraus disponíveis vivos, e o relatório nomeia o degrau escolhido por lente. Senão a
   exclusão é enfeite.
@@ -142,8 +136,7 @@ JSON estrito, parseável por máquina, um objeto, sem prosa:
    disponibilidade na matriz de degraus configurada
    ([fleet-ladder](../fleet-ladder/SKILL.md) resolve o que está vivo). A execução
    autora que construiu é desqualificada, e qualquer sessão que tenha herdado a
-   conversa ou o contexto do builder também; um avaliador de mesmo modelo, degrau
-   ou família em uma sessão nova e disjunta do autor é permitido onde o runtime
+   conversa ou o contexto do builder também; um avaliador em uma sessão nova e disjunta do autor é permitido onde o runtime
    configurado o permita.
 5. Cada jurado também verifica, não só lê: os testes novos passam; a suite de
    regressão não está pior que a baseline; e um cheque de falso verde — um teste que
@@ -171,8 +164,7 @@ A rodada 4 deixou duas lentes em espera com zero recusas, e cada elo ficou no re
 
 - O builder nunca avalia o próprio trabalho: a execução autora que construiu, e
   qualquer sessão que tenha herdado a conversa ou o contexto do builder, são
-  desqualificadas; um avaliador de mesmo modelo, degrau ou família em uma
-  sessão nova e disjunta do autor é permitido onde o runtime configurado o
+  desqualificadas; um avaliador em uma sessão nova e disjunta do autor é permitido onde o runtime configurado o
   permita.
 - **Um refuse de jurado vale o que o envelope vale.** Antes de escrever um teste a
   partir de um achado, verifique o achado contra os arquivos de verdade. Achado

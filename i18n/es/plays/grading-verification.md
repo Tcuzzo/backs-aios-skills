@@ -54,11 +54,8 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
    costura que cambió.
 3. Calificación del autor disjunta — entrega el trabajo a un evaluador cuya
    ejecución autora no construyó el cambio, elegido en vivo por capacidad y
-   disponibilidad desde la matriz de peldaños configurada; un evaluador del
-   mismo modelo, peldaño o familia en una sesión fresca y disjunta del autor se
-   permite donde el runtime configurado lo admita. La calificación con la misma
-   ejecución autora está descalificada de raíz; la auto-preferencia entre
-   ejecuciones de la misma familia infla las tasas de victoria de forma medible.
+   disponibilidad desde la matriz de peldaños configurada; la revisión ocurre en una sesión fresca y disjunta del autor. La calificación con la misma
+   ejecución autora está descalificada de raíz.
 4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — para cambios con
    consecuencias, convoca jurados sobre un sobre con el autor tachado. Cada hallazgo
    se vuelve un nuevo test rojo, y el tribunal se vuelve a convocar hasta que todos

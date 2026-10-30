@@ -54,9 +54,8 @@ Screenshot-Schleife, und gate auf Barrierefreiheit — hart.
    Prüfer, live nach Fähigkeit und Verfügbarkeit aus der konfigurierten
    Sprossen-Matrix gewählt; die ausführende Session, die gebaut hat, und jede
    Session, die die Konversation oder den Kontext des Builders geerbt hat, sind
-   disqualifiziert, und ein Kritiker gleichen Modells, gleicher Sprosse oder
-   gleicher Familie in einer frischen, autor-disjunkten Session ist zulässig,
-   wo die konfigurierte Laufzeit es erlaubt, mit benannten Achsen, nie einem
+   disqualifiziert; der Kritiker bewertet in einer frischen, autor-disjunkten
+   Session mit benannten Achsen, nie einem
    holistischen Gesamtscore. Löse das Kritiker-Modell zur Laufzeit aus der Config
    auf — eine gepinnte Modell-ID geht irgendwann in Rente und reißt die ganze
    Schleife mit.

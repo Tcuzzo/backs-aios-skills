@@ -99,10 +99,8 @@ Deterministische Gates zuerst; gib ein Modell nur dort aus, wo Denken das einzig
 Werkzeug ist. Der Reviewer ist ein nicht-vom-Builder stammender Prüfer, live
 nach Fähigkeit und Verfügbarkeit aus der konfigurierten Sprossen-Matrix
 gewählt; die ausführende Session, die gebaut hat, und jede Session, die die
-Konversation oder den Kontext des Builders geerbt hat, sind disqualifiziert,
-und ein Prüfer gleichen Modells, gleicher Sprosse oder gleicher Familie in
-einer frischen, autor-disjunkten Session ist zulässig, wo die konfigurierte
-Laufzeit es erlaubt — der Builder bewertet nie die eigene Arbeit. Er beurteilt
+Konversation oder den Kontext des Builders geerbt hat, sind disqualifiziert; die Bewertung erfolgt in einer frischen, autor-disjunkten Session — der
+Builder bewertet nie die eigene Arbeit. Er beurteilt
 nur Design und Geschmack: Benennung, vermischte Belange, Interface-Breite und
 die sechs Gerüche — Starrheit, Zerbrechlichkeit, Unbeweglichkeit, unnötige
 Komplexität, unnötige Wiederholung, Undurchsichtigkeit. Die Arithmetik haben

@@ -54,12 +54,9 @@ Die Benotung auf einen Blick:
    auf der Seam lief, die er geändert hat.
 3. Autor-disjunkte Benotung — gib die Arbeit einem Prüfer, dessen ausführende
    Session die Änderung NICHT gebaut hat, live nach Fähigkeit und Verfügbarkeit
-   aus der konfigurierten Sprossen-Matrix gewählt; ein Prüfer gleichen Modells,
-   gleicher Sprosse oder gleicher Familie in einer frischen, autor-disjunkten
-   Session ist zulässig, wo die konfigurierte Laufzeit es erlaubt. Die
+   aus der konfigurierten Sprossen-Matrix gewählt; die Prüfung erfolgt in einer frischen, autor-disjunkten Session. Die
    Selbst-Benotung durch die ausführende Session, die gebaut hat, ist von
-   Grund auf disqualifiziert; die messbare Eigen-Bevorzugung zwischen
-   Ausführungen derselben Familie bläht die Gewinnraten auf.
+   Grund auf disqualifiziert.
 4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — berufe bei folgenschweren
    Änderungen Juroren über ein Envelope ohne Autorenangabe ein. Jeder Fund wird
    ein neuer roter Test, und das Tribunal tagt neu, bis alle Juroren die Änderung

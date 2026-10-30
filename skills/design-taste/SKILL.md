@@ -45,8 +45,7 @@ give the builder eyes with a screenshot loop, and gate on accessibility — hard
    polish), never one-shot. The critic is a grader: pick a non-builder grader,
    chosen live by capability and availability from the configured rung matrix
    (the authoring execution that built is recorded as provenance and
-   disqualified; a same model, rung, or family reviewer in a fresh,
-   author-disjoint session is permitted where the configured runtime allows),
+   disqualified; the reviewer uses a fresh author-disjoint session),
    scoring named axes, never one holistic score. Resolve the
    critic model from config at call time — a pinned model id retires someday and
    takes the whole loop down with it.

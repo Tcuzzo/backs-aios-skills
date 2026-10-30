@@ -51,8 +51,7 @@ capacidades nuevas.
   constructor, elegido en vivo por capacidad y disponibilidad desde la matriz
   de peldaños configurada; la ejecución autora que construyó queda descalificada,
   igual que cualquier sesión que haya heredado la conversación o el contexto del
-  constructor, y un evaluador del mismo modelo, peldaño o familia en una sesión
-  fresca y disjunta del autor se permite donde el runtime configurado lo admita.
+  constructor. El evaluador trabaja en una sesión fresca y disjunta del autor.
 - **El verde solo no es prueba.** Verde + test intacto + calificación
   independiente es prueba.
 - **Cuando hay una clase entera de defecto en juego, guarda la clase.** Los

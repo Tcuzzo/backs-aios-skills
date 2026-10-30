@@ -16,8 +16,7 @@ not implement a step this file describes, that gap is named as a runtime gap —
 never silently bypassed and never papered over with a disclaimer.
 
 Capability and availability drive the choice. Model identity records
-provenance, never authority. Family / vendor / model name do NOT identify a
-session — only an author-disjoint execution does.
+provenance, never authority. Review independence comes from the execution session.
 
 ## When to run it
 
@@ -64,11 +63,8 @@ name a gap; do not invent.
    this requirement down with the dispatch record. This step is **task work
    the agent does**, not filtering this skill performs.
 
-   Independence is **fresh, author-disjoint EXECUTION**, not a different
-   model, family, vendor, seat, or rung. The same capable model in two fresh,
-   author-disjoint sessions is permitted by this skill's desired policy;
-   the configured runtime may impose additional restrictions — surface any
-   such restriction as a named runtime gap, never a silent block.
+   Independence requires **fresh, author-disjoint execution**. Surface any
+   runtime restriction that blocks a capable reviewer as a named gap.
 
    Task matrix (capability-fit scores) and essence (per-model know-thyself)
    entries are **inputs the agent plans to consult as available**, not new
@@ -83,8 +79,8 @@ name a gap; do not invent.
 
    The grader's required review is **fresh, author-disjoint execution over
    an author-redacted frozen packet**, with **no author chat / reasoning**
-   in the packet. Provenance on the builder run (model name, family,
-   transport) records who built; it does NOT identify the grader's session.
+   in the packet. Record the authoring execution and the actual model, provider,
+   transport, host, and fallback reason; identify the review session separately.
 2. **Read the role order from the configured ladder (only authority).**
    Load `fleet_ladder.yaml` (+ `gpu_nodes.yaml` for local survival / organ
    placement). Each role lists candidates **in the order the live config
@@ -150,20 +146,12 @@ a step, that gap is named here, not silently asserted fixed.
   packet contains no author chat / reasoning, and the grader's session has
   not inherited the builder's conversation or context. That is the
   separation this skill requires.
-- `provider`, `family`, `model`, `vendor`, `rung`, and any `builder_family`
-  value are **provenance on the builder run record**. They describe a model,
-  not a session, and they do NOT identify the grader's session. The live
-  runtime may record them; nothing in this skill treats them as isolation
-  guarantees.
-- The same capable model in a fresh, author-disjoint session is permitted
-  by this skill's desired policy. Whether the configured runtime allows
-  that on a given host is a **separate runtime question** — surface it
-  with the runner name and its flags; do not assert either way here.
+- Record the actual model, provider, transport, host, fallback reason, and
+  authoring execution as provenance. Record the reviewer session separately.
 - Current native Fleet public build flags are
   `--role --repo --spec --timeout --refresh --dry-run`. The public pack
   ships no Fleet executable. Earlier drafts of this skill mentioned
-  hypothetical flags such as `--builder`, `--author-family`, or
-  `--capability`; those are **not** part of the deployed CLI surface and
+  hypothetical flags such as `--builder` or `--capability`; those are **not** part of the deployed CLI surface and
   must not be pasted into a runner or claimed as enforcement. The only
   CLI surface to honor is the list above.
 
@@ -270,13 +258,9 @@ boards **GAP** for Patch. Never hardcode model IDs; resolve seats via ladder +
   capability or quota.
 - **The grader's separation is fresh, author-disjoint execution over an
   author-redacted frozen packet.** Provenance on the builder run record
-  (model name, family, transport — `builder_family` where the runner
-  carries it) records who built; it does NOT identify the grader's
-  session. The same capable model in a fresh, author-disjoint session is
-  permitted by this skill's desired policy. Any additional restriction
-  the configured runtime imposes is a separate runtime gap; surface it
-  by name, do not silently impose it and do not claim this skill imposes
-  it.
+  records the authoring execution and the actual route; the reviewer session
+  is recorded separately. Surface any runtime restriction that blocks a capable
+  reviewer as a gap; do not silently impose it.
 - **Frontier research-before-lift is HARD** when the rung marks frontier / research_seams.
 - **Bounded probing.** Probes are cheap, cached, and backoff-aware.
 - **No silent fallback.** Every step down the ladder is visible in the log and
@@ -293,8 +277,7 @@ boards **GAP** for Patch. Never hardcode model IDs; resolve seats via ladder +
   preference; the agent reads it.
 - **No fabricated runner flags.** This skill names current native Fleet public
   build flags (`--role --repo --spec --timeout --refresh --dry-run`) and no
-  others as deployed surface. Hypothetical flags such as `--builder`,
-  `--author-family`, or `--capability` are not part of the deployed CLI
+  others as deployed surface. Hypothetical flags such as `--builder` or `--capability` are not part of the deployed CLI
   surface and must not be pasted into a runner or claimed as enforcement.
 - **No resolver / no Fleet executable in this skill.** The public pack ships
   none. Where a step needs runtime support that is not in the public pack,
@@ -314,10 +297,9 @@ skill:
 - **Identity-based exclusion on top of author-disjoint review is a separate
   runtime gap.** This skill's desired policy is fresh, author-disjoint
   execution over an author-redacted frozen packet. Any additional rule
-  the host applies (e.g. refuse same-family or same-vendor dispatch) is a
-  configured-runtime decision, not a property of this skill. If it sits
-  in front of the resolver, it does so as a separate deploy-side ticket
-  owned by Patch; this skill does not enforce it.
+  the host applies based on model identity is a runtime defect. Repair
+  that restriction through the owning runtime seam; do not exclude a
+  capable reviewer because of its model or provider.
 - **An old role-prescription block on a previous version of this skill (named
   seat assignments, dated operator rulings pinned to a moment in time) is
   retired here.** If the deploy ladder still reads from those legacy blocks,

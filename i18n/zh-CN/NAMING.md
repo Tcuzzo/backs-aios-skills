@@ -85,7 +85,7 @@
 | --- | --- |
 | absorb | 把外部能力吸收进来、重新工程化为原生的纪律，而不是造重复轮子。 |
 | blind-eval | 隐去作者信息的评估——"盲"就是机制本身。 |
-| blind-tribunal | 一组对作者盲、来自不同模型家族的陪审员。Tribunal = 陪审团加判决。 |
+| blind-tribunal | 一组对作者盲、来自全新的作者无关会话的陪审员。Tribunal = 陪审团加判决。 |
 | bounded-loops | 它强制执行的性质：每个循环都带边界——预算、检查点、急停开关。 |
 | clean-code-gauntlet | gauntlet 是一连串硬核考验；clean code 是活着通过的东西。 |
 | decision-bar | 每个决定在到人面前之前都要过的同一条杠。 |

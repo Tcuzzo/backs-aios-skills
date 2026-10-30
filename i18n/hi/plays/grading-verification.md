@@ -36,7 +36,7 @@ Adversarial grading का play। इसका एक ही विश्वा
 | LANDING GATE -- the two-sided proof:       |
 | fail-to-pass AND pass-to-pass, run         |
 | hermetically . no fake-green tell .        |
-| builder + grader families differ . the     |
+| author and reviewer sessions differ . the  |
 | grader re-ran the checks itself            |
 +--------------------------------------------+
 ```
@@ -51,9 +51,8 @@ Adversarial grading का play। इसका एक ही विश्वा
 2. [sniper-testing](../skills/sniper-testing/SKILL.md) — जाँचें कि builder ने
    iteration के दौरान scoped tests चलाए और जिस seam को बदला, उस पर कोई mock
    theater नहीं किया।
-3. Independent grade — grader seat को live capability और availability के आधार पर configured rung matrix से चुनें (जिस seat ने build किया वह provenance के रूप में दर्ज है और बाहर रखी गई है; एक fresh, author-disjoint session में same-seat या same-rung reviewer की अनुमति है जहाँ configured runtime अनुमति देता है)।
-   Builder की identity provenance है, authority नहीं; model family होना
-   automatic independence guarantee नहीं है।
+3. Independent grade — reviewer को live capability और availability के आधार पर configured rung matrix से चुनें। एक fresh, author-disjoint session में समीक्षा करें; authoring session और उसकी बातचीत या reasoning reviewer को न दें। वास्तविक route को provenance में दर्ज करें।
+   Builder की identity provenance है, authority नहीं; स्वतंत्रता session से साबित होती है।
 4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — गंभीर नतीजों वाले बदलावों
    के लिए, jurors को एक author-redacted envelope पर बिठाएँ। हर finding एक नया red
    test बनती है, और tribunal तब तक दोबारा बैठता है जब तक सारे jurors pass न दें।
@@ -85,7 +84,7 @@ the judge" section में है — उसे पूरा लागू क�
 
 ## Hard gates — कोई एक भी टूटा तो play fail
 
-- Builder और grader एक ही seat / context से हैं, या builder ने अपना ही काम grade किया है।
+- Grader authoring session में है, author का context विरासत में मिला है, या author ने अपना ही काम grade किया है।
 - fix से पहले suite को red दिखाया नहीं जा सकता।
 - graded run में fail-to-pass या pass-to-pass गायब है।
 - ऊपर वाला कोई भी fake-green सुराग़ मौजूद है।

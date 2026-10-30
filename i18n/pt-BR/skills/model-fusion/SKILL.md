@@ -73,8 +73,7 @@ que foi pedido de fato.
 ## Regras duras — quebrou uma, a skill falhou
 
 - **Quem constrói nunca julga.** O juiz não escreveu candidato nenhum. O
-  avaliador final trabalha em uma sessão nova e disjunta do autor. O mesmo
-  modelo ou família é permitido onde o runtime configurado o permita.
+  avaliador final trabalha em uma sessão nova e disjunta do autor.
 - **Nenhum nome de modelo hardcoded** em nenhum ponto de chamada. Papéis no
   código, modelos na config.
 - **Nenhuma degradação silenciosa.** Rascunhistas descartados, fallback do

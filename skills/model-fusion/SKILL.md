@@ -66,8 +66,7 @@ The winner is then checked against what was actually asked.
 - **Builder never judges.** The judge authored no candidate. The final grader is
   chosen live by capability and availability from the configured rung matrix;
   the authoring execution that built is recorded as provenance and
-  disqualified, and a same model, rung, or family grader in a fresh,
-  author-disjoint session is permitted where the configured runtime allows.
+  disqualified; the reviewer runs in a fresh author-disjoint session.
 - **No hardcoded model names** at any call site. Roles in code, models in config.
 - **No silent degradation.** Dropped drafters, judge fallback, gate failures, and
   exhaustion are all loud. An ungradeable result never passes by default.
