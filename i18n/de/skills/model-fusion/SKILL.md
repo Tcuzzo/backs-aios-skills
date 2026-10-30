@@ -74,7 +74,6 @@ geprüft, was wirklich gefragt war.
 
 - **Der Builder richtet nie.** Der Richter hat keinen Kandidaten geschrieben.
   Der finale Bewerter arbeitet in einer frischen, vom Autor getrennten Sitzung.
-  Dasselbe Modell oder dieselbe Familie ist zulässig, sofern die konfigurierte Laufzeit es erlaubt.
 - **Keine hartcodierten Modellnamen** an irgendeiner Aufrufstelle. Rollen im
   Code, Modelle in der Config.
 - **Kein stummes Degradieren.** Gefallene Entwerfer, Richter-Fallback,

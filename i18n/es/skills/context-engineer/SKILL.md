@@ -76,5 +76,5 @@ Include exact commands or artifact paths only when they are current, safe, and n
 Source: BACKS AIOS package 0.8.5+codex.20260908213642. Paths and SHA-256 values are recorded
 in frontmatter. The full operative method above is adapted from the audited
 package, not loaded from a user cache. Canonical-law adaptation removes obsolete
-host restriction, hook/rearm, forced-route, or same-family landing defaults where
+host restriction, hook/rearm, or forced-route defaults where
 present. Existing native IDs and files are preserved.

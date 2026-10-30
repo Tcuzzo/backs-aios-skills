@@ -104,7 +104,7 @@ travail ; c'est le Lord qui l'atterrit.
 | --- | --- |
 | absorb | La discipline de prendre une capacité externe et de la ré-ingénierer en natif, au lieu de la dupliquer. |
 | blind-eval | Une évaluation à auteur masqué — l'aveuglement est le mécanisme. |
-| blind-tribunal | Un panel de jurés, aveugles à l'auteur, de familles de modèles différentes. Tribunal = panel plus verdict. |
+| blind-tribunal | Un panel de jurés, aveugles à l'auteur, dans des sessions nouvelles indépendantes de l’auteur. Tribunal = panel plus verdict. |
 | bounded-loops | La propriété imposée : chaque boucle porte une borne — budget, checkpoint, kill-switch. |
 | clean-code-gauntlet | Un gauntlet est une série d'épreuves dures ; le code propre est ce qui y survit. |
 | decision-bar | Une seule barre contre laquelle chaque décision est mesurée avant d'avoir le droit d'atteindre l'humain. |

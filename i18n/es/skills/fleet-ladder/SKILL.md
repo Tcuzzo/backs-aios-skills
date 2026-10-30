@@ -18,7 +18,7 @@ Esta skill describe la selección, pero no resuelve modelos por sí misma. El pa
 ## Los pasos
 
 1. **Declara rol y capacidades.** Lee la escalera configurada y su orden; elige un candidato apto según tarea, capacidad y disponibilidad. La configuración de ejemplo es solo una plantilla. Esta skill no clasifica ni filtra candidatos.
-2. **Comprueba la independencia.** La revisión usa una ejecución nueva y separada del autor, con un paquete congelado sin contexto del autor. Se permite el mismo modelo capaz o familia si el entorno configurado lo permite. Informa las restricciones adicionales como brechas del entorno.
+2. **Comprueba la independencia.** La revisión usa una ejecución nueva y separada del autor, con un paquete congelado sin contexto del autor. Elige un revisor capaz mediante la escalera configurada. Informa las restricciones adicionales como brechas del entorno.
 3. **Prueba inferencia real.** Una lista de modelos no demuestra inferencia, capacidad ni cuota. Ejecuta una inferencia real y acotada en el candidato; guarda el resultado en caché por un plazo razonable y respeta el backoff. Comprueba de nuevo la capacidad al cambiar de candidato.
 4. **Baja la escalera, con ruido.** Despacha al mejor peldaño DISPONIBLE. Ante una
    falla de transporte, reporta la falla con ruido, y luego prueba el siguiente
@@ -36,7 +36,7 @@ Esta skill describe la selección, pero no resuelve modelos por sí misma. El pa
 
 - No fijes identificadores de modelos en skills, prompts ni llamadas; usa el rol y las capacidades de la configuración activa.
 - Una prueba de inferencia real y acotada es necesaria; un catálogo por sí solo no basta.
-- La revisión requiere una ejecución nueva separada del autor y un paquete congelado sin contexto del autor; otro modelo o familia no es requisito ni prueba de separación.
+- La revisión requiere una ejecución nueva separada del autor y un paquete congelado sin contexto del autor.
 - Registra fallos y alternativas; informa los resolutores o mecanismos de aislamiento ausentes como brechas del entorno.
 
 

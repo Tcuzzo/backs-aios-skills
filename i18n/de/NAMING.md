@@ -99,7 +99,7 @@ Lane landet nie ihre eigene Arbeit; der Lord landet sie.
 | --- | --- |
 | absorb | Die Disziplin, eine externe Fähigkeit aufzunehmen und nativ neu zu bauen, statt sie zu duplizieren. |
 | blind-eval | Bewertung mit verdeckter Autorschaft — die Blindheit ist der Mechanismus. |
-| blind-tribunal | Ein Panel von Juroren, blind gegenüber dem Autor, aus verschiedenen Modellfamilien. Tribunal = Panel plus Urteil. |
+| blind-tribunal | Ein Panel von Juroren, blind gegenüber dem Autor, aus neuen, vom Autor getrennten Sitzungen. Tribunal = Panel plus Urteil. |
 | bounded-loops | Die erzwungene Eigenschaft: Jede Schleife trägt eine Grenze — Budget, Checkpoint, Kill-Switch. |
 | clean-code-gauntlet | Ein Gauntlet ist ein Spießrutenlauf harter Checks; sauberer Code ist, was ihn überlebt. |
 | decision-bar | Eine Latte, an der jede Entscheidung gemessen wird, bevor sie den Menschen erreichen darf. |

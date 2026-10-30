@@ -59,9 +59,8 @@ passend zu deinem Harness neu und zitiere das Gerüst. Das Zitat ist ein Fakt, k
    Fähigkeit und Verfügbarkeit aus der konfigurierten Sprossen-Matrix gewählt,
    bewertet das Ergebnis; die ausführende Session, die gebaut hat, und jede
    Session, die die Konversation oder den Kontext des Builders geerbt hat, sind
-   disqualifiziert, und ein Prüfer gleichen Modells, gleicher Sprosse oder
-   gleicher Familie in einer frischen, autor-disjunkten Session ist zulässig,
-   wo die konfigurierte Laufzeit es erlaubt — der Builder bewertet nie die
+   disqualifiziert; die Bewertung erfolgt in einer frischen, autor-disjunkten
+   Session — der Builder bewertet nie die
    eigene Arbeit.
 7. **Zitiere und dokumentiere.** Schreib den Gerüst-Credit dorthin, wo die Fähigkeit
    jetzt lebt: Autor, Projekt, Lizenz, was geliehen ist (das Gerüst) und was deins

@@ -103,7 +103,7 @@ The loop, at a glance:
     [blind-tribunal](../skills/blind-tribunal/SKILL.md) — an author-redacted envelope
     goes to a grader seat that did not build the change, chosen live by capability
     and availability from the rung matrix. The builder's identity, when the
-    portable runner records it as provenance (`--builder`, `builder_family`),
+    portable runner records it as provenance,
     is carried only as far as that runner carries it — provenance, not a
     universal capability gate. The seat that built never grades its own work.
     Every juror finding becomes a new red test; re-convene until every juror
@@ -118,10 +118,9 @@ The loop, at a glance:
 
 - The failing test was committed before the build and is untouched — the grader
   verifies the test-file diff is empty.
-- The grader seat did not build the change: the rung matrix resolves a
-  capability-sufficient non-builder seat. The builder's identity, when the
-  portable runner records it (`--builder`, `builder_family`), stays as
-  provenance on the run.
+- The grader execution did not build the change: the rung matrix resolves a
+  capable reviewer in a fresh author-disjoint session. Record the authoring
+  execution as provenance where the runner supports it.
 - Every surfaced finding is closed, or adjudicated "not a bug" with recorded
   evidence. Never silently deferred. Whole-seam closure (the seam is the shared
   spot in the code where this class of bug lives) or no landing.

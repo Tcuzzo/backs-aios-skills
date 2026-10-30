@@ -82,7 +82,7 @@ La boucle de goût, en un coup d'œil :
 ## Barrières dures (propres au play — les règles dures du skill s'appliquent en plus)
 
 - Le critique travaille dans une session vierge et disjointe de l'auteur ; son modèle est
-  résolu en direct via l'échelle de la flotte ; la même famille de modèles est permise — jamais un id de modèle épinglé
+  résolu en direct via l'échelle de la flotte ; jamais un id de modèle épinglé
   (un pin retiré du service tue tout le critique, en silence).
 
 ## Marche bien avec

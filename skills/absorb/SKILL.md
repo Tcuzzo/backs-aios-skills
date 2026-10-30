@@ -49,12 +49,9 @@ fit your harness, and cite the scaffold. The citation is a fact, not a decoratio
    that asserts a real side-effect — a file, a database row, real output. Mock only a
    paid external API's transport, never the logic.
 6. **Reconstruct red-first.** Commit the failing tests, then build until green across
-   the whole seam. An independent non-builder grader, chosen live by capability and
-   availability from the configured rung matrix, grades the result (the authoring
-   execution that built is recorded as provenance and disqualified; a same
-   model, rung, or family reviewer in a fresh, author-disjoint session is
-   permitted where the configured runtime allows). The builder never grades its
-   own work.
+   the whole seam. Select a capable grader through the configured rung matrix.
+   The grader reviews the result in a fresh author-disjoint session; record and
+   exclude the authoring execution. The builder never grades its own work.
 7. **Cite and record.** Write the scaffold credit where the capability now lives:
    author, project, license, what is borrowed (the scaffold) and what is yours (the
    re-engineering). Never invent a credit. Never strip one.

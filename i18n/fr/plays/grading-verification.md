@@ -54,12 +54,8 @@ La notation, en un coup d'œil :
    mocks sur la couture qu'il a changée.
 3. Notation disjointe de l'auteur — confie le travail à un correcteur dont
    l'exécution autrice n'a pas construit le changement, choisi en direct par
-   capacité et disponibilité depuis la matrice de barreaux configurée ; un
-   correcteur de même modèle, même barreau ou même famille dans une session
-   vierge et disjointe de l'auteur est permis là où le runtime configuré le
-   permet. L'auto-signature de la note par l'exécution qui a construit est
-   disqualifiée à la racine ; l'auto-préférence mesurable entre exécutions
-   d'une même famille gonfle les taux de victoire.
+   capacité et disponibilité depuis la matrice de barreaux configurée ; la revue utilise une session vierge et disjointe de l'auteur. L'auto-signature de la note par l'exécution qui a construit est
+   disqualifiée à la racine.
 4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — pour les changements à
    conséquences, convoque des jurés sur une enveloppe dont l'auteur est masqué.
    Chaque trouvaille devient un nouveau test rouge, et le tribunal se reconvoque

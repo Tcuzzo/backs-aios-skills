@@ -28,13 +28,11 @@ depois MANTENHA ou REVERTA. Empate reverte. Só ganho provado aterrissa.
    nunca uma descrição delas.
 3. **Arranque a autoria.** Rotule A e B, embaralhe a ordem, tire todo nome, id de
    modelo e o raciocínio do autor. O juiz vê só os artefatos e a rubrica.
-4. **Sente um juiz que não escreveu nenhuma das duas** — um avaliador
-   não-construtor, escolhido ao vivo por capacidade e disponibilidade na matriz
-   de degraus configurada (a execução autora que construiu é registrada como
-   proveniência e desqualificada; um avaliador de mesmo modelo, degrau ou
-   família em uma sessão nova e disjunta do autor é permitido onde o runtime
-   configurado o permita), ou um humano. O autor nunca avalia o próprio
-   trabalho.
+4. **Sente um juiz que não escreveu nenhuma das duas** — uma sessão de revisão
+   nova e disjunta do autor, escolhida ao vivo por capacidade e disponibilidade
+   na matriz configurada, ou um humano. A execução autora e qualquer sessão que
+   herdou a conversa ou o contexto do autor são desqualificadas. O autor nunca
+   avalia o próprio trabalho.
 5. **Julgue pelo mérito.** Pontue cada eixo da rubrica. Cite evidência do artefato
    para cada nota — veredito sem evidência é chute.
 6. **MANTENHA só se a candidata passa a barra E vence a baseline com folga estrita.**

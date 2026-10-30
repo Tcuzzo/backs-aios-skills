@@ -4,8 +4,7 @@ The adversarial grading play. Its one belief: a green result is a claim, not pro
 The grader attacks, and the floor is built so it cannot be gamed. Model identity is
 provenance, not authority — the grader is the EXECUTION that did not author the
 candidate, chosen live by capability and availability from the configured rung
-matrix; independence is author-disjoint execution, not model, family, vendor,
-seat, rung, or runner identity.
+matrix; independence requires a fresh author-disjoint execution.
 
 ## When to run
 
@@ -58,12 +57,9 @@ The grade, at a glance:
    scoped tests during iteration and ran no mock theater on the seam it changed.
 3. Independent grade — pick the grader seat live: it is the seat that did not
    build, selected by capability and availability from the configured rung
-   matrix (task → capability → rung → live probe). The builder's identity,
-   when the portable runner records it as provenance (`--builder`,
-   `builder_family`), is carried only as far as that runner carries it — it
-   is provenance, not a universal capability gate. Same-family grading by a
-   fresh, author-disjoint session is allowed where the configured runtime
-   permits; it is not categorically barred here. What is barred: a grade
+   matrix (task → capability → rung → live probe). Record the authoring
+   execution where the runner supports provenance. A fresh, author-disjoint
+   session may review using any capable configured route. What is barred: a grade
    run in a session that saw the builder's conversation or inherited its
    context.
 4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — for consequential changes,
@@ -100,7 +96,7 @@ The judge-mechanics floor lives in [blind-eval](../skills/blind-eval/SKILL.md)'s
 
 ## Hard gates — any one fails the play
 
-- The grader ran in the builder's authoring execution or inherited the builder's conversation. A fresh, author-disjoint session is the floor — same model, rung, or family in a fresh session is allowed where the configured runtime permits.
+- The grader ran in the builder's authoring execution or inherited the builder's conversation. A fresh author-disjoint session is the floor.
 - The suite cannot be shown red before the fix.
 - The blind-tribunal envelope was graded by a session that saw the author's
   conversation or by a juror that inherited context — it must be a fresh,
@@ -109,13 +105,9 @@ The judge-mechanics floor lives in [blind-eval](../skills/blind-eval/SKILL.md)'s
 - Any fake-green tell above is present.
 - The grader trusted the builder's own report instead of re-running the checks.
 
-**Note on legacy runtimes.** A runtime that still enforces a model-name-only or
-family-only identity filter, on top of the capability + `--builder` policy
-above, is an unresolved runtime mismatch: the deliverable here is the
-instruction, not the filter. The grader selection still follows builder-named,
-rung-matrix-resolved, capability-sufficient, non-authoring-execution seats; the
-legacy filter, if it sits underneath, must be surfaced — never silently
-asserted fixed and never bypassed.
+**Note on runtime gaps.** Select capable reviewers through the configured
+ladder and exclude the authoring execution. Surface any runtime restriction
+that blocks a capable reviewer; never silently assert the gap fixed or bypass it.
 
 **Weight:** free red and sniper checks up front; the heavy spend is the tribunal
 plus the grader re-running the gauntlet itself — it pays on any change that asks

@@ -29,4 +29,4 @@ with `building-with-backs` and its target check.
 
 ## 证据与独立评审
 
-调查已发布的可执行文件、软件包或请求的运行时行为时，在分析有用的情况下调用 [rea-investigation](../rea-investigation/SKILL.md) 和单独安装的 `reverse-engineer-anything` 技能；对受支持的原生目标使用现有 Ghidra 提供程序。静态证据不能证明实时行为；不得悄悄安装缺失的提供程序。采用开源能力时调用 [absorb](../absorb/SKILL.md)。通过 [fleet-ladder](../fleet-ladder/SKILL.md) 按角色和能力选择，不硬编码模型名称。需要评审团时遵循 [blind-tribunal](../blind-tribunal/SKILL.md)：与作者分离的新执行审查去除作者信息的冻结材料；模型家族不能证明会话隔离。缺少解析器、评审者或证据时报告运行时缺口。
+调查已发布的可执行文件、软件包或请求的运行时行为时，在分析有用的情况下调用 [rea-investigation](../rea-investigation/SKILL.md) 和单独安装的 `reverse-engineer-anything` 技能；对受支持的原生目标使用现有 Ghidra 提供程序。静态证据不能证明实时行为；不得悄悄安装缺失的提供程序。采用开源能力时调用 [absorb](../absorb/SKILL.md)。通过 [fleet-ladder](../fleet-ladder/SKILL.md) 按角色和能力选择，不硬编码模型名称。需要评审团时遵循 [blind-tribunal](../blind-tribunal/SKILL.md)：与作者分离的新执行审查去除作者信息的冻结材料。缺少解析器、评审者或证据时报告运行时缺口。

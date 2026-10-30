@@ -96,7 +96,7 @@ Le builder ne note jamais sa propre balle. Avant tout `1` :
    déclarée de la balle, dans l'ordre de champs déclaré. Une égalité ou une
    régression perd. Voir [blind-eval](../blind-eval/SKILL.md).
 3. **Revue indépendante en aveugle** — au moins deux relecteurs dans des sessions
-   vierges et disjointes de l'auteur ; la même famille de modèles est permise. Chacun voit le même hash du
+   vierges et disjointes de l'auteur. Chacun voit le même hash du
    candidat et la même enveloppe expurgée de l'auteur. Un relecteur qui a
    RÉPONDU mal — déchets, non-JSON, texte de refus — vaut un refus valide :
    `-1`. Un relecteur qui n'a JAMAIS répondu (panne de transport, injoignable)

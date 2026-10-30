@@ -6,9 +6,8 @@
 # ordenados por configuración en vivo + costo / disponibilidad medidos (sin preferencia
 # universal cloud-first / local-last). Los peldaños de GPU local permanecen en la
 # escalera y obedecen la ley de despacho de GPU.
-# La independencia es EJECUCIÓN disjunta del autor, no identidad de modelo, familia,
-# proveedor, asiento o peldaño; el mismo modelo capaz en dos sesiones frescas y
-# disjuntas del autor no se degrada automáticamente.
+# La independencia requiere una ejecución fresca y disjunta del autor, con
+# la procedencia de la sesión registrada.
 # Para cambiar o agregar un modelo, edita ESTE archivo — nunca el código.
 
 builder:                        # implementa y repara
@@ -16,7 +15,7 @@ builder:                        # implementa y repara
   - mid-fit-model               # peldaño capaz de rango medio; el respaldo habitual cuando planning-fit está caído
   - local-coder-model           # supervivencia de GPU local — tu propio hardware; honrado por la configuración
 
-grader:                         # revisión independiente — la ejecución autora que construyó queda descalificada; se permite el mismo modelo, peldaño o familia en una sesión fresca y disjunta del autor
+grader:                         # revisión independiente en una sesión fresca y disjunta del autor
   - independent-strong-model    # una ejecución SEPARADA, disjunta del autor, respecto a los peldaños del builder
   - independent-mid-model
   - local-review-model
@@ -32,7 +31,7 @@ worker:                         # trabajos acotados y bien especificados; los pe
 # descalificada). Cuando el mismo modelo capaz es la única ejecución configurada,
 # corre el builder y el grader en dos sesiones FRESCAS y disjuntas del autor y
 # registra el aislamiento de sesión en el log de despacho; esa es la separación
-# más débil permitida aquí, no una división por modelo/familia. El orden, el
+# requerida aquí. El orden, el
 # encaje de capacidad y la elección de proveedor deben venir de tu configuración
 # en vivo y costo medido — no de este ejemplo.
 #
@@ -54,5 +53,4 @@ worker:                         # trabajos acotados y bien especificados; los pe
 # worker:
 #   - capable-model              # una tercera sesión fresca para trabajo acotado
 #
-# La escalera NO requiere aquí un modelo, peldaño o familia diferente. El
-# requisito es EJECUCIÓN FRESCA Y DISJUNTA DEL AUTOR, registrada como tal.
+# La revisión requiere una ejecución fresca y disjunta del autor, registrada.

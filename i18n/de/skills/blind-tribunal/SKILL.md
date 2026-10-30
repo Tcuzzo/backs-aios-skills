@@ -61,26 +61,21 @@ Position-Reihenfolge.
 **Solo-Rig.** Wenn nur eine Modell-Sprosse verfügbar ist, kommt die Unabhängigkeit
 trotzdem aus einer frischen, autor-disjunkten Session, die die Konversation des
 Autors nie gesehen hat, mit dem geschwärzten Umschlag und eingefrorenen
-Beweis-Bytes. Ein Prüfer gleichen Modells, gleicher Sprosse oder gleicher Familie
-in einer frischen Session ist zulässig, wo die konfigurierte Laufzeit es erlaubt.
+Beweis-Bytes. Ein Prüfer in einer frischen, autor-disjunkten Session ist zulässig, wo die konfigurierte Laufzeit es erlaubt.
 Der Bericht erfasst die Einzel-Sprossen-Konfiguration als Provenienz, nicht als
 geschwächtes Gate: die Trennung ist die Session, nicht der Modellname.
 
 ## Der Builder wird deklariert, und der Ausschluss ist strukturell
 
-„Andere Familie als der Builder" war eine Regel, die sich Juroren merken sollten. Im eigenen Test
-des Tribunals führte den Operator-Sicherheitssitz genau das Modell an, das den Kandidaten gebaut
-hatte, und nichts hat es erfasst oder ausgeschlossen: Der Autor hat zwei Runden lang seine eigene
-Arbeit benotet. Also:
+Erfasst für jede Prüfung die getrennte Sitzung und ihren Kontext. Ein Modellname allein beweist nicht, dass die Prüfung unabhängig war.
 
 - **Einberufen mit benanntem Builder**, wo der gewählte Runner das tatsächlich
   unterstützt (z. B. `--builder <identität>`, wenn der Runner ein Flag kennt; sonst
-  als Lauf-Record-Feld). Der Lauf trägt die ausführende Builder-Session und `builder_family`
-  als Provenienz, wo der Runner sie aufzeichnet. Jede ausführende Session, die den
+  als Lauf-Record-Feld). Der Lauf trägt die ausführende Builder-Session als
+  Provenienz, wo der Runner sie aufzeichnet. Jede ausführende Session, die den
   Kandidaten gebaut hat, und jede Session, die die Konversation oder den Kontext des
   Builders geerbt hat, werden laut abgelehnt, vor jedem Versand, auf jeder Leiter. Eine
-  Linse ohne Sprosse HÄLT — fällt nie auf den Builder zurück. Provenienz, kein
-  pauschales Modell-, Sprossen-, Familien- oder Anbieter-Gate.
+  Linse ohne Sprosse HÄLT — fällt nie auf den Builder zurück. Provenienz belegt die Herkunft, nicht die Unabhängigkeit der Session.
 - **Beweise es auf der lebenden Leiter, nicht im Test:** Die Routing-Tabelle muss zeigen, dass die
   Sitze auf live verfügbare Sprossen gefallen sind, und der Bericht benennt die ausgewählte Sprosse
   pro Linse. Sonst ist der Ausschluss Dekoration.
@@ -149,8 +144,7 @@ Striktes, maschinenlesbares JSON, ein Objekt, keine Prosa:
    Verfügbarkeit aus der konfigurierten Sprossen-Matrix
    ([fleet-ladder](../fleet-ladder/SKILL.md) klärt, was live ist). Die ausführende
    Session, die gebaut hat, und jede Session, die die Konversation oder den
-   Kontext des Builders geerbt hat, sind disqualifiziert; ein Prüfer gleichen
-   Modells, gleicher Sprosse oder gleicher Familie in einer frischen,
+   Kontext des Builders geerbt hat, sind disqualifiziert; ein Prüfer in einer frischen,
    autor-disjunkten Session ist zulässig, wo die konfigurierte Laufzeit es erlaubt.
 5. Jeder Juror verifiziert auch, statt nur zu lesen: Die neuen Tests bestehen; die
    Regressions-Suite ist nicht schlechter als die Baseline; und ein
@@ -179,8 +173,8 @@ Runde 4 hielt zwei Linsen mit null Ablehnungen, und jedes Glied stand im Protoko
 
 - Der Builder bewertet nie die eigene Arbeit: die ausführende Session, die
   gebaut hat, und jede Session, die die Konversation oder den Kontext des
-  Builders geerbt hat, sind disqualifiziert; ein Prüfer gleichen Modells, gleicher
-  Sprosse oder gleicher Familie in einer frischen, autor-disjunkten Session ist
+  Builders geerbt hat, sind disqualifiziert; ein Prüfer in einer frischen,
+  autor-disjunkten Session ist
   zulässig, wo die konfigurierte Laufzeit es erlaubt.
 - **Ein Juror-Refuse ist nur so gut wie der Umschlag.** Bevor du aus einem Befund
   einen Test schreibst, prüfe den Befund gegen die tatsächlichen Dateien. Ein
@@ -210,4 +204,4 @@ Runde 4 hielt zwei Linsen mit null Ablehnungen, und jedes Glied stand im Protoko
 - [blind-eval](../blind-eval/SKILL.md) — das leichtere Keep-or-Revert-Gate, wenn die Frage Geschmack ist, nicht Defekte.
 
 > Gerüst-Credit: Matt Pocock, grill-me / grilling (mattpocock/skills, MIT). Das
-> Design des blinden, adversarialen Cross-Family-Tribunals ist BACKS AIOS.
+> Design des blinden, adversarialen Tribunals ist BACKS AIOS.

@@ -42,9 +42,8 @@ discipline that makes "green but broken" structurally hard to ship.
    keep iterating.
 7. **Independent grade.** A grader that did not author the change — chosen live
    by capability and availability from the configured rung matrix; the
-   authoring execution that built is recorded as provenance and disqualified,
-   and a same model, rung, or family reviewer in a fresh, author-disjoint
-   session is permitted where the configured runtime allows — must pass it.
+   authoring execution that built is recorded as provenance and disqualified;
+   the reviewer must pass it in a fresh author-disjoint session.
    The builder never grades its own work. See
    [blind-tribunal](../blind-tribunal/SKILL.md).
 8. **Check concurrent work.** Before altering shared state, verify any other session's

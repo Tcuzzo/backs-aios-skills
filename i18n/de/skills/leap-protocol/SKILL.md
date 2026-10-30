@@ -95,7 +95,7 @@ Der Builder bewertet seinen eigenen Ball nie. Vor jeder `1`:
    Balls vergleichen, in erklärter Feld-Reihenfolge. Gleichstand oder
    Rückschritt verliert. Siehe [blind-eval](../blind-eval/SKILL.md).
 3. **Unabhängiger blinder Review** — mindestens zwei Reviewer in frischen,
-   vom Autor getrennten Sitzungen; dieselbe Modellfamilie ist zulässig. Jeder sieht denselben
+   vom Autor getrennten Sitzungen. Jeder sieht denselben
    Kandidaten-Hash und denselben autor-geschwärzten Umschlag. Ein Reviewer, der
    schlecht GEANTWORTET hat — Müll, kein JSON, Verweigerungstext — ist ein
    gültiges Refuse: `-1`. Ein Reviewer, der NIE geantwortet hat

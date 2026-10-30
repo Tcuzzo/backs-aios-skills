@@ -95,7 +95,7 @@ de CRAP contre la base d'avant le changement :
 
 Les barrières déterministes passent d'abord ; ne dépense un modèle que là où le
 raisonnement est le seul outil. Le relecteur travaille dans une session vierge et disjointe de l'auteur ;
-le même modèle ou la même famille est permis si le runtime configuré le permet — le builder ne note jamais son propre travail. Il ne juge que le design et le
+le builder ne note jamais son propre travail. Il ne juge que le design et le
 goût : le nommage, les responsabilités mélangées, la largeur des interfaces, et les
 six odeurs — rigidité, fragilité, immobilité, complexité inutile, répétition inutile,
 opacité. L'arithmétique, elle, a déjà été réglée par les barrières.

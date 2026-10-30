@@ -28,12 +28,11 @@ REVERT करो। Tie का मतलब revert। सिर्फ साब�
    उनके बारे में कोई description कभी नहीं।
 3. **Authorship हटाओ।** उन्हें A और B नाम दो, क्रम फेंटो (shuffle), हर नाम, model id
    और author की दलील हटा दो। Judge को सिर्फ artifacts और rubric दिखते हैं।
-4. **ऐसा judge बिठाओ जिसने दोनों में से कुछ नहीं लिखा** — एक
-   non-builder reviewer, capability और availability के हिसाब से configured rung
-   matrix से live चुना हुआ (जिस execution ने बनाया, वो provenance के रूप में दर्ज है
-   और disqualify है; same model, rung या family का reviewer एक ताज़ी,
-   author-disjoint session में इसलिए मान्य है जहाँ configured runtime अनुमति
-   देता है), या एक इंसान। Author अपना काम खुद कभी grade नहीं करता।
+4. **ऐसा judge बिठाओ जिसने दोनों में से कुछ नहीं लिखा** — एक ताज़ी,
+   author-disjoint review session, जिसे configured rung matrix से capability और
+   availability के हिसाब से live चुना जाए, या एक इंसान। जिस execution ने बनाया
+   और जिस session ने author की बातचीत या context inherit किया, वे disqualify हैं।
+   Author अपना काम खुद कभी grade नहीं करता।
 5. **गुणों पर परखो।** हर rubric axis पर score दो। हर score के लिए artifact से सबूत
    cite करो — बिना सबूत का verdict एक अंदाज़ा है।
 6. **KEEP सिर्फ तब जब candidate bar पार करे AND baseline को साफ़-साफ़ हराए।**

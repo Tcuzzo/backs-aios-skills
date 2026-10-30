@@ -18,7 +18,7 @@ Esta skill descreve a seleção, mas não resolve modelos por conta própria. O 
 ## Os passos
 
 1. **Declare papel e capacidades.** Leia a escada configurada e sua ordem; escolha candidato adequado à tarefa, capacidade e disponibilidade. A configuração de exemplo é apenas um modelo. Esta skill não classifica nem filtra candidatos.
-2. **Verifique a independência.** A revisão usa uma execução nova e separada do autor, com um pacote congelado sem contexto do autor. O mesmo modelo capaz ou família é permitido se o runtime configurado permitir. Registre restrições adicionais como lacunas do runtime.
+2. **Verifique a independência.** A revisão usa uma execução nova e separada do autor, com um pacote congelado sem contexto do autor. Escolha um revisor capaz pela escada configurada. Registre restrições adicionais como lacunas do runtime.
 3. **Teste inferência real.** Uma lista de modelos não prova inferência, capacidade ou cota. Execute inferência real e limitada no candidato; mantenha o resultado em cache por prazo razoável e respeite o backoff. Verifique novamente a capacidade no fallback.
 4. **Desça a escada, alto.** Despache para o melhor degrau DISPONÍVEL. Em falha de
    transporte, reporte a falha alto, depois tente o próximo degrau. Nunca pule em
@@ -34,7 +34,7 @@ Esta skill descreve a seleção, mas não resolve modelos por conta própria. O 
 
 - Não fixe IDs de modelos em skills, prompts ou chamadas; use papel e capacidades da configuração ativa.
 - Uma inferência real e limitada é necessária; apenas o catálogo não basta.
-- A revisão exige execução nova separada do autor e pacote congelado sem contexto do autor; modelo ou família diferente não é requisito nem prova de separação.
+- A revisão exige execução nova separada do autor e pacote congelado sem contexto do autor.
 - Registre falhas e alternativas; reporte resolvedores ou isolamento ausentes como lacunas do runtime.
 
 

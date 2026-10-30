@@ -89,7 +89,7 @@ CRAP contra a baseline pré-mudança:
 ## O review de gosto (por último, e leve)
 
 Portões determinísticos vêm primeiro; gaste um modelo só onde raciocínio é a única
-ferramenta. O revisor trabalha em uma sessão nova e disjunta do autor; o mesmo modelo ou família é permitido onde o runtime configurado o permita — o builder
+ferramenta. O revisor trabalha em uma sessão nova e disjunta do autor; o builder
 nunca avalia o próprio trabalho. Ele julga só design e gosto: nomes, preocupações
 misturadas, largura de interface, e os seis cheiros — rigidez, fragilidade,
 imobilidade, complexidade desnecessária, repetição desnecessária, opacidade. A

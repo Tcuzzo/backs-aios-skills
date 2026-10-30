@@ -58,7 +58,7 @@ citation est un fait, pas une décoration.
    que le transport d'une API externe payante, jamais la logique.
 6. **Reconstruis rouge d'abord.** Committe les tests en échec, puis construis jusqu'au
    vert sur toute la couture. Un évaluateur dans une session vierge et disjointe de l'auteur note le
-   résultat ; le même modèle ou la même famille est permis si le runtime configuré le permet — le builder ne note jamais son propre travail.
+   résultat ; le builder ne note jamais son propre travail.
 7. **Cite et consigne.** Écris le crédit d'échafaudage là où la capacité vit
    désormais : auteur, projet, licence, ce qui est emprunté (l'échafaudage) et ce qui
    est à toi (la réingénierie). N'invente jamais un crédit. N'en retire jamais un.

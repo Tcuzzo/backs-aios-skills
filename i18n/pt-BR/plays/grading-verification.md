@@ -55,8 +55,7 @@ A avaliação, num relance:
    que mudou.
 3. Avaliação independente — entregue o trabalho a uma sessão nova e disjunta
    do autor, sem conversa, raciocínio ou identidade do autor. A execução que
-   construiu não pode aprovar a si mesma; o mesmo modelo, degrau ou família é
-   permitido onde o runtime configurado o permita. Escolha pela capacidade
+   construiu não pode aprovar a si mesma. Escolha pela capacidade
    medida para a tarefa e registre a rota real como proveniência.
 4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — para mudanças de
    consequência, convoque jurados sobre um envelope com a autoria apagada. Cada

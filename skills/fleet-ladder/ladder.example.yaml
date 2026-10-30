@@ -5,9 +5,8 @@
 # for worker work — and ordered by live config + measured cost / availability
 # (no universal cloud-first / local-last preference). Local GPU rungs stay on
 # the ladder and obey the GPU dispatch law.
-# Independence is author-disjoint EXECUTION, not model, family, vendor, seat,
-# or rung identity; the same capable model in two fresh, author-disjoint
-# sessions is not automatically degraded.
+# Independence requires a fresh, author-disjoint execution with recorded
+# session provenance.
 # To change or add a model, edit THIS file — never the code.
 
 builder:                        # implements and repairs
@@ -15,7 +14,7 @@ builder:                        # implements and repairs
   - mid-fit-model               # mid-range capable rung; the usual fallback when planning-fit is down
   - local-coder-model           # local GPU survival — your own hardware; honored by config
 
-grader:                         # independent review — the authoring execution that built is disqualified; same model, rung, or family in a fresh, author-disjoint session is permitted
+grader:                         # independent review in a fresh author-disjoint session
   - independent-strong-model    # a SEPARATE, author-disjoint execution from the builder rungs
   - independent-mid-model
   - local-review-model
@@ -31,7 +30,7 @@ worker:                         # bounded, well-specified jobs; cheap rungs fine
 # When the same capable model is the only configured execution, run the
 # builder and the grader in two FRESH, author-disjoint sessions and record
 # the session isolation in the dispatch log; that is the weakest available
-# separation allowed here, not a model/family split. The ordering, capability
+# separation required here. The ordering, capability
 # fit, and provider choice must come from your live config and measured cost —
 # not this example.
 #
@@ -53,5 +52,4 @@ worker:                         # bounded, well-specified jobs; cheap rungs fine
 # worker:
 #   - capable-model              # a third fresh session for bounded work
 #
-# The ladder DOES NOT require a different model, rung, or family here. The
-# requirement is FRESH, AUTHOR-DISJOINT EXECUTION, recorded as such.
+# Review requires a fresh author-disjoint execution, recorded as such.

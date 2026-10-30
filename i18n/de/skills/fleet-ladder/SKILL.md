@@ -20,7 +20,7 @@ Diese Skill beschreibt Auswahlregeln, führt aber selbst keine Modellauflösung 
 ## Die Schritte
 
 1. **Rolle und Fähigkeiten festlegen.** Lies die konfigurierte Leiter und ihre Reihenfolge; wähle einen geeigneten Kandidaten nach Aufgabe, Fähigkeiten und Verfügbarkeit. Eine Beispielkonfiguration ist nur eine Vorlage. Die Skill selbst sortiert oder filtert keine Kandidaten.
-2. **Unabhängigkeit prüfen.** Die Begutachtung erfolgt in einer frischen, vom Autor getrennten Ausführung mit einem eingefrorenen, um Autorenkontext bereinigten Paket. Dasselbe geeignete Modell oder dieselbe Familie ist erlaubt, sofern die konfigurierte Laufzeit es zulässt. Zusätzliche Laufzeitbeschränkungen als Lücke benennen.
+2. **Unabhängigkeit prüfen.** Die Begutachtung erfolgt in einer frischen, vom Autor getrennten Ausführung mit einem eingefrorenen, um Autorenkontext bereinigten Paket. Einen geeigneten Prüfer über die konfigurierte Leiter wählen. Zusätzliche Laufzeitbeschränkungen als Lücke benennen.
 3. **Live-Inferenz prüfen.** Eine Modellliste belegt weder Inferenz noch Fähigkeit oder Kontingent. Führe eine echte, begrenzte Inferenz auf dem vorgesehenen Kandidaten aus; cache das Ergebnis mit angemessenem Ablauf und Backoff. Bei Fallback die Fähigkeiten erneut prüfen.
 4. **Steig laut ab.** Dispatche auf die beste VERFÜGBARE Sprosse. Bei
    Transportfehler: den Fehler laut melden, dann die nächste Sprosse versuchen.
@@ -38,7 +38,7 @@ Diese Skill beschreibt Auswahlregeln, führt aber selbst keine Modellauflösung 
 
 - Keine Modell-ID in Skills, Prompts oder Aufrufstellen fest codieren; Rolle und benötigte Fähigkeiten aus der Live-Konfiguration verwenden.
 - Nur reale, begrenzte Inferenz belegt die Erreichbarkeit; Kataloglisten allein genügen nicht.
-- Eine frische, vom Autor getrennte Review-Ausführung mit anonymisiertem, eingefrorenem Paket ist nötig; ein anderes Modell oder eine andere Familie ist keine Bedingung und kein Beweis der Trennung.
+- Eine frische, vom Autor getrennte Review-Ausführung mit anonymisiertem, eingefrorenem Paket ist nötig.
 - Fehler und Fallbacks sichtbar machen; fehlende Resolver oder Durchsetzung als Laufzeitlücke melden.
 
 

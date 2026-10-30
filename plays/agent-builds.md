@@ -70,8 +70,7 @@ The build, at a glance:
    session that did not see the builder's conversation or inherit its context,
    chosen live by capability and availability from the configured rung matrix
    (the authoring execution that built is recorded as provenance and excluded;
-   a same model, rung, or family reviewer in a fresh, author-disjoint session
-   is permitted where the configured runtime allows). The builder never grades
+   review uses a fresh author-disjoint session). The builder never grades
    its own work. Every juror finding becomes a new red test; re-convene until
    every juror passes.
 
@@ -107,10 +106,8 @@ The build, at a glance:
 - Independent grade passes; the grader runs in a fresh, author-disjoint session
   that did not see the builder's conversation or inherit its context, chosen
   live by capability and availability from the rung matrix. The authoring
-  execution that built is recorded as provenance (`--builder`, `builder_family`
-  where the runner carries them) and excluded from the grade; a same model,
-  rung, or family reviewer in a fresh, author-disjoint session is permitted
-  where the configured runtime allows.
+  execution that built is recorded as provenance where the runner carries it and
+  excluded from the grade; the reviewer uses a fresh author-disjoint session.
 
 ## Works well with
 

@@ -54,9 +54,8 @@ capacités.
   vient pas du builder, choisi en direct par capacité et disponibilité depuis
   la matrice de barreaux configurée ; l'exécution autrice qui a construit est
   disqualifiée, et toute session qui a hérité de la conversation ou du
-  contexte du builder l'est aussi ; un correcteur de même modèle, même barreau
-  ou même famille dans une session vierge et disjointe de l'auteur est permis
-  là où le runtime configuré le permet.
+  contexte du builder l'est aussi. Le correcteur travaille dans une session vierge
+  et disjointe de l'auteur.
 - **Le vert seul n'est pas une preuve.** Vert + test intact + note
   indépendante, ça c'est une preuve.
 - **Quand toute une classe de défaut est en jeu, garde la classe.** Les tests

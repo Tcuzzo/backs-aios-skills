@@ -46,9 +46,8 @@ behavior. This is the default for bug fixes and new capabilities alike.
   red baseline is part of the landing gate, not a courtesy check.
 - **Builder is never the grader.** Use a non-builder grader, chosen live by
   capability and availability from the configured rung matrix (the authoring
-  execution that built is recorded as provenance and disqualified; a same
-  model, rung, or family grader in a fresh, author-disjoint session is permitted
-  where the configured runtime allows).
+  execution that built is recorded as provenance and disqualified; review uses
+  a fresh author-disjoint session).
 - **Green alone is not proof.** Green + untouched test + independent grade
   is proof.
 - **When a whole class of defect is in play, guard the class.** Point tests

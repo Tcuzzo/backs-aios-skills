@@ -36,5 +36,5 @@ silently. For adopting an open-source capability, invoke [absorb](../absorb/SKIL
 Use [fleet-ladder](../fleet-ladder/SKILL.md) to route by role and capability, never
 hardcoded model names. When a tribunal is required, follow
 [blind-tribunal](../blind-tribunal/SKILL.md): a fresh author-disjoint execution
-reviews an author-redacted frozen packet; model family is not session isolation.
+reviews an author-redacted frozen packet.
 Report any missing resolver, reviewer, or evidence as a runtime gap.
