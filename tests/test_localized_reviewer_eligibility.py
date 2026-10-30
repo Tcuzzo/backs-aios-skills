@@ -6,11 +6,12 @@ def test_capable_reviewers_remain_eligible_in_all_ladder_translations():
     eligibility = {
         'de': ('geeignete', 'Modell', 'Anbieter'),
         'es': ('cualquier revisor capaz', 'modelo', 'proveedor'),
-        'fr': ('tout évaluateur capable', 'modèle', 'fournisseur'),
+        'fr': ('tout évaluateur compétent', 'modèle', 'fournisseur'),
         'hi': ('कोई भी सक्षम reviewer', 'model', 'provider'),
         'pt-BR': ('qualquer revisor capaz', 'modelo', 'fornecedor'),
-        'zh-CN': ('任何有能力的评审者', '模型', '提供商'),
+        'zh-CN': ('任何具备相应能力的评审者', '模型', '提供商'),
     }
     for locale, words in eligibility.items():
         text = (root / locale / 'skills/fleet-ladder/SKILL.md').read_text().casefold()
-        assert all(word.casefold() in text for word in words), locale
+        assert any(all(word.casefold() in line for word in words)
+                   for line in text.splitlines()), locale
