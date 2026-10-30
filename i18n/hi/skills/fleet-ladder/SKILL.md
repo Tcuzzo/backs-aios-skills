@@ -19,6 +19,7 @@ license: "MIT"
 
 1. **Role और ज़रूरी capabilities तय करें।** Configured ladder और उसका क्रम पढ़ें; काम, क्षमता और उपलब्धता के आधार पर उपयुक्त उम्मीदवार चुनें। Example config केवल template है। यह skill खुद candidates को rank या filter नहीं करती।
 2. **स्वतंत्रता जांचें।** Review एक नई author से अलग execution में, author के context से रहित frozen packet पर करें। सक्षम reviewer को configured ladder से चुनें और अतिरिक्त runtime पाबंदी को gap के रूप में बताएं।
+कोई भी सक्षम reviewer लेखक से अलग नए session में समीक्षा कर सकता है; model या provider की पहचान कोई प्रतिबंध नहीं है।
 3. **असली inference जांचें।** Model list inference, क्षमता या quota का प्रमाण नहीं है। चुने हुए उम्मीदवार पर वास्तविक bounded inference चलाएं; परिणाम उचित अवधि के लिए cache करें और backoff रखें। Fallback पर क्षमता फिर जांचें।
 4. **नीचे उतरो, ज़ोर से।** सबसे अच्छे AVAILABLE पायदान पर dispatch करो। Transport
    failure पर failure को ज़ोर से report करो, फिर अगला पायदान आज़माओ। चुपचाप skip
