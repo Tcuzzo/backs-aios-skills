@@ -1,0 +1,16 @@
+{
+  "name": "backs-aios",
+  "owner": {
+    "name": "Tcuzzo"
+  },
+  "metadata": {
+    "description": "BACKS AIOS: harness-first boot, red-first repair, blind grading, and bounded autonomous delivery."
+  },
+  "plugins": [
+    {
+      "name": "backs-aios",
+      "source": ".",
+      "description": "Agent operating system for coding sessions: harness-first boot, red-first repair, blind cross-family grading, and bounded autonomous delivery."
+    }
+  ]
+}
