@@ -10,6 +10,16 @@ Ein Integrationsverantwortlicher führt die Anfrage vom Kontext bis zur verifizi
 Lieferung. Spezialisten geben ihm Belege zurück; sie starten den Ablauf nicht neu.
 Für eine einfache Antwort ohne Build oder Untersuchung genügen die relevanten Schritte.
 
+## Modellunabhängige Rollen
+
+Wähle Rollen nach den tatsächlich benötigten Fähigkeiten, der Verfügbarkeit und
+der aktuellen Laufzeitkonfiguration. Dasselbe geeignete Modell und derselbe
+Anbieter dürfen mehrere Rollen übernehmen; weder feste Modelllisten noch eine
+vorgegebene Rangfolge oder Modellvielfalt sind erforderlich. Ein unabhängiges
+Review braucht eine frische, vom Autor getrennte Sitzung, die dessen Gespräch
+oder Arbeitskontext nicht geerbt hat. Dokumentiere die tatsächliche Trennung;
+behaupte keine Durchsetzung, die der verwendete Runner nicht unterstützt.
+
 ## Genug Kontext herstellen, um zu handeln
 
 1. Bewahre Ziel, Einschränkungen, bestehende Autorisierung und gewünschtes Ergebnis

@@ -1,29 +1,37 @@
 ---
 name: "model-fusion"
-description: "तब लगाओ जब एक model का जवाब भरोसे लायक़ न हो — कोई कड़ा build, fix या design जहाँ तुम चाहते हो कि कई models मुक़ाबला करें और एक independent judge चुने। Panel parallel में drafts बनाता है, judge जीतने वाला merge करता है, नतीजा original intent से मिलाकर validate होता है। Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader, कई models से बनवाओ, panel बैठाओ, judge चुने, मुक़ाबला कराओ."
+description: "जब स्वतंत्र रूप से बनाए गए approaches की तुलना task में मदद करे और शेष budget में संभव हो, या operator panel माँगे, तब उपयोग करें। Model-agnostic drafts, selection या synthesis और verification; वही configured model अलग isolated sessions में कई roles संभाल सकता है।"
 license: "MIT"
 ---
 
 # Model Fusion
-**Effort:** heavy — parallel में draft करता पूरा panel, साथ में एक स्वतंत्र judge (और वैकल्पिक writer); इसे कठिन builds और ship होने वाले fixes पर खर्च करें, one-line बदलावों पर कभी नहीं। हटाता है: पूरा बदलाव एक अकेले model के draft पर दाँव लगाना, और वह rework जब वही draft ग़लत निकलता है।
+**Effort:** heavy — स्वतंत्र drafts, एक evaluator और वैकल्पिक writer; panel तभी लें जब task में उसका लाभ शेष budget के भीतर खर्च को उचित ठहराए।
 
-कई आज़ाद आवाज़ें एक आवाज़ से बेहतर होती हैं। Models का एक panel वही task
-parallel में draft करता है। एक judge — ऐसा model जिसने कोई draft नहीं लिखा —
-सबसे अच्छा चुनता या merge करता है। फिर जीतने वाले को उससे मिलाया जाता है जो
-असल में माँगा गया था।
+Panel वैकल्पिक है। अलग executions एक ही task के drafts बनाती हैं; इन executions
+में शामिल न रहा evaluator candidates चुनता या मिलाता है। परिणाम original request
+से verify होता है। वही सक्षम configured model अलग, isolated sessions में drafter,
+judge और writer बन सकता है। Model या provider बदलना आवश्यक नहीं है। Evaluator
+authors की बातचीत या working context inherit नहीं करता।
 
 ## कब चलाएँ
 
-- कोई भी बड़ा build, fix या uplift जहाँ रफ़्तार से ज़्यादा quality मायने रखे।
-- जब तुम्हें independent graders की एक तय जोड़ी चाहिए, एक model पर अंधा
-  भरोसा नहीं।
-- मामूली one-line बदलावों के लिए नहीं। सीधा बदलाव करो और verify करो।
+- जब approaches की तुलना कोई स्पष्ट uncertainty दूर कर सके और उनकी जाँच
+  mission के शेष budget में हो सके।
+- जब operator panel माँगे; उपलब्ध roles और सीमाएँ बताएँ। केवल बड़ा task होने
+  से panel अनिवार्य नहीं हो जाता।
+- साधारण बदलावों में सीधा implementation और उचित verification करें।
+
+[bounded-loops](../bounded-loops/SKILL.md) लागू करें। Drafts, judge, writer और
+repair rounds मौजूदा mission की deadline, शेष attempts और resources साझा करते
+हैं। नए roles या sessions इन सीमाओं को reset नहीं करते। Host समर्थन दे तो स्वतंत्र
+drafts parallel चलाएँ, अन्यथा उन्हीं सीमाओं में क्रम से चलाएँ। Host में न मिलने
+वाली session isolation का दावा न करें।
 
 ## तीन stages
 
-### 1. Panel — parallel में drafts
+### 1. Panel — स्वतंत्र drafts
 
-1. वही task, वही context, हर panel model को एक साथ भेजो।
+1. वही task और वही context packet हर isolated drafting session को दो।
 2. हर drafter अकेला काम करता है। कोई drafter दूसरे का काम नहीं देखता।
 3. जो drafter error दे, time out हो, या ख़ाली लौटे — वह log होकर drop होता
    है। वह round को कभी नहीं मारता। Drop को ज़ोर से log करो — कभी निगलो मत।
@@ -37,8 +45,8 @@ parallel में draft करता है। एक judge — ऐसा model
    बाहर।
 2. Judge की दो शक्लें — config के हिसाब से एक चुनो:
    - **Synthesis:** judge हर candidate की छानबीन करता है (ताक़तें, defects,
-     टकराव), फिर एक अलग writer model उस छानबीन से आख़िरी जवाब गढ़ता है।
-     Writer और judge अलग roles हैं; हो सके तो अलग models रखो।
+     टकराव), फिर अलग writing execution उस विश्लेषण से अंतिम उत्तर बनाती है।
+     Roles और sessions अलग रखें; वही सक्षम configured model दोनों संभाल सकता है।
    - **Selection:** judge gate पार करने वालों में से अकेला सबसे अच्छा
      candidate चुनता है। सस्ता। तब लो जब merge से कुछ नहीं जुड़ता।
 3. Judge या writer उपलब्ध न हो, तो उन्हीं candidates पर selection पर उतरो —
@@ -61,23 +69,25 @@ parallel में draft करता है। एक judge — ऐसा model
 
 ## Ladder
 
-- Fusion की rung की शक्ल: नीचे सस्ते models का चौड़ा panel, ऊपर चढ़ते हुए
-  कसे panels और कसे output budgets — ग़लत configure हुई rung load होते ही
-  ज़ोर से fail होती है।
+- Panel का आकार और roles आवश्यक capability, वास्तविक availability, मौजूदा
+  config और शेष budget से चुनें। Fixed models, provider preference या अनिवार्य
+  model diversity नहीं। Config की कमी स्पष्ट दर्ज करें।
 - Config का format, roles-not-names, और live-probe resolution — सब
   [fleet-ladder](../fleet-ladder/SKILL.md) के हैं।
 
 ## Hard rules — एक भी तोड़ा तो skill fail
 
-- **Builder कभी judge नहीं।** Judge ने कोई candidate नहीं लिखा। आख़िरी
+- **Builder कभी judge नहीं।** Evaluating execution ने कोई candidate नहीं
+  लिखा और authors की बातचीत या working context inherit नहीं किया। आख़िरी
   grader एक fresh, author-disjoint session में काम करता है।
 - **किसी call site पर hardcoded model names नहीं।** Code में roles, config
   में models।
 - **कोई silent degradation नहीं।** Drop हुए drafters, judge का fallback, gate
   की failures, और exhaustion — सब ज़ोर से। जो नतीजा grade नहीं हो सकता, वह
   default से कभी pass नहीं होता।
-- **Bounded repair।** Panel के reruns की सख़्त cap है। Exhaustion एक ज़ोरदार
-  failure है, infinite loop नहीं।
+- **Bounded repair।** Reruns की सख़्त cap है और वे mission का शेष budget
+  खर्च करते हैं; जो सीमा पहले पहुँचे, वहीं रुकें। Exhaustion पर स्पष्ट checkpoint
+  दें, infinite loop नहीं।
 - **अकेले green tests का मतलब done नहीं।** जीतने वाला live behavior पर साबित
   होता है।
 

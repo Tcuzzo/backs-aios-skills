@@ -1,31 +1,40 @@
 ---
 name: "model-fusion"
-description: "À utiliser quand la réponse d'un seul modèle n'est pas assez fiable — un build, un fix ou un design difficile où tu veux plusieurs modèles en compétition et un juge indépendant qui tranche. Un panel rédige en parallèle, un juge fusionne le gagnant, le résultat est validé contre l'intention d'origine. Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader, juge, multi-modèle, brouillons parallèles, fusionner, le builder ne note pas."
+description: "À utiliser lorsque comparer des approches élaborées indépendamment aide la tâche et tient dans le budget restant, ou lorsque l’opérateur demande un panel. Brouillons, sélection ou synthèse et vérification indépendants du modèle ; un même modèle configuré peut remplir des rôles séparés dans des sessions isolées."
 license: "MIT"
 ---
 
 # Model Fusion
-**Effort:** heavy — un panel complet qui rédige en parallèle plus un juge indépendant (et un rédacteur en option) ; à dépenser sur les builds durs et les correctifs qui livrent, jamais sur des changements d'une ligne. Élimine : parier le changement sur le brouillon d'un seul modèle, et le rework quand ce brouillon-là est faux.
+**Effort:** heavy — brouillons indépendants, un évaluateur et un rédacteur optionnel ; utilise le panel lorsque son utilité pour la tâche justifie son coût dans le budget restant.
 
-Plusieurs voix indépendantes battent une seule voix. Un panel de modèles rédige
-la même tâche en parallèle. Un juge — un modèle qui n'a écrit aucun des
-brouillons — choisit ou fusionne le meilleur. Le gagnant est ensuite vérifié
-contre ce qui était vraiment demandé.
+Le panel est facultatif. Des exécutions séparées traitent la même tâche ; un
+évaluateur qui n'a participé à aucune de ces exécutions choisit ou combine les
+candidats. Le résultat est vérifié contre la demande d'origine. Un même modèle
+configuré et capable peut rédiger, évaluer et composer dans des sessions séparées
+et isolées. Aucun changement de modèle ou de fournisseur n'est nécessaire.
+L'évaluateur n'hérite ni de la conversation ni du contexte de travail des auteurs.
 
 ## Quand le lancer
 
-- Tout build, fix ou uplift substantiel où la qualité compte plus que la vitesse.
-- Quand tu veux une paire précise de correcteurs indépendants, pas une confiance
-  aveugle en un seul modèle.
-- PAS pour les changements triviaux d'une ligne. Fais le changement direct et
-  vérifie-le.
+- Lorsque comparer des approches peut résoudre une incertitude précise et que
+  leur évaluation tient dans le budget restant de la mission.
+- Lorsque l'opérateur demande un panel ; indique les rôles disponibles et leurs
+  limites. Une tâche importante n'impose pas à elle seule un panel.
+- Pour une modification simple, applique directement le changement et vérifie-le.
+
+Lie [bounded-loops](../bounded-loops/SKILL.md). Brouillons, juge, rédacteur et
+tours de réparation partagent échéance, tentatives restantes et ressources de la
+mission actuelle. De nouveaux rôles ou sessions ne réinitialisent pas ces limites.
+Exécute les brouillons indépendants en parallèle si l'hôte le permet, sinon
+successivement dans les mêmes limites. Ne prétends pas disposer d'une isolation
+de session que l'hôte n'offre pas.
 
 ## Les trois étapes
 
-### 1. Panel — brouillons en parallèle
+### 1. Panel — brouillons indépendants
 
-1. Envoie la même tâche, avec le même contexte, à chaque modèle du panel en
-   même temps.
+1. Donne la même tâche et le même dossier de contexte à chaque session de
+   rédaction isolée.
 2. Chaque rédacteur travaille seul. Aucun rédacteur ne voit le travail d'un autre.
 3. Un rédacteur qui plante, dépasse le délai ou renvoie du vide est loggé et
    écarté. Il ne tue jamais le tour. Logge l'éviction bien fort — ne l'avale
@@ -40,9 +49,9 @@ contre ce qui était vraiment demandé.
    sortent avant que le juge les voie.
 2. Deux formes de juge — choisis-en une par config :
    - **Synthèse :** le juge analyse chaque candidat (forces, défauts, conflits),
-     puis un modèle rédacteur séparé compose la réponse finale à partir de cette
-     analyse. Rédacteur et juge sont des rôles différents ; garde-les sur des
-     modèles différents quand tu peux.
+     puis une exécution de rédaction séparée compose la réponse finale à partir
+     de cette analyse. Garde les rôles et les sessions séparés ; un même modèle
+     configuré et capable peut remplir les deux.
    - **Sélection :** le juge choisit le meilleur candidat unique qui a passé le
      filtre. Moins cher. Utilise-la quand fusionner n'apporte rien.
 3. Si le juge ou le rédacteur est indisponible, dégrade BRUYAMMENT vers la
@@ -65,23 +74,26 @@ contre ce qui était vraiment demandé.
 
 ## L'échelle
 
-- La forme des barreaux de la fusion : un panel large de modèles pas chers en
-  bas, des panels plus serrés et des budgets de sortie plus serrés en montant —
-  un barreau mal configuré échoue bruyamment au chargement.
+- Choisis la taille du panel et les rôles selon les capacités requises,
+  la disponibilité réelle, la configuration actuelle et le budget restant.
+  Aucun modèle fixe, fournisseur préféré ou quota de diversité n'est imposé.
+  Signale les lacunes de configuration.
 - Le format de config, les rôles-pas-les-noms et la résolution par sonde live
   appartiennent à [fleet-ladder](../fleet-ladder/SKILL.md).
 
 ## Règles dures — une seule enfreinte et le skill a échoué
 
-- **Le builder ne juge jamais.** Le juge n'a rédigé aucun candidat. Le
-  correcteur final travaille dans une session vierge et disjointe de l'auteur.
+- **Le builder ne juge jamais.** L'exécution évaluatrice n'a rédigé aucun
+  candidat et n'hérite pas de la conversation ou du contexte de ses auteurs.
+  Le correcteur final travaille dans une session vierge et disjointe de l'auteur.
 - **Aucun nom de modèle en dur** à aucun point d'appel. Les rôles dans le code,
   les modèles dans la config.
 - **Aucune dégradation silencieuse.** Rédacteurs écartés, repli du juge, échecs
   au filtre et épuisement sont tous bruyants. Un résultat innotable ne passe
   jamais par défaut.
-- **Réparation bornée.** Les relances du panel ont un plafond dur. L'épuisement
-  est un échec bruyant, pas une boucle infinie.
+- **Réparation bornée.** Les relances ont un plafond dur et consomment le budget
+  restant de la mission ; arrête à la première limite atteinte. L'épuisement
+  produit un checkpoint visible, jamais une boucle infinie.
 - **Des tests verts seuls, ce n'est pas fini.** Le gagnant est prouvé sur le
   comportement live.
 

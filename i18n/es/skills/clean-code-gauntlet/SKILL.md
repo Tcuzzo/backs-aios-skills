@@ -7,6 +7,15 @@ license: "MIT"
 # Clean Code Gauntlet
 **Effort:** heavy — cómputo real: corridas de cobertura y complejidad más una pasada de mutación acotada, y luego un solo modelo de gusto; gástalo en cambios que van a entregarse. Elimina: la revisión humana línea por línea de diffs enteros, y los tests de verde falso tras los que se esconde una regresión.
 
+## Roles independientes del modelo
+
+Elige por las capacidades reales que exige la tarea, la disponibilidad y la
+configuración vigente. El mismo modelo capaz y el mismo proveedor pueden cubrir
+varios roles; no se exige una lista fija, un ranking ni diversidad de modelos.
+La revisión independiente usa una sesión nueva y disjunta del autor que no haya
+heredado su conversación ni su contexto de trabajo. Registra esa separación real;
+no atribuyas al runner controles que no implementa.
+
 ## Por qué existe
 
 El código desordenado hace que los agentes den bandazos, y las reglas enterradas

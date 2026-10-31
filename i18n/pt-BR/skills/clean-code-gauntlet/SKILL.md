@@ -7,6 +7,15 @@ license: "MIT"
 # Clean Code Gauntlet
 **Effort:** heavy — computação de verdade: rodadas de cobertura e complexidade mais uma passada limitada de mutação, depois um modelo de gosto; gaste em mudanças que vão para produção. Remove: review humano linha a linha de diffs inteiros, e os testes verde-falso atrás dos quais uma regressão se esconde.
 
+## Papéis independentes do modelo
+
+Escolha pelas capacidades reais exigidas pela tarefa, disponibilidade e
+configuração atual. O mesmo modelo capaz e o mesmo provedor podem assumir vários
+papéis; não se exige lista fixa, ranking ou diversidade de modelos. A revisão
+independente usa uma sessão nova e disjunta do autor, sem herdar sua conversa
+nem seu contexto de trabalho. Registre essa separação real; não atribua ao runner
+controles que ele não implementa.
+
 ## Por que isto existe
 
 Código bagunçado faz agente patinar, e regra enterrada num prompt longo some no

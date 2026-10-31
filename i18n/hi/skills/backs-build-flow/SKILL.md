@@ -10,6 +10,15 @@ license: MIT
 विशेषज्ञ skills उसी owner को evidence लौटाती हैं; वे workflow दोबारा शुरू नहीं करतीं।
 साधारण उत्तर में build या investigation न हो, तो केवल संबंधित चरण अपनाएँ।
 
+## Model-agnostic roles
+
+चुनाव task की वास्तविक capability, उपलब्धता और मौजूदा runtime config से करें।
+वही सक्षम model और provider कई roles संभाल सकते हैं; fixed model list, ranking
+या model diversity अनिवार्य नहीं है। Independent review के लिए fresh,
+author-disjoint session चाहिए, जिसने author की बातचीत या working context inherit
+न किया हो। वास्तविक separation दर्ज करें; runner में मौजूद न होने वाले controls
+को लागू होने का दावा न करें।
+
 ## कार्रवाई के लिए पर्याप्त context जुटाएँ
 
 1. उपयोगकर्ता का उद्देश्य, सीमाएँ, मौजूदा authorization और माँगा गया परिणाम बनाए रखें।

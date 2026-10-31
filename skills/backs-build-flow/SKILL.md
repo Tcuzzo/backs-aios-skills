@@ -10,6 +10,12 @@ One integration owner carries the request from context to verified delivery.
 Specialist skills return evidence to that owner; they do not restart the workflow.
 For a simple answer with no build or investigation, use only the relevant steps.
 
+**Model agnostic:** resolve roles by required capability and actual availability.
+The same capable model may fill multiple roles in separate executions. Required
+independent review uses a fresh context that did not participate in authoring or
+inherit the author's conversation. No specific model, provider, family, or model
+diversity is required. Record the selected route as provenance, not authority.
+
 ## Establish enough context to act
 
 1. Preserve the user's objective, constraints, existing authorization, and requested
