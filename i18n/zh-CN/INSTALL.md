@@ -1,16 +1,16 @@
 # 安装 —— 把这个包拧到真实的 agent 上
 
-> **v0.7 portable installer:** Claude Code、Codex、Cursor、OpenCode 和通用 agent 的当前一键注册方式：`./install.sh --target all --locale zh-CN`。脚本不会覆盖已有路径；PowerShell 用户运行 `./install.ps1`。完整的当前路径矩阵见[规范安装指南](../../INSTALL.md)。
+> **Portable installer:** Claude Code、Codex、Cursor、OpenCode 和通用 agent 的当前一键注册方式：`./install.sh --target all --locale zh-CN`。脚本不会覆盖已有路径；PowerShell 用户运行 `./install.ps1`。完整的当前路径矩阵见[规范安装指南](../../INSTALL.md)。
 
-这个包就是几个装满 markdown 的文件夹。每个技能是 `skills/<name>/SKILL.md`，
-每套战术是 `plays/<name>.md`。没有二进制、没有服务器、没有构建步骤。
-安装 = 把 markdown 放到你的 agent 找技能的地方。
+本包包含 62 个规范技能文件夹（54 个非命令本地化技能、8 个命令包装）、8 套战术
+和 15 个命令适配器。技能正文是 `skills/<name>/SKILL.md`，战术是 `plays/<name>.md`。
+安装器先复制规范文件夹内容，再覆盖本地化正文，保留参考资料和辅助脚本。
+仅复制 `i18n/zh-CN/skills/` 可能遗漏辅助内容；翻译安装请使用上面的 `--locale zh-CN`。
 
-frontmatter（文件头部的元数据块）刻意只用最小的 3 键子集——`name`、
-`description`、`license`——遵循开放的 Agent Skills 规范（agentskills.io）。
-该规范只要求 `name` 和 `description`，合规的运行时会忽略不认识的键。
-所以凡是这套规范能加载的地方，这个包都能原生加载；其他任何地方，
-它就是普通的 markdown。
+技能 frontmatter 包含 `name`、`description` 和 `license`；部分原生技能还有绑定
+元数据。开放 Agent Skills 规范（agentskills.io）要求 `name` 和 `description`。
+请核对宿主当前加载器及规范安装指南；不要把所有原生元数据视为每个运行时都具备
+的可执行绑定。
 
 ## 1. Claude Code 插件（推荐）
 
@@ -19,10 +19,21 @@ frontmatter（文件头部的元数据块）刻意只用最小的 3 键子集—
     /plugin marketplace add Tcuzzo/backs-aios-skills
     /plugin install backs-aios
 
-一次装齐所有东西：技能加载完毕，斜杠命令可用（输入 `/optimus` 启动地板），
-接地 hook 默认开启——它会拦住所有会改动东西的工具，直到 harness 加载完成。
-急停开关在你手里：在环境变量里设 `AIOS_GATE=off` 即可大大方方地关掉它。
-市场仓库有更新时，走 `/plugin` 更新。
+安装会提供技能、斜杠命令和上下文加载 hook。`/optimus` 建立底线和 Build Flow。
+Hook 将实际 **Optimus + Yoke + Build Flow** 正文交付给宿主上下文，不阻断工具。
+会话启动或压缩时重载所需正文，不撤销已完成 grounding。匹配的改动工具发现标记
+缺失时自动加载。正文缺失或不可读会给出可见诊断，工具仍可用，也不产生虚假回执。
+上下文加载回执与实际 Skill 事件证据不同。`--rearm <session_id>` 请求再次加载，
+不锁住会话。操作者仍拥有可逆停用开关 `AIOS_GATE=off`。通过 `/plugin` 更新。
+
+不提供上下文 hook 的宿主可使用受支持加载器：
+
+```bash
+node "$HOME/.local/share/backs-aios/current/hooks/aios_gate.js" --load backs-aios:optimus
+```
+
+Codex shell 将活动 `CODEX_SESSION_ID` 作为最后一个参数。也可用对应的 Python
+加载器 `aios_gate.py`。未知技能返回非零，不编造加载证据。
 
 ## 2. Claude Code，手动安装
 
@@ -78,11 +89,13 @@ VS Code 等等（按规范生态，2026-08）。这里要紧的规则：文件�
 
 1. 把 `skills/invariant-floor/SKILL.md` 放进系统 prompt，永远放。
    那是每个变更都必须跨过的地板。
-2. 挑匹配需求的战术——构建 → `plays/elite-build.md`，bug →
-   `plays/bughunt.md`，评审 → `plays/grading-verification.md`——追加进去。
+2. 用 `skills/backs-build-flow/SKILL.md` 建立一位任务负责人、模式、目标、验收
+   检查与共享预算。需要或明确要求时再加入对应战术；不是每个小改动都启动完整
+   elite-build。
 3. 拿用户的话去匹配各技能 `description` 里的触发词。绝不注入整个包——
    只注入匹配上的那一到三个技能。这个包很省 token；保持住。
-4. 每次上下文重置都重新注入。掉出上下文的规则等于没加载。
+4. 上下文重置后，重载下一步缺失的实际正文。保留当前任务包、RED 封条、基线/
+   候选和剩余预算；新上下文不是新任务。
 
 ## 第一个会话
 
@@ -90,6 +103,5 @@ VS Code 等等（按规范生态，2026-08）。这里要紧的规则：文件�
 
     你：    读 ~/.claude/skills/optimus/SKILL.md 并启动。本会话遵循它。
     你：    任务——优惠券和礼品卡叠加时，结账总价算错了。
-    Agent： [启动：加载 invariant-floor，选中 plays/bughunt.md，点名它要触发的技能]
-    你：    开干。
-    Agent： [战术驱动：复现、红测试、修掉整个类、线上验证、盲评、落地]
+    Agent： [载入实际底线和 Build Flow，验证目标，建立一个有界任务包]
+    Agent： [复现、封存 RED、整类修复、限定 lint/类型/测试及 gauntlet，再完成已授权评审与交付]

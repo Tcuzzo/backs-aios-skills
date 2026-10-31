@@ -1,6 +1,6 @@
 ---
 name: "repair-loop"
-description: "Use ao consertar um bug, fechar um issue reportado ou dar uplift numa costura de ponta a ponta. Roda o loop completo de reparo — aterrar no piso, reproduzir na verdade viva, teste de contrato vermelho, consertar a classe na costura, verificar no caminho real, avaliação independente, aterrissar — e itera até ser verdade. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build, loop de reparo, conserta isso, fechar a costura, modo dev."
+description: "Use ao corrigir bug, fechar problema relatado ou melhorar uma costura de ponta a ponta com reprodução, RED selado, correção da classe, verificações focadas e entrega verificada dentro do orçamento da missão."
 license: "MIT"
 ---
 
@@ -14,17 +14,24 @@ mas quebrado" estruturalmente difícil de sair.
 
 ## Carregue primeiro, antes de qualquer design ou edição
 
-1. [invariant-floor](../invariant-floor/SKILL.md) — leia seu conjunto de regras antes de trabalhar.
-2. [human-calibration](../human-calibration/SKILL.md) — aplique o perfil do humano; nunca o reinterrogue.
-3. [understanding-gates](../understanding-gates/SKILL.md) — o planejador diagnóstico: Design → Plano → Build → Teste → Entrega.
-4. [wayfinder](../wayfinder/SKILL.md) — quando perdido, trace a rota; nunca estacione uma pergunta no humano.
-5. Se o pedido chega como prosa ou metáfora, rode [intent-compiler](../intent-compiler/SKILL.md) primeiro e itere sobre a diretiva deduzida.
+Use [BACKS Build Flow](../backs-build-flow/SKILL.md) para pacote de tarefa,
+essência do operador e um responsável pela integração. Reutilize regras aplicáveis,
+contexto, corpos carregados e evidências já estabelecidos; atualize só o que mudou.
+Invocação direta estabelece contexto ausente uma vez. Carregue piso de invariantes
+e gates de entendimento obrigatórios se faltarem; use wayfinder apenas para rota
+não resolvida. Achado de reparo não reinicia o play externo.
+
+[bounded-loops](../bounded-loops/SKILL.md) cuida do prazo compartilhado e cotas
+restantes de tentativas/rodadas. Preserve `mission_id`, `task_mode`, `base_sha`
+fixado e `candidate_sha` atual por reprodução, edições, ferramentas, modelos,
+revisões e handoffs. Chamada aninhada não reinicia orçamento. Revisão e diagnóstico
+devolvem evidências sem editar nem promover; construir exige esse escopo.
 
 ## O loop
 
-1. **Aterre no piso.** Carregue as regras e a verdade do próprio projeto
-   (docs, fonte, tracker) antes de tocar em código. Trabalho feito de memória
-   das regras não conta.
+1. **Fundamente o caminho afetado.** Confira regras, código atual do projeto,
+   contratos de chamadas e verificações existentes. Reutilize evidências atuais
+   e pertinentes sem repetir auditoria do repo inteiro.
 2. **Reproduza na verdade viva.** Veja a falha você mesmo, no caminho real
    que o humano usa — não uma sonda proxy, não a palavra do bug report. Sem
    reprodução, sem conserto.
@@ -34,37 +41,41 @@ mas quebrado" estruturalmente difícil de sair.
    [red-first](../red-first/SKILL.md).
 4. **Conserte a CLASSE na costura** — não um remendo pontual por sintoma. A
    fórmula completa vive em [seam-engineering](../seam-engineering/SKILL.md).
-5. **Verifique no caminho real.** Confie, mas verifique. Capacidade se prova
-   na superfície do próprio humano — a UI em que ele digita, o comando que
-   ele roda — nunca num teste verde sobre uma costura mockada. Cheque toda
-   alegação ("a outra branch já aterrissou isso", "aquele serviço está fora")
-   contra a verdade viva antes de agir sobre ela.
-6. **Meça o conserto.** No meio do loop, rode só os testes que cobrem a
-   costura que você tocou — veja [sniper-testing](../sniper-testing/SKILL.md).
-   Depois rode o [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) no
-   código mudado: testes escopados, nota de complexidade-vs-cobertura, teste
-   de mutação limitado. Um mutante que sobrevive ao seu conserto significa
-   que o teste nunca alcançou o branch que você mudou — verde falso; continue
-   iterando.
-7. **Avaliação independente.** Um avaliador que não escreveu a mudança — em
-   uma sessão nova e disjunta do autor — precisa
-   aprová-la. O builder nunca avalia o próprio trabalho. Veja
-   [blind-tribunal](../blind-tribunal/SKILL.md).
+5. **Execute verificações focadas.** Use [sniper-testing](../sniper-testing/SKILL.md)
+   para derivar escopo do diff agregado de `base_sha` a `candidate_sha` e caminhos
+   próprios pendentes. Execute comandos reais de lint, tipos e tests do repo.
+   Registre comando, resultado e revisão. Marque **N/A** com motivo para o inaplicável;
+   ferramenta obrigatória ausente é lacuna. Não instale ferramentas arbitrárias
+   nem invente aprovações. Test selado continua idêntico byte a byte.
+6. **Meça dentro do fluxo.** Aplique [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md)
+   para qualidade e mutação limitada do candidato. Investigue sobreviventes; se
+   revelarem lacuna de test, acrescente arquivo suplementar separado preservando
+   RED original. Corrija a costura responsável e repita verificações afetadas dentro
+   da mesma cota restante; nunca reduza gates para obter GREEN.
+7. **Avaliação independente.** Escolha avaliador capaz e disponível pela matriz
+   configurada; registre e exclua a execução autora. Sessão nova separada do autor,
+   sem conversa nem contexto herdados, precisa aprovar. O builder nunca avalia
+   o próprio trabalho. Veja [blind-tribunal](../blind-tribunal/SKILL.md).
 8. **Cheque o trabalho concorrente.** Antes de alterar estado compartilhado,
    verifique que o trabalho em voo de qualquer outra sessão está preservado
    (numa branch ou commit). Nunca commite nem limpe trabalho que não é seu.
-9. **Aterrisse.** Uma passada completa nas suítes dos módulos tocados na
-   aterrissagem, depois commite. Feche todo achado que o loop levantou nesta
-   costura — ou registre um veredicto explícito e com evidência de "não é
-   bug" por achado. "Consertei o grande, adiei o resto" nunca aterrissa.
+9. **Verifique e integre dentro do escopo.** Uma passagem completa pelas suites
+   dos módulos tocados na integração, mais verificações obrigatórias do projeto;
+   siga a entrega autorizada. Confira comportamento na superfície real do humano
+   (UI ou comando usado) e registre revisão exata candidata/instalada. Tests locais
+   e evidência estática original não estabelecem entrega ao vivo. Feche cada achado
+   na costura ou registre «não é bug» com evidência. «Corrigi o grande e adiei o resto»
+   nunca aterrissa.
 
-## Itere até ser verdade
+## Itere dentro do orçamento da missão
 
-Uma regra ainda não cumprida não para o loop — ela o move. Escale o modelo ou
-o tier, remova o bloqueio, tente de novo, até cada passo acima ser verdade e a
-mudança aterrissar. "Bom o bastante" não é status. Se travar de verdade duas
-vezes na mesma costura, registre a evidência exata do bloqueio e vá para a
-próxima peça desbloqueada — nunca moa em silêncio.
+Verificação falha fornece a próxima hipótese limitada. Repita ou escolha rota
+capaz configurada somente dentro da cota restante; mudar modelo não cria missão
+nova. Aplique regras de estagnação e esgotamento de bounded-loops. Ao atingir
+limite, salve **STILL-BUILDING** com candidato, tests selados, evidência da falha,
+gates pendentes e próxima ação exata. Conclua trabalho útil autorizado que não
+consuma cota esgotada. Achado aberto bloqueia integração, mas não apaga progresso
+nem vira veredito **PROVEN** inventado.
 
 ## Regras duras — qualquer uma derruba a skill
 
@@ -75,7 +86,7 @@ próxima peça desbloqueada — nunca moa em silêncio.
   humano está quebrado.
 - Builder avaliou a própria mudança.
 - Um achado levantado adiado em silêncio na aterrissagem.
-- Loop abandonado em "bom o bastante" em vez de escalado.
+- Ciclo reiniciado, abandonado em silêncio ou declarado verde com gate pendente.
 
 ## Relatório
 

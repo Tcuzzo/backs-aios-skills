@@ -21,8 +21,11 @@ Zwei Kommandos in Claude Code:
 
 Das installiert alles auf einmal: Die Skills laden, die Slash-Kommandos werden
 verfügbar (tippe `/optimus`, um den Boden zu booten), und der Grounding-Hook kommt
-aktiviert mit — er blockiert verändernde Tools, bis der Harness geladen ist. Der
-Kill-Switch des Hooks gehört dir: Setze `AIOS_GATE=off` in der Umgebung, um ihn
+aktiviert mit — er liefert die tatsächlichen Texte von Optimus, Yoke und Build
+Flow beim Start, nach Kompaktierung und bei fehlendem Kontextmarker. Er blockiert
+keine Tools und entzieht keine erworbene Erdung. Fehlende Texte werden sichtbar
+als Diagnose gemeldet, ohne einen Ladebeleg zu erfinden. Der Kill-Switch gehört
+dir: Setze `AIOS_GATE=off` in der Umgebung, um ihn
 abzuschalten — laut, nicht heimlich. Updates fließen über `/plugin`, wenn sich das
 Marketplace-Repo bewegt.
 

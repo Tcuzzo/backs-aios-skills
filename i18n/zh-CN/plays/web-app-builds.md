@@ -8,51 +8,23 @@
 
 构建或扩展任何会被别人安装并运行的 web 应用、网站、API 或交付仓库。
 
-整个构建，一图看懂：
+## 共享任务与限制
 
-```
-+--------------------------------------------+
-| 1 intent-compiler  read the ask whole      |
-+--------------------------------------------+
-| 2 understanding-gates  structure first:    |
-|   one entrypoint, manifest, lockfile       |
-+--------------------------------------------+
-| 3 dependency hygiene  validate + hash-pin  |
-|   every dep, no install scripts, pin CI    |
-+--------------------------------------------+
-| 4 red-first  contract tests for routes,    |<--------------------------+
-|   loaders, validation -- committed first   |  finding -> a new red     |
-+--------------------------------------------+  test -> fix ->           |
-| 5 build to the doctrine; any UI runs       |  re-convene               |
-|   the design-taste method                  |                           |
-+--------------------------------------------+   +---------------------+ |
-| 6 sniper-testing  never mock your own      |   |  LORD OF THE LOOP   |-+
-|   validation or serialization              |   | one hand drives the |
-+--------------------------------------------+   | loop: dispatch,     |
-| 7 clean-code-gauntlet  mutate validation   |   | judge, loop back    |
-|   + auth predicates until none survive     |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 8 blind-tribunal  independent juror       |-->| lands its own work. |
-|   panel; capability-resolved grader        |   |                    |
-+--------------------------------------------+   +---------------------+
-          |
-          | every juror passes
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no deploy:    |
-| no unpinned dep . no committed secret .    |
-| zero mutation survivors in validation +    |
-| auth predicates . no external network      |
-| during tests (loopback is fine)            |
-+--------------------------------------------+
-```
+在当前 [BACKS Build Flow](../skills/backs-build-flow/SKILL.md) 任务包内应用本战术。
+保留一位集成负责人、请求的 `task_mode`、固定 `base_sha`、当前 `candidate_sha`、
+operator essence 和当前证据。复用适用的已载入技能正文；本战术增加领域关卡，
+不重启任务。
 
-图中两个特殊标签：Lord of the Loop = 循环之主，即由一只手驱动整个迭代（派发、评判、循环回炉）、直到落地门槛转绿的循环负责人；LANDING GATE（LAND，落地门槛）= 全部条件转绿才放行落地的最终关卡。
+[bounded-loops](../skills/bounded-loops/SKILL.md) 负责原始截止时间和剩余额度，
+贯穿重试、工作者、模型、评审和交接。嵌套战术不得重置它们。耗尽时建立
+**STILL-BUILDING** 检查点，保留候选版本、证据、未过关卡和下一步。
+有用且已授权工作仅在剩余额度内继续；缺失关卡不能变成通过。
 
 ## 链路
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) —— 选技术栈或结构
-   之前，先把需求完整读懂。
+1. 选技术栈或结构前，使用 Build Flow 已建立的意图和 operator essence，遵循完整
+   请求和当前纠正。
+
 2. [understanding-gates](../skills/understanding-gates/SKILL.md) —— 先设计
    结构：一个有文档的入口、一份显式的依赖清单、一个已提交的
    lockfile（锁定依赖精确版本的文件）。不许文件随手乱堆。
@@ -75,15 +47,20 @@
 5. 按下面的守则构建。任何 UI 表面都跑
    [design-taste](../skills/design-taste/SKILL.md) 方法——token 先行，
    无障碍是硬门槛。
-6. [sniper-testing](../skills/sniper-testing/SKILL.md) —— 绝不 mock 你自己
-   的校验或序列化：被 mock 掉的 web 边界，交付出去的是一个该拒收却
-   照单全收的应用。
-7. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) —— 路由
-   处理器、数据加载器、表单/校验路径过关才许部署；对校验和鉴权谓词跑
-   变异测试，直到无一幸存。翻转比较符、套件却照过的边界检查，
-   就是公网表面上敞开的一扇门。
-8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) —— 部署前在全新、与作者上下文隔离的会话中进行独立评审。
-   陪审员的每条发现都变成一条新的红色测试；重新开庭，直到每位陪审员都放行。
+6. [sniper-testing](../skills/sniper-testing/SKILL.md) — 根据固定汇总候选差异限定
+   仓库真实 lint/类型/测试命令，报告缺口和有理由的 N/A。绝不模拟自己的验证或
+   序列化；模拟 web 边界会交付接受本应拒绝内容的应用。
+
+7. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — 路由处理器、数据
+   加载器和表单/验证路径部署前须通过。在共享预算内变异验证与鉴权谓词；有意义的
+   幸存者阻止部署。缺失回归另加文件，保留封存的原始 RED。边界比较翻转后套件仍
+   通过，就是公开界面上的敞开门。
+
+8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — 部署前独立陪审。每位评审
+   按配置梯级矩阵的能力与可用性在线选择，记录并排除作者执行，使用全新且与作者
+   隔离的会话。每个证实发现都在本任务内建立独立 RED 并有界修复。在剩余预算内
+   复审，所有必需陪审员均须通过。保留完整受影响测试集落地关卡，并在真实应用
+   界面验证已获授权的交付。
 
 ## 守则（构建必须满足的条件）
 

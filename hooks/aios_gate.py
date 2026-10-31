@@ -305,6 +305,11 @@ def _resolve_native_or_pack_skill(canonical: str):
         "yoke": ("human-calibration", "yoke"),
         "human-calibration": ("human-calibration", "yoke"),
         "optimus": ("optimus",),
+        "context-engineer": ("context-engineer", "context_engineer", "context-compiler"),
+        "context_engineer": ("context-engineer", "context_engineer", "context-compiler"),
+        "context-compiler": ("context-engineer", "context_engineer", "context-compiler"),
+        "operator-intent-deduction": ("operator-intent-deduction", "operator_intent_deduction"),
+        "operator_intent_deduction": ("operator-intent-deduction", "operator_intent_deduction"),
         "conscientious-objector": ("conscientious_objector", "conscientious-objector"),
         "conscientious_objector": ("conscientious_objector", "conscientious-objector"),
     }
@@ -325,35 +330,49 @@ def _resolve_native_or_pack_skill(canonical: str):
 def _wake_load_context() -> str:
     """Name wake skills without copying their full bodies into every session."""
     return (
-        "BACKS wake-load: invoke operator_intent_deduction before handing the "
-        "operator a decision, and invoke context_engineer when compiling task "
-        "context. context-compiler is a context_engineer alias; intent-compiler is a "
-        "separate skill. Load skill bodies through the skill runtime only when needed."
+        "BACKS wake-load: invoke operator-intent-deduction before handing the "
+        "operator a decision, and invoke context-engineer when compiling task "
+        "context. Legacy compatibility: operator_intent_deduction resolves to "
+        "operator-intent-deduction; context-compiler is a context_engineer alias, "
+        "and both resolve to context-engineer. intent-compiler is a separate skill. "
+        "Build Flow owns the current task packet; reuse current evidence "
+        "and apply operator-essence when operator context is needed. "
+        "Load skill bodies through the skill runtime only when needed."
     )
 
 
-def _floor_context() -> tuple[str, list[dict]]:
-    entries = []
-    root = _deploy_root()
-    harness = os.path.join(root, 'backend/prompts/BACKS_CODEX_HARNESS.md')
-    if root and os.path.isfile(harness):
-        entries.append((harness, 'harness', 'deploy_native'))
-    for name in ('optimus', 'yoke'):
+def _read_body(entry) -> dict:
+    filename, canonical, source = entry
+    with open(filename, encoding='utf-8', newline='') as handle:
+        body = handle.read()
+    if not body.strip():
+        raise ValueError(f'{canonical} unavailable')
+    return {'path': filename, 'canonical': canonical, 'source': source,
+            'body': body, 'sha256': hashlib.sha256(body.encode()).hexdigest()}
+
+
+def _foundation_bodies() -> list[dict]:
+    bodies = []
+    for name in ('optimus', 'yoke', 'backs-build-flow'):
         resolved = _resolve_native_or_pack_skill(name)
         if not resolved:
             raise ValueError(f'{name} unavailable')
-        entries.append(resolved)
-    context = [_wake_load_context()]
+        bodies.append(_read_body(resolved))
+    return bodies
+
+
+def _floor_context() -> tuple[str, list[dict]]:
     bodies = []
-    for filename, canonical, source in entries:
-        with open(filename, encoding='utf-8', newline='') as handle:
-            body = handle.read()
-        if not body.strip():
-            raise ValueError(f'{canonical} unavailable')
-        context.append(f'## BACKS loaded: {canonical}\n{body}')
-        bodies.append({'path': filename, 'canonical': canonical, 'source': source,
-                       'sha256': hashlib.sha256(body.encode()).hexdigest()})
-    return '\n\n'.join(context), bodies
+    root = _deploy_root()
+    harness = os.path.join(root, 'backend/prompts/BACKS_CODEX_HARNESS.md')
+    if root and os.path.isfile(harness):
+        bodies.append(_read_body((harness, 'harness', 'deploy_native')))
+    bodies.extend(_foundation_bodies())
+    context = [_wake_load_context()]
+    for entry in bodies:
+        context.append(f"## BACKS loaded: {entry['canonical']}\n{entry['body']}")
+    receipts = [{key: value for key, value in entry.items() if key != 'body'} for entry in bodies]
+    return '\n\n'.join(context), receipts
 
 
 def _write_stdout(body: str) -> None:
@@ -471,19 +490,12 @@ def _load(argv: list) -> int:
         if not resolved_info:
             sys.stderr.write("aios_gate: skill not found\n")
             return 2
-        resolved, resolved_name, _src = resolved_info
-        with open(resolved, "r", encoding="utf-8", newline="") as fh:
-            body = fh.read()
+        resolved_name = resolved_info[1]
+        bodies = (_foundation_bodies() if resolved_name == 'optimus'
+                  else [_read_body(resolved_info)])
+        body = '\n\n'.join(entry['body'] for entry in bodies)
         session_id = _session_id({}, argv[1] if len(argv) > 1 else None)
-        digests = {resolved_name: hashlib.sha256(body.encode("utf-8")).hexdigest()}
-        if resolved_name == "optimus" or canonical == "optimus":
-            yoke = _resolve_native_or_pack_skill("yoke")
-            if yoke:
-                yp, yn, _ = yoke
-                with open(yp, encoding='utf-8', newline='') as yfh:
-                    yoke_body = yfh.read()
-                digests[yn] = hashlib.sha256(yoke_body.encode()).hexdigest()
-                body += '\n\n' + yoke_body
+        digests = {entry['canonical']: entry['sha256'] for entry in bodies}
         _write_stdout(body)
         _write_floor_marker(session_id)
         try:

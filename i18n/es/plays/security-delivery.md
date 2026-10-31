@@ -11,50 +11,19 @@ recuerde.
   correo, input.
 - Estás agregando dependencias o CI a algo que se entrega.
 
-La puerta de salida, de un vistazo:
+## Tarea y límites compartidos
 
-```
-+--------------------------------------------+
-| 1 secret gate  verified-only scan; one     |
-|   live credential fails the build          |
-+--------------------------------------------+
-| 2 egress lockdown  deny by default;        |
-|   canonicalize before allowlist match      |
-+--------------------------------------------+
-| 3 break the lethal trifecta  one leg       |
-|   always missing on every path             |
-+--------------------------------------------+
-| 4 taint tracking  tainted session =>       |
-|   policy-gate every exfil-capable action   |
-+--------------------------------------------+
-| 5 supply chain  hash-pin every dep, no     |
-|   install scripts, SHA-pinned CI           |
-+--------------------------------------------+
-| 6 clean-code-gauntlet  mutate detectors,   |<--------------------------+
-|   parsers, predicates to zero survivors    |  a survivor or a          |
-+--------------------------------------------+  sandbox catch ->         |
-| 7 sniper-testing  mock outbound network    |   +---------------------+ |
-|   only, never payload or parser            |   |  LORD OF THE LOOP   |-+
-+--------------------------------------------+   | one hand drives the |
-| 8 sandbox before ship  outbound blocked,   |-->| loop: dispatch,     |
-|   watch writes + calls, hard-kill armed    |   | judge, loop back    |
-+--------------------------------------------+   | until the gate is   |
-| 9 provenance  SBOM + signed provenance;    |   | green. a lane never |
-|   still review the source                  |   | lands its own work. |
-+--------------------------------------------+   +---------------------+
-          |
-          | every gate green
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no ship:      |
-| no live credential anywhere . no path      |
-| holds all three trifecta legs . deps +     |
-| CI hash-pinned . zero surviving mutants    |
-| . sandboxed before ship                    |
-+--------------------------------------------+
-```
+Aplica este play dentro del paquete actual de
+[BACKS Build Flow](../skills/backs-build-flow/SKILL.md). Mantén un responsable
+de integración, `task_mode` solicitado, revisiones base y candidata fijadas,
+esencia del operador y evidencia vigente. Reutiliza cuerpos pertinentes ya cargados;
+este play añade puertas de su dominio sin reiniciar la tarea.
 
-En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce la iteración — despacha, juzga y vuelve a iterar — hasta que la puerta de aterrizaje está en verde; **LAND / LANDING GATE** = aterrizar — integrar el cambio solo cuando todo está en verde.
+[bounded-loops](../skills/bounded-loops/SKILL.md) controla plazo original y cupos
+restantes entre reintentos, trabajadores, modelos, revisiones y traspasos.
+Nunca los reinicies para un play anidado. Al agotarlos, guarda **STILL-BUILDING**
+con candidato, evidencia, puertas pendientes y siguiente acción. Continúa trabajo
+útil autorizado solo dentro de su cupo restante; una puerta ausente no se vuelve aprobada.
 
 ## La cadena
 
@@ -75,14 +44,20 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
    nunca lo dejes al juicio del modelo.
 5. Cadena de suministro — fija cada dependencia por hash y bloquea los scripts de
    instalación. Fija cada acción de CI a un hash de commit completo, no a un tag.
-6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — el código de
-   seguridad lleva la vara más estricta. Corre testing de mutación sobre cada
-   detector, parser y predicado de política, y lleva los mutantes sobrevivientes a
-   cero. Una comparación invertida dentro de un chequeo de amenazas que la suite
-   igual pasa ES la vulnerabilidad.
-7. [sniper-testing](../skills/sniper-testing/SKILL.md) — mockea SOLO la red
-   saliente, nunca el payload ni el parser bajo prueba: un detector mockeado es un
-   sensor ciego en producción.
+6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — la seguridad
+   exige la barra más estricta. Muta cada detector, parser y predicado de política
+   dentro del presupuesto compartido; sobrevivientes significativos bloquean
+   entrega. Añade aserciones faltantes en tests suplementarios separados, conservando
+   RED sellado. Una comparación invertida en detección que sigue pasando la suite
+   ES la vulnerabilidad.
+
+7. [sniper-testing](../skills/sniper-testing/SKILL.md) — usa comandos reales de
+   lint/tipos/tests según el diff agregado fijado e informa huecos o N/A justificados.
+   Mockea SOLO red saliente, nunca payload ni parser bajo prueba: un detector
+   mockeado es un sensor ciego en producción. Reutiliza evidencia acotada vigente
+   antes del gauntlet y conserva pasada completa de suites afectadas y revisión
+   separada del autor.
+
 8. Sandbox antes de entregar — corre el artefacto construido en un sandbox efímero
    con toda la salida bloqueada y un corte duro de recursos armado. Mira qué escribe
    y qué intenta llamar.

@@ -10,44 +10,17 @@
   （那个走 repair loop）。
 - 一堆积压的发现需要并行进攻，还不能跑偏、不能互相踩踏。
 
-整场狩猎，一图看懂：
+## 共享任务与限制
 
-```
-    +--------------------------------------------+
-+-->| 1 wayfinder  chart the hunt as one map,    |
-|   |   a node per seam; claim from the frontier |
-|   +--------------------------------------------+
-|   | 2 leap-protocol  one node = one ball:      |
-|   |   goal, spec, hard file scope, ONE writer  |
-|   +--------------------------------------------+
-|   | 3 root-cause-first  reproduce + review     |
-|   |   evidence BEFORE any code changes         |
-|   +--------------------------------------------+
-|   | 4 repair-loop  red-first test committed,   |<--------------------------+
-|   |   sniper-testing while iterating           |  finding or survivor ->   |
-|   +--------------------------------------------+   +---------------------+ |
-|   | 5 blind-tribunal  a non-author grader      |-->|  LORD OF THE LOOP   |-+
-|   |   attacks; jurors judge redacted work      |   | one hand drives the |
-|   +--------------------------------------------+   | loop: dispatch,     |
-|   | 6 seam-engineering  close the CLASS at     |   | judge, loop back    |
-|   |   the shared seam, never the symptom       |   | until the gate is   |
-|   +--------------------------------------------+   | green. a lane never |
-|   | 7 clean-code-gauntlet  the fixed branch    |-->| lands its own work. |
-|   |   must DIE under mutation, or stay open    |   +---------------------+
-|   +--------------------------------------------+
-|             |
-|             | jurors pass + mutant dies
-|             v
-|   +--------------------------------------------+
-|   | LANDING GATE -- leap-protocol Score gate:  |
-|   | source truth . keep-or-revert . blind      |
-|   | review . live proof . provenance -- each   |
-|   | finding ends FIXED or REFUTED-W-EVIDENCE   |
-+---| ball closed -> claim the next node         |
-    +--------------------------------------------+
-```
+在当前 [BACKS Build Flow](../skills/backs-build-flow/SKILL.md) 任务包内应用本战术。
+保留一位集成负责人、请求的 `task_mode`、固定 `base_sha`、当前 `candidate_sha`、
+operator essence 和当前证据。复用适用的已载入技能正文；本战术增加领域关卡，
+不重启任务。
 
-图中两个特殊标签：Lord of the Loop = 循环之主，即由一只手驱动整个迭代（派发、评判、循环回炉）、直到落地门槛转绿的循环负责人；LANDING GATE（LAND，落地门槛）= 全部条件转绿才放行落地的最终关卡。
+[bounded-loops](../skills/bounded-loops/SKILL.md) 负责原始截止时间和剩余额度，
+贯穿重试、工作者、模型、评审和交接。嵌套战术不得重置它们。耗尽时建立
+**STILL-BUILDING** 检查点，保留候选版本、证据、未过关卡和下一步。
+有用且已授权工作仅在剩余额度内继续；缺失关卡不能变成通过。
 
 ## 链路
 
@@ -59,10 +32,12 @@
    同一条按依赖排序的切片，写入者有且只有一个。
 3. [root-cause-first](../skills/root-cause-first/SKILL.md) —— 改任何代码之前，
    先复现 bug、审阅根因证据。靠猜就动代码，不行。
-4. [repair-loop](../skills/repair-loop/SKILL.md) —— 每个球的内功：
-   [red-first](../skills/red-first/SKILL.md) 先提交失败测试再修，
-   [sniper-testing](../skills/sniper-testing/SKILL.md) 迭代期间只跑限定范围
-   的测试，落地时对触及的模块完整跑一遍。
+4. [repair-loop](../skills/repair-loop/SKILL.md) — 每个工作包的内层纪律：
+   [red-first](../skills/red-first/SKILL.md) 失败测试在修复前提交；
+   [sniper-testing](../skills/sniper-testing/SKILL.md) 根据固定汇总候选差异限定
+   真实 lint/类型/测试命令，落地时完整运行一次受影响模块测试集。
+   原始 RED 不变，新发现另加补充测试。将证据返回调查负责人，不重启战术。
+
 5. [blind-tribunal](../skills/blind-tribunal/SKILL.md) —— 每条发现都要被
    对抗式进攻：一位不是作者的评审以"默认拒绝"的姿态进攻，陪审员评审一份
    抹去作者信息的卷宗。构建者绝不给自己的活打分。
@@ -78,6 +53,9 @@
 关掉——源头真相、留或回滚、盲审、线上实证、溯源记录；证据缺失绝不默认通过。
 狩猎特有的终态：每条发现要么 FIXED（已修复），要么
 REFUTED-WITH-EVIDENCE（有证据地驳回）。
+
+额度耗尽时，发现保持开放并建立 STILL-BUILDING 检查点，不能宣称已达到终态
+FIXED 或 REFUTED-WITH-EVIDENCE。认领下一个获准节点前，保留尝试历史和剩余任务限制。
 
 ## 狩猎守则
 
@@ -101,6 +79,6 @@ REFUTED-WITH-EVIDENCE（有证据地驳回）。
 - 修好的分支上变异体还活着，发现却被关掉了。
 - 狩猎中途跑全量测试——只狙击这条发现自己的接缝。
 - 收口测试里搞 mock 剧场：台账说 bug 关了，实际它悄悄又开了。
-- 一条发现被搁置，而不是被修复或有证据地驳回。
+- 悄悄搁置发现，或在未修复、未有证据反驳时将其标为关闭。
 
 **Weight:** 核心是 free 的狩猎纪律；heavy 开销有三重——leap 并行展开、对抗式陪审团、变异收口证明——当整个积压清单并行关闭、每次收口都经变异测试证明时，这笔账就划算。

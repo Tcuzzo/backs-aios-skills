@@ -9,49 +9,23 @@ design tokens first, give the agent eyes, and gate on accessibility.
 Any screen, page, component, dashboard, or visual deliverable a human will look at.
 The first screen sets the standard for every screen after — run this before it.
 
-The taste loop, at a glance:
+## Shared task and limits
 
-```
-+--------------------------------------------+
-| 1 intent-compiler  WHICH taste do the      |
-|   human's words ask for? state the read    |
-+--------------------------------------------+
-| 2 human-calibration  anchor in the record  |
-|   + studied references, never a guess      |
-+--------------------------------------------+
-| 3 design-taste  emit the three-tier        |
-|   token file FIRST, before any component   |
-+--------------------------------------------+
-| 4 build with the token file as a hard      |<--------------------------+
-|   constraint -- no raw hex, px, fonts      |  critique -> fix ->       |
-+--------------------------------------------+  re-shoot                 |
-| 5 design-taste  screenshot -> critic;      |   +---------------------+ |
-|   critic resolved live via fleet-ladder    |-->|  LORD OF THE LOOP   |-+
-+--------------------------------------------+   | one hand drives the |
-| 6 design-taste  8-axis taste rubric        |   | loop: dispatch,     |
-+--------------------------------------------+   | judge, loop back    |
-| 7 design-taste  WCAG 2.2 HARD gate         |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 8 clean-code-gauntlet  the code BEHIND     |   | lands its own work. |
-|   the pixels; zero surviving mutants       |   +---------------------+
-+--------------------------------------------+
-          |
-          | rubric + WCAG green
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no ship:      |
-| WCAG 2.2 passes . 8-axis rubric scored .   |
-| zero surviving mutants behind the pixels   |
-| . critic is a non-builder seat chosen      |
-| live by capability + availability, no      |
-| pinned ids                              |
-+--------------------------------------------+
-```
+Apply this play inside the current [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)
+task packet. Keep one integration owner, the requested `task_mode`, pinned base
+and candidate revisions, operator essence, and current evidence. Reuse applicable
+loaded skill bodies; this play adds its domain gates without restarting the task.
+
+[bounded-loops](../skills/bounded-loops/SKILL.md) owns the original deadline and
+remaining allowances across retries, workers, models, reviews, and handoffs.
+Never reset them for a nested play. On exhaustion, checkpoint **STILL-BUILDING**
+with the candidate, evidence, unmet gates, and next action. Continue useful
+authorized work only within its remaining allowance; no missing gate becomes a pass.
 
 ## The chain
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — deduce WHICH taste
-   the human's own words ask for, and state the read in one line before writing.
+1. Use the intent and operator essence established through Build Flow to deduce
+   which taste the human's words ask for. State the read once before writing.
 2. [human-calibration](../skills/human-calibration/SKILL.md) — anchor the read in the
    human's record and real studied references, never a demographic guess.
 3. Emit the three-tier design-token file FIRST, before any component — full token
@@ -60,7 +34,8 @@ The taste loop, at a glance:
    hardcode a raw hex, pixel value, or font family inside a component.
 5. Run the screenshot → critic loop per
    [design-taste](../skills/design-taste/SKILL.md), resolving the critic model live
-   through [fleet-ladder](../skills/fleet-ladder/SKILL.md).
+   through [fleet-ladder](../skills/fleet-ladder/SKILL.md). Each critique and
+   re-render spends the same remaining budget; return findings to the current owner.
 6. Score the 8-axis taste rubric per [design-taste](../skills/design-taste/SKILL.md).
 7. Enforce the WCAG 2.2 accessibility HARD gate per
    [design-taste](../skills/design-taste/SKILL.md).
@@ -69,8 +44,12 @@ The taste loop, at a glance:
    and state reducers pass with zero surviving mutants. A flipped comparison in a
    contrast check ships a beautiful, inaccessible screen. The gauntlet never
    scores taste — the rubric and the accessibility gate stay the visual judges.
-   Render real DOM in tests; a mocked render proves nothing about what the human
-   sees.
+   Use [sniper-testing](../skills/sniper-testing/SKILL.md) for actual repo
+   lint/type/test commands scoped from the pinned aggregate candidate diff before
+   the gauntlet. State N/A or missing checks honestly. Render real DOM in tests;
+   a mocked render proves nothing about what the human sees. Preserve sealed RED
+   files, add separate supplemental tests for new gaps, and retain the required
+   independent review, full affected-suite landing check, and real rendered proof.
 
 ## Hard gates (play-specific — the skill's own hard rules apply on top)
 

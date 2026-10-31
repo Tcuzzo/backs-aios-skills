@@ -9,49 +9,23 @@ your own logic — so hygiene is the play, not an afterthought.
 Building or extending any web app, site, API, or delivered repo that someone else
 will install and run.
 
-The build, at a glance:
+## Shared task and limits
 
-```
-+--------------------------------------------+
-| 1 intent-compiler  read the ask whole      |
-+--------------------------------------------+
-| 2 understanding-gates  structure first:    |
-|   one entrypoint, manifest, lockfile       |
-+--------------------------------------------+
-| 3 dependency hygiene  validate + hash-pin  |
-|   every dep, no install scripts, pin CI    |
-+--------------------------------------------+
-| 4 red-first  contract tests for routes,    |<--------------------------+
-|   loaders, validation -- committed first   |  finding -> a new red     |
-+--------------------------------------------+  test -> fix ->           |
-| 5 build to the doctrine; any UI runs       |  re-convene               |
-|   the design-taste method                  |                           |
-+--------------------------------------------+   +---------------------+ |
-| 6 sniper-testing  never mock your own      |   |  LORD OF THE LOOP   |-+
-|   validation or serialization              |   | one hand drives the |
-+--------------------------------------------+   | loop: dispatch,     |
-| 7 clean-code-gauntlet  mutate validation   |   | judge, loop back    |
-|   + auth predicates until none survive     |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 8 blind-tribunal  independent juror       |-->| lands its own work. |
-|   panel; capability-resolved grader        |   |                    |
-+--------------------------------------------+   +---------------------+
-          |
-          | every juror passes
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no deploy:    |
-| no unpinned dep . no committed secret .    |
-| zero mutation survivors in validation +    |
-| auth predicates . no external network      |
-| during tests (loopback is fine)            |
-+--------------------------------------------+
-```
+Apply this play inside the current [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)
+task packet. Keep one integration owner, the requested `task_mode`, pinned base
+and candidate revisions, operator essence, and current evidence. Reuse applicable
+loaded skill bodies; this play adds its domain gates without restarting the task.
+
+[bounded-loops](../skills/bounded-loops/SKILL.md) owns the original deadline and
+remaining allowances across retries, workers, models, reviews, and handoffs.
+Never reset them for a nested play. On exhaustion, checkpoint **STILL-BUILDING**
+with the candidate, evidence, unmet gates, and next action. Continue useful
+authorized work only within its remaining allowance; no missing gate becomes a pass.
 
 ## The chain
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — read the ask whole
-   before choosing a stack or a structure.
+1. Use the intent and operator essence established through Build Flow before
+   choosing a stack or structure; apply the whole request and current corrections.
 2. [understanding-gates](../skills/understanding-gates/SKILL.md) — design the
    structure first: one documented entrypoint, an explicit dependency manifest,
    and a committed lockfile. No ad-hoc file sprawl.
@@ -74,20 +48,25 @@ The build, at a glance:
 5. Build to the doctrine below. For any UI surface, run the
    [design-taste](../skills/design-taste/SKILL.md) method — tokens first,
    accessibility as a hard gate.
-6. [sniper-testing](../skills/sniper-testing/SKILL.md) — never mock your own
-   validation or serialization: a mocked web boundary ships an app that accepts
-   what it should reject.
+6. [sniper-testing](../skills/sniper-testing/SKILL.md) — use the repository's real
+   lint/type/test commands scoped from the pinned aggregate candidate diff; report
+   gaps and justified N/A checks. Never mock your own validation or serialization:
+   a mocked web boundary ships an app that accepts what it should reject.
 7. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — route handlers,
    data loaders, and form/validation paths pass before deploy; run mutation over
-   the validation and auth predicates until nothing survives. A boundary check
+   the validation and auth predicates within the shared budget; meaningful
+   survivors block deployment. Add any missing regression in a separate file,
+   preserving the sealed original RED. A boundary check
    whose flipped comparison still passes the suite is an open door on a public
    surface.
 8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — independent juror panel
    before the deploy, every juror chosen live by capability and availability
    from the configured rung matrix (the authoring execution that built is
    recorded as provenance and excluded; the reviewer uses a fresh
-   author-disjoint session). Every juror finding becomes a new red test; re-convene
-   until every juror passes.
+   author-disjoint session). Each substantiated finding gets a separate RED and
+   bounded repair inside this task. Re-convene within the remaining budget;
+   every required juror must pass. Preserve the full affected-suite landing gate
+   and verify the authorized delivery on the real app surface.
 
 ## The doctrine (what the build must satisfy)
 

@@ -1,6 +1,6 @@
 ---
 name: "clean-code-gauntlet"
-description: "Úsala al endurecer o aterrizar cualquier build — un agente, un servicio, una librería — cuando quieres una barra de calidad determinista en vez de una revisión línea por línea. Corre tests francotirador, el puntaje CRAP (complejidad x cobertura) y mutation testing acotado, y luego una revisión ligera de gusto. Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar. Disparadores: código limpio, guantelete, puntaje crap, pruebas de mutación, endurecer, complejidad, cobertura, barra de calidad."
+description: "Úsala al endurecer o integrar cambios ejecutables que necesiten medidas de complejidad, cobertura, fuerza de regresión y revisión de diseño independiente."
 license: "MIT"
 ---
 
@@ -21,14 +21,22 @@ muestras — nunca diffs completos.
 
 ## La cadena (corre en orden; cada etapa se detiene con ruido al fallar)
 
-1. **Tests francotirador en verde.** Corre solo los archivos de test que cubren lo
-   que el diff tocó — mira [sniper-testing](../sniper-testing/SKILL.md). Una línea
-   base en rojo significa parar y arreglar; nunca mutes ni califiques sobre rojo.
-2. **CRAP bajo el umbral** con datos de cobertura reales (mira la puerta abajo).
-   ¿Se rompe? → refactoriza la función hacia abajo, o cúbrela por completo. Nunca
-   bajes la barra.
-3. **Mutation testing: cero sobrevivientes dentro del alcance.** Un sobreviviente
-   condena a los TESTS, no al código — refuerza el test que debió atraparlo.
+Vincula `base_sha`, `candidate_sha`, responsable de integración y cupo restante
+de [bounded-loops](../bounded-loops/SKILL.md) del paquete existente de
+[Build Flow](../backs-build-flow/SKILL.md). Reutiliza evidencia aún válida;
+rondas de revisión y campañas de mutación no reinician el presupuesto.
+
+1. **Lint, tipos y comportamiento acotados en verde.** Ejecuta comandos aplicables
+   del repo; consulta [sniper-testing](../sniper-testing/SKILL.md). Registra
+   comprobaciones no disponibles o no aplicables sin llamarlas aprobadas. Una
+   línea base roja exige parar y reparar; no mutes ni evalúes sobre rojo.
+2. **CRAP bajo el umbral** con cobertura real (puerta de abajo). Si falla,
+   refactoriza la función o cúbrela por completo. Nunca rebajes la barra.
+3. **Mutación: ningún sobreviviente sin explicar dentro del alcance.** Uno no
+   equivalente revela hueco de regresión. Añade un archivo suplementario separado;
+   conserva byte a byte el contrato original sellado de [red-first](../red-first/SKILL.md).
+   Refuta mutantes equivalentes con evidencia. Error de herramienta o timeout es
+   inconcluso, nunca un mutante muerto.
 4. **Revisión ligera de gusto** — un modelo juzga solo lo que los números no pueden.
 
 ## Herramientas que lo calculan
@@ -47,6 +55,12 @@ Una forma de comando por etapa:
 - Complejidad: `radon cc -s <changed files>`
 - Mutación: `mutmut run --paths-to-mutate <changed files>` (JS/TS: `npx stryker run --mutate "<glob>"`)
 
+Estos comandos son ejemplos, no instrucciones de instalación ni garantías de
+CLI estable. Usa herramientas fijadas y flags soportados del repo. Para cambios
+solo de documentación, valida enlaces, estructura, distribución y escenarios de
+comportamiento; complejidad y mutación pueden no aplicar. Registra la razón sin
+inventar métricas.
+
 ## La puerta CRAP
 
 ```
@@ -64,7 +78,8 @@ CRAP(m) = comp(m)^2 * (1 - cov(m)/100)^3 + comp(m)
 ## De quién es la deuda — AUTHORED / WORSENED / UNCHANGED
 
 Un puntaje absoluto esconde de quién es la deuda. Divide cada delta de
-complejidad y de CRAP contra la línea base previa al cambio:
+complejidad y de CRAP contra el `base_sha` fijado previo a la tarea,
+con cobertura real comparable:
 
 - **AUTHORED** — funciones que este cambio creó. Aplica la barra completa.
 - **WORSENED** — funciones preexistentes que este cambio empeoró. El delta se le
@@ -75,22 +90,22 @@ complejidad y de CRAP contra la línea base previa al cambio:
 
 ## Reglas de mutación (acotada, nunca imprudente)
 
-- **Nunca sobre el árbol de trabajo compartido.** Muta en un checkout temporal
-  cortado desde el HEAD commiteado. ¿Archivos objetivo o de test sucios? =
-  rechaza; commit primero.
-- **El costo se mide, nunca se asume.** Cronometra la suite acotada una vez,
-  reporta ETA = línea base x cantidad de mutantes ANTES de gastar nada. Ofrece
-  una corrida en seco.
-- **Acotada y reanudable.** Ponle tope a los mutantes y a los minutos. Una parada
-  por presupuesto es una pausa con checkpoint, no un fracaso — reanuda para
-  terminar.
-- **Cobertura primero.** Muta solo líneas cubiertas; una línea sin cubrir es un
-  hueco de cobertura que la puerta CRAP ya atrapó.
-- **Solo dentro del alcance.** Muta lo que el diff tocó, nunca el repo entero.
-- Un mutante genuinamente equivalente puede refutarse en vez de matarse — con la
-  refutación por escrito, nunca saltada en silencio.
-- **¿No existe herramienta de mutación para tu stack?** Déjalo registrado en el
-  reporte de aterrizaje y apóyate en la puerta CRAP — nunca lo saltes en silencio.
+- **Nunca sobre el árbol compartido.** Muta en un checkout temporal del
+  `candidate_sha` confirmado exacto. Si hay objetivos o tests sucios, guarda
+  checkpoint y termina primero el candidato. Conserva trabajo ajeno en el original.
+- **El costo se mide, no se supone.** Cronometra una vez la suite acotada y declara
+  ETA = línea base x cantidad de mutantes ANTES del gasto. Ofrece ejecución en seco.
+- **Acotada y reanudable.** Limita mutantes y minutos dentro del cupo restante.
+  Una parada por presupuesto registra mutantes sin verificar y deja la puerta
+  incompleta. Retoma solo con cupo restante o ampliado explícitamente.
+- **Cobertura primero.** Muta solo líneas cubiertas; las no cubiertas son huecos
+  que ya detectó la puerta CRAP.
+- **Solo en alcance.** Muta el diff, nunca el repo completo.
+- Un mutante realmente equivalente puede refutarse por escrito con evidencia,
+  nunca omitirse silenciosamente.
+- **¿No hay herramienta de mutación para el stack?** Registra limitación y evidencia
+  sustitutiva real. Aplica la política de aceptación del repo; una puerta requerida
+  sigue incompleta hasta que su responsable acepte una alternativa documentada.
 
 ## La revisión de gusto (al final, y ligera)
 

@@ -1,46 +1,65 @@
 ---
 name: building-with-backs
-description: Build or repair a BACKS project at the operator's intended repository and path, with a checked source revision, one write spine, tests, and proof on the actual surface. Use for build with BACKS, wrong-folder friction, and IDE-to-runtime promotion.
+description: "Úsala al construir o reparar un proyecto BACKS, resolver ambigüedades de carpeta o checkout, o llevar un cambio autorizado del IDE a su runtime real."
 license: MIT
 ---
 
-# Building with BACKS
+# Construir con BACKS
 
-This skill closes a recurring failure: a good patch in the wrong checkout or a
-green test that never reaches the operator's app. The destination is the human's
-requested product and path. Discover the target before writing.
+Esta skill cierra un fallo recurrente: un buen parche en el checkout equivocado,
+o un test verde que nunca llega a la app del operador. El destino es el producto
+y la ruta solicitados. Descubre el destino antes de escribir.
 
-1. **Resolve the destination.** Use the exact path named by the human. If none was
-   named, inspect the active workspace, recent project references, and repository
-   map. Do not substitute a nearby clone merely because it has a matching name.
-   Run `scripts/resolve_target.py --repo <path> --target <file-or-directory>`;
-   add `--expected-root <path>` when the human named the checkout. The command
-   returns nonzero for a missing target root, a path outside that root, or a
-   checkout mismatch or missing Git revision. A new target file may not exist
-   yet; its parent must. For a specifically named non-Git project, add
-   `--allow-non-git` and record that no revision is available.
-2. **Pin the starting truth.** Record the resolved root, branch or detached HEAD,
-   commit, worktree status, requested target, app/service entry point, and tests.
-   Preserve unrelated edits. If another checkout is newer, compare revisions and
-   actual working trees before choosing; "newest" is a measured claim.
-3. **Map the route.** Trace user action to entry point, implementation, data,
-   outputs, and deployment seam. Name the existing owner of the behavior and
-   any dependent consumers. Use `repo-map`, `architecture-engineer`, and
-   `root-cause-first` when those seams are uncertain.
-4. **Build in the resolved place.** Give parallel readers distinct questions and
-   writers non-overlapping files or isolated worktrees. Keep one integration
-   owner. Write the smallest change that closes the failure class; use
-   `repair-loop` for defects and `elite-build` for new capability.
-5. **Prove the path.** Run focused tests, then the affected suite. Inspect the
-   actual app/CLI surface and runtime logs. A staged file, mock, or green test
-   is not live proof. Record the exact source revision/hash deployed and the
-   observed behavior; name anything that could not be exercised.
-6. **Promote through the project's own route.** Read its deployment instructions
-   and approval rules from that repository. Never transplant a deployment
-   command from another project. Re-run the target check before installation
-   and verify the running process uses the installed code afterward.
+Únete al paquete existente de [BACKS Build Flow](../backs-build-flow/SKILL.md);
+una invocación directa lo establece una sola vez. Mantén un responsable de integración
+y reutiliza esencia y contexto existentes. Respeta `task_mode` y conserva plazo
+y cupos restantes de [bounded-loops](../bounded-loops/SKILL.md) entre trabajadores,
+modelos y traspasos. Resolver otra ruta no reinicia presupuesto ni autoriza despliegues.
 
-If the destination remains ambiguous, keep read-only investigation moving and
-ask for the missing path only after checking available evidence. Never claim a
-cross-host installation merely because files were copied; verify discovery in
-each host or mark it unverified.
+1. **Resuelve el destino.** Usa la ruta exacta nombrada por el humano. Si no indicó
+   ninguna, inspecciona workspace activo, referencias recientes y mapa del repo.
+   No sustituyas por un clon cercano solo porque coincide el nombre. Ejecuta
+   `python scripts/resolve_target.py --repo <path> --target <file-or-directory>`
+   desde el directorio de esta skill; añade `--expected-root <path>` si nombró
+   el checkout. El comando devuelve código distinto de cero si falta la raíz,
+   la ruta sale de ella, el checkout no coincide o falta una revisión Git. Un
+   archivo nuevo puede no existir todavía; su directorio padre debe existir.
+   Para un proyecto no Git nombrado expresamente, añade `--allow-non-git` y
+   registra que no hay revisión disponible.
+2. **Fija la verdad inicial.** Registra raíz resuelta, rama o HEAD separado,
+   `base_sha`, `candidate_sha` actual, estado del worktree, destino solicitado,
+   punto de entrada de app/servicio y comprobaciones. Mantén fija la base original
+   tras commits; actualiza explícitamente el candidato y revisa rutas pendientes.
+   Conserva ediciones ajenas. Si otro checkout es más reciente, compara revisiones
+   y árboles reales antes de elegir; «más reciente» se mide.
+3. **Traza la ruta.** Sigue acción del usuario hasta entrada, implementación,
+   datos, salidas y costura de despliegue. Nombra responsable existente y consumidores
+   dependientes. Usa `repo-map`, `architecture-engineer` y `root-cause-first`
+   cuando esas costuras sean inciertas.
+4. **Construye en el lugar resuelto.** Asigna preguntas distintas a lectores paralelos
+   y archivos sin solapamiento o worktrees aislados a escritores. Mantén un responsable
+   de integración. Haz el cambio mínimo que cierre la clase de fallo; aplica
+   `repair-loop` dentro del flujo actual. Sigue el play completo `elite-build`
+   cuando se seleccione o solicite expresamente, reutilizando etapas válidas sin
+   arrancar de nuevo. Una revisión o diagnóstico devuelve hallazgos sin editar.
+5. **Prueba la ruta.** Sigue RED sellado → corrección mínima → comprobaciones
+   sniper de lint/tipos/tests → clean-code-gauntlet. Deriva alcance del diff agregado
+   fijado; usa comandos reales del repo y declara huecos o N/A honestamente.
+   Conserva revisión independiente del autor y pasada completa requerida de las
+   suites afectadas al integrar. Inspecciona superficie real de app/CLI y logs dentro
+   del alcance. Registra revisión/hash exacto desplegado y comportamiento observado;
+   nombra todo lo que no pudo ejercitarse.
+6. **Promueve por la ruta propia del proyecto.** Lee sus instrucciones de despliegue
+   y aprobación en ese repo. Nunca trasplantes un comando de otro proyecto.
+   Repite la comprobación de destino antes de instalar y verifica después que
+   el proceso en ejecución usa el código instalado.
+
+Si el destino sigue ambiguo, continúa la investigación de solo lectura y pregunta
+por la ruta solo después de comprobar la evidencia disponible. Nunca afirmes
+instalación entre hosts solo porque copiaste archivos; verifica descubrimiento en
+cada host o márcalo sin verificar.
+
+Si un cupo se agota, guarda **STILL-BUILDING** con destino verificado, candidato,
+evidencia pendiente y siguiente acción exacta. Conserva límites originales;
+termina trabajo útil autorizado que no consuma el cupo agotado. Una comprobación
+local no sustituye evidencia de la entrega solicitada.

@@ -10,51 +10,26 @@ Nachgedanke.
 Beim Bauen oder Erweitern jeder Web-App, Website, API oder jedes ausgelieferten
 Repos, das jemand anderes installieren und ausführen wird.
 
-Der Build auf einen Blick:
+## Gemeinsame Aufgabe und Grenzen
 
-```
-+--------------------------------------------+
-| 1 intent-compiler  read the ask whole      |
-+--------------------------------------------+
-| 2 understanding-gates  structure first:    |
-|   one entrypoint, manifest, lockfile       |
-+--------------------------------------------+
-| 3 dependency hygiene  validate + hash-pin  |
-|   every dep, no install scripts, pin CI    |
-+--------------------------------------------+
-| 4 red-first  contract tests for routes,    |<--------------------------+
-|   loaders, validation -- committed first   |  finding -> a new red     |
-+--------------------------------------------+  test -> fix ->           |
-| 5 build to the doctrine; any UI runs       |  re-convene               |
-|   the design-taste method                  |                           |
-+--------------------------------------------+   +---------------------+ |
-| 6 sniper-testing  never mock your own      |   |  LORD OF THE LOOP   |-+
-|   validation or serialization              |   | one hand drives the |
-+--------------------------------------------+   | loop: dispatch,     |
-| 7 clean-code-gauntlet  mutate validation   |   | judge, loop back    |
-|   + auth predicates until none survive     |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 8 blind-tribunal  independent juror       |-->| lands its own work. |
-|   panel; capability-resolved grader        |   |                    |
-+--------------------------------------------+   +---------------------+
-          |
-          | every juror passes
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no deploy:    |
-| no unpinned dep . no committed secret .    |
-| zero mutation survivors in validation +    |
-| auth predicates . no external network      |
-| during tests (loopback is fine)            |
-+--------------------------------------------+
-```
+Wende dieses Play im aktuellen [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)-
+Aufgabenpaket an. Bewahre einen Integrationsverantwortlichen, gewünschten
+`task_mode`, feste Basis- und Kandidatenrevisionen, Operator-Essence und aktuelle
+Belege. Verwende passende geladene Skill-Texte weiter; dieses Play ergänzt seine
+Fachprüfungen, ohne die Aufgabe neu zu starten.
 
-*Labels im Diagramm: „Lord of the Loop“ = der Besitzer des Loops, der die Iteration treibt, bis das Landing-Gate grün ist; „LAND“ = die Landung — die Änderung zieht erst ein, wenn jedes Gate grün ist.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) besitzt ursprüngliche Frist und
+Restkontingente über Wiederholungen, Mitarbeiter, Modelle, Reviews und Übergaben
+hinweg. Setze sie für ein verschachteltes Play nie zurück. Bei Erschöpfung:
+**STILL-BUILDING** mit Kandidat, Belegen, offenen Gates und nächster Handlung
+sichern. Nützliche autorisierte Arbeit bleibt im Restkontingent; kein fehlendes
+Gate wird zum bestandenen erklärt.
 
 ## Die Kette
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — lies die Anfrage als
-   Ganzes, bevor du einen Stack oder eine Struktur wählst.
+1. Nutze Absicht und Operator-Essence aus Build Flow vor Stack- oder Strukturwahl;
+   wende die ganze Anfrage und aktuelle Korrekturen an.
+
 2. [understanding-gates](../skills/understanding-gates/SKILL.md) — designe zuerst
    die Struktur: ein dokumentierter Entrypoint, ein explizites
    Dependency-Manifest und ein committetes Lockfile. Kein wilder Dateiwildwuchs.
@@ -79,17 +54,25 @@ Der Build auf einen Blick:
 5. Baue nach der Doktrin unten. Für jede UI-Fläche fahre die Methode aus
    [design-taste](../skills/design-taste/SKILL.md) — Tokens zuerst,
    Barrierefreiheit als hartes Gate.
-6. [sniper-testing](../skills/sniper-testing/SKILL.md) — mocke niemals deine
-   eigene Validierung oder Serialisierung: Eine gemockte Web-Grenze liefert eine
-   App aus, die annimmt, was sie ablehnen sollte.
-7. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) —
-   Routen-Handler, Daten-Loader und Formular-/Validierungspfade bestehen vor dem
-   Deploy; fahre Mutation über die Validierungs- und Auth-Prädikate, bis nichts
-   mehr überlebt. Ein Grenz-Check, dessen umgedrehter Vergleich die Suite immer
-   noch besteht, ist eine offene Tür auf einer öffentlichen Fläche.
-8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — unabhängige Benotung in frischen, vom Autor getrennten Sitzungen
-   vor dem Deploy.
-   Jeder Befund eines Jurors wird ein neuer roter Test; berufe das Tribunal neu ein, bis jeder Juror passt.
+6. [sniper-testing](../skills/sniper-testing/SKILL.md) — nutze echte Lint-/Typ-/Tests
+   des Repositories aus dem festen Kandidatengesamtdiff; melde Lücken und begründetes
+   N/A. Mocke nie eigene Validierung oder Serialisierung: Eine gemockte Web-Grenze
+   liefert eine App, die annimmt, was sie ablehnen sollte.
+
+7. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — Routen-Handler,
+   Daten-Loader und Formular-/Validierungspfade bestehen vor Deployment. Mutiere
+   Validierungs- und Auth-Prädikate im gemeinsamen Budget; relevante Überlebende
+   blockieren Deployment. Ergänze fehlende Regressionen separat und bewahre das
+   versiegelte ursprüngliche RED. Ein Grenzcheck, dessen umgedrehter Vergleich
+   die Suite weiter besteht, ist eine offene Tür auf öffentlicher Oberfläche.
+
+8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — unabhängiges Panel vor
+   Deployment, alle Juroren live nach Fähigkeit und Verfügbarkeit aus der
+   konfigurierten Sprossenmatrix. Erfasse und disqualifiziere die erstellende
+   Ausführung; Prüfer nutzen frische autor-disjunkte Sessions. Jeder belegte Befund
+   erhält separates RED und begrenzte Reparatur in dieser Aufgabe. Tage im
+   Restbudget erneut; alle erforderlichen Juroren müssen bestehen. Bewahre volle
+   betroffene Landungssuite und verifiziere autorisierte Lieferung an der echten App-Oberfläche.
 
 ## Die Doktrin (was der Build erfüllen muss)
 

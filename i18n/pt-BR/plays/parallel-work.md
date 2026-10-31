@@ -11,50 +11,27 @@ por todas as outras: uma só espinha de escrita, muitos leitores.
 - Você está tentado a deixar dois agentes escreverem código em paralelo. Leia
   isto primeiro.
 
-O fan-out, num relance:
+## Tarefa e limites compartilhados
 
-```
-+--------------------------------------------+
-| 1 leap-protocol  balls with goals, specs,  |
-|   hard file scopes BEFORE any agent spawns |
-+--------------------------------------------+
-| 2 spawn readers, not writers -- fan out    |
-|   read-heavy work only                     |
-+--------------------------------------------+
-| 3 isolate -- every lane gets its OWN       |
-|   worktree; conflicts surface at merge     |
-+--------------------------------------------+
-| 4 clean-code-gauntlet  per lane, in its    |<--------------------------+
-|   own worktree, before it asks to land     |  red exit? back to the    |
-+--------------------------------------------+  lane -- fix, re-run      |
-| 5 blind-tribunal  the reviewer gets a      |                           |
-|   CLEAN context, never the author's        |   +---------------------+ |
-+--------------------------------------------+   |  LORD OF THE LOOP   |-+
-| 6 merge ONE lane at a time, test-gated     |   | the one write spine |
-|   by exit code, in a merge workspace       |-->| drives dispatch,    |
-+--------------------------------------------+   | judges, merges ONE  |
-          |                                      | lane at a time. a   |
-          | every merge green + verified         | lane never lands    |
-          v                                      | its own work.       |
-+--------------------------------------------+   +---------------------+
-| LANDING GATE -- all green or no land:      |
-| every merge green by exit code AND         |
-| stat-verified -- counts, diffstat, each    |
-| lane's files present . no lane outside     |
-| its scope . reviewer context stayed        |
-| clean, never the author's . one writer     |
-| per workspace . no lane lands on           |
-| another lane's green                       |
-+--------------------------------------------+
-```
+Aplique este play dentro do pacote atual do
+[BACKS Build Flow](../skills/backs-build-flow/SKILL.md). Mantenha um responsável
+pela integração, `task_mode` solicitado, revisões base e candidata fixadas,
+essência do operador e evidências atuais. Reutilize corpos pertinentes já carregados;
+este play acrescenta gates do domínio sem reiniciar a tarefa.
 
-*Lord of the Loop = o dono do loop, que conduz a iteração até o gate de pouso ficar verde; LAND = o pouso — o portão final que só abre com tudo verde.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) cuida do prazo original e cotas
+restantes entre retries, trabalhadores, modelos, revisões e handoffs. Nunca os
+reinicie para um play aninhado. Ao esgotar, salve **STILL-BUILDING** com candidato,
+evidências, gates pendentes e próxima ação. Continue trabalho útil autorizado só
+dentro da cota restante; gate ausente não vira aprovação.
 
 ## A cadeia
 
-1. [leap-protocol](../skills/leap-protocol/SKILL.md) — decomponha o trabalho em
-   bolas com objetivos, specs e escopos duros de arquivos ANTES de qualquer
-   agente nascer.
+1. [leap-protocol](../skills/leap-protocol/SKILL.md) — divida trabalho em bolas
+   com objetivos, specs e escopo estrito de arquivos ANTES de criar agentes.
+   Entregue a cada lane pacote atual, base/candidato fixados, selos RED e cota
+   restante alocada. Seu limite não pode ampliar prazo nem totais da missão.
+
 2. Crie leitores, não escritores — espalhe subagentes SÓ para trabalho pesado em
    leitura, com poucas dependências cruzadas: pesquisa, rodar testes, varreduras
    de segurança, avaliação. Nunca para autoria de código interdependente.
@@ -63,14 +40,20 @@ O fan-out, num relance:
    como conflitos de merge de verdade, nunca como sobrescritas silenciosas que
    perdem dados sem aviso.
 4. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — cada lane
-   roda seu próprio gauntlet de qualidade dentro do próprio worktree antes de
-   pedir o pouso. Dry-run primeiro, para a lane conhecer o próprio custo.
-   Nenhuma lane pousa em cima do verde de outra.
+   executa seu gauntlet no isolamento/worktree permitido antes de integrar. Use
+   primeiro [sniper-testing](../skills/sniper-testing/SKILL.md) para comandos reais
+   de lint/tipos/tests pelo diff agregado fixado; declare ausências ou N/A.
+   Reutilize recibo válido só para o mesmo candidato e escopo; não aplique verde
+   de outra lane a bytes diferentes. Cobertura ausente recebe arquivo suplementar
+   separado, preservando originais selados.
+
 5. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — o agente revisor recebe
    um contexto LIMPO, nunca o do autor. Contexto compartilhado apodrece e
    concorda consigo mesmo.
-6. Faça o merge de uma lane por vez, num espaço de merge dedicado, com gate de
-   teste por exit code.
+6. Faça merge de uma lane por vez em workspace dedicado, com gate de tests por
+   exit code. O responsável pela integração verifica candidato combinado, consumidores
+   e passagem completa exigida das suites afetadas; aprovações independentes não
+   provam a composição. Afirmar entrega exige evidência do alvo real.
 
 ## Regras de coordenação
 

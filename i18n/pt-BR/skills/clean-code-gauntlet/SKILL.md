@@ -1,6 +1,6 @@
 ---
 name: "clean-code-gauntlet"
-description: "Use ao endurecer ou aterrissar qualquer build — um agente, um serviço, uma biblioteca — quando você quer uma barra de qualidade determinística em vez de review linha a linha. Roda sniper tests, o score CRAP (complexidade x cobertura) e mutation testing limitado, depois um review leve de gosto. Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar, código limpo, teste de mutação, endurecer, complexidade, cobertura, barra de qualidade."
+description: "Use ao endurecer ou integrar mudanças executáveis que precisem de medidas de complexidade, cobertura, força de regressão e revisão de design independente."
 license: "MIT"
 ---
 
@@ -20,14 +20,23 @@ nunca diffs inteiros.
 
 ## A corrente (rode em ordem; cada estágio para alto na falha)
 
-1. **Sniper tests verdes.** Rode só os arquivos de teste que cobrem o que o diff
-   tocou — veja [sniper-testing](../sniper-testing/SKILL.md). Baseline vermelha
-   significa parar e consertar; nunca mute ou avalie em cima de vermelho.
-2. **CRAP abaixo do limiar** sobre dados reais de cobertura (veja o portão abaixo).
-   Estourou → refatore a função para baixo, ou cubra por completo. Nunca abaixe a barra.
-3. **Mutation testing: zero sobreviventes no escopo.** Um sobrevivente condena os
-   TESTES, não o código — fortaleça o teste que deveria tê-lo pego.
-4. **Review leve de gosto** — um modelo julga só o que números não alcançam.
+Vincule `base_sha`, `candidate_sha`, responsável pela integração e cota restante
+de [bounded-loops](../bounded-loops/SKILL.md) do pacote existente do
+[Build Flow](../backs-build-flow/SKILL.md). Reutilize evidências ainda válidas;
+rodadas de revisão e campanhas de mutação não reiniciam o orçamento.
+
+1. **Lint, tipos e comportamento focados em verde.** Execute comandos aplicáveis
+   do repo; veja [sniper-testing](../sniper-testing/SKILL.md). Registre verificações
+   indisponíveis ou inaplicáveis sem chamá-las aprovadas. Baseline vermelha exige
+   parar e corrigir; nunca mute nem avalie sobre vermelho.
+2. **CRAP abaixo do limiar** com cobertura real (gate abaixo). Se falhar, refatore
+   a função ou cubra por completo. Nunca reduza a barra.
+3. **Mutação: nenhum sobrevivente sem explicação no escopo.** Sobrevivente não
+   equivalente revela lacuna de regressão. Acrescente arquivo suplementar separado;
+   preserve byte a byte o contrato original selado de [red-first](../red-first/SKILL.md).
+   Refute mutantes equivalentes com evidências. Erro de ferramenta ou timeout é
+   inconclusivo, nunca mutante morto.
+4. **Review leve de gosto** — um modelo julga apenas o que os números não conseguem.
 
 ## Ferramentas que computam isso
 
@@ -45,6 +54,11 @@ Um formato de comando por estágio:
 - Complexidade: `radon cc -s <changed files>`
 - Mutação: `mutmut run --paths-to-mutate <changed files>` (JS/TS: `npx stryker run --mutate "<glob>"`)
 
+Esses comandos são exemplos, não instruções de instalação nem garantias de CLI
+estável. Use ferramentas fixadas e flags suportadas do repo. Para mudanças apenas
+de documentação, valide links, estrutura, distribuição e cenários de comportamento;
+complexidade e mutação podem ser inaplicáveis. Registre o motivo sem inventar métricas.
+
 ## O portão CRAP
 
 ```
@@ -61,7 +75,7 @@ CRAP(m) = comp(m)^2 * (1 - cov(m)/100)^3 + comp(m)
 ## De quem é a dívida — AUTHORED / WORSENED / UNCHANGED
 
 Um score absoluto esconde de quem é a dívida. Divida todo delta de complexidade e
-CRAP contra a baseline pré-mudança:
+CRAP contra o `base_sha` fixado anterior à tarefa, com cobertura real comparável:
 
 - **AUTHORED** — funções que esta mudança criou. A barra inteira se aplica.
 - **WORSENED** — funções pré-existentes que esta mudança piorou. O delta é cobrado
@@ -71,26 +85,30 @@ CRAP contra a baseline pré-mudança:
 
 ## Regras de mutação (limitadas, nunca imprudentes)
 
-- **Nunca a árvore de trabalho compartilhada.** Mute num checkout de rascunho
-  cortado do HEAD commitado. Arquivos alvo ou de teste sujos = recuse; commite primeiro.
-- **Custo é medido, nunca presumido.** Cronometre a suite com escopo uma vez,
-  reporte ETA = baseline x número de mutantes ANTES de gastar qualquer coisa.
-  Ofereça um dry run.
-- **Limitado e retomável.** Limite mutantes e minutos. Parada por orçamento é uma
-  pausa com checkpoint, não uma falha — retome para terminar.
-- **Cobertura primeiro.** Mute só linhas cobertas; linha descoberta é lacuna de
-  cobertura que o portão CRAP já pegou.
-- **Só no escopo.** Mute o que o diff tocou, nunca o repo inteiro.
-- Um mutante genuinamente equivalente pode ser refutado em vez de morto — com a
-  refutação por escrito, nunca pulado em silêncio.
-- **Não existe ferramenta de mutação para o seu stack?** Registre isso no relatório
-  de aterrissagem e apoie-se no portão CRAP — nunca pule em silêncio.
+- **Nunca na árvore compartilhada.** Mute em checkout temporário do
+  `candidate_sha` commitado exato. Alvos ou tests sujos exigem checkpoint e
+  conclusão do candidato primeiro. Preserve trabalho alheio no checkout original.
+- **Custo é medido, não presumido.** Cronometre uma vez a suite focada e informe
+  ETA = baseline x quantidade de mutantes ANTES do gasto. Ofereça dry run.
+- **Limitada e retomável.** Limite mutantes e minutos dentro da cota restante.
+  Parada por orçamento registra mutantes não verificados e deixa o gate incompleto.
+  Retome só com cota restante ou explicitamente ampliada.
+- **Cobertura primeiro.** Mute apenas linhas cobertas; as descobertas são lacunas
+  já detectadas pelo gate CRAP.
+- **Só no escopo.** Mute o diff, nunca o repo inteiro.
+- Mutante realmente equivalente pode ser refutado por escrito com evidência,
+  nunca ignorado em silêncio.
+- **Não há ferramenta de mutação para o stack?** Registre limitação e evidência
+  substituta real. Aplique a política de aceitação do repo; gate obrigatório fica
+  incompleto até seu responsável aceitar alternativa documentada.
 
 ## O review de gosto (por último, e leve)
 
 Portões determinísticos vêm primeiro; gaste um modelo só onde raciocínio é a única
-ferramenta. O revisor trabalha em uma sessão nova e disjunta do autor; o builder
-nunca avalia o próprio trabalho. Ele julga só design e gosto: nomes, preocupações
+ferramenta. O revisor é escolhido ao vivo por capacidade e disponibilidade na
+matriz configurada; a execução autora é registrada como proveniência e excluída.
+A revisão usa sessão nova separada do autor, sem sua conversa nem contexto herdados;
+o builder nunca avalia o próprio trabalho. Ele julga só design e gosto: nomes, preocupações
 misturadas, largura de interface, e os seis cheiros — rigidez, fragilidade,
 imobilidade, complexidade desnecessária, repetição desnecessária, opacidade. A
 aritmética os portões já resolveram.

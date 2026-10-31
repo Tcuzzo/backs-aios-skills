@@ -1,6 +1,6 @@
 ---
 name: "session-handoff"
-description: "À utiliser quand une session se termine, que la fenêtre de contexte va se compacter, ou que le travail doit continuer dans un autre agent ou harnais. Compacte la session en un fichier plat qu'un agent tout neuf peut lire à froid et reprendre — état, travail à moitié fait, commande suivante exacte, décisions ouvertes — secrets expurgés et travail concurrent vérifié préservé. Trigger words: handoff, hand off, compact, save state, continue in another session, portable handoff, before restart, passation, passer la main, compacter, sauver l'état, continuer dans une autre session, passation portable, avant redémarrage."
+description: "Quand une session se termine, que le contexte va être compacté, qu'un quota de mission est épuisé ou que le travail inachevé doit continuer avec un autre agent ou harnais. Trigger words: handoff, compact, save state, before restart, relève."
 license: "MIT"
 ---
 
@@ -10,8 +10,10 @@ license: "MIT"
 Une fenêtre de contexte meurt ; le travail ne doit pas mourir avec. Avant
 qu'une session se termine ou se compacte, écris un fichier plat qu'un agent
 tout neuf peut lire à froid et reprendre — ce qui était en cours, où ça vit,
-ce qui est à moitié fait, et la commande suivante exacte. Une passation garée
-dans la prose du chat ou dans la seule mémoire n'existe pas.
+ce qui est à moitié fait, et la commande suivante exacte. La relève d'un build
+doit survivre au contexte. Utilise le registre [BACKS Build Flow](../backs-build-flow/SKILL.md)
+existant ; ce skill transfère la tâche sans créer de second responsable,
+passage de contexte ou mission.
 
 ## Quand en écrire une
 
@@ -31,6 +33,10 @@ un vidage de contexte. Si l'agent suivant est un autre harnais ou un login
 neuf, écris un fichier plat portable dans le répertoire temporaire — c'est de
 l'échafaudage, pas un artefact suivi.
 
+Respecte `task_mode` et les permissions d'écriture. Pour une revue en lecture
+seule ou figée, rends la relève dans la réponse ou un registre externe déjà
+autorisé ; n'écris pas de registre dans le dépôt protégé pour satisfaire ce skill.
+
 ## Vérifie d'abord le travail concurrent (avant d'écrire un mot)
 
 Vérifie que le travail des AUTRES sessions est préservé. Lance `git status`,
@@ -42,11 +48,15 @@ session a du travail en vol est une affirmation fausse.
 
 ## Ce qui va dedans — une section courte chacun
 
-1. **Objectif.** Le travail en une phrase. L'agent suivant ne doit pas avoir à
-   deviner ce que « fini » veut dire.
-2. **État.** Atterri (ids de commit), en construction, en file. Référence les
-   specs, plans, issues et diffs par chemin ou URL — ne duplique jamais leur
-   contenu.
+1. **Objectif.** Le travail en une phrase. Le prochain agent ne doit pas deviner
+   ce que « fini » signifie. Transmets `mission_id`, `task_mode`, responsable de
+   l'intégration, aboutissement demandé et actions de livraison déjà autorisées.
+
+2. **État.** Livré (identifiants de commits), en construction, en attente.
+   Référence specs, plans, issues et diffs par chemin ou URL sans dupliquer le
+   contenu. Inclus `base_sha` épinglé, `candidate_sha` actuel, chemins/commit/hashes
+   des RED scellés, commandes/résultats et candidat exact couvert par chaque reçu.
+
 3. **Où vit le travail.** Branches, worktrees, fichiers modifiés. Nomme les
    fichiers exacts que l'agent suivant doit lire en premier.
 4. **La piste des verdicts.** Qui ou quoi a noté chaque morceau et quelles
@@ -61,9 +71,14 @@ session a du travail en vol est une affirmation fausse.
    promesses faites mais pas encore tenues.
 8. **Pièges.** Une ligne chacun. Un piège que tu as déjà payé vaut plus qu'un
    vert — écris-le pour que la session suivante ne paie pas deux fois.
-9. **Skills suggérés.** Quels skills l'agent suivant devrait charger en
-   premier, et une ligne pour dire pourquoi. C'est ce qui rend le doc portable
-   entre harnais.
+9. **Skills suggérés.** Quels skills charger d'abord et pourquoi. Nomme les
+   textes/preuves réellement disponibles, ce qui doit être rafraîchi et la source
+   de l'essence opérateur ; ne copie pas un second profil.
+10. **Budget restant.** Transmets échéance initiale et totaux/consommés/restants des
+    essais, tours et autres limites de [bounded-loops](../bounded-loops/SKILL.md),
+    plus appels en attente et dernière hypothèse/échec. L'inconnu reste inconnu.
+    Ne réinitialise jamais le budget en passant la main, compactant le contexte,
+    remplaçant un agent ou changeant de modèle.
 
 ## Règles dures
 
@@ -75,9 +90,10 @@ session a du travail en vol est une affirmation fausse.
 - **Les affirmations d'absence pourrissent le plus vite.** Avant d'écrire « X
   n'existe pas » ou « X n'est pas atterri », re-vérifie au commit courant — du
   travail parallèle atterrit pendant que tu écris.
-- **Statut en deux mots par élément : PROVEN ou STILL-BUILDING.** Des tests
-  verts sans preuve live, c'est STILL-BUILDING, et la passation dit exactement
-  quelle preuve manque.
+- **Statut étayé par élément.** Une capacité livrée devient PROVEN seulement avec
+  revue requise et preuve sur la vraie surface ; sinon STILL-BUILDING nomme les
+  preuves manquantes. Une revue terminée ou un patch local peut satisfaire son
+  aboutissement demandé sans être rebaptisé capacité déployée.
 - **Reste lisible en deux minutes** (environ 120 lignes). Quand ça dépasse,
   archive les blocs les plus anciens en les déplaçant dans une section
   historique — jamais en les supprimant.
@@ -88,6 +104,12 @@ Une session qui démarre d'une passation la lit EN PREMIER, puis vérifie les
 deux ou trois affirmations du haut contre `git log` et l'arbre live avant
 d'agir dessus. La passation est une carte, pas la vérité — fais-lui confiance
 pour OÙ regarder ; vérifie CE qu'elle dit.
+
+Reprends avec le même dossier et les mêmes quotas restants. Revérifie l'échéance
+avant de distribuer du travail ; une session neuve ne recharge pas le budget.
+Si un quota est épuisé, conserve la sauvegarde STILL-BUILDING et termine seulement
+le travail utile autorisé qui ne le consomme pas. Garde sceau RED initial et base
+épinglée ; actualise l'identité du candidat seulement si les octets changent réellement.
 
 ## Fonctionne bien avec
 

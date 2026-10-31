@@ -1,6 +1,6 @@
 ---
 name: "optimus"
-description: "Beim Start jeder Agent-Session, jedes Jobs, jeder Schleife — bevor irgendein Code geschrieben wird. Harness-first-Boot: lade das Invarianten-Fundament und die Skills, die der Job braucht, damit der Agent die Regeln liest, bevor er arbeitet; enthält das Grounding-Gate-Hook-Muster, das mutierende Tools blockt, bis das Harness geladen ist. Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence, Harness laden, Fundament booten, lies erst die Regeln, kein Code ohne Harness, Session-Start."
+description: "Beim Start oder Fortsetzen einer Agent-Session, eines Jobs oder einer autonomen Schleife, die das BACKS-Harness und relevante Aufgaben-Skills braucht."
 license: "MIT"
 ---
 
@@ -16,97 +16,61 @@ strukturell statt nur gut gemeint.
 
 ## Wann laufen lassen
 
-Am Anfang jeder Session, jedes Jobs, jeder Mission und jeder Schleife. Nochmal
-nach einem Kontext-Reset oder einer Übergabe. Das Harness einmal laden und dann
-eine Woche rollen ist nicht das Harness laden.
+Am Anfang einer Session oder eines neuen Jobs; nach Kontext-Reset oder Übergabe erneut prüfen.
+Eine innere Wiederholung nutzt gültige Erdung und dasselbe Aufgabenpaket. Lade nur
+fehlende oder veränderte Texte nach; boote nicht bei jeder Iteration den ganzen Lebenszyklus neu.
 
 ## Die Boot-Sequenz
 
 1. **Lade das Invarianten-Fundament.** Lies
    [invariant-floor](../invariant-floor/SKILL.md), bevor du irgendwas anfasst.
    Das ist der Boden, auf dem die ganze Session steht.
-2. **Lade die Karte für diesen Job.** Benenn, welche Dateien, welche Regeln und
-   welche Pack-Skills genau diese Arbeit regieren. Kannst du sie nicht nennen,
-   bist du nicht bereit zu editieren.
-3. **Lade das Menschen-Profil**
-   ([human-calibration](../human-calibration/SKILL.md)), wenn der Job den
-   Geschmack, die Oberfläche oder den Workflow eines Menschen berührt.
-4. **Rufe die Skills auf, die der Job braucht — in Echtzeit, in dieser
-   Session.** Ein Skill, der genannt, aber nicht aufgerufen wurde, ist nicht
-   passiert. „Aus der Erinnerung an einen Skill“ zu arbeiten ist kein Aufrufen.
-5. Erst dann: Code schreiben, mutierende Kommandos fahren, irgendwas ändern.
+2. **Wende [Build Flow](../backs-build-flow/SKILL.md) an.** Es besitzt Aufgabenmodus,
+   Handlungsreife, Skill-Auswahl, begrenztes RED/GREEN mit gezieltem Lint und Tests,
+   Gauntlet-Belege und Lieferung. Verwende ein verifiziertes Paket weiter und
+   sammle nur fehlende Fakten für die nächste konkrete Handlung. Spezialisten
+   kehren zu einem Verantwortlichen zurück.
+3. **Wende Menschenkontext an** ([human-calibration](../human-calibration/SKILL.md)),
+   soweit relevant. [operator-essence](../operator-essence/SKILL.md) besitzt die
+   belegte Kontextdatei und den Insights-Durchgang bei fehlender Datei;
+   starte keinen zweiten Profilzyklus.
+4. **Lade die Session.** Der Session-Hook liefert die tatsächlichen Texte von
+   Optimus, Yoke und Build Flow sowie das nachgewiesene native Harness, wenn
+   verfügbar. Kompaktierung lädt diese Texte nach, ohne erworbene Erdung zu
+   entziehen. Ein fehlender Marker bei einem mutierenden Tool löst Laden aus,
+   niemals eine Tool-Verweigerung. Hosts ohne Kontexthook können nutzen:
+   ```bash
+   node "$HOME/.local/share/backs-aios/current/hooks/aios_gate.js" --load backs-aios:optimus
+   ```
+   Hänge in einer Codex-Shell die aktive `CODEX_SESSION_ID` als letztes Argument
+   an. Python steht über den passenden `aios_gate.py`-Loader bereit. Unbekannte
+   Skills liefern einen Fehlerstatus, ohne einen Beleg zu erfinden.
+5. **Wende die Skills an, die die nächste Handlung braucht.** Benenne jeweils Zweck,
+   Ergebnis und Ausstieg. Ein nur genannter Skill hat nicht stattgefunden.
+   Verwende echte Texte weiter, die im aktuellen Kontext verfügbar sind;
+   erinnerte Zusammenfassung oder Dateihash ersetzen sie nicht.
+6. Erst dann: Code schreiben, mutierende Kommandos fahren, irgendwas ändern.
 
-## Das Grounding-Gate-Muster
+## Automatische Erdung
 
-Mach Schritt 4 strukturell, mit einem deterministischen **Pre-Tool-Use-Hook** —
-einem kleinen Skript, das deine Agent-Runtime vor jedem Tool-Call aufruft:
+Der vorhandene Hook liest die Fundamentdateien und liefert ihre Texte durch den
+Host-Kontext. Er erfasst Quellhashes erst nach der Lieferung. Kontextladebelege
+sind von tatsächlichen Skill-Event-Belegen verschieden; ein Zeiger oder Dateihash
+ist kein Aufruf dieses Skills.
 
-- Jede Session startet **ROT**.
-- Solange ROT, passieren Nur-Lese-Tools (read, grep, search, fetch) immer. Der
-  Agent erdet sich frei.
-- Solange ROT, **blockt der Hook mutierende Tools** (edit, write, delete) und
-  primär mutierende Shell-Verben (commit, push, rm, install, Service-Restart,
-  In-Place-Edits).
-- Das Aufrufen irgendeines Harness-Skills **schaltet die Session GRÜN**
-  (gefangen von einem Post-Tool-Use-Hook). Dann darf der Agent handeln.
-- **Neu scharf stellen:** der Zustand setzt sich bei jedem Session-Start auf
-  ROT zurück. Bei langen Sessions stell pro Job oder pro Aktion neu scharf,
-  damit ein abgestandenes GRÜN nie in ungeerdete Arbeit hineinträgt.
-
-Design-Regeln für den Hook selbst:
-
-- **Deterministisch und gratis.** Kein Modell-Call, kein Netz, keine
-  Abhängigkeiten. Der Zustand ist eine kleine Datei pro Session, atomar
-  geschrieben.
-- **Er erzwingt Erdung, keine Sandbox.** Matche nur primär mutierende Verben;
-  lass Dual-Use-Wrapper und Kopier-Tools in Ruhe, damit Erdungs-Kommandos nicht
-  in der Falle landen.
-- **Fail open, aber laut.** Ein abgestürzter Hook darf die Session nie
-  lahmlegen — und nie stumm durchwinken. Druck den Fehler dorthin, wo der
-  Mensch ihn sieht.
-- **Nie eine Session einsperren.** Unbekannte Session-Identität lässt durch,
-  mit einer lauten Warnzeile. Eine Session, die nie GRÜN geschaltet werden
-  kann, darf nie ROT geblockt werden.
-- **Ein Kill-Switch, der dem Menschen gehört** (eine Env-Variable), Default AN,
-  loggt laut, wenn aus. Das Gate bindet Agenten, nie den Menschen. Füg nie ein
-  zweites Gate hinzu.
-
-Generischer Hook (Pseudocode, ~25 Zeilen):
-
-```python
-HARNESS_SKILLS = {"optimus", "repair-loop", "invariant-floor"}  # your pack set
-MUTATING_TOOLS = {"Edit", "Write", "Delete"}
-MUTATING_SHELL = r"^\s*(sudo\s+)?(git (commit|push|reset|checkout)|rm|pip install|" \
-                 r"npm install|systemctl (restart|stop)|sed .*-i)"
-
-def handle(event, session_id, tool, args):
-    if kill_switch_off():                    # human-owned env var, e.g. HARNESS_GATE=off
-        return ALLOW                         # disabled loudly, never silently
-    if not session_id:
-        warn("no session id — allowing; the gate never traps a session")
-        return ALLOW
-    if event == "SessionStart":
-        set_state(session_id, "RED")         # every session re-arms to RED
-        return ALLOW
-    if event == "PostToolUse":
-        if tool == "Skill" and args.get("skill") in HARNESS_SKILLS:
-            set_state(session_id, "GREEN")   # harness invoked -> agent may act
-        return ALLOW
-    if event == "PreToolUse":
-        mutating = tool in MUTATING_TOOLS or (
-            tool == "Bash" and matches(MUTATING_SHELL, args.get("command", "")))
-        if not mutating or get_state(session_id) == "GREEN":
-            return ALLOW                     # read-only always passes
-        return BLOCK("RED: invoke a harness skill first, then act")
-    return ALLOW
-```
+- Session-Start und Kompaktierung laden das Fundament nach, ohne Tools zu entziehen.
+- Ein fehlender Session-Marker löst beim nächsten passenden Tool automatisches Laden aus.
+- Fehlende oder unlesbare Texte erzeugen sichtbare Diagnose und keinen falschen
+  Beleg; Operator und Agenten behalten ihre Tools.
+- `--rearm <session_id>` fordert erneutes Laden an. Es sperrt die Session nie.
+- `AIOS_GATE=off` bleibt der bestehende reversible Kill-Switch des Operators.
+- Hooks sind lokal und deterministisch. Kein Modellaufruf und keine Netzabhängigkeit kommen hinzu.
 
 ## Harte Regeln (was diesen Skill reißen lässt)
 
 - Irgendeine Mutation, bevor das Harness geladen ist.
 - Ein Skill, der im Report genannt, aber in der Session nie aufgerufen wurde.
-- Ein Hook, der Nur-Lese-Tools blockt, eine Session in ROT einsperrt oder stumm
-  versagt.
+- Ein Hook, der irgendein Tool verweigert, erworbene Erdung entzieht oder Laden meldet, das nicht stattfand.
 - Ein zweites Gate, oder irgendeine neue Reibung für den Menschen. Der
   Kill-Switch bleibt seiner.
 

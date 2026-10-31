@@ -1,6 +1,6 @@
 ---
 name: "absorb"
-description: "तब इस्तेमाल करें जब कोई capability किसी open-source project में पहले से मौजूद हो — डुप्लिकेट बनाने की बजाय उसे अपनाएँ और अपने harness के हिसाब से re-engineer करके native skill बनाएँ। Trigger words: absorb, adopt, port, re-engineer, ingest a repo, prior art, capability port, make this native, अपनाओ, समाहित करो, पोर्ट करो, दोबारा मत बनाओ, पहले से बना हुआ."
+description: "जब जरूरी capability किसी open-source project में पहले से हो सकती हो, या operator absorb, adopt, port, re-engineer, ingest a repo, prior art evaluation या existing capability को native बनाने को कहे, तब उपयोग करें।"
 license: "MIT"
 ---
 
@@ -22,17 +22,29 @@ Citation एक तथ्य है, सजावट नहीं।
 
 ## कदम
 
+Current [BACKS Build Flow](../backs-build-flow/SKILL.md) task packet और integration
+owner लें। Direct invocation packet एक बार बनाता है; nested call adoption evidence
+caller को लौटाता है। Valid context, operator essence और loaded skill bodies reuse करें।
+[bounded-loops](../bounded-loops/SKILL.md) mission deadline और remaining attempt/round
+allowances का owner है; discovery, builds, mutation, reviews, model changes और handoffs
+सब इसी budget से खर्च होते हैं। नया phase या worker budget reset नहीं करता। Packet का
+`task_mode` मानें: review या diagnosis native edits या delivery की अनुमति नहीं देता।
+
 1. **पहले prior art की तलाश करो।** बनाने से पहले खोजो। खुद गढ़ा हुआ डुप्लिकेट, अपनाए हुए
    scaffold से बदतर है: field testing शून्य मिलती है और सारे bugs आपके सिर।
-2. **README से आगे जाकर पढ़ो।** Platform API से project का metadata (license, activity,
-   language) निकालो। एक scratch directory में shallow-clone करो। Code और tests पढ़ो।
-   README marketing है; code ही सच है।
+2. **README से आगे discovery।** Platform API से metadata (license, activity,
+   language) लें। Scratch directory में shallow-clone करें और code/tests पढ़ें। Shipped
+   artifact या requested runtime behavior का उत्तर source से न मिले तो exact target
+   और bounded question के साथ [rea-investigation](../rea-investigation/SKILL.md) लें।
+   REA evidence इसी caller को लौटाता है, Absorb फिर शुरू नहीं करता। Adoption चुनने से
+   पहले upstream identity, observations, limits और unknowns लिखें। Static findings
+   runtime behavior सिद्ध नहीं करते।
 3. **Trust gates चलाओ।**
    - *License:* permissive (MIT / Apache / BSD / MPL) = re-engineer करना सुरक्षित।
      Copyleft (GPL / AGPL) = सिर्फ technique — idea को re-engineer करो, code कभी
      copy मत करो। कोई license नहीं = all-rights-reserved मानो, सिर्फ technique।
      Non-commercial शर्तें = blocker; अपने human के पास ले जाओ।
-   - *Shady scan:* cloak / spam / fake-review / scam patterns के लिए grep करो। ज़ोर से flag करो।
+   - *Shady scan:* cloak / spam / fake-review / scam patterns के लिए `rg` करो। ज़ोर से flag करो।
    - *बेलगाम install नहीं:* बिना जाँचे dependency का `pip install` / `npm install` कभी
      नहीं (typo-squatting असली supply-chain हमला है)। उसकी जगह अपने ही primitives के
      ऊपर पतला code लिखकर re-engineer करो।
@@ -48,12 +60,30 @@ Citation एक तथ्य है, सजावट नहीं।
    (ज़ोर से दर्ज, कभी चुपचाप नहीं), और हर capability के लिए एक failing contract test जो
    असली side-effect जाँचे — एक file, database की row, असली output। सिर्फ paid external
    API का transport mock करो, logic कभी नहीं।
-6. **Red-first दोबारा बनाओ।** Failing tests commit करो, फिर पूरे seam पर green होने तक
-   बनाओ। नतीजे को fresh, author-disjoint session में reviewer grade करता है; builder अपना काम
-   खुद कभी grade नहीं करता।
-7. **Credit दो और दर्ज करो।** जहाँ capability अब रहती है वहीं scaffold credit लिखो:
-   author, project, license, क्या उधार लिया (scaffold) और क्या आपका है
-   (re-engineering)। Credit कभी गढ़ो मत। कभी हटाओ मत।
+6. **Native integration।** [red-first](../red-first/SKILL.md) अपनाएँ: owning seam के
+   minimal fix से पहले real failure देखें और contract seal करें। Original test file
+   न बदलें। [sniper-testing](../sniper-testing/SKILL.md) से pinned `base_sha` और current
+   `candidate_sha`, तथा applicable owned pending paths के आधार पर repo की वास्तविक
+   lint, type-check और test commands scope करें। Unavailable/inapplicable checks
+   स्पष्ट लिखें; arbitrary checker install या passing result न गढ़ें। Quality और
+   mutation evidence के लिए [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md)
+   inline चलाएँ। Test gap के लिए separate supplemental regression जोड़ें; sealed
+   original न बदलें। सारा काम साझा budget में रहे।
+7. **अपनाई capability का verification।** Native result capability map और user के actual
+   surface पर exercise करें। Discovery evidence reuse करें; specific unresolved
+   comparison हो तभी REA observation लें, उसकी existing provider/execution boundaries
+   में। Configured rung matrix से capable grader चुनें; exact aggregate candidate की
+   fresh author-disjoint review में authoring execution record और exclude करें। Builder
+   अपना काम grade नहीं करता। Required affected-suite landing pass चलाएँ और project की
+   authorized delivery procedure अपनाएँ। Static upstream evidence या local GREEN
+   अकेले native live delivery सिद्ध नहीं करता।
+8. **Credit और record।** जहाँ capability रहती है वहाँ author, project, license,
+   borrowed scaffold और अपनी re-engineering का credit लिखें। Credit न गढ़ें, न हटाएँ।
+   Capability map, exact candidate, check results, attribution और unresolved gaps
+   integration owner को लौटाएँ। Budget खत्म हो या required gate न चल सके तो remaining
+   work और next action के साथ **STILL-BUILDING** checkpoint करें; exhausted allowance
+   खर्च किए बिना उपयोगी authorized work जारी रखें। **PROVEN** न गढ़ें और pass पाने को
+   capability चुपचाप न हटाएँ।
 
 ## सख़्त नियम — इनमें से कोई एक भी टूटा तो skill fail
 

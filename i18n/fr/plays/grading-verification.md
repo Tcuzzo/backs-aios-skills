@@ -11,59 +11,55 @@ est construit pour qu'on ne puisse pas le truquer.
 - Une suite se dit verte et personne ne l'a vue échouer d'abord.
 - Un modèle a construit le travail et il te faut un verdict honnête dessus.
 
-La notation, en un coup d'œil :
+## Tâche et limites communes
 
-```
-+--------------------------------------------+
-| 1 red-first  confirm the suite failed --   |<--------------------------+
-|   non-zero exit -- BEFORE the fix existed  |  each finding -> a new    |
-+--------------------------------------------+  red test -> fix ->       |
-| 2 sniper-testing  scoped runs verified;    |  re-convene               |
-|   no mock theater on the changed seam      |                           |
-+--------------------------------------------+   +---------------------+ |
-| 3 independent grade  a non-builder grader, |   |  LORD OF THE LOOP   |-+
-|   chosen live by capability + availability |   | one hand drives the |
-+--------------------------------------------+   | loop: dispatch,     |
-| 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
-|   author-redacted envelope                 |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 5 clean-code-gauntlet  the grader re-runs  |   | lands its own work. |
-|   it -- never trust the builder's numbers  |   +---------------------+
-+--------------------------------------------+
-          |
-          | all jurors pass
-          v
-+--------------------------------------------+
-| LANDING GATE -- the two-sided proof:       |
-| fail-to-pass AND pass-to-pass, run         |
-| hermetically . no fake-green tell .        |
-| author-disjoint grader session . the       |
-| grader re-ran the checks itself            |
-+--------------------------------------------+
-```
+Applique ce play dans le dossier [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)
+actuel. Garde un responsable de l'intégration, le `task_mode` demandé, les
+révisions base et candidat épinglées, l'essence opérateur et les preuves actuelles.
+Réutilise les textes chargés pertinents ; ce play ajoute ses contrôles métier
+sans relancer la tâche.
 
-*Dans le schéma : LORD OF THE LOOP = le maître de la boucle, la seule main qui pilote l'itération — dispatch, jugement, rebouclage — jusqu'à ce que la barrière d'atterrissage soit verte ; LANDING GATE = la barrière d'atterrissage — tout au vert, ou pas d'atterrissage.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) possède échéance initiale et quotas
+restants à travers réessais, agents, modèles, revues et relèves. Ne les
+réinitialise jamais pour un play imbriqué. À épuisement, sauvegarde
+**STILL-BUILDING** avec candidat, preuves, barrières non satisfaites et prochaine
+action. Le travail utile autorisé reste dans son quota disponible ; aucun
+contrôle absent ne devient une réussite.
 
 ## La chaîne
 
 1. [red-first](../skills/red-first/SKILL.md) — confirme que la suite a échoué
    avec un code de sortie non nul AVANT que le correctif existe. Une suite qui
    n'a jamais été rouge ne prouve rien.
-2. [sniper-testing](../skills/sniper-testing/SKILL.md) — vérifie que le builder
-   a utilisé des tests ciblés pendant l'itération et n'a fait aucun théâtre de
-   mocks sur la couture qu'il a changée.
+   Le test en échec est commité avant correction et le builder ne peut y toucher ;
+   les octets exacts de son fichier sont le contrat.
+2. [sniper-testing](../skills/sniper-testing/SKILL.md) — vérifie les vraies
+   commandes lint/typage/tests du dépôt ciblées sur le diff agrégé épinglé, sans
+   théâtre de mocks sur la frontière modifiée. Vérifie raisons N/A explicites
+   et contrôles manquants. Fige l'identité du candidat pour cette revue.
+
 3. Notation disjointe de l'auteur — confie le travail à un correcteur dont
    l'exécution autrice n'a pas construit le changement, choisi en direct par
    capacité et disponibilité depuis la matrice de barreaux configurée ; la revue utilise une session vierge et disjointe de l'auteur. L'auto-signature de la note par l'exécution qui a construit est
    disqualifiée à la racine.
-4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — pour les changements à
-   conséquences, convoque des jurés sur une enveloppe dont l'auteur est masqué.
-   Chaque trouvaille devient un nouveau test rouge, et le tribunal se reconvoque
-   jusqu'à ce que tous les jurés le fassent passer.
+4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — pour les changements
+   importants, convoque des jurés sur un dossier expurgé de l'auteur dans une
+   session fraîche sans conversation héritée. Rends les constats étayés au
+   responsable pour RED supplémentaire distinct et réparation bornée ; le RED
+   initial reste scellé. Reconvoque sur le candidat révisé figé dans le même
+   budget restant. Tous les jurés requis doivent valider avant atterrissage.
+
 5. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — le grader
    refait tourner le gauntlet lui-même (couverture-contre-complexité, tests de
    mutation bornés). Ne fais jamais confiance au rapport du builder sur ses
    propres chiffres.
+
+Respecte la cible immuable du mode revue. Les contrôles qui créent des caches,
+modifient le code ou exercent des services ne tournent qu'en isolation permise ;
+la mutation ne réécrit jamais les sources figées. Isolation ou support runtime
+absents sont des lacunes de preuve, pas une permission de corriger pendant la
+revue. Garde la passe complète des suites touchées à l'atterrissage et distingue
+contrôles locaux et preuves de surface ou de livraison réelles.
 
 ## La preuve à deux faces (les deux, ou pas de pass)
 

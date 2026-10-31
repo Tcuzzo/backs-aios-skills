@@ -11,44 +11,20 @@ gemeinsame Stelle im Code, an der eine Fehlerklasse wohnt — niemals einzelne S
 - Ein Rückstau an Funden muss parallel angegriffen werden, ohne Drift und ohne dass
   sich Lanes gegenseitig zertrampeln.
 
-Die Jagd auf einen Blick:
+## Gemeinsame Aufgabe und Grenzen
 
-```
-    +--------------------------------------------+
-+-->| 1 wayfinder  chart the hunt as one map,    |
-|   |   a node per seam; claim from the frontier |
-|   +--------------------------------------------+
-|   | 2 leap-protocol  one node = one ball:      |
-|   |   goal, spec, hard file scope, ONE writer  |
-|   +--------------------------------------------+
-|   | 3 root-cause-first  reproduce + review     |
-|   |   evidence BEFORE any code changes         |
-|   +--------------------------------------------+
-|   | 4 repair-loop  red-first test committed,   |<--------------------------+
-|   |   sniper-testing while iterating           |  finding or survivor ->   |
-|   +--------------------------------------------+   +---------------------+ |
-|   | 5 blind-tribunal  a non-author grader      |-->|  LORD OF THE LOOP   |-+
-|   |   attacks; jurors judge redacted work      |   | one hand drives the |
-|   +--------------------------------------------+   | loop: dispatch,     |
-|   | 6 seam-engineering  close the CLASS at     |   | judge, loop back    |
-|   |   the shared seam, never the symptom       |   | until the gate is   |
-|   +--------------------------------------------+   | green. a lane never |
-|   | 7 clean-code-gauntlet  the fixed branch    |-->| lands its own work. |
-|   |   must DIE under mutation, or stay open    |   +---------------------+
-|   +--------------------------------------------+
-|             |
-|             | jurors pass + mutant dies
-|             v
-|   +--------------------------------------------+
-|   | LANDING GATE -- leap-protocol Score gate:  |
-|   | source truth . keep-or-revert . blind      |
-|   | review . live proof . provenance -- each   |
-|   | finding ends FIXED or REFUTED-W-EVIDENCE   |
-+---| ball closed -> claim the next node         |
-    +--------------------------------------------+
-```
+Wende dieses Play im aktuellen [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)-
+Aufgabenpaket an. Bewahre einen Integrationsverantwortlichen, gewünschten
+`task_mode`, feste Basis- und Kandidatenrevisionen, Operator-Essence und aktuelle
+Belege. Verwende passende geladene Skill-Texte weiter; dieses Play ergänzt seine
+Fachprüfungen, ohne die Aufgabe neu zu starten.
 
-*Labels im Diagramm: „Lord of the Loop“ = der Besitzer des Loops, der die Iteration treibt, bis das Landing-Gate grün ist; „LAND“ = die Landung — die Änderung zieht erst ein, wenn jedes Gate grün ist.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) besitzt ursprüngliche Frist und
+Restkontingente über Wiederholungen, Mitarbeiter, Modelle, Reviews und Übergaben
+hinweg. Setze sie für ein verschachteltes Play nie zurück. Bei Erschöpfung:
+**STILL-BUILDING** mit Kandidat, Belegen, offenen Gates und nächster Handlung
+sichern. Nützliche autorisierte Arbeit bleibt im Restkontingent; kein fehlendes
+Gate wird zum bestandenen erklärt.
 
 ## Die Kette
 
@@ -63,11 +39,13 @@ Die Jagd auf einen Blick:
 3. [root-cause-first](../skills/root-cause-first/SKILL.md) — reproduziere den Bug
    und prüfe die Root-Cause-Beweise, BEVOR sich am Code irgendetwas ändert. Keine
    Mutation auf eine Vermutung hin.
-4. [repair-loop](../skills/repair-loop/SKILL.md) — die innere Disziplin jedes
-   Balls: ein per [red-first](../skills/red-first/SKILL.md) committeter
-   fehlschlagender Test vor dem Fix, [sniper-testing](../skills/sniper-testing/SKILL.md)
-   für gescopte Läufe während der Iteration, ein voller Durchlauf über die
-   berührten Module beim Landen.
+4. [repair-loop](../skills/repair-loop/SKILL.md) — innere Disziplin jedes Balls:
+   [red-first](../skills/red-first/SKILL.md)-Fehlertest vor dem Fix committet,
+   echte Lint-/Typ-/Tests mit [sniper-testing](../skills/sniper-testing/SKILL.md)
+   aus dem festgehaltenen Kandidatengesamtdiff, einmal volle betroffene Modulsuiten
+   zur Landung. Bewahre ursprüngliches RED; neue Befunde erhalten separate
+   Ergänzungstests. Gib Belege an den Jagdverantwortlichen zurück, ohne ein Play neu zu starten.
+
 5. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — jeder Fund wird
    adversarial angegriffen: Ein Prüfer, der ihn nicht verfasst hat, greift mit
    Ablehnen-als-Default an; Juroren beurteilen ein Envelope ohne Autorenangabe.
@@ -85,6 +63,10 @@ Ein Ball schließt nur über das Score-Gate des
 Keep-or-Revert, blinde Review, Live-Beweis, Provenienz; fehlende Beweise werden
 niemals als bestanden gewertet. Jagd-spezifische Endzustände: Jeder Fund endet als
 FIXED oder REFUTED-WITH-EVIDENCE (gefixt oder mit Beweisen widerlegt).
+
+Ein erschöpftes Kontingent lässt den Befund mit einem STILL-BUILDING-Checkpoint
+offen; es ist kein terminales FIXED oder REFUTED-WITH-EVIDENCE. Bewahre
+Versuchshistorie und verbleibende Missionsgrenzen vor dem nächsten erlaubten Knoten.
 
 ## Regeln der Jagd
 
@@ -115,6 +97,6 @@ FIXED oder REFUTED-WITH-EVIDENCE (gefixt oder mit Beweisen widerlegt).
 - Ein Volllauf der Suite mitten in der Jagd — snipe nur die eigene Seam des Funds.
 - Mock-Theater in einem Abschluss-Test: Es öffnet den Bug still wieder, während
   das Ledger behauptet, er sei zu.
-- Ein Fund, der geparkt wurde, statt gefixt oder mit Beweisen widerlegt.
+- Ein Fund, der still geparkt oder ohne Fix oder belegte Widerlegung als geschlossen markiert wurde.
 
 **Weight:** free-Jagd-Disziplin im Kern; der heavy-Einsatz ist dreifach — LEAP-Fan-out, das adversariale Tribunal und der Mutations-Beweis jedes Abschlusses — er zahlt sich aus, wenn ein ganzer Backlog parallel schließt und jeder Abschluss unter Mutation bewiesen ist.

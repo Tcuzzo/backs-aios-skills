@@ -10,51 +10,25 @@ uma nota de rodapé.
 Ao construir ou estender qualquer app web, site, API ou repo entregável que
 outra pessoa vai instalar e rodar.
 
-O build, num relance:
+## Tarefa e limites compartilhados
 
-```
-+--------------------------------------------+
-| 1 intent-compiler  read the ask whole      |
-+--------------------------------------------+
-| 2 understanding-gates  structure first:    |
-|   one entrypoint, manifest, lockfile       |
-+--------------------------------------------+
-| 3 dependency hygiene  validate + hash-pin  |
-|   every dep, no install scripts, pin CI    |
-+--------------------------------------------+
-| 4 red-first  contract tests for routes,    |<--------------------------+
-|   loaders, validation -- committed first   |  finding -> a new red     |
-+--------------------------------------------+  test -> fix ->           |
-| 5 build to the doctrine; any UI runs       |  re-convene               |
-|   the design-taste method                  |                           |
-+--------------------------------------------+   +---------------------+ |
-| 6 sniper-testing  never mock your own      |   |  LORD OF THE LOOP   |-+
-|   validation or serialization              |   | one hand drives the |
-+--------------------------------------------+   | loop: dispatch,     |
-| 7 clean-code-gauntlet  mutate validation   |   | judge, loop back    |
-|   + auth predicates until none survive     |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 8 blind-tribunal  independent juror       |-->| lands its own work. |
-|   panel; capability-resolved grader        |   |                    |
-+--------------------------------------------+   +---------------------+
-          |
-          | every juror passes
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no deploy:    |
-| no unpinned dep . no committed secret .    |
-| zero mutation survivors in validation +    |
-| auth predicates . no external network      |
-| during tests (loopback is fine)            |
-+--------------------------------------------+
-```
+Aplique este play dentro do pacote atual do
+[BACKS Build Flow](../skills/backs-build-flow/SKILL.md). Mantenha um responsável
+pela integração, `task_mode` solicitado, revisões base e candidata fixadas,
+essência do operador e evidências atuais. Reutilize corpos pertinentes já carregados;
+este play acrescenta gates do domínio sem reiniciar a tarefa.
 
-*Lord of the Loop = o dono do loop, que conduz a iteração até o gate de pouso ficar verde; LAND = o pouso — o portão final que só abre com tudo verde.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) cuida do prazo original e cotas
+restantes entre retries, trabalhadores, modelos, revisões e handoffs. Nunca os
+reinicie para um play aninhado. Ao esgotar, salve **STILL-BUILDING** com candidato,
+evidências, gates pendentes e próxima ação. Continue trabalho útil autorizado só
+dentro da cota restante; gate ausente não vira aprovação.
 
 ## A cadeia
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — leia o pedido inteiro
-   antes de escolher stack ou estrutura.
+1. Use intenção e essência estabelecidas pelo Build Flow antes de escolher
+   stack ou estrutura; aplique o pedido completo e as correções atuais.
+
 2. [understanding-gates](../skills/understanding-gates/SKILL.md) — desenhe a
    estrutura primeiro: um entrypoint documentado, um manifesto de dependências
    explícito e um lockfile commitado. Nada de arquivo brotando sem plano.
@@ -79,17 +53,25 @@ O build, num relance:
 5. Construa seguindo a doutrina abaixo. Para qualquer superfície de UI, rode o
    método de [design-taste](../skills/design-taste/SKILL.md) — tokens primeiro,
    acessibilidade como gate duro.
-6. [sniper-testing](../skills/sniper-testing/SKILL.md) — nunca mocke sua própria
-   validação ou serialização: uma fronteira web mockada entrega um app que
-   aceita o que deveria rejeitar.
+6. [sniper-testing](../skills/sniper-testing/SKILL.md) — use comandos reais de
+   lint/tipos/tests do repo pelo diff agregado fixado; informe lacunas e N/A
+   justificados. Nunca mocke validação nem serialização próprias: fronteira
+   mockada entrega app que aceita o que deveria rejeitar.
+
 7. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — handlers de
-   rota, loaders de dados e caminhos de formulário/validação passam antes do
-   deploy; rode mutação sobre os predicados de validação e de auth até nada
-   sobreviver. Um check de fronteira cuja comparação invertida ainda passa na
-   suíte é uma porta aberta numa superfície pública.
-8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — avaliação independente em sessões
-   novas e disjuntas do autor antes do deploy.
-   Cada achado de jurado vira um novo teste vermelho; reconvoque até todos os jurados passarem.
+   rotas, loaders e formulários/validação passam antes da implantação. Mute predicados
+   de validação e auth dentro do orçamento compartilhado; sobreviventes significativos
+   bloqueiam implantação. Acrescente regressões ausentes em arquivos separados,
+   preservando RED original selado. Comparação invertida de fronteira que continua
+   passando na suite é porta aberta na superfície pública.
+
+8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — painel independente antes
+   da implantação, escolhido ao vivo por capacidade e disponibilidade na matriz
+   configurada. Registre e exclua a execução autora; revisores usam sessões novas
+   separadas do autor sem conversa nem contexto herdados. Cada achado fundamentado
+   recebe RED separado e reparo limitado dentro desta tarefa. Reconvoque no
+   orçamento restante; todos os jurados exigidos precisam passar. Preserve passagem
+   completa das suites afetadas e verifique entrega autorizada na superfície real do app.
 
 ## A doutrina (o que o build precisa cumprir)
 

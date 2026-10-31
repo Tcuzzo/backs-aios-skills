@@ -1,26 +1,37 @@
 ---
 name: fix-shit
-description: Diagnose and close a reported failure end to end with a reproducer, root cause, class-level repair, consumer tests, and real-path proof. Use when the operator says fix shit, stop swallowing errors, or finish a stubborn bug.
+description: "जब operator broken behavior report करे, fix shit या stop swallowing errors कहे, या stubborn bug पूरा ठीक करने को कहे, तब उपयोग करें।"
 license: MIT
 ---
 
 # Fix Shit
 
-Use this as the fast entry point into `root-cause-first` and `repair-loop`.
-It is a repair skill, not a permission to hide a failing signal.
+Current [BACKS Build Flow](../backs-build-flow/SKILL.md) task में `root-cause-first`
+और `repair-loop` का fast entry point लें। वही integration owner, operator essence,
+`task_mode`, candidate identity और evidence रखें; valid packet reload या दूसरा
+lifecycle न शुरू करें। Direct invocation packet एक बार बनाता है।
+[bounded-loops](../bounded-loops/SKILL.md) का caller budget/deadline हर reproduction,
+fix, model fallback और review पर लागू है; यह skill उसे reset या failure signal छुपाती नहीं।
 
-1. Name the user's broken behavior and the exact surface where it appears.
-2. Build a repeatable red signal from the real path. Trace the input and each
-   boundary to find where actual behavior diverges from expected behavior.
-3. Identify the root cause and all callers of the broken seam. Preserve the
-   original error in logs or the operator-facing state; a fallback may protect
-   the app, but it must not turn failure into false success.
-4. Make the smallest change that closes the failure class. Add a test that fails
-   on the old behavior and covers the seam that failed.
-5. Run focused tests, the affected consumers, and the actual app path. Verify
-   both the desired result and the explicit failure state. Ask an author-disjoint
-   reviewer to inspect the change when available.
-6. Report PROVEN or STILL-BUILDING, with the evidence and any remaining red bar.
+1. User का broken behavior और वह exact surface बताएँ जहाँ वह दिखता है।
+2. Real path से repeatable red signal बनाएँ। Input और हर boundary trace करें कि actual
+   behavior expected behavior से कहाँ अलग होता है। Builder seam बदले उससे पहले
+   [red-first](../red-first/SKILL.md) से original failing contract seal करें। Diagnostic
+   task यह evidence लौटाता है।
+3. Root cause और broken seam के सभी callers पहचानें। Original error logs या operator
+   state में रखें; fallback app बचा सकता है, failure को false success नहीं बनाता।
+4. Authorized fix में [repair-loop](../repair-loop/SKILL.md) inline लें: smallest
+   class-level repair, pinned aggregate candidate diff से scoped real lint/type/tests,
+   फिर clean-code-gauntlet quality/mutation checks। Sealed original बचाएँ; नया gap
+   separate supplemental test पाता है। Already verified stages reuse करें।
+5. Requested delivery के लिए required author-disjoint review, affected-suite landing
+   gate और actual app-path checks पूरे करें। Desired result और explicit failure state
+   दोनों सत्यापित करें। Missing reviewer capability runtime gap है; खुद दिया independent
+   pass नहीं।
+6. Candidate और evidence integration owner को लौटाएँ। Required review और real delivery
+   evidence होने पर ही PROVEN कहें; अन्यथा exact remaining red bar और next action के
+   साथ STILL-BUILDING checkpoint करें। Budget exhaustion work और limits बचाता है;
+   useful unblocked work remaining allowance में ही करें।
 
 If the error is intermittent, capture timing and a bounded reproduction rate;
 do not infer a cause from one green rerun. For code-location ambiguity, start

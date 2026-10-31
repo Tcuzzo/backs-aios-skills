@@ -1,6 +1,6 @@
 ---
 name: "clean-code-gauntlet"
-description: "À utiliser pour durcir ou livrer n'importe quel build — un agent, un service, une librairie — quand tu veux une barre de qualité déterministe plutôt qu'une revue ligne par ligne. Lance les tests au sniper, le score CRAP (complexité x couverture) et des tests de mutation bornés, puis une légère revue de goût. Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar, parcours d'épreuves, score CRAP, tests de mutation, durcir, complexité, couverture, barre de qualité."
+description: "Pour durcir ou livrer des modifications exécutables exigeant des mesures de complexité, couverture et force des régressions, ainsi qu'une revue de design indépendante."
 license: "MIT"
 ---
 
@@ -21,14 +21,23 @@ fonction), taille des modules, mutants tués. Les humains et les modèles audite
 
 ## La chaîne (dans l'ordre ; chaque étape s'arrête fort en cas d'échec)
 
-1. **Tests snipers au vert.** Ne lance que les fichiers de test qui couvrent ce que le
-   diff a touché — voir [sniper-testing](../sniper-testing/SKILL.md). Une base rouge
-   veut dire : stop et répare ; on ne mute ni ne note jamais sur du rouge.
+Lie `base_sha`, `candidate_sha`, responsable de l'intégration et quota de mission
+[bounded-loops](../bounded-loops/SKILL.md) restant du dossier
+[Build Flow](../backs-build-flow/SKILL.md) existant. Réutilise les preuves encore
+valides ; tours de revue et campagnes de mutation ne rechargent pas le budget.
+
+1. **Lint, typage et comportement ciblés au vert.** Exécute les commandes
+   applicables du dépôt — voir [sniper-testing](../sniper-testing/SKILL.md).
+   Consigne explicitement contrôles absents ou inapplicables sans les déclarer
+   réussis. Une base rouge exige arrêt et correction ; ni mutation ni notation sur du rouge.
 2. **CRAP sous le seuil** sur de vraies données de couverture (voir la barrière plus
    bas). Dépassement → refactore la fonction vers le bas, ou couvre-la à fond. Ne
    baisse jamais la barre.
-3. **Tests de mutation : zéro survivant dans le périmètre.** Un survivant condamne les
-   TESTS, pas le code — renforce le test qui aurait dû l'attraper.
+3. **Mutation : aucun survivant inexpliqué dans le périmètre.** Un survivant non
+   équivalent est une lacune de régression. Ajoute un fichier supplémentaire
+   distinct ; préserve le contrat [red-first](../red-first/SKILL.md) initial scellé
+   octet pour octet. Consigne les réfutations étayées des mutants équivalents.
+   Une erreur d'outil ou un délai dépassé est non concluant, jamais un mutant tué.
 4. **Revue de goût légère** — un modèle ne juge que ce que les chiffres ne peuvent pas.
 
 ## Les outils qui calculent ça
@@ -47,6 +56,12 @@ Une forme de commande par étape :
 - Complexité : `radon cc -s <fichiers modifiés>`
 - Mutation : `mutmut run --paths-to-mutate <fichiers modifiés>` (JS/TS : `npx stryker run --mutate "<glob>"`)
 
+Ces commandes sont des exemples, pas des instructions d'installation ni des
+promesses de CLI stable. Utilise les outils épinglés du dépôt et leurs options
+prises en charge. Pour la documentation seule, valide liens, structure,
+distribution et scénarios de comportement ; complexité de code ou mutation
+peuvent être inapplicables. Note la raison au lieu d'inventer des mesures.
+
 ## La barrière CRAP
 
 ```
@@ -64,7 +79,7 @@ CRAP(m) = comp(m)^2 * (1 - cov(m)/100)^3 + comp(m)
 ## À qui est la dette — AUTHORED / WORSENED / UNCHANGED
 
 Un score absolu cache à qui appartient la dette. Découpe chaque delta de complexité et
-de CRAP contre la base d'avant le changement :
+de CRAP contre le `base_sha` épinglé avant la tâche, avec une couverture réelle comparable :
 
 - **AUTHORED** — les fonctions que ce changement a créées. La barre entière s'applique.
 - **WORSENED** — les fonctions préexistantes que ce changement a aggravées. Le delta
@@ -75,21 +90,23 @@ de CRAP contre la base d'avant le changement :
 
 ## Règles de mutation (borné, jamais imprudent)
 
-- **Jamais l'arbre de travail partagé.** Mute dans un checkout de brouillon taillé
-  depuis le HEAD committé. Des fichiers cibles ou de test sales = refus ; committe
-  d'abord.
+- **Jamais l'arbre de travail partagé.** Mute dans un checkout de brouillon du
+  `candidate_sha` commité exact. Fichiers cibles ou tests modifiés : sauvegarde et
+  termine d'abord le candidat. Préserve le travail sans rapport dans le checkout initial.
 - **Le coût se mesure, il ne se suppose jamais.** Chronomètre la suite ciblée une
   fois, annonce ETA = base x nombre de mutants AVANT de dépenser quoi que ce soit.
   Propose un essai à blanc.
-- **Borné et reprenable.** Plafonne les mutants et les minutes. Un arrêt budget est
-  une pause avec checkpoint, pas un échec — reprends pour finir.
+- **Borné et reprenable.** Plafonne mutants et minutes dans le quota restant. Un
+  arrêt budget sauvegarde les mutants non vérifiés et laisse la barrière incomplète.
+  Reprends seulement avec un quota restant ou explicitement étendu.
 - **Couverture d'abord.** Ne mute que les lignes couvertes ; une ligne non couverte
   est un trou de couverture que la barrière CRAP a déjà attrapé.
 - **Périmètre seulement.** Mute ce que le diff a touché, jamais le repo entier.
 - Un mutant réellement équivalent peut être réfuté au lieu d'être tué — avec la
   réfutation écrite noir sur blanc, jamais sautée en silence.
-- **Pas d'outil de mutation pour ta pile ?** Note-le dans le rapport de livraison et
-  appuie-toi sur la barrière CRAP — jamais de saut silencieux.
+- **Pas d'outil de mutation pour ta pile ?** Consigne limite et preuves de
+  substitution réelles. Applique la politique d'acceptation du dépôt ; une barrière
+  obligatoire reste incomplète jusqu'à acceptation d'une alternative documentée par son responsable.
 
 ## La revue de goût (en dernier, et légère)
 

@@ -13,20 +13,20 @@
 modelo busca un estado que no le pertenece, el sistema falla en voz alta en lugar de
 adivinar.**
 
-Esa línea es el **Reflex Seam**, y este pack es cómo lo instalas en un agente que ya
-usas. Este es el momento en que se gana su lugar: el agente va a ejecutar un comando
-antes de haber leído las reglas. Un hook lo revisa. La herramienta no corre, y al agente
-se le dice por qué. No es un prompt pidiéndole que se porte bien — es una compuerta con
-la que no puede discutir.
+Esa línea es el **Reflex Seam**, y este pack la lleva a un agente que ya usas.
+El hook entrega los cuerpos reales del piso, Optimus, Yoke y Build Flow al contexto
+del host. Si falta contexto, lo carga y comunica cualquier diagnóstico; no rechaza
+herramientas ni revoca anclaje adquirido. Los recibos de carga no se presentan como
+invocaciones de skills que nunca ocurrieron.
 
 Dos reglas viajan con él. **Sin teatro de mocks:** un test que pasa mientras la cosa
 está rota es una mentira, así que los tests afirman efectos reales. **Quien construye no
 califica:** el test que falla se escribe primero, y algo que no escribió el código tiene
 que aprobarlo.
 
-Un harness de agentes destilado en 28 skills portables y 8 jugadas con nombre,
-sacado de una plataforma de agentes en producción y reconstruido como markdown plano
-que cualquier agente puede cargar.
+El pack contiene **62 carpetas de skills**: **54 métodos y alias traducidos** y
+8 entradas de comando, además de **8 plays y 15 adaptadores de comando**. Los
+métodos portátiles se distribuyen como Markdown que el agente puede cargar.
 
 Para aprender con imágenes, consulta el [mapa visual de skills y bucles](../../docs/FLOWCHARTS.md).
 
@@ -100,12 +100,10 @@ equivalentes en español también disparan la misma disciplina.
 - **Las skills** son disciplinas individuales. Cada una lleva palabras gatillo en su
   descripción, pasos numerados, reglas duras que hacen fallar la skill, y enlaces a
   las skills con las que se combina. Un archivo cada una: `skills/<name>/SKILL.md`.
-- **Las jugadas** (plays) son combos con nombre. Una jugada dispara skills en un
-  orden fijo y lista las puertas duras que bloquean un aterrizaje. Un archivo cada
-  una: `plays/<name>.md`. El wireframe de cada jugada marca un
-  **Lord of the Loop** — el dueño del bucle, quien conduce la iteración hasta que la puerta de
-  aterrizaje está en verde; el rol se define en
-  [NAMING.md](NAMING.md#lord-of-the-loop).
+- **Las jugadas** (plays) combinan métodos y puertas de dominio dentro del paquete
+  vigente de Build Flow. Un responsable de integración conduce el trabajo con
+  presupuesto compartido; cada especialista devuelve evidencia sin reiniciar la tarea.
+  Un archivo por play: `plays/<name>.md`.
 - **Los comandos** son las entradas slash que instala el plugin — cada uno carga una
   jugada o una skill y la ejecuta. Un archivo cada uno en `command-adapters/`.
 - **La convención de nombres** — por qué las skills son frases nominales, los
@@ -114,36 +112,78 @@ equivalentes en español también disparan la misma disciplina.
   (free / light / heavy) y la línea **Weight:** con la que cierra cada jugada — se
   decodifican en [NAMING.md](NAMING.md#sellos-de-esfuerzo).
 
+## Integración de Build Flow y esencia del operador
+
+[backs-build-flow](skills/backs-build-flow/SKILL.md) mantiene una tarea y un responsable:
+contexto suficiente → RED sellado → arreglo mínimo → lint, tipos y tests reales →
+[clean-code-gauntlet](skills/clean-code-gauntlet/SKILL.md) → revisión y entrega
+autorizada. El alcance va del `base_sha` fijado al candidato actual, incluso tras
+commits, y todos los trabajadores y reintentos consumen el mismo presupuesto.
+Un hueco nuevo recibe un test separado; el RED original permanece intacto.
+
+[operator-essence](skills/operator-essence/SKILL.md) aporta un fragmento privado
+basado en evidencia cualitativa y cuantitativa. Si falta el archivo, usa una vez
+los insights admitidos del host o declara la alternativa disponible. Los datos
+escasos quedan provisionales; no bloquean trabajo autorizado. El pedido y las
+correcciones actuales prevalecen sobre tendencias históricas. La esencia no es
+personalidad fija, política financiera/de riesgo ni autorización.
+
 ## Las skills
 
 | Skill | Qué hace |
 | --- | --- |
 | [absorb](skills/absorb/SKILL.md) | Adopta una capacidad open-source existente y re-ingeniérala como skill nativa, en vez de construir un duplicado. |
+| [architecture-engineer](skills/architecture-engineer/SKILL.md) | Revisa límites, dependencias y responsabilidades contra las reglas del proyecto, y registra decisiones de arquitectura. |
+| [backs-build-flow](skills/backs-build-flow/SKILL.md) | Un responsable coordina contexto suficiente, esencia del operador, RED/GREEN acotado, lint/tipos/tests, gauntlet y entrega verificada. |
+| [backs-pack-sync](skills/backs-pack-sync/SKILL.md) | Compara cobertura privada y pública sin revelar datos privados; añade capacidades solo mediante puentes públicos revisados. |
+| [backs-session-rollover](skills/backs-session-rollover/SKILL.md) | Conserva objetivo, correcciones, evidencia y paso pendiente al compactar contexto y continuar en una sesión nueva. |
 | [blind-eval](skills/blind-eval/SKILL.md) | Juzga un cambio por sus méritos con la autoría oculta, y luego conserva o revierte. Solo aterriza la mejora probada. |
-| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Jurados ciegos, en sesiones frescas sin contexto del autor, califican el cambio, un lente cada uno. Cada hallazgo se vuelve un test que falla. Itera hasta que todos aprueben. |
-| [bounded-loops](skills/bounded-loops/SKILL.md) | Techos de presupuesto, checkpoints y kill-switches en cada bucle. Hace estructuralmente imposible martillar una API. |
+| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Jurados en sesiones nuevas sin contexto del autor revisan un paquete sin autoría; los hallazgos vuelven a RED suplementario y revisión dentro del presupuesto. |
+| [bounded-loops](skills/bounded-loops/SKILL.md) | Un único presupuesto restante de misión limita reintentos, trabajadores, modelos y revisiones; su agotamiento conserva un checkpoint honesto. |
+| [building-with-backs](skills/building-with-backs/SKILL.md) | Resuelve checkout y ruta exactos y lleva el cambio autorizado hasta la superficie real con evidencia de revisión y entrega. |
+| [cam-iot-inventory](skills/cam-iot-inventory/SKILL.md) | Inventaría cámaras, IoT y Wi-Fi con identidad estable y evidencia honesta; distingue inventario de imagen disponible. |
 | [clean-code-gauntlet](skills/clean-code-gauntlet/SKILL.md) | Una vara de calidad determinista: tests francotirador, el puntaje CRAP (complejidad x cobertura), testing de mutación acotado, y al final una revisión ligera de gusto. |
+| [co-health](skills/co-health/SKILL.md) | Observa evidencia del harness y watchdog y comunica hallazgos preservando herramientas y código. |
+| [conscientious-objector](skills/conscientious-objector/SKILL.md) | Observa evidencia del harness y watchdog sin retirar herramientas ni alterar código del operador. |
+| [context-compiler](skills/context-compiler/SKILL.md) | Alias compatible de context-engineer; conserva el mismo método y paquete de ejecución. |
+| [context-engineer](skills/context-engineer/SKILL.md) | Reconstruye solo contexto faltante, verifica destino y siguiente acción y conserva presupuesto, evidencia y esencia pertinente. |
+| [context_engineer](skills/context_engineer/SKILL.md) | Alias compatible de context-engineer con contenido idéntico. |
+| [debugging-engineer](skills/debugging-engineer/SKILL.md) | Investiga regresiones difíciles, fallos silenciosos y carreras con hipótesis refutables y sondas decisivas antes de editar. |
 | [decision-bar](skills/decision-bar/SKILL.md) | Una sola vara para cada decisión: solo el gusto, la visión o el riesgo destructivo llegan al humano. Todo lo demás se ejecuta. |
+| [design-critique](skills/design-critique/SKILL.md) | Critica la superficie real según tarea del usuario, jerarquía, accesibilidad, movimiento y coherencia visual. |
 | [design-taste](skills/design-taste/SKILL.md) | Entrega trabajo visual que se ve diseñado, no generado: tokens de diseño primero, crítica por captura de pantalla, una puerta dura de accesibilidad. |
+| [fix-shit](skills/fix-shit/SKILL.md) | Entrada directa al diagnóstico y reparación acotada de la clase de fallo, con RED sellado y prueba real de entrega. |
+| [fleet-dispatch](skills/fleet-dispatch/SKILL.md) | Despacha por rol mediante la escalera configurada y devuelve resultados con procedencia real. |
 | [fleet-ladder](skills/fleet-ladder/SKILL.md) | Resuelve la escalera de modelos en vivo: sondea qué está arriba, cae en orden, falla con ruido cuando la escalera se agota. |
 | [gpu-dispatch](skills/gpu-dispatch/SKILL.md) | Un modelo por GPU, sin derrame a la RAM del sistema, la tarjeta caliente durante todo el bucle, descarga al terminar el bucle. |
 | [guided-steps](skills/guided-steps/SKILL.md) | Guiona los pasos que solo un humano puede hacer — dashboards, credenciales, secretos — etapa por etapa, capturando cada valor. |
-| [human-calibration](skills/human-calibration/SKILL.md) | Construye un perfil de cómo piensa, decide y quiere que le hablen este humano, y conduce toda la construcción a través de él. |
+| [harness-optimizer](skills/harness-optimizer/SKILL.md) | Compara línea base y candidato con experimentos acotados, datos reservados y comprobaciones de fuga y sobreajuste. |
+| [human-calibration](skills/human-calibration/SKILL.md) | Aplica preferencias expresadas y corregidas del operador mediante la esencia existente, sin cuestionarios duplicados ni personalidad fija. |
+| [human-voice](skills/human-voice/SKILL.md) | La vara sin-título-universitario: si leerlo exige un título, reescríbelo. Conserva la idea completa mientras quita los tics de máquina. |
 | [incident-closure](skills/incident-closure/SKILL.md) | "Arréglalo" significa un cierre completo — causa raíz con evidencia, test que falla, verde, prueba en vivo — nunca un menú de opciones de vuelta al humano. |
-| [intent-compiler](skills/intent-compiler/SKILL.md) | Lee el lenguaje natural de un humano — dialecto, metáfora, atajos — como una spec completa, y ejecútala entera. Cada dialecto es una gramática válida; la skill lee la cultura como contexto con su propia lógica interna, nunca como estereotipo. |
+| [intent-compiler](skills/intent-compiler/SKILL.md) | Interpreta el pedido actual en un contrato ejecutable; distingue hechos, preferencias e inferencias y reutiliza la directiva vigente. |
 | [invariant-floor](skills/invariant-floor/SKILL.md) | Las leyes numeradas que todo cambio autónomo debe cumplir antes de aterrizar. El piso sobre el que se para todo el pack. |
+| [karpathy](skills/karpathy/SKILL.md) | Experimenta en un clon desechable con meta, métricas, archivos permitidos y presupuesto explícitos; conserva mejoras probadas. |
 | [leap-protocol](skills/leap-protocol/SKILL.md) | Parte el trabajo grande en bolas con dueño independiente, repártelas a constructores paralelos en worktrees aislados, reconcilia por una sola espina de escritura. |
 | [live-research](skills/live-research/SKILL.md) | Un agente de investigación paralelo lee la fuente viva — READMEs, docs, código real — para que el razonamiento se ancle en lo que de verdad hay, no en la memoria. |
 | [model-fusion](skills/model-fusion/SKILL.md) | Un panel de modelos borradorea en paralelo, un juez independiente elige, y el ganador se valida contra la intención original. |
-| [optimus](skills/optimus/SKILL.md) | Nada de código hasta que el harness esté cargado. Un hook determinista bloquea las herramientas que mutan hasta que el agente haya leído las reglas. |
-| [human-voice](skills/human-voice/SKILL.md) | La vara sin-título-universitario: si leerlo exige un título, reescríbelo. Conserva la idea completa mientras quita los tics de máquina. |
+| [operator-essence](skills/operator-essence/SKILL.md) | Aporta contexto privado cualitativo y cuantitativo con fuentes, límites e incertidumbre; usa insights o alternativa disponible una sola vez. |
+| [operator-intent-deduction](skills/operator-intent-deduction/SKILL.md) | Resuelve decisiones pendientes desde el pedido actual, hechos verificados y contexto respaldado, sin fijar identidad ni política de riesgo. |
+| [operator_intent_deduction](skills/operator_intent_deduction/SKILL.md) | Alias compatible de operator-intent-deduction con contenido idéntico. |
+| [optimus](skills/optimus/SKILL.md) | Carga los cuerpos reales del piso, Yoke y Build Flow en el contexto; el hook no rechaza herramientas ni reinicia la tarea. |
+| [osha-bot](skills/osha-bot/SKILL.md) | Observa evidencia del harness y watchdog y conserva herramientas, código y control del operador. |
+| [rea-investigation](skills/rea-investigation/SKILL.md) | Devuelve evidencia REA de descubrimiento o verificación al responsable actual sin reiniciar adopción o reparación. |
 | [red-first](skills/red-first/SKILL.md) | Haz commit de un test probado-en-rojo antes de que empiece la construcción. El constructor no puede tocarlo. Un evaluador verifica que nunca se movió. |
+| [reload-vsc-and-verify](skills/reload-vsc-and-verify/SKILL.md) | Detecta la instalación local, conecta skills ausentes y recarga VS Code con verificación de descubrimiento. |
 | [repair-loop](skills/repair-loop/SKILL.md) | El bucle de arreglo completo: anclarse en el piso, reproducir, test rojo, arreglar la clase, verificar en la ruta real, calificación independiente, aterrizar. |
 | [repo-map](skills/repo-map/SKILL.md) | Mapea primero la estructura real del repositorio, puntos de entrada, configuración y rutas de ejecución antes de cambiar código. |
 | [root-cause-first](skills/root-cause-first/SKILL.md) | Sin arreglos sin investigación. Reproduce a demanda, instrumenta las fronteras, rastrea los datos hacia atrás hasta la fuente. |
+| [scrub-plugin-pack-literals](skills/scrub-plugin-pack-literals/SKILL.md) | Detecta y elimina literales privados del pack público sin debilitar la higiene de publicación. |
 | [seam-engineering](skills/seam-engineering/SKILL.md) | Arregla la clase de la falla una sola vez en su primitiva compartida, barre cada hermano, y deja una guarda que atrape al siguiente infractor. |
-| [session-handoff](skills/session-handoff/SKILL.md) | Compacta una sesión en un solo archivo plano que un agente recién llegado pueda leer en frío y continuar. Con los secretos tachados. |
-| [sniper-testing](skills/sniper-testing/SKILL.md) | Corre solo los tests que cubren lo que tocaste. Mata el teatro de mocks — tests que pasan mientras la capacidad está rota. |
+| [session-handoff](skills/session-handoff/SKILL.md) | Transfiere el mismo paquete, candidato, sellos RED, evidencia, plazo y presupuesto restante respetando el modo de solo lectura. |
+| [sniper-testing](skills/sniper-testing/SKILL.md) | Deriva lint, tipos y tests reales del diff completo entre base fijada y candidato, incluyendo pendientes pertinentes. |
+| [truth-audit](skills/truth-audit/SKILL.md) | Verifica en solo lectura qué se ejecuta realmente y convierte hallazgos comprobados en una especificación de reparación. |
+| [turn-and-burn](skills/turn-and-burn/SKILL.md) | Coordina preparación de misión, revisión de plan y capacidades faltantes mediante investigación y adopción. |
 | [understanding-gates](skills/understanding-gates/SKILL.md) | Puertas en Diseño, Plan, Construcción, Test y Entrega con veredictos aprobar/revisar/rechazar, para que la construcción siga calzando con el pedido. |
 | [wayfinder](skills/wayfinder/SKILL.md) | Cuando estés perdido, traza un mapa de decisiones hasta el destino, en vez de estacionar una pregunta sobre el humano. |
 

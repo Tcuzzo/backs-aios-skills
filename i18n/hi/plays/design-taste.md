@@ -10,51 +10,24 @@ design tokens रखें, agent को आँखें दें, और acces
 इंसान देखेगा। पहली screen बाद की हर screen का स्तर तय कर देती है — उससे पहले यह
 play चलाएँ।
 
-taste loop, एक नज़र में:
+## साझा task और limits
 
-```
-+--------------------------------------------+
-| 1 intent-compiler  WHICH taste do the      |
-|   human's words ask for? state the read    |
-+--------------------------------------------+
-| 2 human-calibration  anchor in the record  |
-|   + studied references, never a guess      |
-+--------------------------------------------+
-| 3 design-taste  emit the three-tier        |
-|   token file FIRST, before any component   |
-+--------------------------------------------+
-| 4 build with the token file as a hard      |<--------------------------+
-|   constraint -- no raw hex, px, fonts      |  critique -> fix ->       |
-+--------------------------------------------+  re-shoot                 |
-| 5 design-taste  screenshot -> critic;      |   +---------------------+ |
-|   critic resolved live via fleet-ladder    |-->|  LORD OF THE LOOP   |-+
-+--------------------------------------------+   | one hand drives the |
-| 6 design-taste  8-axis taste rubric        |   | loop: dispatch,     |
-+--------------------------------------------+   | judge, loop back    |
-| 7 design-taste  WCAG 2.2 HARD gate         |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 8 clean-code-gauntlet  the code BEHIND     |   | lands its own work. |
-|   the pixels; zero surviving mutants       |   +---------------------+
-+--------------------------------------------+
-          |
-          | rubric + WCAG green
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no ship:      |
-| WCAG 2.2 passes . 8-axis rubric scored .   |
-| zero surviving mutants behind the pixels   |
-| . critic != builder seat, capability-    |
-| resolved via fleet-ladder, never pinned    |
-+--------------------------------------------+
-```
+यह play current [BACKS Build Flow](../skills/backs-build-flow/SKILL.md) task packet
+के भीतर चलाएँ। एक integration owner, requested `task_mode`, pinned `base_sha`, current
+`candidate_sha`, operator essence और current evidence रखें। Applicable loaded skill
+bodies reuse करें; यह play अपने domain gates जोड़ता है, task फिर शुरू नहीं करता।
 
-*Lord of the Loop = loop का मालिक — एक ही हाथ जो dispatch, judge और दोहराव तब तक चलाता है जब तक landing gate green न हो जाए; LAND = बदलाव का final उतरना — हर gate green होने पर merge होकर ship होना।*
+[bounded-loops](../skills/bounded-loops/SKILL.md) original deadline और remaining
+allowances को retries, workers, models, reviews और handoffs में संभालता है। Nested play
+के लिए उन्हें reset न करें। Exhaustion पर candidate, evidence, unmet gates और next action
+सहित **STILL-BUILDING** checkpoint करें। Useful authorized work remaining allowance में
+ही करें; missing gate कभी pass नहीं बनता।
 
 ## चेन
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — इंसान के अपने शब्दों से
-   यह निकालें कि वे कौन-सी taste माँग रहे हैं, और लिखने से पहले अपनी समझ एक
-   पंक्ति में बताएँ।
+1. Build Flow के established intent और operator essence से तय करें कि human के
+   शब्द किस taste की माँग करते हैं। लिखने से पहले समझ एक बार बताएँ।
+
 2. [human-calibration](../skills/human-calibration/SKILL.md) — उस समझ को इंसान के
    record और सचमुच पढ़े गए references में बाँधें, कभी demographic अंदाज़े में नहीं।
 3. किसी भी component से पहले, सबसे पहले तीन-स्तरीय design-token file निकालें —
@@ -62,20 +35,24 @@ taste loop, एक नज़र में:
    [design-taste](../skills/design-taste/SKILL.md) में है।
 4. components को token file के साथ एक सख़्त constraint की तरह बनाएँ। किसी
    component के अंदर कभी कच्चा hex, pixel value, या font family hardcode न करें।
-5. screenshot → critic loop चलाएँ, जैसा
-   [design-taste](../skills/design-taste/SKILL.md) कहता है; critic model को
-   [fleet-ladder](../skills/fleet-ladder/SKILL.md) से live resolve करें।
+5. [design-taste](../skills/design-taste/SKILL.md) का screenshot → critic loop चलाएँ;
+   [fleet-ladder](../skills/fleet-ladder/SKILL.md) से critic live resolve करें। हर critique
+   और re-render same remaining budget खर्च करता है; findings current owner को लौटाएँ।
+
 6. 8-axis taste rubric का score करें, [design-taste](../skills/design-taste/SKILL.md)
    के हिसाब से।
 7. WCAG 2.2 accessibility का HARD gate लागू करें, जैसा
    [design-taste](../skills/design-taste/SKILL.md) में लिखा है।
-8. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — सिर्फ़ pixels के
-   पीछे वाले code पर: token resolvers, theme switches, contrast calculators, और
-   state reducers zero surviving mutants के साथ पास हों। contrast check में उलटी
-   हुई एक comparison एक सुंदर मगर inaccessible screen ship कर देती है। gauntlet
-   कभी taste का score नहीं करता — visual फ़ैसले rubric और accessibility gate के
-   ही रहते हैं। tests में असली DOM render करें; mocked render उस चीज़ के बारे में
-   कुछ साबित नहीं करता जो इंसान असल में देखता है।
+8. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — pixels के पीछे code
+   पर: token resolvers, theme switches, contrast calculators और state reducers zero
+   surviving mutants के साथ pass हों। Contrast check में flipped comparison सुंदर
+   लेकिन inaccessible screen ship करती है। Gauntlet taste score नहीं करता; rubric
+   और accessibility gate visual judges हैं। Gauntlet से पहले
+   [sniper-testing](../skills/sniper-testing/SKILL.md) से pinned aggregate candidate
+   diff के real repo lint/type/test commands चलाएँ। N/A और missing checks ईमानदारी से
+   बताएँ। Tests real DOM render करें; mocked render user की view सिद्ध नहीं करता।
+   Sealed RED बचाएँ, नए gaps के लिए separate supplemental tests जोड़ें, required
+   independent review, full affected-suite landing check और real rendered proof रखें।
 
 ## Hard gates (इस play के अपने — skill के अपने hard rules इनके ऊपर लागू रहते हैं)
 

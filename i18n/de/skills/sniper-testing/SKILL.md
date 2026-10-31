@@ -1,73 +1,80 @@
 ---
-name: "sniper-testing"
-description: "Für jede Fix- oder Build-Schleife, und bevor du irgendeinem grünen Test traust. Fährt nur die Tests, die abdecken, was du angefasst hast, und killt Mock-Theater — Tests, die bestehen, während die Fähigkeit kaputt ist. Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat, gezielte Tests, Test-Scope, falsches Grün, ganze Suite, Test-Blähung."
-license: "MIT"
+name: sniper-testing
+description: "In Build- oder Reparaturschleifen oder vor Vertrauen in ein grünes Ergebnis, wenn die Verifikation den tatsächlichen Kandidaten ohne redundante Gesamtsuite-Läufe abdecken muss."
+license: MIT
 ---
 
 # Sniper Testing
-**Effort:** free — pure Disziplin, keine zusätzlichen Läufe; senkt die Netto-Kosten unterm Strich, weil sie Voll-Suite-Wiederholungen während der Iteration streicht. Beseitigt: Test-Blähung (Läufe der ganzen Suite für einen winzigen Diff) und die Mock-Theater-Grüns, auf denen du sonst bauen würdest.
 
-## Warum es das gibt
+Prüfe das geänderte Verhalten über seinen echten Verbraucher. Wähle Prüfungen
+anhand des vollständigen Aufgaben-Diffs und wiederhole danach nur Prüfungen,
+die von der nächsten Änderung betroffen sind. Übernimm dasselbe Missionskontingent
+von [bounded-loops](../bounded-loops/SKILL.md).
 
-Zwei Fehler-Muster verbrennen die meiste Testzeit. Test-Blähung: die ganze
-Suite für eine winzige Änderung fahren. Mock-Theater: Tests, die bestehen,
-während die echte Fähigkeit physisch kaputt ist. Dieser Skill killt beides.
+## 1. Den tatsächlichen Umfang festhalten
 
-## Regel 1 — der Diff definiert den Scope, nicht der Optimismus
+Bewahre verifizierten `base_sha` vor Aufgabenbeginn und aktuellen committeten
+`candidate_sha` im [Build Flow](../backs-build-flow/SKILL.md)-Paket. Ein sauberer
+Arbeitsbaum nach RED- und Fix-Commit hat weiterhin einen Aufgaben-Diff.
+`git diff HEAD` allein verliert ihn.
 
-Während der Fix/Build-Iterationsschleife ist es dir verboten, die ganze
-Test-Suite zu fahren.
+Nutze den mitgelieferten Nur-Lese-Helfer aus dem aufgelösten Skill-Verzeichnis:
 
-1. Fahr `git diff --name-only HEAD`, um exakt zu sehen, welche Dateien du
-   angefasst hast.
-2. Ordne jeder angefassten Datei die Test-Dateien zu, die sie direkt abdecken
-   (z. B. `src/payments/refund.py` → `tests/test_refund.py`).
-3. Benenn dein konkretes Test-Ziel, dann fahr NUR diese Dateien
-   (Python: `pytest tests/test_refund.py`;
-   JS: `npx vitest run tests/refund.test.js`;
-   Go: `go test ./payments/ -run TestRefund`).
-4. Ein Test, der schon bestanden hat, wird nicht neu gefahren, außer deine
-   nächste Änderung berührt Code, den er ausübt. Der Diff definiert den
-   Scope — nicht Optimismus, nicht Angst.
-5. Beim Landen — am Commit-Gate — fahr EINEN vollen Durchlauf über die Suite
-   jedes angefassten Moduls. Dieser eine Durchlauf fängt indirekte Kopplungen
-   genau einmal. Iterationstempo und eine solide Landung gehören beide zum Job.
+```bash
+python scripts/changed_files.py --repo <verified-repo> --base <base-sha> --candidate <candidate-sha>
+```
 
-## Regel 2 — Mock-Theater killen
+Füge während der Iteration `--include-worktree` nur hinzu, wenn der Kandidat HEAD
+ist. Der Helfer meldet committete, gestagte, ungestagte und unversionierte Pfade
+getrennt und bewahrt ungewöhnliche Dateinamen. Der Gesamtumfang enthält Löschungen
+und beide Seiten einer Umbenennung. Markiere fremde ausstehende Arbeit als
+bewahrt; beanspruche nicht jeden ausgegebenen Pfad. Fehlende Basis oder ungültige
+Revision sind zu klärende Fehler, kein leerer Umfang zum Überspringen von Prüfungen.
+Der Helfer lädt keine Historie nach und verändert sie nicht.
 
-Ein Fähigkeits-Test muss einen echten, physischen Nebeneffekt asserten:
+## 2. Tatsächliche Prüfungen wählen und ausführen
 
-- „erzeugt ein Video“ → eine echte Datei liegt auf der Platte, Größe > 0 Bytes.
-- „speichert Erinnerung“ → die Zeile lässt sich aus einer echten lokalen
-  Datenbank zurücklesen.
-- „rendert das Widget“ → ein echtes DOM-Element existiert auf der Seite.
+Ordne geänderte Dateien sowie betroffene Aufrufer/Verbraucher Verhaltenstests zu
+und lies die tatsächlichen Skripte, CI und Konfiguration des Repositories für die passenden Befehle.
 
-Mock nicht die Datenbank. Mock nicht das Dateisystem. Mock keine lokalen
-Netzwerk-Sockets.
+| Prüfung | Umfang und Beleg |
+| --- | --- |
+| Lint und Formatprüfung | Geänderte unterstützte Dateien mit bestehender Konfiguration; Prüfmodus vor einer Neuformatierungsentscheidung. |
+| Typprüfung oder Compiler | Betroffene Paket-/Projektgrenze; Typabhängigkeiten können ein breiteres Ziel erfordern. |
+| Verhaltenstests | Tatsächlich geänderter Pfad und Regression, die bei kaputter Fähigkeit fehlschlägt. |
+| Vertrags-/Integrationstests | Betroffene Verbraucher, Aliase, Paketierung, Einstellungserhalt oder Runtime-Grenzen. |
+| Vorgeschriebene Landungsprüfungen | Vom Repository verlangte Suiten, sobald der Kandidat feststeht. |
 
-Der eine legale Mock ist das bezahlte externe Transport-Blatt — der HTTP-Call
-an eine kostenpflichtige Dritt-API. Selbst dann muss der Test die ganze echte
-Logik drumherum durchlaufen: Request bauen, Routing, Antwort parsen. Mock die
-Leitung, nie das Hirn.
+Benenne jeden Befehl, abgedecktes Risiko, Revision/ausstehenden Zustand,
+ausgeführtes Ergebnis und verbleibende Fehler. Ein fehlender Linter/Typprüfer ist
+**nicht verfügbar** oder **nicht anwendbar**, mit Grund; erfinde keinen Erfolg.
+Installiere kein neues Tool, nur weil ein Beispiel es nennt. Grünes Lint ersetzt keine Verhaltenstests.
 
-## Auditieren, bevor du traust
+Wähle während der Iteration das kleinste sinnvolle Ziel. Eine bestandene Prüfung
+muss nicht erneut laufen, wenn getesteter Code, Eingaben und relevante Umgebung
+unverändert sind. Eine konkrete offene Kopplung oder vorgeschriebene Projektprüfung
+rechtfertigt breitere Tests; dokumentiere den Grund. Führe zur Landung die
+geforderten Gesamtprüfungen einmal auf dem finalen Kandidaten aus. Danach geänderte
+Bytes entwerten nur betroffene Belege und vorgeschriebene Commit-Prüfungen.
 
-Bevor du dich auf irgendeinen Test verlässt, lies ihn. Ist er Mock-Theater —
-grün wegen Mocks, ohne physische Assertion — lösch den Mock und schreib den
-Test neu, sodass er einen echten Nebeneffekt assertet. Ein Test, der nicht
-fehlschlagen kann, ist schlimmer als kein Test: er beglaubigt eine Lüge, und
-du wirst auf dieser Lüge bauen.
+## 3. Tests müssen echte Defekte erkennen
 
-## Harte Regeln (eine gebrochen, und der Skill ist gerissen)
+Prüfe eine beobachtbare Wirkung: Ein Artefakt existiert und ist gültig, Daten
+lassen sich aus einer echten lokalen Datenbank zurücklesen, der Host erhält
+tatsächliche Kontextbytes oder ein UI-Element wird gerendert. Verwende lokale
+Dateien, Datenbanken und Sockets statt Mocks. Ein abgerechnetes externes
+Transport-Endstück darf eine deterministische Fixture ersetzen, während
+Request-Aufbau, Routing, Parsing und lokaler Verbraucher echt bleiben. Behaupte
+nie, die Fixture beweise einen Lauf des externen Dienstes.
 
-- Kein Voll-Suite-Lauf während der Iteration.
-- Keine Grün-Behauptung ohne Assertion eines echten Nebeneffekts.
-- Kein Mock jenseits des bezahlten externen Transport-Blatts in einem
-  Fähigkeits-Test.
-- Kein Landen ohne den einen vollen Durchlauf über die angefassten Module.
+Bewahre die versiegelte RED-Datei von [red-first](../red-first/SKILL.md) byteidentisch.
+Lege für eine neue Lücke eine separate ergänzende Regressionsdatei an und befolge
+dabei die Beleg- und Versiegelungsregeln dieses Skills. Die ursprüngliche versiegelte
+Datei darf niemals abgeschwächt, umbenannt, ersetzt oder bearbeitet werden.
 
-## Passt gut zu
+## Ausstieg
 
-- [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) — der Sniper-Scope füttert sein erstes Gate
-- [red-first](../red-first/SKILL.md) — schreib den fehlschlagenden Test vor dem Fix
-- [seam-engineering](../seam-engineering/SKILL.md) — fix die Klasse, dann feg mit gescopten Tests
+Gib Kandidatenumfang, ausgeführte Lint-/Typ-/Testergebnisse, echte Wirkungsbelege
+und offene Prüfungen an denselben Verantwortlichen zurück.
+[clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) nutzt diese Belege als erste
+Stufe, nicht als Anlass, unveränderte Prüfungen zu wiederholen.

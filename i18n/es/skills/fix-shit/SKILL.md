@@ -1,32 +1,55 @@
 ---
 name: fix-shit
-description: Diagnose and close a reported failure end to end with a reproducer, root cause, class-level repair, consumer tests, and real-path proof. Use when the operator says fix shit, stop swallowing errors, or finish a stubborn bug.
+description: "Úsala cuando el operador reporte comportamiento roto, diga fix shit o que dejes de ocultar errores, o pida terminar un bug persistente."
 license: MIT
 ---
 
 # Fix Shit
 
-Use this as the fast entry point into `root-cause-first` and `repair-loop`.
-It is a repair skill, not a permission to hide a failing signal.
+Entrada rápida a `root-cause-first` y `repair-loop` dentro de la tarea actual de
+[BACKS Build Flow](../backs-build-flow/SKILL.md). Conserva su único responsable,
+esencia del operador, `task_mode`, identidad del candidato y evidencia; no recargues
+un paquete válido ni inicies otro ciclo de vida. Una invocación directa establece
+el paquete una vez. Presupuesto restante y plazo de
+[bounded-loops](../bounded-loops/SKILL.md) se aplican a cada reproducción, arreglo,
+modelo alternativo y revisión. Esta skill no los reinicia ni oculta fallos.
 
-1. Name the user's broken behavior and the exact surface where it appears.
-2. Build a repeatable red signal from the real path. Trace the input and each
-   boundary to find where actual behavior diverges from expected behavior.
-3. Identify the root cause and all callers of the broken seam. Preserve the
-   original error in logs or the operator-facing state; a fallback may protect
-   the app, but it must not turn failure into false success.
-4. Make the smallest change that closes the failure class. Add a test that fails
-   on the old behavior and covers the seam that failed.
-5. Run focused tests, the affected consumers, and the actual app path. Verify
-   both the desired result and the explicit failure state. Ask an author-disjoint
-   reviewer to inspect the change when available.
-6. Report PROVEN or STILL-BUILDING, with the evidence and any remaining red bar.
+1. Nombra el comportamiento roto del usuario y la superficie exacta donde aparece.
+2. Crea una señal roja repetible desde la ruta real. Sigue la entrada y cada límite
+   hasta hallar dónde divergen comportamiento real y esperado. Sella el contrato
+   original con [red-first](../red-first/SKILL.md) antes de que un constructor cambie
+   la costura responsable. Una tarea diagnóstica devuelve esa evidencia.
+3. Identifica causa raíz y todas las llamadas a la costura rota. Conserva el error
+   original en logs o estado visible; una alternativa puede proteger la app, pero
+   no convertir fallo en éxito falso.
+4. Para un arreglo autorizado, aplica [repair-loop](../repair-loop/SKILL.md) en el
+   flujo: reparación mínima de la clase, comandos reales acotados de lint/tipos/tests
+   desde el diff agregado fijado y calidad/mutación de clean-code-gauntlet. Conserva
+   el original sellado; un hueco nuevo recibe test suplementario separado. Reutiliza
+   etapas verificadas sin repetirlas.
+5. Completa revisión requerida independiente del autor (author-disjoint), puerta de integración de
+   suites afectadas y ruta real de la app para la entrega solicitada. Verifica
+   resultado deseado y estado de fallo explícito. Falta de capacidad revisora es
+   un hueco del entorno, nunca un pase independiente emitido por ti mismo.
+6. Devuelve candidato y evidencia al responsable de integración. Informa PROVEN
+   solo con revisión requerida y evidencia real de entrega; de lo contrario guarda
+   STILL-BUILDING con el bloqueo rojo exacto y siguiente acción. Agotar presupuesto
+   conserva trabajo y límites; continúa trabajo útil desbloqueado solo dentro del
+   cupo restante.
 
-If the error is intermittent, capture timing and a bounded reproduction rate;
-do not infer a cause from one green rerun. For code-location ambiguity, start
-with `building-with-backs` and its target check.
-
+Si el error es intermitente, captura tiempos y una tasa de reproducción acotada;
+no deduzcas la causa de una sola repetición verde. Para ambigüedad de ubicación,
+empieza por `building-with-backs` y su comprobación de destino.
 
 ## Evidencia y revisión independiente
 
-Para ejecutables distribuidos, paquetes o comportamiento de ejecución solicitado, invoca [rea-investigation](../rea-investigation/SKILL.md) y la skill `reverse-engineer-anything` instalada por separado cuando su análisis sea útil; usa un proveedor Ghidra existente para objetivos nativos compatibles. La evidencia estática no prueba comportamiento en vivo; no instales proveedores ausentes silenciosamente. Para adoptar capacidades de código abierto invoca [absorb](../absorb/SKILL.md). Usa [fleet-ladder](../fleet-ladder/SKILL.md) para elegir por rol y capacidad, sin fijar modelos. Cuando se requiera un tribunal, sigue [blind-tribunal](../blind-tribunal/SKILL.md): una ejecución nueva separada del autor revisa un paquete congelado sin datos del autor. Informa resolutores, revisores o pruebas ausentes como brechas del entorno.
+Para ejecutables distribuidos, paquetes o comportamiento solicitado de runtime,
+invoca [rea-investigation](../rea-investigation/SKILL.md) y la skill independiente
+`reverse-engineer-anything` cuando su análisis sea útil; usa un proveedor Ghidra
+existente para objetivos nativos compatibles. No trates evidencia estática como
+comportamiento vivo ni instales proveedores ausentes silenciosamente. Para adoptar
+una capacidad open source, invoca [absorb](../absorb/SKILL.md). Usa
+[fleet-ladder](../fleet-ladder/SKILL.md) para enrutar por rol y capacidad, sin fijar
+modelos. Si se requiere tribunal, sigue [blind-tribunal](../blind-tribunal/SKILL.md):
+una ejecución nueva separada del autor revisa un paquete congelado sin datos de
+autoría. Informa resolutores, revisores o evidencia ausentes como huecos del entorno.

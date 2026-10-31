@@ -1,72 +1,81 @@
 ---
-name: "sniper-testing"
-description: "Úsala durante cualquier loop de fix o build, y antes de confiar en cualquier test en verde. Corre solo los tests que cubren lo que tocaste, y mata el teatro de mocks — tests que pasan mientras la capacidad está rota. Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat, tests de francotirador, tests acotados, alcance de tests, teatro de mocks, verde falso, suite completa, inflación de tests."
-license: "MIT"
+name: sniper-testing
+description: "Úsala durante un ciclo de construcción o reparación, o antes de confiar en un resultado verde, cuando la verificación deba cubrir el candidato real sin repetir innecesariamente toda la suite."
+license: MIT
 ---
 
 # Sniper Testing
-**Effort:** free — pura disciplina, sin corridas extra; recorta el costo neto directamente al borrar las re-corridas de la suite completa durante la iteración. Elimina: la inflación de tests (corridas de la suite entera por un diff chiquito) y los verdes de teatro de mocks sobre los que construirías encima.
 
-## Por qué existe
+Verifica el comportamiento modificado a través de su consumidor real. Elige
+comprobaciones con el diff completo de la tarea; después repite solo las afectadas
+por el siguiente cambio. Hereda el mismo cupo de misión de
+[bounded-loops](../bounded-loops/SKILL.md).
 
-Dos modos de fallo queman la mayor parte del tiempo de testing. Inflación de
-tests: correr la suite completa por un cambio chiquito. Teatro de mocks: tests
-que pasan mientras la capacidad real está físicamente rota. Esta skill mata
-ambos.
+## 1. Fija el alcance real
 
-## Regla 1 — el diff define el alcance, no el optimismo
+Conserva el `base_sha` verificado anterior a la tarea y el `candidate_sha`
+confirmado actual en el paquete de [Build Flow](../backs-build-flow/SKILL.md).
+Un árbol limpio tras confirmar RED y la reparación sigue teniendo un diff de
+tarea. Usar solo `git diff HEAD` lo pierde.
 
-Durante el loop de iteración de fix/build, tienes prohibido correr la suite de
-tests completa.
+Usa la herramienta de alcance de solo lectura incluida, desde el directorio
+resuelto de esta skill:
 
-1. Corre `git diff --name-only HEAD` para ver exactamente qué archivos tocaste.
-2. Mapea cada archivo tocado a los archivos de test que lo cubren directamente
-   (p. ej. `src/payments/refund.py` → `tests/test_refund.py`).
-3. Declara tu objetivo de test específico, y corre SOLO esos archivos
-   (Python: `pytest tests/test_refund.py`;
-   JS: `npx vitest run tests/refund.test.js`;
-   Go: `go test ./payments/ -run TestRefund`).
-4. Un test que ya pasó no se vuelve a correr, a menos que tu próximo cambio
-   toque código que ese test ejercita. El diff define el alcance — no el
-   optimismo, no el miedo.
-5. Al aterrizar — la compuerta del commit — corre UNA pasada completa sobre la
-   suite de cada módulo tocado. Esa pasada única atrapa los acoplamientos
-   indirectos exactamente una vez. La velocidad de iteración y un aterrizaje
-   sano son las dos partes del trabajo.
+```bash
+python scripts/changed_files.py --repo <verified-repo> --base <base-sha> --candidate <candidate-sha>
+```
 
-## Regla 2 — mata el teatro de mocks
+Durante la iteración añade `--include-worktree` solo si el candidato es HEAD.
+Informa por separado rutas confirmadas, preparadas, sin preparar y sin seguimiento,
+conservando nombres inusuales. El alcance agregado incluye borrados y ambos lados
+de un renombrado. Marca como preservado el trabajo pendiente ajeno; no te atribuyas
+todas las rutas devueltas. Base ausente o revisión inválida es un error que resolver,
+nunca un alcance vacío que justifique omitir comprobaciones. La herramienta no
+descarga ni modifica el historial.
 
-Un test de capacidad debe afirmar un efecto secundario real y físico:
+## 2. Elige y ejecuta comprobaciones reales
 
-- "produce un video" → existe un archivo real en disco con tamaño > 0 bytes.
-- "guarda memoria" → la fila se vuelve a leer desde una base de datos local real.
-- "renderiza el widget" → existe un elemento DOM real en la página.
+Relaciona archivos cambiados y llamadas/consumidores afectados con tests de
+comportamiento; lee scripts, CI y configuración reales del repo para los comandos.
 
-No mockees la base de datos. No mockees el sistema de archivos. No mockees los
-sockets de red locales.
+| Comprobación | Alcance y evidencia |
+| --- | --- |
+| Lint y formato | Archivos modificados compatibles con la configuración existente; usa modo de comprobación antes de reformatear. |
+| Tipos o compilador | Límite del paquete/proyecto afectado; dependencias de tipos pueden exigir un destino mayor. |
+| Comportamiento | Ruta real modificada y una regresión que falle si se rompe la capacidad. |
+| Contrato/integración | Consumidores, alias, empaquetado, preservación de ajustes o límites de runtime tocados. |
+| Puertas obligatorias de integración | Suites exigidas por el repo cuando el candidato se estabilice. |
 
-El único mock legal es la hoja de transporte externo pagado — la llamada HTTP a
-una API de terceros con medidor. Incluso ahí, el test debe atravesar toda la
-lógica real de alrededor: armar la petición, el ruteo, parsear la respuesta.
-Mockea el cable, nunca el cerebro.
+Declara cada comando, por qué cubre el riesgo, revisión/estado pendiente,
+resultado ejecutado y fallos restantes. Linter/typechecker ausente significa
+**no disponible** o **no aplicable**, con razón; no inventes un pase. No instales
+herramientas nuevas solo porque un ejemplo las nombra. Lint verde no sustituye
+tests de comportamiento.
 
-## Audita antes de confiar
+Durante la iteración elige el destino útil más pequeño. No es necesario repetir
+una comprobación aprobada si no cambiaron código ejercitado, entradas o entorno
+pertinente. Una dependencia indirecta concreta sin resolver o una puerta obligatoria
+justifica ampliar pruebas; registra por qué. Al integrar, ejecuta una vez los
+chequeos agregados requeridos del candidato final. Cambios posteriores invalidan
+solo la evidencia afectada y las puertas de commit requeridas.
 
-Antes de apoyarte en cualquier test, léelo. Si es teatro de mocks — verde por
-los mocks, sin ninguna afirmación física — borra el mock y reescribe el test
-para que afirme un efecto secundario real. Un test que no puede fallar es peor
-que ningún test: certifica una mentira, y vas a construir sobre esa mentira.
+## 3. Haz que los tests detecten roturas reales
 
-## Reglas duras (romper una sola reprueba la skill)
+Comprueba un efecto observable: artefacto válido existente, datos recuperados de
+una base local real, bytes reales de contexto recibidos por el host o elemento de
+UI renderizado. Ejercita archivos, bases de datos y sockets locales sin mockearlos.
+La hoja de transporte externo de pago puede sustituirse por un fixture determinista,
+manteniendo reales la construcción de petición, enrutamiento, análisis y consumidor
+local. Nunca afirmes que ese fixture demuestra que se ejecutó el servicio externo.
 
-- Nada de correr la suite completa durante la iteración.
-- Nada de declarar verde sin una afirmación de efecto secundario real.
-- Ningún mock más allá de la hoja de transporte externo pagado en un test de
-  capacidad.
-- Nada de aterrizar sin la pasada completa única sobre los módulos tocados.
+Conserva idéntico byte a byte el archivo RED sellado de [red-first](../red-first/SKILL.md).
+Ante un hueco nuevo, añade un archivo separado de regresión suplementaria siguiendo
+las reglas de evidencia y sellado de esa skill. Nunca debilites, renombres,
+sustituyas ni edites el archivo sellado original.
 
-## Combina bien con
+## Salida
 
-- [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) — el alcance de francotirador alimenta su primera compuerta
-- [red-first](../red-first/SKILL.md) — escribe el test que falla antes del fix
-- [seam-engineering](../seam-engineering/SKILL.md) — arregla la clase, luego barre con tests acotados
+Devuelve alcance del candidato, resultados ejecutados de lint/tipos/tests,
+evidencia de efectos reales y puertas pendientes al mismo responsable.
+[clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) usa esa evidencia como primera
+etapa, no como motivo para repetir comprobaciones sin cambios.

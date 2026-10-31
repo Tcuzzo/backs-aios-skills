@@ -12,58 +12,54 @@ como ser burlado.
 - Um modelo construiu o trabalho e você precisa de um veredito honesto sobre
   ele.
 
-A avaliação, num relance:
+## Tarefa e limites compartilhados
 
-```
-+--------------------------------------------+
-| 1 red-first  confirm the suite failed --   |<--------------------------+
-|   non-zero exit -- BEFORE the fix existed  |  each finding -> a new    |
-+--------------------------------------------+  red test -> fix ->       |
-| 2 sniper-testing  scoped runs verified;    |  re-convene               |
-|   no mock theater on the changed seam      |                           |
-+--------------------------------------------+   +---------------------+ |
-| 3 independent grade  a non-builder seat,   |   |  LORD OF THE LOOP   |-+
-|   chosen live by capability + availability |   | one hand drives the |
-+--------------------------------------------+   | loop: dispatch,     |
-| 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
-|   author-redacted envelope                 |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 5 clean-code-gauntlet  the grader re-runs  |   | lands its own work. |
-|   it -- never trust the builder's numbers  |   +---------------------+
-+--------------------------------------------+
-          |
-          | all jurors pass
-          v
-+--------------------------------------------+
-| LANDING GATE -- the two-sided proof:       |
-| fail-to-pass AND pass-to-pass, run         |
-| hermetically . no fake-green tell .        |
-| fresh author-disjoint review . the         |
-| grader re-ran the checks itself            |
-+--------------------------------------------+
-```
+Aplique este play dentro do pacote atual do
+[BACKS Build Flow](../skills/backs-build-flow/SKILL.md). Mantenha um responsável
+pela integração, `task_mode` solicitado, revisões base e candidata fixadas,
+essência do operador e evidências atuais. Reutilize corpos pertinentes já carregados;
+este play acrescenta gates do domínio sem reiniciar a tarefa.
 
-*Lord of the Loop = o dono do loop, que conduz a iteração até o gate de pouso ficar verde; LAND = o pouso — o portão final que só abre com tudo verde.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) cuida do prazo original e cotas
+restantes entre retries, trabalhadores, modelos, revisões e handoffs. Nunca os
+reinicie para um play aninhado. Ao esgotar, salve **STILL-BUILDING** com candidato,
+evidências, gates pendentes e próxima ação. Continue trabalho útil autorizado só
+dentro da cota restante; gate ausente não vira aprovação.
 
 ## A cadeia
 
-1. [red-first](../skills/red-first/SKILL.md) — confirme que a suíte falhou com
-   exit diferente de zero ANTES de o fix existir. Uma suíte que nunca ficou
-   vermelha não prova nada.
-2. [sniper-testing](../skills/sniper-testing/SKILL.md) — verifique que o builder
-   usou testes com escopo durante a iteração e não fez teatro de mock na costura
-   que mudou.
-3. Avaliação independente — entregue o trabalho a uma sessão nova e disjunta
-   do autor, sem conversa, raciocínio ou identidade do autor. A execução que
-   construiu não pode aprovar a si mesma. Escolha pela capacidade
-   medida para a tarefa e registre a rota real como proveniência.
-4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — para mudanças de
-   consequência, convoque jurados sobre um envelope com a autoria apagada. Cada
-   achado vira um novo teste vermelho, e o tribunal reconvoca até todos os
-   jurados aprovarem.
+1. [red-first](../skills/red-first/SKILL.md) — confirme que a suite falhou com
+   saída diferente de zero ANTES do fix. Suite nunca vermelha não prova nada.
+   O test falho fica commitado e o builder não pode tocá-lo; seus bytes exatos são
+   o contrato.
+
+2. [sniper-testing](../skills/sniper-testing/SKILL.md) — verifique comandos reais
+   de lint/tipos/tests focados no diff agregado fixado e ausência de teatro de mocks
+   na costura alterada. Confira motivos de N/A e verificações ausentes. Congele
+   a identidade do candidato para esta revisão.
+
+3. Avaliação independente — escolha ao vivo por capacidade e disponibilidade
+   na matriz configurada (tarefa → capacidade → degrau → sondagem). Registre a
+   execução autora quando o runtime suportar e exclua-a. Qualquer rota capaz
+   configurada pode revisar em sessão nova e disjunta do autor (fresh author-disjoint review). É proibida sessão
+   que viu a conversa ou herdou contexto do builder.
+
+4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — para mudanças importantes,
+   convoque jurados sobre pacote sem autoria em sessão nova sem conversa herdada.
+   Devolva achados fundamentados ao responsável pela integração para RED suplementar
+   separado e reparo limitado; o original continua selado. Reconvoque sobre o
+   candidato revisado e congelado dentro do mesmo orçamento. Todos os jurados
+   exigidos precisam aprovar antes de integrar.
+
 5. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — o avaliador
    re-roda o gauntlet ele mesmo (cobertura-vs-complexidade, teste de mutação com
    limites). Nunca confie no relatório do builder sobre os próprios números.
+
+Respeite o alvo imutável da revisão. Execute verificações que criem cache, mutem
+código ou exercitem serviços apenas em isolamento permitido; mutação nunca
+reescreve fonte congelada. Falta de isolamento ou suporte de runtime é lacuna de
+evidência, não permissão para corrigir durante revisão. Preserve evidência completa
+exigida das suites afetadas e separe verificações locais de superfície real ou entrega.
 
 ## A prova de dois lados (as duas, ou não passa)
 
@@ -91,11 +87,17 @@ O piso da mecânica de julgamento vive na seção "De-bias the judge" de
 
 ## Gates duros — qualquer um reprova o play
 
-- A execução autora avalia a si mesma, ou a sessão avaliadora herda conversa, raciocínio ou identidade do autor.
+- A revisão usou a execução autora ou sessão que viu sua conversa ou herdou
+  contexto; sessão nova separada do autor é obrigatória.
+- Um jurado do tribunal herdou contexto ou viu a conversa do autor.
 - Não dá para mostrar a suíte vermelha antes do fix.
 - Falta fail-to-pass ou pass-to-pass na execução avaliada.
 - Qualquer sinal de verde falso acima está presente.
 - O avaliador confiou no relatório do próprio builder em vez de re-rodar as
   verificações.
+
+**Lacunas do runtime.** Selecione revisores capazes pela escada configurada e
+exclua a execução autora. Informe restrições do runtime que bloqueiem revisor
+capaz; não afirme silenciosamente que foram resolvidas nem as contorne.
 
 **Weight:** checagens free de vermelho e de sniper na frente; o gasto heavy é o tribunal mais o avaliador re-rodando ele mesmo o gauntlet — ele se paga em qualquer mudança que pede pouso, porque um verde falso custa mais que todas as avaliações somadas.

@@ -1,6 +1,6 @@
 ---
 name: "clean-code-gauntlet"
-description: "तब इस्तेमाल करें जब कोई भी build — agent, service, library — hardened या land करनी हो और line-by-line review की जगह एक deterministic quality bar चाहिए; sniper tests, CRAP score (complexity x coverage) और bounded mutation testing चलाता है, फिर हल्का taste review. Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar, साफ़ code, गुणवत्ता की कसौटी, सख़्त जाँच."
+description: "Executable changes harden या land करते समय measured complexity, coverage, regression strength और independent design review चाहिए तो उपयोग करें।"
 license: "MIT"
 ---
 
@@ -21,14 +21,23 @@ module का size, mutation kills। इंसान और model सिर्�
 
 ## चेन (क्रम में चलाओ; हर stage नाकामी पर ज़ोर से रुकती है)
 
-1. **Sniper tests green.** सिर्फ वे test files चलाओ जो diff के छुए हिस्से को cover
-   करती हैं — देखो [sniper-testing](../sniper-testing/SKILL.md)। Red baseline का
-   मतलब है रुको और ठीक करो; red पर कभी mutate या grade मत करो।
+Existing [Build Flow](../backs-build-flow/SKILL.md) packet का `base_sha`,
+`candidate_sha`, integration owner और [bounded-loops](../bounded-loops/SKILL.md)
+की remaining mission allowance बाँधें। Valid evidence reuse करें; review rounds और
+mutation campaigns budget reset नहीं करते।
+
+1. **Scoped lint, type और behavior checks green।** Applicable repo commands चलाएँ —
+   [sniper-testing](../sniper-testing/SKILL.md) देखें। Unavailable/inapplicable checks
+   स्पष्ट लिखें; उन्हें passed न कहें। Red baseline पर पहले fix करें; red पर mutate या
+   grade न करें।
 2. **CRAP threshold के नीचे** असली coverage data पर (नीचे gate देखो)।
    पार हुआ → function को refactor करके नीचे लाओ, या उसे पूरा cover करो। Bar कभी
    नीचे मत करो।
-3. **Mutation testing: scope में शून्य survivors.** Survivor TESTS को दोषी ठहराता
-   है, code को नहीं — उस test को मज़बूत करो जिसे उसे पकड़ना चाहिए था।
+3. **Mutation testing: scope में कोई unexplained survivor नहीं।** Non-equivalent
+   survivor regression gap है। Separate supplemental test file जोड़ें; original
+   [red-first](../red-first/SKILL.md) sealed contract byte-for-byte बचाएँ। Equivalent
+   mutant refutations evidence सहित लिखें। Tool error या timeout inconclusive है,
+   killed mutant नहीं।
 4. **हल्का taste review** — model सिर्फ वही परखता है जो नंबर नहीं परख सकते।
 
 ## यह गिनने वाले tools
@@ -47,6 +56,11 @@ module का size, mutation kills। इंसान और model सिर्�
 - Complexity: `radon cc -s <changed files>`
 - Mutation: `mutmut run --paths-to-mutate <changed files>` (JS/TS: `npx stryker run --mutate "<glob>"`)
 
+ये examples हैं, install instructions या स्थायी CLI guarantees नहीं। Repo के pinned
+ tools और supported flags लें। Documentation-only बदलाव में links, structure,
+distribution और behavior scenarios validate करें; code complexity या mutation
+inapplicable हो सकते हैं। Metrics गढ़ने की जगह reason दर्ज करें।
+
 ## CRAP gate
 
 ```
@@ -63,7 +77,7 @@ CRAP(m) = comp(m)^2 * (1 - cov(m)/100)^3 + comp(m)
 ## क़र्ज़ किसका है — AUTHORED / WORSENED / UNCHANGED
 
 Absolute score छिपा देता है कि क़र्ज़ किसका है। हर complexity और CRAP delta को
-बदलाव-से-पहले वाले baseline के आगे बाँटो:
+task से पहले के pinned `base_sha` से, comparable actual coverage उपयोग करके बाँटो:
 
 - **AUTHORED** — functions जो इस बदलाव ने बनाए। पूरी bar लागू।
 - **WORSENED** — पहले से मौजूद functions जिन्हें इस बदलाव ने बदतर किया। Delta
@@ -74,20 +88,23 @@ Absolute score छिपा देता है कि क़र्ज़ कि
 
 ## Mutation के नियम (सीमित, कभी लापरवाह नहीं)
 
-- **साझा working tree कभी नहीं।** Committed HEAD से काटे गए scratch checkout में
-  mutate करो। Target या test files गंदी हैं = मना करो; पहले commit।
+- **साझा working tree कभी नहीं।** Exact committed `candidate_sha` के scratch checkout
+  में mutate करें। Dirty target/test files हों तो checkpoint करके candidate पहले पूरा
+  करें। Original checkout का unrelated work सुरक्षित रखें।
 - **Cost नापी जाती है, कभी मानी नहीं जाती।** Scoped suite को एक बार time करो,
   कुछ भी ख़र्चने से PEHLE ETA = baseline x mutant count report करो। Dry run की
   पेशकश करो।
-- **सीमित और resumable.** Mutants और मिनटों पर सीमा। Budget-रोक एक checkpoint के
-  साथ pause है, failure नहीं — resume करके पूरा करो।
+- **सीमित और resumable।** Remaining mission allowance में mutants और minutes cap करें।
+  Budget stop पर unverified mutants checkpoint हों और gate incomplete रहे। Remaining
+  या explicitly extended allowance हो तभी resume करें।
 - **Coverage-first.** सिर्फ covered lines mutate करो; uncovered line एक coverage
   gap है जिसे CRAP gate पहले ही पकड़ चुका।
 - **सिर्फ scope में।** जो diff ने छुआ वही mutate करो, पूरा repo कभी नहीं।
 - सचमुच equivalent mutant को मारने की जगह खंडित किया जा सकता है — खंडन लिखकर,
   कभी चुपचाप skip करके नहीं।
-- **आपके stack के लिए कोई mutation tool नहीं?** Landing report में वो दर्ज करो और
-  CRAP gate पर टिको — चुपचाप skip कभी नहीं।
+- **Stack के लिए mutation tool नहीं?** Limitation और actual substitute evidence लिखें।
+  Repo acceptance policy अपनाएँ; owner documented alternative स्वीकार करे तब तक
+  required gate incomplete रहता है।
 
 ## Taste review (आख़िर में, और हल्का)
 

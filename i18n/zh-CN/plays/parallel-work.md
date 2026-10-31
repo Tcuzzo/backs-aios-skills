@@ -9,60 +9,41 @@
 - 同一时间窗口里，会有不止一个 agent 碰同一个仓库。
 - 你正想让两个 agent 并行写代码。先读这个。
 
-整个铺开，一图看懂：
+## 共享任务与限制
 
-```
-+--------------------------------------------+
-| 1 leap-protocol  balls with goals, specs,  |
-|   hard file scopes BEFORE any agent spawns |
-+--------------------------------------------+
-| 2 spawn readers, not writers -- fan out    |
-|   read-heavy work only                     |
-+--------------------------------------------+
-| 3 isolate -- every lane gets its OWN       |
-|   worktree; conflicts surface at merge     |
-+--------------------------------------------+
-| 4 clean-code-gauntlet  per lane, in its    |<--------------------------+
-|   own worktree, before it asks to land     |  red exit? back to the    |
-+--------------------------------------------+  lane -- fix, re-run      |
-| 5 blind-tribunal  the reviewer gets a      |                           |
-|   CLEAN context, never the author's        |   +---------------------+ |
-+--------------------------------------------+   |  LORD OF THE LOOP   |-+
-| 6 merge ONE lane at a time, test-gated     |   | the one write spine |
-|   by exit code, in a merge workspace       |-->| drives dispatch,    |
-+--------------------------------------------+   | judges, merges ONE  |
-          |                                      | lane at a time. a   |
-          | every merge green + verified         | lane never lands    |
-          v                                      | its own work.       |
-+--------------------------------------------+   +---------------------+
-| LANDING GATE -- all green or no land:      |
-| every merge green by exit code AND         |
-| stat-verified -- counts, diffstat, each    |
-| lane's files present . no lane outside     |
-| its scope . reviewer context stayed        |
-| clean, never the author's . one writer     |
-| per workspace . no lane lands on           |
-| another lane's green                       |
-+--------------------------------------------+
-```
+在当前 [BACKS Build Flow](../skills/backs-build-flow/SKILL.md) 任务包内应用本战术。
+保留一位集成负责人、请求的 `task_mode`、固定 `base_sha`、当前 `candidate_sha`、
+operator essence 和当前证据。复用适用的已载入技能正文；本战术增加领域关卡，
+不重启任务。
 
-图中两个特殊标签：Lord of the Loop = 循环之主，即由一只手驱动整个迭代（派发、评判、循环回炉）、直到落地门槛转绿的循环负责人；LANDING GATE（LAND，落地门槛）= 全部条件转绿才放行落地的最终关卡。
+[bounded-loops](../skills/bounded-loops/SKILL.md) 负责原始截止时间和剩余额度，
+贯穿重试、工作者、模型、评审和交接。嵌套战术不得重置它们。耗尽时建立
+**STILL-BUILDING** 检查点，保留候选版本、证据、未过关卡和下一步。
+有用且已授权工作仅在剩余额度内继续；缺失关卡不能变成通过。
 
 ## 链路
 
-1. [leap-protocol](../skills/leap-protocol/SKILL.md) —— 在任何 agent 起跑
-   之前，把工作拆成带目标、规格和硬性文件范围的球。
+1. [leap-protocol](../skills/leap-protocol/SKILL.md) — 派发前拆成有目标、规格和
+   严格文件范围的工作包。每条通道获得当前任务包、固定基线/候选、RED 封条和
+   分配的剩余额度。通道上限不得延长父任务截止时间或总额度。
+
 2. 派读者，不派写者——只为读多写少、交叉依赖少的工作铺开子 agent：
    研究、跑测试、安全扫描、评审。互相牵连的代码编写，绝不这样干。
 3. 每条通道隔离——每个并行 agent 拿自己的 worktree（同一个仓库的独立
    检出）。这样冲突会在合并时以真正的合并冲突现身，而不是无声覆盖、
    一声不响地丢数据。
-4. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) —— 每条通道
-   先在自己的 worktree 里跑完自己的质量关卡，才许申请落地。先 dry-run，
-   让通道知道自己的成本。任何通道都不许踩着别的通道的绿灯落地。
+4. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — 各通道落地前在
+   获准的 worktree/隔离环境运行质量关卡。先用
+   [sniper-testing](../skills/sniper-testing/SKILL.md) 按固定汇总候选差异运行仓库
+   实际 lint/类型/测试命令，说明缺失或 N/A 检查。可以复用候选及检查范围完全相同
+   的有效回执，不得用另一通道的绿色替代不同字节的验证。覆盖缺口另加补充文件，
+   保留封存原件。
+
 5. [blind-tribunal](../skills/blind-tribunal/SKILL.md) —— 评审 agent 拿一份
    干净的上下文，绝不拿作者的。共享上下文会腐坏，会自我认同。
-6. 一次只合一条通道，在专用的合并工作区里，由退出码把关。
+6. 在专用合并工作区逐条通道合并，并以退出码作测试关卡。集成负责人验证组合后
+   的候选版本、受影响消费者和必需的完整受影响测试集落地关卡；单独通道通过不能
+   证明组合成立。交付声明需要真实目标证据。
 
 ## 协同规则
 

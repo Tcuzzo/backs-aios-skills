@@ -10,44 +10,19 @@ completas — nunca síntomas sueltos.
   reportado (para eso está el repair loop).
 - Un backlog de hallazgos que hay que atacar en paralelo sin deriva y sin pisarse.
 
-La cacería, de un vistazo:
+## Tarea y límites compartidos
 
-```
-    +--------------------------------------------+
-+-->| 1 wayfinder  chart the hunt as one map,    |
-|   |   a node per seam; claim from the frontier |
-|   +--------------------------------------------+
-|   | 2 leap-protocol  one node = one ball:      |
-|   |   goal, spec, hard file scope, ONE writer  |
-|   +--------------------------------------------+
-|   | 3 root-cause-first  reproduce + review     |
-|   |   evidence BEFORE any code changes         |
-|   +--------------------------------------------+
-|   | 4 repair-loop  red-first test committed,   |<--------------------------+
-|   |   sniper-testing while iterating           |  finding or survivor ->   |
-|   +--------------------------------------------+   +---------------------+ |
-|   | 5 blind-tribunal  a non-author grader      |-->|  LORD OF THE LOOP   |-+
-|   |   attacks; jurors judge redacted work      |   | one hand drives the |
-|   +--------------------------------------------+   | loop: dispatch,     |
-|   | 6 seam-engineering  close the CLASS at     |   | judge, loop back    |
-|   |   the shared seam, never the symptom       |   | until the gate is   |
-|   +--------------------------------------------+   | green. a lane never |
-|   | 7 clean-code-gauntlet  the fixed branch    |-->| lands its own work. |
-|   |   must DIE under mutation, or stay open    |   +---------------------+
-|   +--------------------------------------------+
-|             |
-|             | jurors pass + mutant dies
-|             v
-|   +--------------------------------------------+
-|   | LANDING GATE -- leap-protocol Score gate:  |
-|   | source truth . keep-or-revert . blind      |
-|   | review . live proof . provenance -- each   |
-|   | finding ends FIXED or REFUTED-W-EVIDENCE   |
-+---| ball closed -> claim the next node         |
-    +--------------------------------------------+
-```
+Aplica este play dentro del paquete actual de
+[BACKS Build Flow](../skills/backs-build-flow/SKILL.md). Mantén un responsable
+de integración, `task_mode` solicitado, revisiones base y candidata fijadas,
+esencia del operador y evidencia vigente. Reutiliza cuerpos pertinentes ya cargados;
+este play añade puertas de su dominio sin reiniciar la tarea.
 
-En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce la iteración — despacha, juzga y vuelve a iterar — hasta que la puerta de aterrizaje está en verde; **LAND / LANDING GATE** = aterrizar — integrar el cambio solo cuando todo está en verde.
+[bounded-loops](../skills/bounded-loops/SKILL.md) controla plazo original y cupos
+restantes entre reintentos, trabajadores, modelos, revisiones y traspasos.
+Nunca los reinicies para un play anidado. Al agotarlos, guarda **STILL-BUILDING**
+con candidato, evidencia, puertas pendientes y siguiente acción. Continúa trabajo
+útil autorizado solo dentro de su cupo restante; una puerta ausente no se vuelve aprobada.
 
 ## La cadena
 
@@ -62,11 +37,14 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
 3. [root-cause-first](../skills/root-cause-first/SKILL.md) — reproduce el bug y
    revisa la evidencia de causa raíz ANTES de cualquier cambio de código. Ninguna
    mutación sobre una corazonada.
-4. [repair-loop](../skills/repair-loop/SKILL.md) — la disciplina interna de cada
-   bola: [red-first](../skills/red-first/SKILL.md), el test que falla commiteado
-   antes del arreglo; [sniper-testing](../skills/sniper-testing/SKILL.md), corridas
-   acotadas durante la iteración; una pasada completa de los módulos tocados al
-   aterrizar.
+4. [repair-loop](../skills/repair-loop/SKILL.md) — disciplina interna de cada
+   bola: [red-first](../skills/red-first/SKILL.md) confirmado fallando antes del
+   arreglo; [sniper-testing](../skills/sniper-testing/SKILL.md) para comandos reales
+   acotados de lint/tipos/tests desde el diff agregado fijado, y pasada completa de
+   módulos tocados al integrar. Conserva RED original; cada hallazgo nuevo recibe
+   test suplementario separado. Devuelve evidencia al responsable de cacería sin
+   reiniciar un play.
+
 5. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — cada hallazgo se ataca de
    forma adversarial: un evaluador que no lo escribió ataca con rechazo por
    defecto, y los jurados juzgan un sobre con el autor tachado. El que construye
@@ -84,6 +62,10 @@ Una bola se cierra solo a través de la puerta Score de
 conservar-o-revertir, revisión ciega, prueba en vivo, procedencia; la evidencia que
 falta nunca cuenta como aprobada por defecto. Estados terminales propios de la
 cacería: cada hallazgo termina ARREGLADO o REFUTADO-CON-EVIDENCIA.
+
+Un cupo agotado deja el hallazgo abierto con checkpoint STILL-BUILDING; no es
+un estado terminal ARREGLADO ni REFUTADO-CON-EVIDENCIA. Conserva historial de
+intentos y límites restantes antes de reclamar otro nodo permitido.
 
 ## Reglas de la cacería
 

@@ -1,6 +1,6 @@
 ---
 name: "clean-code-gauntlet"
-description: "Use when hardening or landing any build (an agent, a service, a library) and you want a deterministic quality bar instead of a line-by-line review. Runs sniper tests, the CRAP score (complexity x coverage), and bounded mutation testing, then a light taste review. Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar."
+description: "Use when hardening or landing executable changes that need measured complexity, coverage, regression strength, and independent design review."
 license: "MIT"
 ---
 
@@ -19,13 +19,22 @@ size, mutation kills. Humans and models audit samples — never whole diffs.
 
 ## The chain (run in order; each stage stops loud on failure)
 
-1. **Sniper tests green.** Run only the test files covering what the diff
-   touched — see [sniper-testing](../sniper-testing/SKILL.md). A red baseline
+Bind the existing [Build Flow](../backs-build-flow/SKILL.md) packet's `base_sha`,
+`candidate_sha`, integration owner, and remaining
+[bounded-loops](../bounded-loops/SKILL.md) mission allowance. Reuse still-valid
+evidence; review rounds and mutation campaigns do not reset the budget.
+
+1. **Scoped lint, type, and behavior checks green.** Execute applicable repository
+   commands — see [sniper-testing](../sniper-testing/SKILL.md). Record unavailable
+   or inapplicable checks explicitly; do not label them passed. A red baseline
    means stop and fix; never mutate or grade on red.
 2. **CRAP under threshold** on real coverage data (see the gate below).
    Breach → refactor the function down, or cover it fully. Never lower the bar.
-3. **Mutation testing: zero survivors in scope.** A survivor convicts the
-   TESTS, not the code — strengthen the test that should have caught it.
+3. **Mutation testing: no unexplained survivors in scope.** A non-equivalent
+   survivor is a regression gap. Add a separate supplemental test file; preserve
+   the original [red-first](../red-first/SKILL.md) sealed contract byte-for-byte.
+   Record equivalent-mutant refutations with evidence. A tool error or timeout
+   is inconclusive, never a killed mutant.
 4. **Light taste review** — a model judges only what numbers cannot.
 
 ## Tools that compute this
@@ -44,6 +53,11 @@ One command shape per stage:
 - Complexity: `radon cc -s <changed files>`
 - Mutation: `mutmut run --paths-to-mutate <changed files>` (JS/TS: `npx stryker run --mutate "<glob>"`)
 
+These are examples, not install instructions or stable CLI guarantees. Use the
+repository's pinned tools and supported flags. For documentation-only changes,
+validate links, structure, distribution, and behavior scenarios; code complexity
+or mutation may be inapplicable. Record the reason instead of inventing metrics.
+
 ## The CRAP gate
 
 ```
@@ -60,7 +74,7 @@ CRAP(m) = comp(m)^2 * (1 - cov(m)/100)^3 + comp(m)
 ## Whose debt is it — AUTHORED / WORSENED / UNCHANGED
 
 An absolute score hides whose debt it is. Split every complexity and CRAP
-delta against the pre-change baseline:
+delta against the pinned pre-task `base_sha`, using comparable actual coverage:
 
 - **AUTHORED** — functions this change created. The full bar applies.
 - **WORSENED** — pre-existing functions this change made worse. The delta is
@@ -71,19 +85,22 @@ delta against the pre-change baseline:
 
 ## Mutation rules (bounded, never reckless)
 
-- **Never the shared working tree.** Mutate in a scratch checkout cut from
-  committed HEAD. Dirty target or test files = refuse; commit first.
+- **Never the shared working tree.** Mutate in a scratch checkout cut from the
+  exact committed `candidate_sha`. Dirty target or test files = checkpoint and
+  finish the candidate first. Preserve unrelated work in the original checkout.
 - **Cost is measured, never assumed.** Time the scoped suite once, report
   ETA = baseline x mutant count BEFORE spending anything. Offer a dry run.
-- **Bounded and resumable.** Cap mutants and minutes. A budget stop is a
-  pause with a checkpoint, not a failure — resume to finish.
+- **Bounded and resumable.** Cap mutants and minutes inside the remaining mission
+  allowance. A budget stop checkpoints unverified mutants and leaves the gate
+  incomplete. Resume only with remaining or explicitly extended allowance.
 - **Coverage-first.** Mutate only covered lines; an uncovered line is a
   coverage gap the CRAP gate already caught.
 - **Scoped only.** Mutate what the diff touched, never the whole repo.
 - A genuinely equivalent mutant may be refuted instead of killed — with the
   refutation written down, never silently skipped.
-- **No mutation tool exists for your stack?** Record that in the landing
-  report and rely on the CRAP gate — never silently skip.
+- **No mutation tool exists for your stack?** Record the limitation and actual
+  substitute evidence. Apply the repository's acceptance policy; a required gate
+  remains incomplete until its owner accepts a documented alternative.
 
 ## The taste review (last, and light)
 

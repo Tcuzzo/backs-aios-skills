@@ -199,6 +199,11 @@ function resolveNativeOrPackSkill(canonical) {
     yoke: ["human-calibration", "yoke"],
     "human-calibration": ["human-calibration", "yoke"],
     optimus: ["optimus"],
+    "context-engineer": ["context-engineer", "context_engineer", "context-compiler"],
+    context_engineer: ["context-engineer", "context_engineer", "context-compiler"],
+    "context-compiler": ["context-engineer", "context_engineer", "context-compiler"],
+    "operator-intent-deduction": ["operator-intent-deduction", "operator_intent_deduction"],
+    operator_intent_deduction: ["operator-intent-deduction", "operator_intent_deduction"],
     "conscientious-objector": ["conscientious_objector", "conscientious-objector"],
     conscientious_objector: ["conscientious_objector", "conscientious-objector"],
   };
@@ -372,30 +377,39 @@ function codexExecInvokesPatch(toolName, rawToolInput) {
 
 function wakeLoadContext() {
   return (
-    "BACKS wake-load: invoke operator_intent_deduction before handing the " +
-    "operator a decision, and invoke context_engineer when compiling task " +
-    "context. context-compiler is a context_engineer alias; intent-compiler is a " +
-    "separate skill. Load skill bodies through the skill runtime only when needed."
+    "BACKS wake-load: invoke operator-intent-deduction before handing the " +
+    "operator a decision, and invoke context-engineer when compiling task " +
+    "context. Legacy compatibility: operator_intent_deduction resolves to " +
+    "operator-intent-deduction; context-compiler is a context_engineer alias, " +
+    "and both resolve to context-engineer. intent-compiler is a separate skill. " +
+    "Build Flow owns the current task packet; reuse current evidence " +
+    "and apply operator-essence when operator context is needed. " +
+    "Load skill bodies through the skill runtime only when needed."
   );
 }
 
 /** Reading a pointer is not delivery. Record only bodies handed to the host. */
-function floorContext() {
-  const entries = [];
-  const root = deployRoot();
-  if (root && fs.existsSync(path.join(root, "backend/prompts/BACKS_CODEX_HARNESS.md"))) {
-    entries.push({path: path.join(root, "backend/prompts/BACKS_CODEX_HARNESS.md"), canonical: "harness", source: "deploy_native"});
-  }
-  for (const name of ["optimus", "yoke"]) {
+function readBody(entry) {
+  const body = fs.readFileSync(entry.path, "utf8");
+  if (!body.trim()) throw new Error(`${entry.canonical} unavailable`);
+  return {...entry, body, sha256: crypto.createHash("sha256").update(body).digest("hex")};
+}
+
+function foundationBodies() {
+  return ["optimus", "yoke", "backs-build-flow"].map((name) => {
     const resolved = resolveNativeOrPackSkill(name);
     if (!resolved) throw new Error(`${name} unavailable`);
-    entries.push(resolved);
-  }
-  const bodies = entries.map((entry) => {
-    const body = fs.readFileSync(entry.path, "utf8");
-    if (!body.trim()) throw new Error(`${entry.canonical} unavailable`);
-    return {...entry, body, sha256: crypto.createHash("sha256").update(body).digest("hex")};
+    return readBody(resolved);
   });
+}
+
+function floorContext() {
+  const bodies = [];
+  const root = deployRoot();
+  if (root && fs.existsSync(path.join(root, "backend/prompts/BACKS_CODEX_HARNESS.md"))) {
+    bodies.push(readBody({path: path.join(root, "backend/prompts/BACKS_CODEX_HARNESS.md"), canonical: "harness", source: "deploy_native"}));
+  }
+  bodies.push(...foundationBodies());
   return {context: wakeLoadContext() + "\n\n" + bodies.map(x => `## BACKS loaded: ${x.canonical}\n${x.body}`).join("\n\n"), bodies};
 }
 
@@ -534,18 +548,11 @@ function load(argv) {
       process.stderr.write("aios_gate: skill not found\n");
       return 2;
     }
-    let body = fs.readFileSync(resolvedInfo.path, "utf8");
+    const bodies = resolvedInfo.canonical === "optimus" || canonical === "optimus"
+      ? foundationBodies() : [readBody(resolvedInfo)];
+    const body = bodies.map(entry => entry.body).join("\n\n");
     const sessionId = sessionIdOf({}, argv[1]);
-    const digests = {};
-    digests[resolvedInfo.canonical] = crypto.createHash("sha256").update(body, "utf8").digest("hex");
-    if (resolvedInfo.canonical === "optimus" || canonical === "optimus") {
-      const yoke = resolveNativeOrPackSkill("yoke");
-      if (yoke) {
-        const yokeBody = fs.readFileSync(yoke.path, "utf8");
-        digests[yoke.canonical] = crypto.createHash("sha256").update(yokeBody).digest("hex");
-        body += "\n\n" + yokeBody;
-      }
-    }
+    const digests = Object.fromEntries(bodies.map(entry => [entry.canonical, entry.sha256]));
     const data = Buffer.from(body);
     let offset = 0;
     while (offset < data.length) offset += fs.writeSync(1, data, offset);

@@ -1,6 +1,6 @@
 # Instalación — monta el pack sobre un agente real
 
-> **v0.7 portable installer:** Registro actual en un paso para Claude Code, Codex, Cursor, OpenCode y agentes portables: `./install.sh --target all --locale es`. El script no sobrescribe nada; en PowerShell usa `./install.ps1`. La matriz de rutas vigente completa está en [la guía canónica de instalación](../../INSTALL.md).
+> **Instalador portátil:** Registro actual en un paso para Claude Code, Codex, Cursor, OpenCode y agentes portables: `./install.sh --target all --locale es`. El script no sobrescribe nada; en PowerShell usa `./install.ps1`. La matriz de rutas vigente completa está en [la guía canónica de instalación](../../INSTALL.md).
 
 El pack son carpetas de markdown. Cada skill es `skills/<name>/SKILL.md`. Cada
 jugada es `plays/<name>.md`. Sin binarios, sin servidor, sin paso de build. Instalar
@@ -19,11 +19,18 @@ Dos comandos dentro de Claude Code:
     /plugin marketplace add Tcuzzo/backs-aios-skills
     /plugin install backs-aios
 
-Eso instala todo de una: las skills se cargan, los comandos slash quedan disponibles
-(escribe `/optimus` para arrancar el piso), y el hook de grounding viene activado —
-bloquea las herramientas que mutan hasta que el harness esté cargado. El kill-switch
-del hook es tuyo: pon `AIOS_GATE=off` en el entorno para apagarlo, con ruido. Las
-actualizaciones fluyen por `/plugin` cuando el repo del marketplace se mueve.
+El plugin proporciona skills, comandos slash y el hook de carga de contexto
+(escribe `/optimus` para cargar el piso). En hosts compatibles, el hook entrega los
+cuerpos reales de Optimus, Yoke y Build Flow al iniciar o compactar la sesión y
+cuando falta el marcador. No bloquea herramientas ni revoca anclaje adquirido.
+Cuerpos ilegibles generan diagnóstico visible sin recibo falso. `AIOS_GATE=off`
+sigue siendo el interruptor reversible del operador. Las actualizaciones se
+gestionan mediante `/plugin` cuando avanza el repositorio del marketplace.
+
+Elegir `--locale es` superpone los `SKILL.md` traducidos a las carpetas canónicas;
+scripts y referencias compartidos se conservan. Copia el árbol efectivo completo,
+no solo los Markdown traducidos. Comprueba registro y entrega real de contexto
+en el host: copiar archivos no demuestra que se hayan actualizado sus ajustes.
 
 ## 2. Claude Code, manual
 

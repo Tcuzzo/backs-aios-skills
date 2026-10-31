@@ -11,44 +11,19 @@ costuras inteiras — nunca sintomas isolados.
 - Um backlog de achados precisa ser atacado em paralelo, sem deriva e sem
   atropelo.
 
-A caçada, num relance:
+## Tarefa e limites compartilhados
 
-```
-    +--------------------------------------------+
-+-->| 1 wayfinder  chart the hunt as one map,    |
-|   |   a node per seam; claim from the frontier |
-|   +--------------------------------------------+
-|   | 2 leap-protocol  one node = one ball:      |
-|   |   goal, spec, hard file scope, ONE writer  |
-|   +--------------------------------------------+
-|   | 3 root-cause-first  reproduce + review     |
-|   |   evidence BEFORE any code changes         |
-|   +--------------------------------------------+
-|   | 4 repair-loop  red-first test committed,   |<--------------------------+
-|   |   sniper-testing while iterating           |  finding or survivor ->   |
-|   +--------------------------------------------+   +---------------------+ |
-|   | 5 blind-tribunal  a non-author grader      |-->|  LORD OF THE LOOP   |-+
-|   |   attacks; jurors judge redacted work      |   | one hand drives the |
-|   +--------------------------------------------+   | loop: dispatch,     |
-|   | 6 seam-engineering  close the CLASS at     |   | judge, loop back    |
-|   |   the shared seam, never the symptom       |   | until the gate is   |
-|   +--------------------------------------------+   | green. a lane never |
-|   | 7 clean-code-gauntlet  the fixed branch    |-->| lands its own work. |
-|   |   must DIE under mutation, or stay open    |   +---------------------+
-|   +--------------------------------------------+
-|             |
-|             | jurors pass + mutant dies
-|             v
-|   +--------------------------------------------+
-|   | LANDING GATE -- leap-protocol Score gate:  |
-|   | source truth . keep-or-revert . blind      |
-|   | review . live proof . provenance -- each   |
-|   | finding ends FIXED or REFUTED-W-EVIDENCE   |
-+---| ball closed -> claim the next node         |
-    +--------------------------------------------+
-```
+Aplique este play dentro do pacote atual do
+[BACKS Build Flow](../skills/backs-build-flow/SKILL.md). Mantenha um responsável
+pela integração, `task_mode` solicitado, revisões base e candidata fixadas,
+essência do operador e evidências atuais. Reutilize corpos pertinentes já carregados;
+este play acrescenta gates do domínio sem reiniciar a tarefa.
 
-*Lord of the Loop = o dono do loop, que conduz a iteração até o gate de pouso ficar verde; LAND = o pouso — o portão final que só abre com tudo verde.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) cuida do prazo original e cotas
+restantes entre retries, trabalhadores, modelos, revisões e handoffs. Nunca os
+reinicie para um play aninhado. Ao esgotar, salve **STILL-BUILDING** com candidato,
+evidências, gates pendentes e próxima ação. Continue trabalho útil autorizado só
+dentro da cota restante; gate ausente não vira aprovação.
 
 ## A cadeia
 
@@ -63,11 +38,13 @@ A caçada, num relance:
 3. [root-cause-first](../skills/root-cause-first/SKILL.md) — reproduza o bug e
    revise a evidência de causa-raiz ANTES de qualquer mudança no código. Nenhuma
    mutação na base do chute.
-4. [repair-loop](../skills/repair-loop/SKILL.md) — a disciplina interna de cada
-   bola: teste falhando commitado antes do fix, por
-   [red-first](../skills/red-first/SKILL.md); execuções com escopo durante a
-   iteração, por [sniper-testing](../skills/sniper-testing/SKILL.md); um passe
-   completo dos módulos tocados no pouso.
+4. [repair-loop](../skills/repair-loop/SKILL.md) — disciplina interna de cada
+   bola: [red-first](../skills/red-first/SKILL.md) commitado falhando antes do fix;
+   [sniper-testing](../skills/sniper-testing/SKILL.md) para comandos reais focados
+   de lint/tipos/tests pelo diff agregado fixado e passagem completa dos módulos
+   tocados na integração. Preserve RED original; cada achado novo recebe test
+   suplementar separado. Devolva evidências ao responsável pela caçada sem reiniciar play.
+
 5. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — todo achado é atacado
    de forma adversarial: um avaliador que não o escreveu ataca com recusa por
    padrão, e os jurados julgam um envelope com a autoria apagada. Quem constrói
@@ -86,6 +63,10 @@ manter-ou-reverter, revisão cega, prova ao vivo, proveniência; evidência
 faltando nunca vira aprovação por padrão. Estados terminais próprios da caçada:
 todo achado termina FIXED (corrigido) ou REFUTED-WITH-EVIDENCE (refutado com
 evidência).
+
+Cota esgotada deixa o achado aberto com checkpoint STILL-BUILDING; não é estado
+terminal FIXED nem REFUTED-WITH-EVIDENCE. Preserve histórico de tentativas e
+limites restantes antes de reivindicar outro nó permitido.
 
 ## Regras da caçada
 

@@ -1,6 +1,6 @@
 ---
 name: "session-handoff"
-description: "Use quando uma sessão está acabando, a janela de contexto vai compactar, ou o trabalho precisa continuar em outro agente ou harness. Compacta a sessão em um arquivo plano que um agente novo em folha lê frio e continua — estado, trabalho pela metade, o próximo comando exato, decisões abertas — com segredos redigidos e o trabalho concorrente verificado como preservado. Trigger words: handoff, hand off, compact, save state, continue in another session, portable handoff, before restart, passar o bastão, salvar estado, continuar em outra sessão, antes de reiniciar."
+description: "Use ao encerrar uma sessão, antes de compactar contexto, ao esgotar uma cota da missão ou quando trabalho pendente precisar continuar em outro agente ou harness."
 license: "MIT"
 ---
 
@@ -10,8 +10,9 @@ license: "MIT"
 Uma janela de contexto morre; o trabalho não pode morrer junto. Antes de uma
 sessão terminar ou compactar, escreva um arquivo plano que um agente novo em
 folha consiga ler frio e continuar — o que estava sendo feito, onde mora, o
-que está pela metade e o próximo comando exato. Handoff estacionado em prosa
-de chat ou só na memória não existe.
+que está pela metade e o próximo comando exato. O handoff precisa sobreviver ao
+contexto. Use o registro existente do [BACKS Build Flow](../backs-build-flow/SKILL.md):
+transfira a tarefa sem criar outro responsável, passagem de contexto nem missão.
 
 ## Quando escrever um
 
@@ -31,6 +32,10 @@ uma limpeza de contexto. Se o próximo agente é outro harness ou um login
 novo, escreva um arquivo plano portátil no diretório temporário — é andaime,
 não artefato rastreado.
 
+Respeite `task_mode` e permissões de escrita da tarefa. Para revisão somente
+leitura ou congelada, devolva o handoff na resposta ou registro externo já autorizado;
+nunca escreva registro no repo protegido para satisfazer esta skill.
+
 ## Verifique o trabalho concorrente primeiro (antes de escrever uma palavra)
 
 Cheque que o trabalho de OUTRAS sessões está preservado. Rode `git status`,
@@ -42,11 +47,13 @@ trabalho em voo é uma alegação falsa.
 
 ## O que entra — uma seção curta cada
 
-1. **Objetivo.** O trabalho em uma frase. O próximo agente não pode ter que
-   adivinhar o que "pronto" significa.
-2. **Estado.** Aterrissado (ids de commit), construindo, na fila. Referencie
-   specs, planos, issues e diffs por caminho ou URL — nunca duplique o
-   conteúdo deles.
+1. **Objetivo.** Trabalho em uma frase e definição de pronto. Preserve `mission_id`,
+   `task_mode`, responsável pela integração, conclusão solicitada e ações de
+   entrega já autorizadas.
+2. **Estado.** Integrado (ids de commit), construindo, na fila. Referencie
+   specs, planos, issues e diffs por caminho ou URL sem duplicar. Inclua `base_sha`
+   fixado, `candidate_sha` atual, caminhos/commit/hashes do RED selado, comandos
+   e resultados, e candidato exato coberto por cada recibo.
 3. **Onde o trabalho mora.** Branches, worktrees, arquivos sujos. Nomeie os
    arquivos exatos que o próximo agente deve ler primeiro.
 4. **A trilha de veredictos.** Quem ou o quê avaliou cada peça e quais foram
@@ -61,9 +68,13 @@ trabalho em voo é uma alegação falsa.
    faltando, promessas feitas e ainda não mantidas.
 8. **Armadilhas.** Uma linha cada. Uma armadilha que você já pagou vale mais
    que um verde — escreva para a próxima sessão não pagar de novo.
-9. **Skills sugeridas.** Quais skills o próximo agente deve carregar
-   primeiro, e uma linha do porquê. É isso que torna o doc portátil entre
-   harnesses.
+9. **Skills sugeridas.** O que carregar primeiro e por quê. Nomeie corpos/evidências
+   já disponíveis, o que atualizar e fonte da essência do operador; não copie
+   um segundo perfil.
+10. **Orçamento restante.** Preserve prazo original e total/consumido/restante de
+    tentativas, rodadas e outros limites de [bounded-loops](../bounded-loops/SKILL.md),
+    chamadas pendentes e última hipótese/falha. Desconhecido continua desconhecido.
+    Nunca reinicie orçamento ao transferir, compactar, mudar trabalhador ou modelo.
 
 ## Regras duras
 
@@ -74,9 +85,10 @@ trabalho em voo é uma alegação falsa.
 - **Alegações de ausência apodrecem mais rápido.** Antes de escrever "X não
   existe" ou "X não aterrissou", verifique de novo no commit atual —
   trabalho paralelo aterrissa enquanto você escreve.
-- **Status de duas palavras por item: PROVEN ou STILL-BUILDING.** Testes
-  verdes sem prova viva é STILL-BUILDING, e o handoff diz exatamente qual
-  prova falta.
+- **Status sustentado por evidências por item.** Entrega de capacidade usa PROVEN
+  só com revisão exigida e prova real de superfície; caso contrário, STILL-BUILDING
+  nomeia a evidência ausente. Revisão ou patch local concluídos podem atender ao
+  pedido sem serem apresentados como capacidade implantada.
 - **Mantenha legível em dois minutos** (cerca de 120 linhas). Quando passar
   disso, arquive os blocos mais antigos movendo-os para uma seção de
   histórico — nunca apagando.
@@ -87,6 +99,11 @@ Uma sessão que parte de um handoff o lê PRIMEIRO, depois verifica as duas ou
 três alegações do topo contra `git log` e a árvore viva antes de agir sobre
 elas. O handoff é um mapa, não a verdade — confie nele para ONDE olhar;
 verifique O QUE ele diz.
+
+Retome com o mesmo pacote e cotas restantes. Confira prazo antes de despachar;
+sessão nova não é orçamento novo. Se uma cota acabou, preserve STILL-BUILDING e
+conclua apenas trabalho útil autorizado que não a consuma. Mantenha selo RED e
+base fixada; atualize identidade do candidato apenas ao mudar os bytes reais.
 
 ## Funciona bem com
 

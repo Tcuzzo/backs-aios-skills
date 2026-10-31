@@ -9,50 +9,17 @@
 - 带工具的 agent 会接触不可信内容——网页、issue、邮件、外部输入。
 - 你在给要交付的东西加依赖或 CI。
 
-出厂关，一图看懂：
+## 共享任务与限制
 
-```
-+--------------------------------------------+
-| 1 secret gate  verified-only scan; one     |
-|   live credential fails the build          |
-+--------------------------------------------+
-| 2 egress lockdown  deny by default;        |
-|   canonicalize before allowlist match      |
-+--------------------------------------------+
-| 3 break the lethal trifecta  one leg       |
-|   always missing on every path             |
-+--------------------------------------------+
-| 4 taint tracking  tainted session =>       |
-|   policy-gate every exfil-capable action   |
-+--------------------------------------------+
-| 5 supply chain  hash-pin every dep, no     |
-|   install scripts, SHA-pinned CI           |
-+--------------------------------------------+
-| 6 clean-code-gauntlet  mutate detectors,   |<--------------------------+
-|   parsers, predicates to zero survivors    |  a survivor or a          |
-+--------------------------------------------+  sandbox catch ->         |
-| 7 sniper-testing  mock outbound network    |   +---------------------+ |
-|   only, never payload or parser            |   |  LORD OF THE LOOP   |-+
-+--------------------------------------------+   | one hand drives the |
-| 8 sandbox before ship  outbound blocked,   |-->| loop: dispatch,     |
-|   watch writes + calls, hard-kill armed    |   | judge, loop back    |
-+--------------------------------------------+   | until the gate is   |
-| 9 provenance  SBOM + signed provenance;    |   | green. a lane never |
-|   still review the source                  |   | lands its own work. |
-+--------------------------------------------+   +---------------------+
-          |
-          | every gate green
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no ship:      |
-| no live credential anywhere . no path      |
-| holds all three trifecta legs . deps +     |
-| CI hash-pinned . zero surviving mutants    |
-| . sandboxed before ship                    |
-+--------------------------------------------+
-```
+在当前 [BACKS Build Flow](../skills/backs-build-flow/SKILL.md) 任务包内应用本战术。
+保留一位集成负责人、请求的 `task_mode`、固定 `base_sha`、当前 `candidate_sha`、
+operator essence 和当前证据。复用适用的已载入技能正文；本战术增加领域关卡，
+不重启任务。
 
-图中两个特殊标签：Lord of the Loop = 循环之主，即由一只手驱动整个迭代（派发、评判、循环回炉）、直到落地门槛转绿的循环负责人；LANDING GATE（LAND，落地门槛）= 全部条件转绿才放行落地的最终关卡。
+[bounded-loops](../skills/bounded-loops/SKILL.md) 负责原始截止时间和剩余额度，
+贯穿重试、工作者、模型、评审和交接。嵌套战术不得重置它们。耗尽时建立
+**STILL-BUILDING** 检查点，保留候选版本、证据、未过关卡和下一步。
+有用且已授权工作仅在剩余额度内继续；缺失关卡不能变成通过。
 
 ## 链路
 
@@ -69,12 +36,16 @@
    把关——绝不交给模型自己判断。
 5. 供应链——每个依赖都哈希锁定，禁掉安装期脚本。每个 CI action 都锁到
    完整 commit 哈希，不是标签。
-6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) —— 安全代码
-   扛最严的标准。对每个检测器、解析器、策略谓词跑变异测试，把幸存变异体
-   清到零。威胁检查里翻转了一个比较符、套件却照样通过——那本身就是漏洞。
-7. [sniper-testing](../skills/sniper-testing/SKILL.md) —— 只 mock 出站网络，
-   绝不 mock 被测的载荷或解析器：被 mock 掉的检测器，就是生产环境里
-   瞎掉的传感器。
+6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — 安全代码遵守最严
+   标准。在共享预算内对每个检测器、解析器和策略谓词做变异测试；有意义的幸存者
+   阻止发布。缺失断言另加补充测试，保留封存 RED 原件。威胁检查中翻转比较后
+   套件仍通过，本身就是漏洞。
+
+7. [sniper-testing](../skills/sniper-testing/SKILL.md) — 按固定汇总候选差异运行
+   仓库实际 lint/类型/测试命令，报告缺口或有理由的 N/A。只模拟出站网络，不模拟
+   受测载荷或解析器；模拟检测器就是生产中的盲传感器。在 gauntlet 前复用当前
+   限定范围证据，保留必需的完整受影响测试集落地关卡与作者隔离评审。
+
 8. 出厂前沙箱——把构建产物放进一次性沙箱运行，出站全部封死，
    资源硬杀开关上膛。盯着它写了什么、想调用什么。
 9. 溯源——产出软件物料清单（SBOM），有条件就加上签名的溯源记录。

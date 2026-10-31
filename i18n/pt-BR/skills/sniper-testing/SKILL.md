@@ -1,74 +1,79 @@
 ---
-name: "sniper-testing"
-description: "Use durante qualquer loop de conserto ou build, e antes de confiar em qualquer teste verde. Roda só os testes que cobrem o que você tocou, e mata o teatro de mock — testes que passam com a capacidade quebrada. Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat, testes escopados, teatro de mock, verde falso, suíte inteira, inchaço de teste."
-license: "MIT"
+name: sniper-testing
+description: "Use durante um ciclo de construção ou reparo, ou antes de confiar em um resultado verde, quando a verificação precisar cobrir o candidato real sem repetir desnecessariamente a suite inteira."
+license: MIT
 ---
 
 # Sniper Testing
-**Effort:** free — disciplina pura, nenhuma execução extra; corta o custo líquido na raiz ao apagar re-execuções da suíte inteira durante a iteração. Remove: inchaço de teste (rodar a suíte inteira para um diff minúsculo) e os verdes de teatro de mock sobre os quais você construiria.
 
-## Por que isso existe
+Verifique o comportamento alterado pelo consumidor real. Use o diff completo da
+tarefa para escolher verificações; depois repita apenas as afetadas pela próxima
+mudança. Herde a mesma cota de missão de [bounded-loops](../bounded-loops/SKILL.md).
 
-Dois modos de falha queimam a maior parte do tempo de teste. Inchaço de
-teste: rodar a suíte inteira para uma mudança minúscula. Teatro de mock:
-testes que passam enquanto a capacidade real está fisicamente quebrada. Esta
-skill mata os dois.
+## 1. Fixe o escopo real
 
-## Regra 1 — o diff define o escopo, não o otimismo
+Preserve o `base_sha` verificado anterior à tarefa e o `candidate_sha` commitado
+atual no pacote do [Build Flow](../backs-build-flow/SKILL.md). Uma árvore limpa
+após commitar RED e a correção ainda tem um diff de tarefa. Usar apenas
+`git diff HEAD` perde esse escopo.
 
-Durante o loop de iteração de conserto/build, você está proibido de rodar a
-suíte de testes inteira.
+Use o utilitário de escopo somente leitura incluído, a partir do diretório
+resolvido desta skill:
 
-1. Rode `git diff --name-only HEAD` para ver exatamente quais arquivos você
-   tocou.
-2. Mapeie cada arquivo tocado para os arquivos de teste que o cobrem
-   diretamente (ex.: `src/payments/refund.py` → `tests/test_refund.py`).
-3. Declare seu alvo de teste específico, depois rode SÓ aqueles arquivos
-   (Python: `pytest tests/test_refund.py`;
-   JS: `npx vitest run tests/refund.test.js`;
-   Go: `go test ./payments/ -run TestRefund`).
-4. Um teste que já passou não roda de novo, a menos que a próxima mudança
-   toque código que ele exercita. O diff define o escopo — não o otimismo,
-   não o medo.
-5. Na hora de aterrissar — o portão do commit — rode UMA passada completa na
-   suíte de cada módulo tocado. Essa passada única pega acoplamentos
-   indiretos exatamente uma vez. Velocidade de iteração e uma aterrissagem
-   sólida são as duas partes do trabalho.
+```bash
+python scripts/changed_files.py --repo <verified-repo> --base <base-sha> --candidate <candidate-sha>
+```
 
-## Regra 2 — mate o teatro de mock
+Durante a iteração, acrescente `--include-worktree` apenas quando o candidato for
+HEAD. Ele informa separadamente caminhos commitados, staged, unstaged e untracked,
+preservando nomes incomuns. O escopo agregado inclui exclusões e os dois lados de
+uma renomeação. Marque trabalho pendente alheio como preservado; não reivindique
+todos os caminhos retornados. Base ausente ou revisão inválida é erro a resolver,
+nunca escopo vazio que justifica pular verificações. O utilitário não busca nem
+altera o histórico.
 
-Um teste de capacidade precisa assertar um efeito colateral real, físico:
+## 2. Escolha e execute verificações reais
 
-- "produz um vídeo" → um arquivo real existe no disco com tamanho > 0 bytes.
-- "guarda memória" → a linha volta na leitura de um banco local real.
-- "renderiza o widget" → um elemento DOM real existe na página.
+Mapeie arquivos alterados e chamadas/consumidores afetados para tests de comportamento;
+leia scripts, CI e configuração reais do repositório para encontrar os comandos.
 
-Não mocke o banco de dados. Não mocke o sistema de arquivos. Não mocke
-sockets de rede local.
+| Verificação | Escopo e evidência |
+| --- | --- |
+| Lint e formato | Arquivos alterados compatíveis com a configuração existente; use modo de verificação antes de reformatar. |
+| Tipos ou compilador | Fronteira do pacote/projeto afetado; dependências de tipos podem exigir alvo maior. |
+| Comportamento | Caminho real alterado e regressão que falha se a capacidade quebrar. |
+| Contrato/integração | Consumidores, aliases, empacotamento, preservação de configurações ou fronteiras de runtime alteradas. |
+| Gates obrigatórios de integração | Suites exigidas pelo repositório quando o candidato estabilizar. |
 
-O único mock legal é a folha de transporte externo pago — a chamada HTTP para
-uma API de terceiro cobrada por uso. Mesmo aí, o teste precisa atravessar
-toda a lógica real ao redor: montar a requisição, rotear, parsear a resposta.
-Mocke o fio, nunca o cérebro.
+Declare cada comando, por que cobre o risco, revisão/estado pendente, resultado
+executado e falhas restantes. Linter/typechecker ausente é **indisponível** ou
+**inaplicável**, com motivo; não invente aprovação. Não instale ferramenta nova
+só porque um exemplo a cita. Lint verde não substitui tests de comportamento.
 
-## Audite antes de confiar
+Durante a iteração, escolha o menor alvo útil. Verificação já aprovada não precisa
+rodar de novo se código exercitado, entradas e ambiente pertinente não mudaram.
+Um acoplamento concreto não resolvido ou gate obrigatório do projeto justifica
+ampliar tests; registre o motivo. Ao integrar, rode uma vez as verificações
+agregadas exigidas para o candidato final. Mudanças posteriores invalidam apenas
+evidências afetadas e gates de commit exigidos.
 
-Antes de se apoiar em qualquer teste, leia-o. Se for teatro de mock — verde
-por causa de mocks, sem asserção física — delete o mock e reescreva o teste
-para assertar um efeito colateral real. Um teste que não consegue falhar é
-pior que nenhum teste: ele certifica uma mentira, e você vai construir em
-cima dela.
+## 3. Faça os tests detectarem falhas reais
 
-## Regras duras (quebrou uma, a skill falhou)
+Verifique efeito observável: artefato válido existente, dados lidos de um banco
+local real, bytes reais de contexto recebidos pelo host ou elemento de UI renderizado.
+Exercite arquivos, bancos e sockets locais sem mocks. A folha de transporte externo
+pago pode ser substituída por fixture determinístico, mantendo reais a construção
+da requisição, roteamento, parsing e consumidor local. Nunca afirme que o fixture
+prova a execução do serviço externo.
 
-- Nada de rodar a suíte inteira durante a iteração.
-- Nenhuma alegação de verde sem asserção de efeito colateral real.
-- Nenhum mock além da folha de transporte externo pago num teste de
-  capacidade.
-- Nenhuma aterrissagem sem a passada completa única nos módulos tocados.
+Preserve byte a byte o arquivo RED selado de [red-first](../red-first/SKILL.md).
+Quando surgir uma lacuna nova, acrescente um arquivo separado de regressão
+suplementar seguindo as regras de evidência e selagem dessa skill. Nunca enfraqueça,
+renomeie, substitua nem edite o arquivo selado original.
 
-## Funciona bem com
+## Saída
 
-- [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) — o escopo sniper alimenta seu primeiro portão
-- [red-first](../red-first/SKILL.md) — escreva o teste que falha antes do conserto
-- [seam-engineering](../seam-engineering/SKILL.md) — conserte a classe, depois varra com testes escopados
+Devolva escopo do candidato, resultados executados de lint/tipos/tests, evidências
+de efeitos reais e gates pendentes ao mesmo responsável.
+[clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) usa essas evidências como
+primeira etapa, não como motivo para repetir verificações inalteradas.

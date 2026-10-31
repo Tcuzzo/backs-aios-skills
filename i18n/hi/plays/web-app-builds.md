@@ -9,51 +9,24 @@
 कोई भी web app, site, API, या deliver होने वाली repo बनाते या बढ़ाते समय, जिसे कोई
 और install करके चलाएगा।
 
-पूरा build, एक नज़र में:
+## साझा task और limits
 
-```
-+--------------------------------------------+
-| 1 intent-compiler  read the ask whole      |
-+--------------------------------------------+
-| 2 understanding-gates  structure first:    |
-|   one entrypoint, manifest, lockfile       |
-+--------------------------------------------+
-| 3 dependency hygiene  validate + hash-pin  |
-|   every dep, no install scripts, pin CI    |
-+--------------------------------------------+
-| 4 red-first  contract tests for routes,    |<--------------------------+
-|   loaders, validation -- committed first   |  finding -> a new red     |
-+--------------------------------------------+  test -> fix ->           |
-| 5 build to the doctrine; any UI runs       |  re-convene               |
-|   the design-taste method                  |                           |
-+--------------------------------------------+   +---------------------+ |
-| 6 sniper-testing  never mock your own      |   |  LORD OF THE LOOP   |-+
-|   validation or serialization              |   | one hand drives the |
-+--------------------------------------------+   | loop: dispatch,     |
-| 7 clean-code-gauntlet  mutate validation   |   | judge, loop back    |
-|   + auth predicates until none survive     |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 8 blind-tribunal  independent juror       |-->| lands its own work. |
-|   panel; capability-resolved grader        |   |                    |
-+--------------------------------------------+   +---------------------+
-          |
-          | every juror passes
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no deploy:    |
-| no unpinned dep . no committed secret .    |
-| zero mutation survivors in validation +    |
-| auth predicates . no external network      |
-| during tests (loopback is fine)            |
-+--------------------------------------------+
-```
+यह play current [BACKS Build Flow](../skills/backs-build-flow/SKILL.md) task packet
+के भीतर चलाएँ। एक integration owner, requested `task_mode`, pinned `base_sha`, current
+`candidate_sha`, operator essence और current evidence रखें। Applicable loaded skill
+bodies reuse करें; यह play अपने domain gates जोड़ता है, task फिर शुरू नहीं करता।
 
-*Lord of the Loop = loop का मालिक — एक ही हाथ जो dispatch, judge और दोहराव तब तक चलाता है जब तक landing gate green न हो जाए; LAND = बदलाव का final उतरना — हर gate green होने पर merge होकर ship होना।*
+[bounded-loops](../skills/bounded-loops/SKILL.md) original deadline और remaining
+allowances को retries, workers, models, reviews और handoffs में संभालता है। Nested play
+के लिए उन्हें reset न करें। Exhaustion पर candidate, evidence, unmet gates और next action
+सहित **STILL-BUILDING** checkpoint करें। Useful authorized work remaining allowance में
+ही करें; missing gate कभी pass नहीं बनता।
 
 ## चेन
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — stack या ढाँचा चुनने से
-   पहले माँग को पूरा पढ़ें।
+1. Stack या structure चुनने से पहले Build Flow के established intent और operator
+   essence लें; पूरा request और current corrections लागू करें।
+
 2. [understanding-gates](../skills/understanding-gates/SKILL.md) — पहले ढाँचा
    design करें: एक documented entrypoint, एक स्पष्ट dependency manifest, और एक
    commit की हुई lockfile। files का बेतरतीब फैलाव नहीं।
@@ -78,17 +51,23 @@
 5. नीचे दिए doctrine के हिसाब से बनाएँ। किसी भी UI surface के लिए
    [design-taste](../skills/design-taste/SKILL.md) का तरीक़ा चलाएँ — पहले tokens,
    accessibility एक hard gate की तरह।
-6. [sniper-testing](../skills/sniper-testing/SKILL.md) — अपनी validation या
-   serialization को कभी mock न करें: mocked web boundary ऐसा app ship करती है जो
-   वह भी स्वीकार लेता है जिसे ठुकराना चाहिए था।
+6. [sniper-testing](../skills/sniper-testing/SKILL.md) — pinned aggregate candidate
+   diff से repo के real lint/type/test commands scope करें; gaps और justified N/A
+   बताएँ। अपनी validation या serialization कभी mock न करें; mocked web boundary
+   app को वह स्वीकार करने देती है जिसे reject करना चाहिए।
+
 7. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — route handlers,
-   data loaders, और form/validation paths deploy से पहले पास हों; validation और
-   auth predicates पर mutation तब तक चलाएँ जब तक कुछ भी न बचे। जिस boundary check
-   की उलटी comparison को suite फिर भी pass कर दे, वह किसी public surface पर खुला
-   दरवाज़ा है।
-8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — deploy से पहले
-   independent juror panel; capability-resolved non-author grade।
-   हर juror finding एक नया red test बनती है; tribunal तब तक दोबारा बिठाएँ जब तक हर juror pass न कर दे।
+   data loaders और form/validation paths deploy से पहले pass हों। Shared budget में
+   validation/auth predicates mutate करें; meaningful survivors deployment रोकते हैं।
+   Missing regression separate file में दें, sealed original RED बचाएँ। Flipped boundary
+   comparison का pass होना public surface पर खुला दरवाज़ा है।
+
+8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — deploy से पहले independent
+   juror panel; हर reviewer configured rung matrix से capability/availability अनुसार
+   live चुनें, authoring execution provenance में record और exclude करें। Review fresh
+   author-disjoint session में हो। हर proved finding को इस task में separate RED और
+   bounded repair दें। Remaining budget में re-convene करें; हर required juror pass करे।
+   Full affected-suite landing gate रखें और real app surface पर authorized delivery verify करें।
 
 ## Doctrine (build को क्या-क्या पूरा करना है)
 

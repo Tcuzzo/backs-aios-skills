@@ -1,6 +1,6 @@
 ---
 name: "clean-code-gauntlet"
-description: "Nutze das beim Härten oder Landen jedes Builds — Agent, Service, Library — wenn du eine deterministische Qualitätslatte willst statt eines Zeile-für-Zeile-Reviews. Fährt Sniper-Tests, den CRAP-Score (Komplexität x Coverage) und begrenztes Mutation-Testing, dann ein leichtes Geschmacks-Review. Trigger words: clean code, gauntlet, unc, uncle bob, crap score, crap, mutation testing, harden, complexity, coverage, quality bar, Spießrutenlauf, Qualitätslatte, Komplexität, Testabdeckung, härten."
+description: "Beim Härten oder Landen ausführbarer Änderungen, die gemessene Komplexität, Coverage, Regressionsstärke und unabhängiges Designreview benötigen."
 license: "MIT"
 ---
 
@@ -21,14 +21,23 @@ ganze Diffs.
 
 ## Die Kette (in Reihenfolge fahren; jede Stufe stoppt laut bei Fehlschlag)
 
-1. **Sniper-Tests grün.** Fahre nur die Testdateien, die abdecken, was der Diff
-   berührt hat — siehe [sniper-testing](../sniper-testing/SKILL.md). Eine rote
-   Baseline heißt: stoppen und fixen; nie auf Rot mutieren oder bewerten.
+Binde `base_sha`, `candidate_sha`, Integrationsverantwortlichen und verbleibendes
+[bounded-loops](../bounded-loops/SKILL.md)-Missionskontingent des bestehenden
+[Build Flow](../backs-build-flow/SKILL.md)-Pakets ein. Verwende weiterhin gültige
+Belege; Review-Runden und Mutationskampagnen setzen das Budget nicht zurück.
+
+1. **Gezielte Lint-, Typ- und Verhaltensprüfungen grün.** Führe passende Befehle
+   des Repositories aus — siehe [sniper-testing](../sniper-testing/SKILL.md).
+   Erfasse nicht verfügbare oder unanwendbare Prüfungen ausdrücklich, nicht als
+   bestanden. Eine rote Baseline heißt: stoppen und reparieren; nie auf Rot mutieren oder bewerten.
 2. **CRAP unter der Schwelle** auf echten Coverage-Daten (siehe das Gate unten).
    Riss → die Funktion herunter-refactoren oder voll abdecken. Nie die Latte
    senken.
-3. **Mutation-Testing: null Überlebende im Scope.** Ein Überlebender überführt die
-   TESTS, nicht den Code — stärke den Test, der ihn hätte fangen müssen.
+3. **Mutation: keine ungeklärten Überlebenden im Umfang.** Ein nicht äquivalenter
+   Überlebender ist eine Regressionslücke. Lege eine separate Ergänzungstestdatei
+   an; bewahre den ursprünglichen versiegelten [red-first](../red-first/SKILL.md)-
+   Vertrag Byte für Byte. Dokumentiere die belegte Widerlegung äquivalenter
+   Mutanten. Toolfehler oder Timeout sind unentschieden, niemals getötete Mutanten.
 4. **Leichtes Geschmacks-Review** — ein Modell beurteilt nur, was Zahlen nicht
    können.
 
@@ -48,6 +57,12 @@ Eine Befehlsform pro Stufe:
 - Komplexität: `radon cc -s <changed files>`
 - Mutation: `mutmut run --paths-to-mutate <changed files>` (JS/TS: `npx stryker run --mutate "<glob>"`)
 
+Diese Befehle sind Beispiele, keine Installationsanweisungen oder stabilen
+CLI-Garantien. Nutze festgelegte Repository-Tools und unterstützte Flags.
+Validiere bei reinen Dokumentationsänderungen Links, Struktur, Distribution und
+Verhaltensszenarien; Codekomplexität oder Mutation können unanwendbar sein.
+Dokumentiere den Grund, statt Messwerte zu erfinden.
+
 ## Das CRAP-Gate
 
 ```
@@ -65,7 +80,8 @@ CRAP(m) = comp(m)^2 * (1 - cov(m)/100)^3 + comp(m)
 ## Wessen Schulden sind das — AUTHORED / WORSENED / UNCHANGED
 
 Ein absoluter Score versteckt, wessen Schulden es sind. Teile jedes Komplexitäts-
-und CRAP-Delta gegen die Baseline vor der Änderung auf:
+und CRAP-Delta gegen den festgehaltenen `base_sha` vor Aufgabenbeginn auf,
+mit vergleichbaren tatsächlichen Coverage-Daten:
 
 - **AUTHORED** — Funktionen, die diese Änderung erzeugt hat. Die volle Latte gilt.
 - **WORSENED** — bestehende Funktionen, die diese Änderung verschlechtert hat. Das
@@ -76,22 +92,23 @@ und CRAP-Delta gegen die Baseline vor der Änderung auf:
 
 ## Mutations-Regeln (begrenzt, nie leichtsinnig)
 
-- **Nie der geteilte Working Tree.** Mutiere in einem Scratch-Checkout, geschnitten
-  vom committeten HEAD. Schmutzige Ziel- oder Testdateien = verweigern; erst
-  committen.
+- **Nie der geteilte Working Tree.** Mutiere in einem Scratch-Checkout der exakten
+  committeten `candidate_sha`. Schmutzige Ziel-/Testdateien: Checkpoint und zuerst
+  Kandidat fertigstellen. Bewahre fremde Arbeit im ursprünglichen Checkout.
 - **Kosten werden gemessen, nie angenommen.** Stoppe die gescopte Suite einmal,
   berichte ETA = Baseline x Mutantenzahl, BEVOR irgendetwas ausgegeben wird.
   Biete einen Dry Run an.
-- **Begrenzt und wiederaufnehmbar.** Deckle Mutanten und Minuten. Ein Budget-Stopp
-  ist eine Pause mit Checkpoint, kein Fehlschlag — wieder aufnehmen und fertig
-  machen.
+- **Begrenzt und wiederaufnehmbar.** Deckle Mutanten und Minuten im Missionsrestkontingent.
+  Ein Budget-Stopp sichert ungeprüfte Mutanten und lässt das Gate unvollständig.
+  Fortsetzung nur mit verbleibendem oder ausdrücklich erweitertem Kontingent.
 - **Coverage zuerst.** Mutiere nur abgedeckte Zeilen; eine unabgedeckte Zeile ist
   eine Coverage-Lücke, die das CRAP-Gate schon gefangen hat.
 - **Nur im Scope.** Mutiere, was der Diff berührt hat, nie das ganze Repo.
 - Ein wirklich äquivalenter Mutant darf widerlegt statt getötet werden — mit
   aufgeschriebener Widerlegung, nie still übersprungen.
-- **Kein Mutation-Tool für deinen Stack?** Halte das im Landing-Report fest und
-  stütze dich auf das CRAP-Gate — nie still überspringen.
+- **Kein Mutation-Tool für deinen Stack?** Erfasse Einschränkung und tatsächliche
+  Ersatzbelege. Wende die Abnahmeregeln des Repositories an; ein Pflichtgate bleibt
+  offen, bis sein Verantwortlicher eine dokumentierte Alternative akzeptiert.
 
 ## Das Geschmacks-Review (zuletzt, und leicht)
 

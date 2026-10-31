@@ -11,12 +11,12 @@
 reaches for state it does not own, the system fails loud instead of guessing.**
 
 That line is the **Reflex Seam**, and this pack is how you install it on an agent you
-already use. Here is the moment it earns its keep: the agent goes to run a command
-before it has read the rules. A hook checks. The tool does not run, and the agent is
-told why. Not a prompt asking it to behave — a gate it cannot argue with.
+already use. The grounding hook delivers the actual Optimus, human-calibration,
+and Build Flow bodies at session start. A missing body produces a visible diagnostic;
+the hook does not deny tools or invent a successful loading receipt.
 
 This pack is that discipline pulled out of a running agent platform and rebuilt as
-plain markdown: **56 public skill folders, 8 named plays, 15 command entry points.** Any agent can
+plain markdown: **62 source skill folders, 8 named plays, 15 command entry points.** Any agent can
 load them. Claude Code, Codex, Cursor, OpenCode, or a bare API loop.
 
 Two of the skills are the load-bearing ones. **No mock theater** — a test that passes
@@ -26,6 +26,28 @@ to pass it. Both are in here as skills you can fire by name.
 
 Prefer pictures? Start with the [Visual guide](docs/FLOWCHARTS.md) for the complete
 skill map and the boot, build, repair, grading, parallel-work, and decision loops.
+
+## Build Flow and operator awareness
+
+[Build Flow](skills/backs-build-flow/SKILL.md) keeps one task owner from the current
+request through verification and requested delivery. It reuses enough context to
+act, selects skills for a purpose and exit, and carries the same bounded RED/GREEN
+allowance through scoped lint, type checks, tests and the clean-code gauntlet.
+Absorb owns adoption; REA returns discovery or verification evidence to its caller.
+
+[Operator Essence](skills/operator-essence/SKILL.md) stores evidence-backed awareness
+in the current operator's private file. It combines confirmed preferences,
+qualitative examples, quantitative counts with denominators, uncertainty and
+counterexamples. A missing file triggers one available insights workflow or an
+explicit supplied-evidence fallback; sparse evidence stays provisional while work
+continues. The public plugin includes the method and validator, never a person's
+profile. Intent compilation interprets the request; intent deduction resolves real
+remaining choices inside it.
+
+The source has **62 skill folders**, including **3 compatibility aliases** and
+**8 command adapters**; each locale mirrors **54 non-command folders**. Distributed
+canonical bundles remove alias folders where the host would discover duplicate
+names. See [release 0.9.5](docs/releases/0.9.5.md) for the integration and verification.
 
 ## What this does
 
@@ -210,7 +232,9 @@ homework.
 | [absorb](skills/absorb/SKILL.md) | Adopt an existing open-source capability and re-engineer it as a native skill, instead of building a duplicate. |
 | [blind-eval](skills/blind-eval/SKILL.md) | Judge a change on its merits with authorship hidden, then keep or revert. Only proven uplift lands. |
 | [blind-tribunal](skills/blind-tribunal/SKILL.md) | Eight blind jurors grade the change, one lens each, routed by tier to the cheapest sufficient model. The authoring execution that built is recorded as provenance and disqualified; a same model, rung, or family juror in a fresh, author-disjoint session is permitted where the configured runtime allows. Every finding becomes a failing test. Loop until all pass. |
-| [bounded-loops](skills/bounded-loops/SKILL.md) | Budget ceilings, checkpoints, and kill-switches on every loop. Makes hammering an API structurally impossible. |
+| [backs-build-flow](skills/backs-build-flow/SKILL.md) | Coordinate context, purposeful skill use, bounded execution and the requested finish. |
+| [operator-essence](skills/operator-essence/SKILL.md) | Assess private operator evidence and pass relevant awareness without hardcoded priorities. |
+| [bounded-loops](skills/bounded-loops/SKILL.md) | One mission budget across retries, workers, review rounds and handoffs; checkpoint on exhaustion. |
 | [clean-code-gauntlet](skills/clean-code-gauntlet/SKILL.md) | A deterministic quality bar: sniper tests, the CRAP score (complexity x coverage), bounded mutation testing, then a light taste review. |
 | [decision-bar](skills/decision-bar/SKILL.md) | One bar for every decision: only taste, vision, or destructive risk reach the human. Everything else executes. |
 | [design-taste](skills/design-taste/SKILL.md) | Ship visual work that looks designed, not generated: design tokens first, screenshot critique, a hard accessibility gate. |
@@ -225,7 +249,7 @@ homework.
 | [leap-protocol](skills/leap-protocol/SKILL.md) | Split big work into independently ownable balls, fan them to parallel builders in isolated worktrees, reconcile through one write spine. |
 | [live-research](skills/live-research/SKILL.md) | A parallel research agent reads the live source (READMEs, docs, actual code) so reasoning grounds in what is really there, not memory. |
 | [model-fusion](skills/model-fusion/SKILL.md) | A panel of models drafts in parallel, an independent judge picks, the winner is validated against the original intent. |
-| [optimus](skills/optimus/SKILL.md) | No code until the harness is loaded. A deterministic hook blocks mutating tools until the agent has read the rules. |
+| [optimus](skills/optimus/SKILL.md) | Load the foundations and apply Build Flow. The existing hook delivers actual bodies without denying tools. |
 | [human-voice](skills/human-voice/SKILL.md) | The no-degree bar: if reading it needs a degree, rewrite it. Keeps the full idea while it strips the machine tells. |
 | [red-first](skills/red-first/SKILL.md) | Commit a proven-failing test before the build starts. The builder may not touch it. A grader verifies it never moved. |
 | [repair-loop](skills/repair-loop/SKILL.md) | The full fix loop: ground in the floor, reproduce, red test, fix the class, verify on the real path, independent grade, land. |

@@ -9,49 +9,25 @@ es lo único que funciona. Un diseño que es puro LLM, con cero primitivas, es i
 Al construir cualquier agente, bot, worker o servicio de larga duración — cualquier
 cosa que tenga herramientas, llame a la red o actúe sin un humano mirando cada paso.
 
-La construcción, de un vistazo:
+## Tarea y límites compartidos
 
-```
-    +--------------------------------------------+
-    | 1 intent-compiler  mission + limits from   |
-    |   the human's own words                    |
-    +--------------------------------------------+
-+-->| 2 understanding-gates  DOMAIN PRIMITIVES   |
-|   |   first; LLM slot for genuine reasoning    |
-|   +--------------------------------------------+
-|   | 3 red-first  a failing contract test per   |<--------------------------+
-|   |   typed IO boundary, committed first       |  finding -> a new red     |
-|   +--------------------------------------------+  test -> fix ->           |
-|   | 4 build to the doctrine -- every loop      |  re-convene               |
-|   |   inside bounded-loops                     |   +---------------------+ |
-|   +--------------------------------------------+   |  LORD OF THE LOOP   |-+
-|   | 5 sniper-testing  mock transport only      |   | one hand drives the |
-|   +--------------------------------------------+   | loop: dispatch,     |
-|   | 6 clean-code-gauntlet  mutate decision     |   | judge, loop back    |
-|   |   paths to zero survivors                  |   | until the gate is   |
-|   +--------------------------------------------+   | green. a lane never |
-|   | 7 blind-tribunal  independent juror       |-->| lands its own work. |
-|   panel; capability-resolved graders      |   |                    |
-|   +--------------------------------------------+   +---------------------+
-|             |
-|             | every juror passes
-|             v
-|   +--------------------------------------------+
-|   | LANDING GATE -- all green or no ship:      |
-|   | no fail-open boundary, silent fallback,    |
-|   | or swallowed error . zero mutation         |
-|   | survivors in decision paths . cross-       |
-|   | independent pass; the builder never grades .           |
-+---| zero primitives = invalid -> redesign      |
-    +--------------------------------------------+
-```
+Aplica este play dentro del paquete actual de
+[BACKS Build Flow](../skills/backs-build-flow/SKILL.md). Mantén un responsable
+de integración, `task_mode` solicitado, revisiones base y candidata fijadas,
+esencia del operador y evidencia vigente. Reutiliza cuerpos pertinentes ya cargados;
+este play añade puertas de su dominio sin reiniciar la tarea.
 
-En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce la iteración — despacha, juzga y vuelve a iterar — hasta que la puerta de aterrizaje está en verde; **LAND / LANDING GATE** = aterrizar — integrar el cambio solo cuando todo está en verde.
+[bounded-loops](../skills/bounded-loops/SKILL.md) controla plazo original y cupos
+restantes entre reintentos, trabajadores, modelos, revisiones y traspasos.
+Nunca los reinicies para un play anidado. Al agotarlos, guarda **STILL-BUILDING**
+con candidato, evidencia, puertas pendientes y siguiente acción. Continúa trabajo
+útil autorizado solo dentro de su cupo restante; una puerta ausente no se vuelve aprobada.
 
 ## La cadena
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — lee el pedido completo;
-   la misión y sus límites salen de las palabras del propio humano.
+1. Usa intención y esencia del operador establecidas por Build Flow; misión
+   y límites provienen del pedido completo y sus correcciones actuales.
+
 2. [understanding-gates](../skills/understanding-gates/SKILL.md) — en la etapa de
    diseño, nombra primero las PRIMITIVAS DE DOMINIO: cada capacidad central es una
    función determinista, offline y que falla cerrada. Reserva el hueco del LLM solo
@@ -61,17 +37,24 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
 4. Construye según la doctrina de abajo. Mantén cada bucle dentro de
    [bounded-loops](../skills/bounded-loops/SKILL.md): presupuestos, checkpoints,
    backoff y un kill-switch ruidoso — nunca un reintento que martilla.
-5. [sniper-testing](../skills/sniper-testing/SKILL.md) — solo el transporte de salida
-   se puede mockear — nunca el enrutado, el armado del prompt ni el parseo.
+5. [sniper-testing](../skills/sniper-testing/SKILL.md) — deriva el alcance de
+   comandos reales de lint/tipos/tests del diff agregado fijado del candidato.
+   Registra comprobaciones ausentes y N/A justificados explícitamente. Solo el
+   transporte de salida puede mockearse, nunca enrutado, prompts ni parseo.
+
 6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — los manejadores de
    herramientas y las funciones de decisión del agente pasan el gauntlet: puntaje de
    riesgo por debajo de tu techo, y luego mutación sobre las rutas de decisión hasta
    cero sobrevivientes. Una lógica de ramas que sobrevive a una comparación invertida
    nunca estuvo probada de verdad.
-7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — evaluadores independientes en sesiones
-   nuevas y disjuntas del autor aprueban el agente antes de la entrega. El que construye nunca
-   califica su propio trabajo.
-   Cada hallazgo de un jurado se vuelve un nuevo test en rojo; reconvoca hasta que todos los jurados aprueben.
+7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — panel independiente
+   aprueba el agente antes de entregarlo. Elige evaluadores en vivo por capacidad
+   y disponibilidad de la matriz configurada; registra y excluye la ejecución
+   autora. Revisan en sesiones nuevas sin conversación ni contexto heredado del
+   constructor, que nunca se evalúa a sí mismo. Cada hallazgo fundamentado recibe
+   RED suplementario separado, conservando el original sellado. Repara y reconvoca
+   dentro del mismo cupo restante; todos los jurados requeridos deben aprobar.
+   Conserva la pasada completa requerida de suites afectadas y prueba real de entrega.
 
 ## La doctrina (lo que la construcción debe cumplir)
 
@@ -107,8 +90,10 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
 - Cualquier frontera que falla abierta, fallback silencioso o error tragado bloquea
   la entrega.
 - Mutantes sobrevivientes en las rutas de decisión bloquean la entrega.
-- La calificación independiente debe pasar; la ejecución que construye nunca se
-  califica a sí misma.
+- La revisión independiente aprueba en sesión nueva separada del autor, sin
+  conversación ni contexto heredado, elegida en vivo por capacidad y disponibilidad
+  desde la matriz configurada. Registra y excluye la ejecución autora.
+
 
 ## Combina bien con
 

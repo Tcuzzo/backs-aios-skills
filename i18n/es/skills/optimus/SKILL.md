@@ -1,6 +1,6 @@
 ---
 name: "optimus"
-description: "Úsala al arrancar cualquier sesión, trabajo o loop de agente — antes de escribir una sola línea de código. Arranque harness-primero: carga el piso de invariantes y las skills que el trabajo necesita, para que el agente lea las reglas antes de trabajar; incluye el patrón de hook de compuerta de anclaje que bloquea las herramientas mutantes hasta que el harness esté cargado. Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence, harness primero, carga el harness, arranca el piso, compuerta de anclaje, lee el piso, sin harness no hay código, arranque de sesión."
+description: "Úsala al iniciar o retomar una sesión, trabajo o ciclo autónomo que necesite el harness BACKS y las skills pertinentes."
 license: "MIT"
 ---
 
@@ -16,101 +16,86 @@ y un hook lo vuelve estructural en vez de consultivo.
 
 ## Cuándo correrla
 
-Al inicio de cada sesión, trabajo, misión y loop. Otra vez después de un reinicio
-de contexto o de un relevo. Cargar el harness una vez y vivir de eso una semana
-no es cargar el harness.
+Al iniciar una sesión o trabajo nuevo; revalida después de un reinicio de contexto
+o traspaso. Un reintento interno reutiliza el anclaje vigente y el mismo paquete
+de tarea. Recarga cuerpos ausentes o cambiados; no reinicies el ciclo de vida en
+cada iteración.
 
 ## La secuencia de arranque
 
 1. **Carga el piso de invariantes.** Lee [invariant-floor](../invariant-floor/SKILL.md)
-   antes de tocar nada. Este es el piso sobre el que se para toda la sesión.
-2. **Carga el mapa de este trabajo.** Nombra qué archivos, qué reglas y qué
-   skills del pack gobiernan este trabajo concreto. Si no puedes nombrarlos, no
-   estás listo para editar.
-3. **Carga el perfil humano** ([human-calibration](../human-calibration/SKILL.md))
-   cuando el trabajo toca el gusto, la superficie o el flujo de un humano.
-4. **Invoca las skills que el trabajo necesita — en tiempo real, en esta sesión.**
-   Una skill nombrada pero no invocada no ocurrió. Trabajar "de memoria de una
-   skill" no es invocarla.
-5. Solo entonces: escribe código, corre comandos mutantes o cambia cualquier cosa.
+   antes de tocar nada. Es el piso de toda la sesión.
+2. **Aplica [Build Flow](../backs-build-flow/SKILL.md).** Controla modo de tarea,
+   preparación para actuar, selección de skills, RED/GREEN acotado con lint y
+   tests focalizados, evidencia del gauntlet y entrega. Reutiliza un paquete
+   verificado; recoge solo hechos faltantes para la siguiente acción concreta.
+   Los especialistas regresan a un único responsable.
+3. **Aplica contexto humano** ([human-calibration](../human-calibration/SKILL.md))
+   cuando corresponda. [operator-essence](../operator-essence/SKILL.md) controla
+   el archivo de conocimiento respaldado y la pasada de insights cuando falta;
+   no ejecutes un segundo ciclo de perfil.
+4. **Carga la sesión.** El hook entrega los cuerpos reales de Optimus, Yoke y
+   Build Flow, más el harness nativo probado cuando exista. La compactación los
+   recarga sin revocar el anclaje adquirido. Un marcador ausente ante una
+   herramienta mutante dispara la carga, nunca el rechazo de la herramienta.
+   Los hosts sin hook de contexto pueden usar:
+   ```bash
+   node "$HOME/.local/share/backs-aios/current/hooks/aios_gate.js" --load backs-aios:optimus
+   ```
+   En un shell Codex, pasa el `CODEX_SESSION_ID` activo como argumento final.
+   La variante Python está en `aios_gate.py`. Skills desconocidas devuelven
+   código distinto de cero sin inventar recibos.
+5. **Aplica las skills que necesita la siguiente acción.** Nombra propósito,
+   resultado y condición de salida. Una skill nombrada pero no invocada no ocurrió.
+   Reutiliza cuerpos reales todavía presentes en el contexto; un resumen de
+   memoria o hash de archivo no los reemplaza.
+6. Solo entonces escribe código, ejecuta comandos mutantes o cambia algo.
 
-## El patrón de compuerta de anclaje (grounding gate)
+## Anclaje automático
 
-Vuelve el paso 4 estructural con un **hook pre-herramienta** determinista — un
-script pequeño que tu runtime de agente llama antes de cada uso de herramienta:
+El hook existente lee los archivos fundamentales y entrega sus cuerpos por el
+contexto del host. Registra hashes de fuente solo después de la entrega. Los
+recibos de carga de contexto son distintos de evidencia real de eventos Skill;
+cargar un puntero o calcular un hash no invoca esa skill.
 
-- Cada sesión arranca en **RED** (rojo).
-- En RED, las herramientas de solo lectura (read, grep, search, fetch) siempre
-  pasan. El agente se ancla con libertad.
-- En RED, el hook **bloquea las herramientas mutantes** (edit, write, delete) y
-  los verbos mutantes primarios de shell (commit, push, rm, install, reinicio de
-  servicios, ediciones in-place).
-- Invocar cualquier skill del harness **pone la sesión en GREEN** (verde; lo
-  captura un hook post-herramienta). Entonces el agente puede actuar.
-- **Rearme:** el estado vuelve a RED en cada arranque de sesión. En sesiones
-  largas, rearma por trabajo o por acción, para que un GREEN viejo nunca se
-  cuele en trabajo sin anclar.
-
-Reglas de diseño para el hook mismo:
-
-- **Determinista y gratis.** Sin llamada a modelo, sin red, sin dependencias. El
-  estado es un archivo pequeño por sesión, escrito de forma atómica.
-- **Fuerza el anclaje, no es un sandbox.** Empareja solo los verbos mutantes
-  primarios; deja en paz los envoltorios de doble uso y las herramientas de
-  copia, para que los comandos de anclaje no queden atrapados.
-- **Falla abierto, pero en voz alta.** Un hook caído jamás debe romper la sesión
-  — y jamás debe permitir en silencio. Imprime el error donde el humano lo vea.
-- **Nunca atrapes una sesión.** Identidad de sesión desconocida: permite, con una
-  línea de advertencia en voz alta. Una sesión que nunca puede pasar a GREEN
-  jamás debe quedar bloqueada en RED.
-- **Un solo interruptor de apagado en manos del humano** (una variable de
-  entorno), encendido por defecto, que avisa en voz alta cuando está apagado. La
-  compuerta ata a los agentes, nunca al humano. Nunca agregues una segunda
-  compuerta.
-
-Hook genérico (pseudocódigo, ~25 líneas):
-
-```python
-HARNESS_SKILLS = {"optimus", "repair-loop", "invariant-floor"}  # el set de tu pack
-MUTATING_TOOLS = {"Edit", "Write", "Delete"}
-MUTATING_SHELL = r"^\s*(sudo\s+)?(git (commit|push|reset|checkout)|rm|pip install|" \
-                 r"npm install|systemctl (restart|stop)|sed .*-i)"
-
-def handle(event, session_id, tool, args):
-    if kill_switch_off():                    # env var del humano, p. ej. HARNESS_GATE=off
-        return ALLOW                         # apagado en voz alta, nunca en silencio
-    if not session_id:
-        warn("sin id de sesión — se permite; la compuerta nunca atrapa una sesión")
-        return ALLOW
-    if event == "SessionStart":
-        set_state(session_id, "RED")         # cada sesión rearma a RED
-        return ALLOW
-    if event == "PostToolUse":
-        if tool == "Skill" and args.get("skill") in HARNESS_SKILLS:
-            set_state(session_id, "GREEN")   # harness invocado -> el agente puede actuar
-        return ALLOW
-    if event == "PreToolUse":
-        mutating = tool in MUTATING_TOOLS or (
-            tool == "Bash" and matches(MUTATING_SHELL, args.get("command", "")))
-        if not mutating or get_state(session_id) == "GREEN":
-            return ALLOW                     # lo de solo lectura siempre pasa
-        return BLOCK("RED: invoca una skill del harness primero, luego actúa")
-    return ALLOW
-```
+- Inicio de sesión y compactación recargan el piso sin quitar herramientas.
+- Un marcador de sesión ausente dispara carga automática en la siguiente herramienta coincidente.
+- Cuerpos ausentes o ilegibles producen un diagnóstico visible y ningún recibo
+  falso; el operador y los agentes conservan sus herramientas.
+- `--rearm <session_id>` solicita otra carga. Nunca bloquea la sesión.
+- `AIOS_GATE=off` sigue siendo el interruptor reversible existente del operador.
+- Los hooks son locales y deterministas. No se añade llamada a modelo ni dependencia de red.
 
 ## Reglas duras (qué reprueba esta skill)
 
 - Cualquier mutación antes de cargar el harness.
 - Una skill nombrada en un reporte que nunca fue invocada en la sesión.
-- Un hook que bloquea herramientas de solo lectura, atrapa una sesión en RED o
-  falla en silencio.
-- Una segunda compuerta, o cualquier fricción nueva puesta sobre el humano. El
-  interruptor de apagado sigue siendo suyo.
+- Anclarse en memoria de sesión, conocimientos previos del LLM o «lo recuerdo» en
+  vez del harness BACKS. BACKS es independiente de modelo y contexto y tiene
+  canales robustos de memoria: el harness (archivos de memoria, plays, registros,
+  YAML de escalera) conserva el conocimiento, no la cabeza del modelo
+  (decisión del operador 2026-09-26).
+- Un hook que rechace herramientas, revoque anclaje adquirido o informe cargas inexistentes.
+- Una segunda puerta o fricción nueva para el humano. El interruptor sigue siendo suyo.
 
 ## Combina bien con
 
-- [invariant-floor](../invariant-floor/SKILL.md) — el piso que el arranque carga primero.
-- [human-calibration](../human-calibration/SKILL.md) — el paso de perfil del arranque.
-- [repair-loop](../repair-loop/SKILL.md) — lo que un trabajo de fix corre después del arranque.
-- [bounded-loops](../bounded-loops/SKILL.md) — presupuestos para cada loop que el arranque inicia.
-- [wayfinder](../wayfinder/SKILL.md) — cuando el arranque muestra que no conoces la ruta.
+- [invariant-floor](../invariant-floor/SKILL.md) — el piso que se carga primero.
+- [human-calibration](../human-calibration/SKILL.md) — contexto humano del arranque.
+- [repair-loop](../repair-loop/SKILL.md) — reparación después del arranque.
+- [bounded-loops](../bounded-loops/SKILL.md) — presupuestos para cada ciclo.
+- [wayfinder](../wayfinder/SKILL.md) — cuando falta conocer la ruta.
+
+## Política de peldaños de la flota (referencia breve)
+
+Antes de despachar modelos o elevar diseño/razonamiento a frontera, invoca
+[fleet-ladder](../fleet-ladder/SKILL.md). Exige **leer**
+`config/fleet_ladder.yaml` y `config/gpu_nodes.yaml` (rutas del despliegue),
+respetar el puesto constructor activo y exigir investigación actual (web, GitHub,
+Reddit y papers) cuando el peldaño marque frontera / `research_seams`.
+No fijes IDs de modelos; Patch controla el YAML.
+Referencia: `observe/SECURITY_OPERATOR_BUILDER_SEAT_ORDER_20260926.md`.
+
+Respeta [fleet-ladder](../fleet-ladder/SKILL.md): razonamiento de nivel medio o
+superior cuando esté soportado, investigación antes de tareas pesadas y contexto
+sin truncar.

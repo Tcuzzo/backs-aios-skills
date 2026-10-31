@@ -11,50 +11,26 @@ Tout écran, page, composant, dashboard ou livrable visuel qu'un humain va
 regarder. Le premier écran fixe le niveau de tous les suivants — lance ce play
 avant lui.
 
-La boucle de goût, en un coup d'œil :
+## Tâche et limites communes
 
-```
-+--------------------------------------------+
-| 1 intent-compiler  WHICH taste do the      |
-|   human's words ask for? state the read    |
-+--------------------------------------------+
-| 2 human-calibration  anchor in the record  |
-|   + studied references, never a guess      |
-+--------------------------------------------+
-| 3 design-taste  emit the three-tier        |
-|   token file FIRST, before any component   |
-+--------------------------------------------+
-| 4 build with the token file as a hard      |<--------------------------+
-|   constraint -- no raw hex, px, fonts      |  critique -> fix ->       |
-+--------------------------------------------+  re-shoot                 |
-| 5 design-taste  screenshot -> critic;      |   +---------------------+ |
-|   critic resolved live via fleet-ladder    |-->|  LORD OF THE LOOP   |-+
-+--------------------------------------------+   | one hand drives the |
-| 6 design-taste  8-axis taste rubric        |   | loop: dispatch,     |
-+--------------------------------------------+   | judge, loop back    |
-| 7 design-taste  WCAG 2.2 HARD gate         |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 8 clean-code-gauntlet  the code BEHIND     |   | lands its own work. |
-|   the pixels; zero surviving mutants       |   +---------------------+
-+--------------------------------------------+
-          |
-          | rubric + WCAG green
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no ship:      |
-| WCAG 2.2 passes . 8-axis rubric scored .   |
-| zero surviving mutants behind the pixels   |
-| . critic != builder seat, capability-    |
-| resolved via fleet-ladder, never pinned    |
-+--------------------------------------------+
-```
+Applique ce play dans le dossier [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)
+actuel. Garde un responsable de l'intégration, le `task_mode` demandé, les
+révisions base et candidat épinglées, l'essence opérateur et les preuves actuelles.
+Réutilise les textes chargés pertinents ; ce play ajoute ses contrôles métier
+sans relancer la tâche.
 
-*Dans le schéma : LORD OF THE LOOP = le maître de la boucle, la seule main qui pilote l'itération — dispatch, jugement, rebouclage — jusqu'à ce que la barrière d'atterrissage soit verte ; LANDING GATE = la barrière d'atterrissage — tout au vert, ou pas d'atterrissage.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) possède échéance initiale et quotas
+restants à travers réessais, agents, modèles, revues et relèves. Ne les
+réinitialise jamais pour un play imbriqué. À épuisement, sauvegarde
+**STILL-BUILDING** avec candidat, preuves, barrières non satisfaites et prochaine
+action. Le travail utile autorisé reste dans son quota disponible ; aucun
+contrôle absent ne devient une réussite.
 
 ## La chaîne
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — déduis QUEL goût les
-   mots de l'humain demandent, et énonce ta lecture en une ligne avant d'écrire.
+1. Utilise intention et essence opérateur établies par Build Flow pour déduire
+   le goût demandé par les mots de l'humain. Énonce cette lecture une fois avant d'écrire.
+
 2. [human-calibration](../skills/human-calibration/SKILL.md) — ancre cette
    lecture dans l'historique de l'humain et dans de vraies références étudiées,
    jamais dans une supposition démographique.
@@ -64,9 +40,11 @@ La boucle de goût, en un coup d'œil :
 4. Construis les composants avec le fichier de tokens injecté comme contrainte
    dure. Jamais de hex brut, de valeur en pixels ou de famille de polices codée
    en dur dans un composant.
-5. Fais tourner la boucle capture d'écran → critique selon
-   [design-taste](../skills/design-taste/SKILL.md), en résolvant le modèle
-   critique en direct via [fleet-ladder](../skills/fleet-ladder/SKILL.md).
+5. Exécute la boucle capture d'écran → critique selon
+   [design-taste](../skills/design-taste/SKILL.md), avec le critique résolu en
+   direct via [fleet-ladder](../skills/fleet-ladder/SKILL.md). Chaque critique et
+   nouveau rendu consomment le même budget restant ; rends les constats au responsable actuel.
+
 6. Note la grille de goût à 8 axes selon
    [design-taste](../skills/design-taste/SKILL.md).
 7. Applique la barrière DURE d'accessibilité WCAG 2.2 selon
@@ -75,9 +53,13 @@ La boucle de goût, en un coup d'œil :
    DERRIÈRE les pixels uniquement : résolveurs de tokens, bascules de thème,
    calculateurs de contraste et réducteurs d'état passent avec zéro mutant
    survivant. Une comparaison inversée dans un check de contraste livre un écran
-   magnifique et inaccessible. Le gauntlet ne note jamais le goût — la grille et
-   la barrière d'accessibilité restent les juges du visuel. Rends du vrai DOM
-   dans les tests ; un rendu mocké ne prouve rien de ce que l'humain voit.
+   magnifique et inaccessible. Le gauntlet ne note jamais le goût — grille et
+   barrière d'accessibilité restent juges du visuel. Utilise auparavant
+   [sniper-testing](../skills/sniper-testing/SKILL.md) pour les vraies commandes
+   lint/typage/tests ciblées sur le diff agrégé épinglé. Déclare N/A ou contrôles
+   absents honnêtement. Rends du vrai DOM ; un mock ne prouve pas ce que l'humain
+   voit. Préserve RED scellés, ajoute des tests distincts pour les lacunes et garde
+   revue indépendante, passe complète des suites touchées et preuve du rendu réel.
 
 ## Barrières dures (propres au play — les règles dures du skill s'appliquent en plus)
 

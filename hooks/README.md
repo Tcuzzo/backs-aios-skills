@@ -1,6 +1,6 @@
 # Grounding loader
 
-The existing Node and Python hooks deliver the actual Optimus and Yoke bodies,
+The existing Node and Python hooks deliver the actual Optimus, Yoke and Build Flow bodies,
 plus the proven native harness when available. They do not refuse tools.
 
 Claude/Codex hook events use `hookSpecificOutput.additionalContext`; Cursor uses
@@ -10,6 +10,9 @@ floor into the leading system block. The tool callbacks preserve availability.
 Session start, resume and compaction reload context without erasing earned
 receipts. If a matched tool arrives without a session marker, the native hook
 loads the floor automatically. Read-only tools remain unchanged.
+
+Build Flow routes optional operator-essence assessment; the deterministic hook does
+not scan operator history or invoke an insights model.
 
 ## Evidence
 

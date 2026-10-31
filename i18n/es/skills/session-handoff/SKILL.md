@@ -1,6 +1,6 @@
 ---
 name: "session-handoff"
-description: "Úsala cuando una sesión está terminando, la ventana de contexto está por compactarse, o el trabajo debe continuar en otro agente u otro harness. Compacta la sesión en un archivo plano que un agente recién llegado puede leer en frío y continuar — estado, trabajo a medias, el próximo comando exacto, decisiones abiertas — con secretos censurados y el trabajo concurrente verificado como preservado. Trigger words: handoff, hand off, compact, save state, continue in another session, portable handoff, before restart, relevo, traspaso, compactar, guardar estado, continuar en otra sesión, relevo portátil, antes de reiniciar."
+description: "Úsala al terminar una sesión, antes de compactar contexto, al agotar un cupo de misión o cuando trabajo pendiente deba continuar en otro agente o harness."
 license: "MIT"
 ---
 
@@ -10,8 +10,9 @@ license: "MIT"
 Una ventana de contexto muere; el trabajo no debe morir con ella. Antes de que
 una sesión termine o se compacte, escribe un archivo plano que un agente recién
 llegado pueda leer en frío y continuar — qué se estaba haciendo, dónde vive, qué
-está a medias y el próximo comando exacto. Un relevo (handoff) estacionado solo
-en la prosa del chat o en la memoria no existe.
+está a medias y el próximo comando exacto. El traspaso debe sobrevivir al contexto.
+Usa el registro existente de [BACKS Build Flow](../backs-build-flow/SKILL.md):
+transfiere la tarea sin crear otro responsable, pasada de contexto ni misión.
 
 ## Cuándo escribir uno
 
@@ -31,6 +32,10 @@ de contexto. Si el próximo agente es otro harness o un login fresco, escribe un
 archivo plano portátil en el directorio temporal — es andamiaje, no un artefacto
 rastreado.
 
+Respeta `task_mode` y permisos de escritura de la tarea. Para revisión de solo
+lectura o congelada, devuelve el traspaso en la respuesta o registro externo ya
+autorizado; nunca escribas una bitácora en el repo protegido para cumplir esta skill.
+
 ## Verifica el trabajo concurrente primero (antes de escribir una palabra)
 
 Comprueba que el trabajo de OTRAS sesiones está preservado. Corre `git status`,
@@ -42,10 +47,13 @@ afirmación falsa.
 
 ## Qué lleva — una sección corta por punto
 
-1. **Meta.** El trabajo en una frase. El próximo agente no debe adivinar qué
-   significa "terminado".
-2. **Estado.** Aterrizado (ids de commit), en construcción, en cola. Referencia
-   specs, planes, issues y diffs por ruta o URL — nunca dupliques su contenido.
+1. **Meta.** Trabajo en una frase y definición de terminado. Conserva `mission_id`,
+   `task_mode`, responsable de integración, resultado solicitado y acciones de
+   entrega ya autorizadas.
+2. **Estado.** Integrado (ids de commit), en construcción, en cola. Referencia
+   specs, planes, issues y diffs por ruta o URL sin duplicarlos. Incluye `base_sha`
+   fijado, `candidate_sha` actual, rutas/commit/hashes del RED sellado, comandos
+   y resultados, y candidato exacto cubierto por cada recibo.
 3. **Dónde vive el trabajo.** Ramas, worktrees, archivos sucios. Nombra los
    archivos exactos que el próximo agente debe leer primero.
 4. **El rastro de veredictos.** Quién o qué calificó cada pieza y cuáles fueron
@@ -59,8 +67,13 @@ afirmación falsa.
    promesas hechas y aún no cumplidas.
 8. **Trampas.** Una línea cada una. Una trampa que ya pagaste vale más que un
    verde — escríbela para que la próxima sesión no la pague otra vez.
-9. **Skills sugeridas.** Qué skills debería cargar primero el próximo agente, y
-   una línea del porqué. Esto es lo que hace al doc portátil entre harnesses.
+9. **Skills sugeridas.** Qué cargar primero y por qué. Nombra cuerpos/evidencia
+   ya disponibles, qué actualizar y fuente de esencia del operador; no copies un
+   segundo perfil.
+10. **Presupuesto restante.** Conserva plazo original y total/consumido/restante
+    de intentos, rondas y otros límites de [bounded-loops](../bounded-loops/SKILL.md),
+    llamadas pendientes y última hipótesis/fallo. Lo desconocido sigue desconocido.
+    Nunca reinicies presupuesto al traspasar, compactar, cambiar trabajador o modelo.
 
 ## Reglas duras
 
@@ -72,8 +85,10 @@ afirmación falsa.
 - **Las afirmaciones de ausencia se pudren más rápido.** Antes de escribir "X no
   existe" o "X no aterrizó", vuelve a verificarlo en el commit actual — el
   trabajo paralelo aterriza mientras escribes.
-- **Estado de dos palabras por ítem: PROVEN o STILL-BUILDING.** Tests verdes sin
-  prueba viva es STILL-BUILDING, y el relevo dice exactamente qué prueba falta.
+- **Estado respaldado por evidencia por ítem.** La entrega de capacidades usa
+  PROVEN solo con revisión requerida y prueba real de superficie; en otro caso,
+  STILL-BUILDING nombra evidencia faltante. Una revisión o parche local terminado
+  puede satisfacer el pedido sin presentarse como capacidad desplegada.
 - **Que se lea en dos minutos** (unas 120 líneas). Cuando crezca más allá de
   eso, archiva los bloques más viejos moviéndolos a una sección de historia —
   nunca borrándolos.
@@ -84,6 +99,11 @@ Una sesión que arranca desde un relevo lo lee PRIMERO, y luego verifica las dos
 o tres afirmaciones principales contra `git log` y el árbol vivo antes de actuar
 sobre ellas. El relevo es un mapa, no la verdad — confíale el DÓNDE mirar;
 verifica el QUÉ dice.
+
+Retoma con el mismo paquete y cupos restantes. Revisa el plazo antes de despachar;
+otra sesión no es otro presupuesto. Si un cupo se agotó, conserva STILL-BUILDING
+y completa solo trabajo útil autorizado que no lo consuma. Mantén sello RED y
+base fijada; actualiza identidad del candidato solo al cambiar los bytes reales.
 
 ## Combina bien con
 

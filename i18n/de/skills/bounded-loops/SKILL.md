@@ -1,73 +1,80 @@
 ---
-name: "bounded-loops"
-description: "Nutze das vor jeder Schleife, die retrien, pollen, iterieren oder eine externe API rufen kann — Agent-Loops, Repair-Loops, Scheduler, Watcher. Deklariert Budget-Obergrenzen, checkpointet bei Erschöpfung und macht Hämmern strukturell unmöglich. Trigger words: bounded loop, budget, ceiling, retry, backoff, rate limit, throttle, kill-switch, checkpoint, runaway, infinite loop, spin, budget exhaustion, begrenzte Schleife, Obergrenze, Drosselung, Endlosschleife, Budget erschöpft."
-license: "MIT"
+name: bounded-loops
+description: "Vor Arbeit mit Wiederholungen, Polling, Iteration, Unteragenten oder wiederholten externen Aufrufen, einschließlich autonomer Build-, Reparatur-, Review- und Übernahmeschleifen."
+license: MIT
 ---
 
-# Bounded Loops
-**Effort:** free — Obergrenzen und Checkpoints, deklariert bevor die Schleife startet; senkt die Kosten unterm Strich. Beseitigt: davonlaufende Schleifen-Ausgaben — verbranntes Kontingent, per 429 blockierte Routen und Fortschritt, den ein Absturz auslöscht.
+# Begrenzte Schleifen
 
-Eine unbegrenzte Schleife ist der teuerste Bug, den ein Agent ausliefern kann. Sie
-verbrennt Budget, hämmert Provider, bis die dich sperren, und versteckt ihr eigenes
-Scheitern im Kreiseln. Jede Schleife bekommt eine Obergrenze, einen Checkpoint und
-einen lauten Weg zu sterben — bevor sie startet.
+Eine Mission hat ein gemeinsames Restkontingent. Wiederholung, Unteragent,
+Modell-Fallback, Review-Runde, Kontext-Reset und verschachtelter Skill verbrauchen
+es; sie füllen es niemals auf. [Build Flow](../backs-build-flow/SKILL.md) besitzt
+die Aufgabenübergänge. Diese Methode besitzt Budgetführung, Wiederholungen, Abbruch und Checkpoints.
 
-## Wann einsetzen
+## Vertrag festlegen und weitertragen
 
-Vor dem Start jeder Schleife: ein Repair-Loop, ein Retry-Wrapper, ein Poller, ein
-Scheduler, ein mehrstufiger autonomer Lauf — alles, was einen Call neu absetzen
-oder einen Schritt neu versuchen kann.
+Halte vor der ersten wiederholenden Handlung im vorhandenen Aufgabenpaket fest:
 
-## Die Schritte
+- `mission_id`, Integrationsverantwortlicher, Ziel und messbare Abnahmebedingung.
+- Frist oder maximale Dauer, maximale Versuche/Runden und Ressourcen-/Aufrufgrenzen.
+- Verbrauchtes und verbleibendes Kontingent, kleinere Rundengrenze der aktuellen
+  Episode, Fehlersignatur und nächste Handlung. Nutze eine kleine explizite innere
+  Grenze, oft drei Versuche; wähle sie passend zur Aufgabe, statt ein Beispiel zu verallgemeinern.
+- Gemessene Kosten-/Token-/Aufrufdaten, soweit vorhanden. Kennzeichne fehlende
+  Zähler als unbekannt; erfinde weder Null noch unbegrenzte Zuteilung oder
+  Anbieterbudget. Setze durchsetzbare Zeit- und Versuchsgrenzen mit den tatsächlich verfügbaren Zählern.
 
-1. **Deklariere zuerst das Budget.** Tokens, Kosten, Wanduhrzeit und maximale
-   Versuche — aufgeschrieben vor der ersten Iteration. Eine Schleife ohne
-   deklariertes Budget ist per Definition unbegrenzt und startet nicht.
-2. **Deckle die inneren Runden.** Eine innere Episode (ein LLM-/Tool-Zyklus an
-   einem Problem) bekommt eine kleine, feste Rundengrenze (etwa 4). Die Grenze
-   begrenzt die Episode, nicht die Mission — unfertige Arbeit wandert nach oben,
-   sie mahlt nicht weiter.
-3. **Checkpointe jede Iteration.** Dauerhafter Zustand auf der Platte —
-   Run-Manifest, Evidenz-Log, aktueller Schritt — nie Chat-Gedächtnis. Jeder (auch
-   eine frische Session) kann vom letzten Checkpoint weitermachen.
-4. **Bei Erschöpfung: checkpointen, dann eskalieren.** Übergib den Checkpoint an
-   die äußere Schleife oder an deinen Menschen — mit dem, was getan ist, was fehlt,
-   und dem Blocker. Fahre nie still über ein Budget hinaus. Stoppe auch nie still —
-   Erschöpfung ist laut.
-5. **Respektiere jede externe API.** Lerne vor dem ersten Call Rate-Limit und
-   Quota des Providers; wenn unbekannt, behandle sie als strikt — ein Call, weiter
-   Abstand — bis gemessen. Drossle jeden Call, cache und verwende Antworten
-   wieder, und halte eine harte Obergrenze pro Zeitfenster.
-6. **Weiche bei Gegenwind exponentiell zurück.** Ein 429 oder 503 heißt: warten,
-   dann länger warten. Null Sofort-Retries auf denselben Endpoint. Ein enger Retry
-   gegen einen Endpoint ist genau die Art, wie eine funktionierende Route stirbt:
-   Er verbrennt Quota und kann deine ganze Egress-Adresse sperren lassen.
-7. **Trage einen lauten, begrenzten Kill-Switch.** Jede Schleife, die einen Call
-   neu absetzen kann, hat eine maximale Versuchszahl; ist sie erreicht, stoppt die
-   Schleife LAUT mit der Evidenz — nie ein endloses oder stilles Kreiseln.
-8. **Stoppen und Einreihen nur an sicheren Punkten.** Stopp heißt
-   Checkpoint-dann-Abbruch. Neue Arbeit reiht sich für den nächsten sicheren Punkt
-   ein (eine Zustandsgrenze zwischen Schritten) — nie mitten im Schritt injiziert.
-   Eine Schleifeninstanz, ein Schreiber, atomare Zustands-Writes.
+Übernimm strengere Nutzer-/Projektgrenzen. Fehlen für eine gewöhnliche autorisierte
+Aufgabe Vorgaben, wähle und benenne angemessene Grenzen und handle ohne neue
+Freigaberunde. Frage nur, wenn der tatsächliche Ressourcenverbrauch eine
+Autorisierung benötigt. Eine Budgeterweiterung erfordert die ausdrückliche
+Entscheidung des Missionsverantwortlichen und nötige Operatorfreigaben;
+ein Wechsel von Mitarbeitern oder Taktik ist keine Erweiterung.
 
-## Harte Regeln (woran dieser Skill scheitert)
+## Die Iteration
 
-- Eine Schleife, die ohne deklariertes Token-/Kosten-/Zeit-/Versuchs-Budget startet.
-- Über ein erschöpftes Budget hinaus weitermachen, still oder nicht, ohne zu
-  eskalieren.
-- Ein Sofort-Retry auf denselben Endpoint, oder irgendein Retry-Pfad ohne Backoff.
-- Eine Retry-Schleife ohne Versuchsdeckel, oder ein Deckel, der beim Erreichen
-  leise versagt.
-- Fortschrittszustand nur im Konversationsgedächtnis — ein Crash löscht den Lauf.
-- Zwei Schleifeninstanzen, die denselben Zustand schreiben, oder nicht-atomare
-  Zustands-Writes.
-- Der Schleife entkommen, indem sie ihre eigenen Exit-Checks schwächt — ein Grün,
-  das durch Latte-Senken, Daten-Löschen oder Fehler-Schlucken entsteht, ist ein
-  Fake Green, kein Exit.
+1. Prüfe vor Arbeitsvergabe das Restkontingent. Teile Unteragentengrenzen daraus
+   zu, auch parallel: Reserviere ihre Höchstzuteilungen zentral, damit die Summe
+   den Elternrahmen nicht überschreitet. Unteragenten melden Verbrauch und Rest zurück.
+2. Führe eine hypothesengeleitete Handlung aus. Bewahre bei Build/Fix echtes RED,
+   setze den kleinsten vollständigen Fix um, führe begrenzte Lint-/Typ-/Verhaltensprüfungen
+   aus und liefere Qualitätsbelege über [sniper-testing](../sniper-testing/SKILL.md)
+   und [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) zurück.
+3. Sichere Ergebnisse und Restkontingent an sicheren Grenzen. Ein Schreiber
+   aktualisiert den autorisierten Aufgabenzustand atomar; andere liefern ihm Belege.
+   Verwende bei strengem Nur-Lese-Review einen bereits autorisierten externen
+   Aufgabeneintrag oder die Antwort. Nur-Lese-Umfang erlaubt kein Repository-Journal.
+4. Ein identischer Fehler ohne neue Belege braucht eine geänderte Hypothese oder
+   Taktik, keinen weiteren blinden Lauf. Schließe eine erschöpfte innere Episode.
+   Eine andere Episode darf explizit verrechnetes Restkontingent der Mission nutzen.
+5. Bei Missionserschöpfung, Abbruch oder blockierter Pflichtprüfung: Checkpoint
+   schreiben, Blocker erklären, Wiederholungen stoppen. Setze unabhängige nützliche
+   Arbeit nur fort, wenn Umfang und Restzuteilung es erlauben. Melde unfertige
+   Fähigkeit als **STILL-BUILDING**; Timeout oder ausgelassene Prüfung sind nie GREEN oder PROVEN.
 
-## Passt gut zu
+## Externe Aufrufe und Abbruch
 
-- [optimus](../optimus/SKILL.md) — den Boden laden, bevor irgendeine Schleife startet.
-- [repair-loop](../repair-loop/SKILL.md) — der Hauptabnehmer dieser Obergrenzen.
-- [fleet-ladder](../fleet-ladder/SKILL.md) — begrenzter Fallback über Modelle hinweg, statt eins zu hämmern.
-- [session-handoff](../session-handoff/SKILL.md) — das, worin ein Checkpoint eskaliert.
+Beachte veröffentlichte Anbieterlimits und Retry-After. Verwende Cache-Ergebnisse
+weiter; beginne bei unbekannten Grenzen vorsichtig und miss. Nutze bei vorübergehender
+Abweisung begrenzten exponentiellen Backoff mit maximaler Dauer und Versuchszahl.
+Behandle dauerhafte Autorisierungs-/Eingabefehler nicht als vorübergehend. Warten,
+Backoff und Fallback zählen alle gegen dieselbe Missionsfrist.
+
+Stoppe an einer sicheren Zustandsgrenze: laufende Arbeit erfassen, Checkpoint
+schreiben, abbrechen. Starte keinen zweiten Schreiber und lasse nach Abbruch keine
+Hintergrundschleife laufen. Neue Anfragen steuern dort die aktuelle Mission;
+verrechne geänderten Umfang ausdrücklich, statt das ursprüngliche Ziel still zu ersetzen.
+
+## Übergabe und Ausstieg
+
+Der Empfänger bekommt dieselbe Missionsidentität, Basis-/Kandidatenrevisionen,
+Identität versiegelter Tests, Verbrauch und Restkontingent, Belege und nächste
+Handlung. Er prüft den Zustand vor Fortsetzung. Neuer Kontext ist kein neues Budget.
+
+Erfolg verlangt die ursprünglichen Abnahmeprüfungen und angeforderte Lieferung.
+Erschöpfung verlangt einen ehrlichen Checkpoint, keine schwächeren Tests,
+verschluckten Fehler, Datenlöschung, erfundenen Erfolg oder automatische äußere
+Schleife mit aufgefülltem Zähler.
+
+Siehe [session-handoff](../session-handoff/SKILL.md) zur Fortsetzung und
+[fleet-ladder](../fleet-ladder/SKILL.md) vor tatsächlichem konfiguriertem Modell-Dispatch.

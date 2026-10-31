@@ -23,8 +23,11 @@ Deux commandes dans Claude Code :
 
 Ça installe tout d'un coup : les skills se chargent, les commandes slash
 deviennent disponibles (tape `/optimus` pour démarrer le socle), et le hook
-d'ancrage arrive activé — il bloque les outils qui modifient tant que le
-harnais n'est pas chargé. Le kill-switch du hook t'appartient : mets
+de contexte arrive activé — il livre les vrais textes d'Optimus, Yoke et Build
+Flow au démarrage, après compaction et lorsqu'un marqueur de contexte manque.
+Il ne bloque aucun outil et ne retire pas l'ancrage acquis. Un texte manquant
+produit un diagnostic visible sans reçu de chargement inventé. Le kill-switch
+du hook t'appartient : mets
 `AIOS_GATE=off` dans l'environnement pour le désactiver, bruyamment. Les mises
 à jour passent par `/plugin` quand le dépôt marketplace bouge.
 

@@ -1,16 +1,23 @@
 ---
 name: "red-first"
-description: "तब लगाओ जब कोई भी builder — agent, model, या ख़ुद तुम — ऐसा बदलाव करने भेजा जाए जिसे कोई test साबित कर सके। Build शुरू होने से पहले साबित-failing contract test commit करता है, builder को उसे छूने से रोकता है, और एक independent grader से verify कराता है कि test कभी edit नहीं हुआ। Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build, पहले failing test, पहले test लिखो, test को लॉक करो, build से पहले test."
+description: "Test से साबित हो सकने वाले behavior change के लिए builder dispatch से पहले, या नए review finding/mutation gap को regression contract चाहिए तब उपयोग करें।"
 license: "MIT"
 ---
 
 # Red-First, Tamper-Proof
 **Effort:** free — शुद्ध क्रम का अनुशासन: जो test आप वैसे भी लिखते वह पहले लिखा जाता है, red साबित होता है, और एक commit से seal हो जाता है; tamper check बस एक git diff है। हटाता है: fix के बाद pass होने की शक्ल में ढाले गए tests, और वे green फ़ैसले जिन्हें builder ने test बदलकर मोड़ लिया।
 
-Fix के बाद लिखा test कुछ साबित नहीं करता — वह pass होने के लिए ही गढ़ा गया
-था। जो test builder edit कर सकता है, वह और भी कम साबित करता है — उसे मोड़कर
-pass कराया जा सकता है। इसलिए test पहले आता है, lock होता है, और अनछुआ grade
-होता है।
+केवल fix के बाद देखा गया green result न original failure साबित करता है, न उसे
+पकड़ने की test की क्षमता। Fix से पहले original RED साबित करके seal करें; builder
+उस file को अपरिवर्तित रखे। अलग supplemental regression बाद में controlled mutant
+पर failure और unmutated candidate पर pass दिखा सकता है, जैसा नीचे बताया गया है।
+
+Current [BACKS Build Flow](../backs-build-flow/SKILL.md) task packet लें। यह skill
+RED seal की owner है; नया build owner या lifecycle नहीं बनाती। Pinned `base_sha`,
+current `candidate_sha` और mission identity बचाएँ।
+[bounded-loops](../bounded-loops/SKILL.md) deadline तथा remaining attempts reproduction,
+builders, supplemental tests और independent reviews सभी पर लागू हैं। Valid existing RED
+receipt reuse करें; नया failure गढ़ें नहीं।
 
 ## कब चलाएँ
 
@@ -24,15 +31,18 @@ pass कराया जा सकता है। इसलिए test पह�
 2. **Red साबित करो।** Test चलाओ और उसे fail होते देखो — सही वजह से। जो test
    import पर error दे, या चुपचाप pass हो जाए, वह red नहीं है। जिसे किसी ने
    चलाया ही नहीं, वह red test अंदाज़ा है, baseline नहीं।
-3. **Builder dispatch करने से PEHLE red test commit करो।** Commit id दर्ज
-   करो। वही commit red baseline है — tamper seal।
+3. **Builder dispatch से पहले RED commit करें।** Commit ID, exact test paths/bytes,
+   failing command/output और reason दर्ज करें। यह commit red baseline और tamper seal
+   है; aggregate change scope का mission `base_sha` इससे replace नहीं होता।
 4. **Builder को एक ही काम देकर भेजो: इसे green करो।** Builder को test file
    छूने की मनाही है। Dispatch में यह साफ़ लिखो।
 5. **Independent grade कराओ।** ऐसा grader जिसने बदलाव नहीं लिखा, दो चीज़ें
    जाँचता है:
    - test अब pass होता है;
    - test file, red baseline से byte-दर-byte वही है —
-     `git diff <red-sha> HEAD -- tests/test_contract.py` कुछ नहीं छापता।
+     `git diff <red-sha> <candidate_sha> -- tests/test_contract.py` कुछ नहीं छापता।
+     Pending work जाँचने पर actual tested bytes भी seal से मिलाएँ; clean committed
+     diff staged या unstaged edit को सही नहीं ठहराता।
    Test file पर कोई भी diff grade fail करता है। कोई रियायत नहीं, "बस एक typo
    ठीक किया" भी नहीं।
 6. **बिखरे point tests से एक structural guard बेहतर।** Structural guard वह
@@ -40,15 +50,31 @@ pass कराया जा सकता है। इसलिए test पह�
    fail होता है, सिर्फ़ इसी instance पर नहीं। एक guard उन दस point tests से
    बेहतर है जो एक-एक case पिन करते हैं।
 
+## Original seal के बाद नया finding
+
+Mutation survivor या review finding missing assertion दिखा सकता है। Original RED
+file byte-identical रखें और **अलग supplemental test file** जोड़ें। नए defect के fix से
+पहले test failing देखें; mutation gap में relevant controlled mutant पर isolated
+failure और unmutated candidate पर pass दिखाएँ। अगला builder seam बदले उससे पहले
+supplemental evidence record और seal करें। इसे original baseline न कहें। Grader दोनों
+seals और exact aggregate candidate जाँचता है। Test जोड़ना original contract कमजोर करने,
+rename करने या replace करने की अनुमति नहीं देता।
+
+Shared budget समाप्त हो या RED स्थापित न हो सके तो gap और exact next action सहित
+**STILL-BUILDING** checkpoint दें। RED न गढ़ें; green पाने को mission reset न करें।
+
 ## Hard rules
 
 - **Red को red साबित करना ज़रूरी है।** चलाओ, fail होते देखो — तभी गिनती में
   आएगा।
 - **Builder कभी test edit नहीं करता।** Red baseline के बाद से test file का
   ख़ाली diff landing gate का हिस्सा है, शिष्टाचार की जाँच नहीं।
-- **Builder कभी grader नहीं।** स्वतंत्र reviewer को fresh, author-disjoint session में लो।
-- **अकेला green proof नहीं है।** Green + अनछुआ test + independent grade —
-  यह proof है।
+- **Builder कभी grader नहीं।** Configured rung matrix से capability/availability
+  के अनुसार non-builder reviewer चुनें। Authoring execution provenance में record और
+  disqualify करें; review fresh author-disjoint session में हो।
+- **अकेला green proof नहीं है।** Green + untouched test + independent grade इस
+  contract को सिद्ध करते हैं; live capability claim को task workflow का real-surface
+  और delivery evidence भी चाहिए।
 - **जब defect की पूरी class खेल में हो, class को guard करो।** Point tests
   यह bug रोकते हैं; structural guard अगला रोकता है।
 

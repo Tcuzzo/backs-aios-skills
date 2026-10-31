@@ -9,47 +9,25 @@ for everything else: one write spine, many readers.
 - More than one agent will touch the same repository in the same window.
 - You are tempted to let two agents write code in parallel. Read this first.
 
-The fan-out, at a glance:
+## Shared task and limits
 
-```
-+--------------------------------------------+
-| 1 leap-protocol  balls with goals, specs,  |
-|   hard file scopes BEFORE any agent spawns |
-+--------------------------------------------+
-| 2 spawn readers, not writers -- fan out    |
-|   read-heavy work only                     |
-+--------------------------------------------+
-| 3 isolate -- every lane gets its OWN       |
-|   worktree; conflicts surface at merge     |
-+--------------------------------------------+
-| 4 clean-code-gauntlet  per lane, in its    |<--------------------------+
-|   own worktree, before it asks to land     |  red exit? back to the    |
-+--------------------------------------------+  lane -- fix, re-run      |
-| 5 blind-tribunal  the reviewer gets a      |                           |
-|   CLEAN context, never the author's        |   +---------------------+ |
-+--------------------------------------------+   |  LORD OF THE LOOP   |-+
-| 6 merge ONE lane at a time, test-gated     |   | the one write spine |
-|   by exit code, in a merge workspace       |-->| drives dispatch,    |
-+--------------------------------------------+   | judges, merges ONE  |
-          |                                      | lane at a time. a   |
-          | every merge green + verified         | lane never lands    |
-          v                                      | its own work.       |
-+--------------------------------------------+   +---------------------+
-| LANDING GATE -- all green or no land:      |
-| every merge green by exit code AND         |
-| stat-verified -- counts, diffstat, each    |
-| lane's files present . no lane outside     |
-| its scope . reviewer context stayed        |
-| clean, never the author's . one writer     |
-| per workspace . no lane lands on           |
-| another lane's green                       |
-+--------------------------------------------+
-```
+Apply this play inside the current [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)
+task packet. Keep one integration owner, the requested `task_mode`, pinned base
+and candidate revisions, operator essence, and current evidence. Reuse applicable
+loaded skill bodies; this play adds its domain gates without restarting the task.
+
+[bounded-loops](../skills/bounded-loops/SKILL.md) owns the original deadline and
+remaining allowances across retries, workers, models, reviews, and handoffs.
+Never reset them for a nested play. On exhaustion, checkpoint **STILL-BUILDING**
+with the candidate, evidence, unmet gates, and next action. Continue useful
+authorized work only within its remaining allowance; no missing gate becomes a pass.
 
 ## The chain
 
 1. [leap-protocol](../skills/leap-protocol/SKILL.md) — decompose the work into balls
-   with goals, specs, and hard file scopes BEFORE any agent spawns.
+   with goals, specs, and hard file scopes BEFORE any agent spawns. Give each lane
+   the current packet, pinned base/candidate, RED seals, and allocated remaining
+   allowance. A lane's limit cannot extend the parent mission deadline or totals.
 2. Spawn readers, not writers — fan out subagents ONLY for read-heavy work with few
    cross-dependencies: research, test-running, security scans, grading. Never for
    interdependent code authoring.
@@ -57,11 +35,18 @@ The fan-out, at a glance:
    checkout of the same repo). Conflicts then surface at merge as real merge
    conflicts, never as silent overwrites that lose data with no warning.
 4. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — every lane runs
-   its own quality gauntlet inside its own worktree before it asks to land. Dry-run
-   first so the lane knows its own cost. No lane lands on another lane's green.
+   its quality gauntlet inside its permitted worktree/isolation before landing.
+   Use [sniper-testing](../skills/sniper-testing/SKILL.md) first for actual repo
+   lint/type/test commands scoped to the pinned aggregate candidate diff; name
+   missing or N/A checks. Reuse a valid receipt for exactly the same candidate and
+   check scope; never reuse another lane's green for different bytes. Missing
+   test coverage gets a separate supplemental file, preserving sealed originals.
 5. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — the reviewing agent gets a
    CLEAN context, never the author's. Shared context rots and self-agrees.
 6. Merge one lane at a time, in a dedicated merge workspace, test-gated by exit code.
+   The integration owner verifies the combined candidate, affected consumers, and
+   required full affected-suite landing gate; independent lane passes alone do not
+   prove their composition. Delivery claims require the real target evidence.
 
 ## Coordination rules
 

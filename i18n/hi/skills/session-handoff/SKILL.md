@@ -1,6 +1,6 @@
 ---
 name: "session-handoff"
-description: "तब लगाओ जब session ख़त्म हो रहा हो, context window compact होने वाली हो, या काम किसी और agent या harness में जारी रहना हो। Session को एक flat file में समेटता है जिसे बिल्कुल नया agent ठंडा पढ़कर आगे बढ़ा सके — state, अधूरा काम, ठीक-ठीक अगला command, खुले फ़ैसले — secrets redact करके और साथ चल रहे काम को बचा हुआ verify करके। Trigger words: handoff, hand off, compact, save state, continue in another session, portable handoff, before restart, session सौंपो, state बचाओ, आगे के लिए लिखो, restart से पहले."
+description: "Session खत्म या context compact होने, mission allowance समाप्त होने, या अधूरा काम दूसरे agent/harness में जारी रखने पर उपयोग करें।"
 license: "MIT"
 ---
 
@@ -9,8 +9,10 @@ license: "MIT"
 
 Context window मरती है; काम नहीं मरना चाहिए। Session ख़त्म या compact होने से
 पहले एक flat file लिखो जिसे बिल्कुल नया agent ठंडा पढ़कर आगे बढ़ा सके — क्या
-हो रहा था, कहाँ रहता है, क्या अधूरा है, और ठीक-ठीक अगला command। जो handoff
-chat के गद्य या अकेली याददाश्त में park है, उसका वजूद ही नहीं।
+हो रहा था, कहाँ रहता है, क्या अधूरा है, और ठीक-ठीक अगला command। Build handoff context
+window के बाद भी बचना चाहिए। Existing [BACKS Build Flow](../backs-build-flow/SKILL.md)
+task record लें; यह skill उसी task का transfer करती है, नया owner, context pass या
+mission नहीं बनाती।
 
 ## कब लिखें
 
@@ -28,6 +30,10 @@ project share करता हो, तो repo में एक stable ledger fi
 agent अलग harness या fresh login हो, तो temp dir में एक flat portable file
 लिखो — वह scaffolding है, tracked artifact नहीं।
 
+`task_mode` और task write permissions मानें। Read-only या frozen review में handoff
+response या already authorized external record में लौटाएँ; इस skill के लिए protected
+repo में ledger कभी न लिखें।
+
 ## पहले साथ चल रहा काम verify करो (एक शब्द लिखने से पहले)
 
 जाँचो कि DUSRE sessions का काम बचा हुआ है। `git status`, `git log` और
@@ -39,9 +45,12 @@ agent अलग harness या fresh login हो, तो temp dir में ए
 ## अंदर क्या जाए — हर एक का एक छोटा section
 
 1. **Goal।** काम एक वाक्य में। अगले agent को अंदाज़ा न लगाना पड़े कि "done"
-   का मतलब क्या है।
+   का मतलब क्या है। `mission_id`, `task_mode`, integration owner, requested finish
+   और already authorized delivery actions साथ दें।
 2. **State।** Landed (commit ids), building, queued। Specs, plans, issues और
-   diffs का हवाला path या URL से दो — उनका content कभी duplicate मत करो।
+   diffs का हवाला path या URL से दो — उनका content कभी duplicate मत करो। Pinned
+   `base_sha`, current `candidate_sha`, sealed RED paths/commit/hashes, check commands/
+   results और हर receipt का exact candidate शामिल करें।
 3. **काम कहाँ रहता है।** Branches, worktrees, dirty files। वे exact files नाम
    लो जो अगले agent को सबसे पहले पढ़नी हैं।
 4. **Verdict की पगडंडी।** हर टुकड़े को किसने या किस चीज़ ने grade किया और
@@ -57,7 +66,12 @@ agent अलग harness या fresh login हो, तो temp dir में ए
 8. **जाल।** हर एक की एक line। जिस जाल की क़ीमत तुम चुका चुके हो, वह green से
    ज़्यादा क़ीमती है — लिख दो, ताकि अगला session दोबारा न चुकाए।
 9. **सुझाई skills।** अगले agent को कौन-सी skills पहले load करनी चाहिए, और
-   एक line क्यों। यही doc को harnesses के पार portable बनाता है।
+   एक line क्यों। Actual bodies/evidence जो उपलब्ध हैं, जिन्हें refresh करना है और
+   operator essence source बताएँ; दूसरी profile copy न करें।
+10. **Remaining budget।** [bounded-loops](../bounded-loops/SKILL.md) से original deadline,
+    total/used/remaining attempts, rounds और अन्य limits, pending calls तथा last
+    hypothesis/failure दें। Unknown अज्ञात रहें। Handoff, compaction, worker replacement
+    या model change mission budget reset नहीं करते।
 
 ## Hard rules
 
@@ -69,9 +83,10 @@ agent अलग harness या fresh login हो, तो temp dir में ए
 - **ग़ैरमौजूदगी के दावे सबसे तेज़ सड़ते हैं।** "X मौजूद नहीं" या "X land नहीं
   हुआ" लिखने से पहले मौजूदा commit पर दोबारा verify करो — तुम्हारे लिखते-लिखते
   parallel काम land होता रहता है।
-- **हर item पर दो-शब्द का status: PROVEN या STILL-BUILDING।** Live proof के
-  बिना green tests STILL-BUILDING हैं, और handoff ठीक-ठीक बताता है कौन-सा
-  proof ग़ायब है।
+- **हर item का evidence आधारित status।** Required review और real-surface proof
+  होने पर ही capability delivery PROVEN है; अन्यथा STILL-BUILDING missing evidence
+  बताता है। Completed review या local patch requested finish पूरा कर सकता है, उसे
+  deployed capability बताना जरूरी नहीं।
 - **दो मिनट में पढ़ने लायक़ रखो** (क़रीब 120 lines)। उससे बढ़ जाए, तो सबसे
   पुराने खंड history section में खिसकाकर archive करो — delete करके कभी नहीं।
 
@@ -81,6 +96,11 @@ Handoff से शुरू होने वाला session उसे SABSE PE
 करने से पहले ऊपर के दो-तीन दावे `git log` और live tree से मिलाता है। Handoff
 नक्शा है, सच नहीं — KAHAN देखना है इसके लिए उस पर भरोसा करो; KYA कहता है वह
 verify करो।
+
+उसी task packet और remaining allowances से resume करें। Dispatch से पहले deadline
+फिर देखें; fresh session fresh budget नहीं। Allowance समाप्त हो तो checkpoint
+STILL-BUILDING बचाएँ और केवल वही useful authorized work करें जो उसे खर्च नहीं करता।
+Original RED seal और pinned base रखें; actual bytes बदलें तभी candidate identity बदलें।
 
 ## इनके साथ अच्छा चलता है
 

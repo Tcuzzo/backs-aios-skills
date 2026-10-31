@@ -10,10 +10,10 @@
 **मॉडल फ़ैसला करता है। रनटाइम स्टेट, फ़ाइलों और नियमों का मालिक है — और अगर मॉडल ऐसी स्टेट
 की ओर हाथ बढ़ाए जो उसकी नहीं है, तो सिस्टम चुपचाप अंदाज़ा लगाने के बजाय ज़ोर से फेल हो जाता है।**
 
-यही लाइन **Reflex Seam** है, और यह पैक उसे उस एजेंट पर लगाने का तरीका है जो आप पहले से
-इस्तेमाल करते हैं। यह रहा वह पल जब यह अपनी कीमत वसूल करता है: एजेंट नियम पढ़े बिना ही कोई
-कमांड चलाने जा रहा है। एक हुक जाँच करता है। टूल नहीं चलता, और एजेंट को वजह बता दी जाती है।
-यह कोई प्रॉम्प्ट नहीं है जो उससे अच्छा बर्ताव करने को कहे — यह एक गेट है जिससे वह बहस नहीं कर सकता।
+यही लाइन **Reflex Seam** है। Agent अगली कार्रवाई से पहले actual rules और task methods
+पढ़ता है। Session hook Optimus, Yoke और Build Flow की bodies host context में देता है;
+missing marker loading trigger करता है, tool को block नहीं करता। Load fail हो तो visible
+diagnostic मिलता है और tools उपलब्ध रहते हैं। Receipt actual delivery के बाद ही दर्ज होती है।
 
 दो नियम साथ चलते हैं। **कोई मॉक थिएटर नहीं:** जो टेस्ट चीज़ के टूटे होने पर भी पास हो जाए, वह
 झूठ है — इसलिए टेस्ट असली असर जाँचते हैं। **बनाने वाला जाँचने वाला नहीं:** फेल होने वाला टेस्ट
@@ -21,9 +21,11 @@
 
 > यह English मूल संस्करण [../../README.md](../../README.md) का हिन्दी अनुवाद है — English ही canonical है।
 
-एक agent harness, 28 portable skills और 8 नामी plays में निचोड़ा हुआ — एक चलते हुए
-agent platform से निकालकर सादे markdown में दोबारा बनाया गया, जिसे कोई भी agent
-load कर सकता है।
+एक agent harness: **62 canonical skill folders**, जिनमें **54 non-command locale
+skills** और **8 command-wrapper skill folders** हैं; साथ में **8 plays** और
+**15 command adapters**। यह हिन्दी mirror सभी 54 non-command skills और सभी 8 plays
+रखता है। Installer canonical scripts/references और command wrappers को translated
+bodies के साथ merge करता है।
 
 तस्वीरों से सीखने के लिए [skills और loops का visual guide](../../docs/FLOWCHARTS.md) देखें।
 
@@ -95,9 +97,9 @@ Hermes, एक bare API loop — [INSTALL.md](INSTALL.md) में हैं।
   साथ वह जोड़ी बनाती है। हर एक की एक file: `skills/<name>/SKILL.md`।
 - **Plays** नामी combos हैं। एक play skills को तय क्रम में चलाता है और उन hard
   gates की सूची देता है जो landing रोकते हैं। हर एक की एक file: `plays/<name>.md`।
-  हर play का wireframe एक **Lord of the Loop** चिह्नित करता है — loop का मालिक,
-  जो iteration तब तक चलाता है जब तक landing gate green न हो जाए; इस भूमिका की
-  परिभाषा [NAMING.md](NAMING.md#lord-of-the-loop) में है।
+  एक integration owner साझा mission budget में iterations चलाता है; unmet gates
+  landing रोकते हैं और exhaustion पर स्पष्ट checkpoint मिलता है। Owner की भूमिका
+  [NAMING.md](NAMING.md#lord-of-the-loop) में है।
 - **Commands** वे slash entries हैं जो plugin install करता है — हर एक कोई play या
   skill load करके चलाती है। हर एक की एक file `command-adapters/` में।
 - **Naming convention** — skills noun phrases क्यों हैं, commands verbs क्यों, और
@@ -112,38 +114,80 @@ Hermes, एक bare API loop — [INSTALL.md](INSTALL.md) में हैं।
 | --- | --- |
 | [absorb](skills/absorb/SKILL.md) | किसी मौजूदा open-source capability को अपनाकर native skill की तरह re-engineer करती है, नक़ल बनाने की जगह। |
 | [blind-eval](skills/blind-eval/SKILL.md) | बदलाव को लेखक छिपाकर उसकी खूबियों पर परखती है, फिर रखती है या revert करती है। सिर्फ़ साबित हुआ uplift ही land होता है। |
-| [blind-tribunal](skills/blind-tribunal/SKILL.md) | ताज़ा, लेखक-विच्छिन्न sessions के blind jurors बदलाव का grade करते हैं, हर एक का एक lens। हर finding एक failing test बनती है। तब तक loop, जब तक सब pass न दें। |
-| [bounded-loops](skills/bounded-loops/SKILL.md) | हर loop पर budget की छत, checkpoints, और kill-switches। किसी API को hammering structurally नामुमकिन बना देती है। |
+| [blind-tribunal](skills/blind-tribunal/SKILL.md) | Fresh author-disjoint jurors frozen author-redacted work जाँचते हैं; findings separate RED और same remaining budget में repair/re-review पाती हैं। |
+| [bounded-loops](skills/bounded-loops/SKILL.md) | एक mission की deadline और remaining allowance सभी retries, workers, models और handoffs में साथ रहती है। |
 | [clean-code-gauntlet](skills/clean-code-gauntlet/SKILL.md) | एक deterministic quality bar: sniper tests, CRAP score (complexity x coverage), सीमित mutation testing, फिर एक हल्की taste review। |
 | [decision-bar](skills/decision-bar/SKILL.md) | हर फ़ैसले के लिए एक bar: सिर्फ़ taste, vision, या destructive risk ही इंसान तक पहुँचते हैं। बाक़ी सब execute होता है। |
 | [design-taste](skills/design-taste/SKILL.md) | ऐसा visual काम ship करती है जो designed दिखे, generated नहीं: पहले design tokens, screenshot critique, एक सख़्त accessibility gate। |
 | [fleet-ladder](skills/fleet-ladder/SKILL.md) | live model ladder resolve करती है: जो चालू है उसे probe करो, क्रम से fallback लो, ladder खत्म हो तो ज़ोर से fail करो। |
 | [gpu-dispatch](skills/gpu-dispatch/SKILL.md) | हर GPU पर एक model, system RAM में कोई spill नहीं, loop भर card गर्म रखो, loop के अंत पर unload। |
 | [guided-steps](skills/guided-steps/SKILL.md) | वे steps script करती है जो सिर्फ़ इंसान कर सकता है — dashboards, credentials, secrets — stage दर stage, हर value को कैद करते हुए। |
-| [human-calibration](skills/human-calibration/SKILL.md) | इस इंसान के सोचने, तय करने, और बात सुनने के तरीक़े की profile बनाती है, फिर पूरे build को उसी से चलाती है। |
+| [human-calibration](skills/human-calibration/SKILL.md) | Evidence आधारित current operator awareness लागू करें; current corrections प्राथमिक, दोबारा questionnaire नहीं। |
 | [incident-closure](skills/incident-closure/SKILL.md) | "ठीक करो" का मतलब पूरा बंद करना है — सबूत के साथ root cause, failing test, green, live proof — इंसान की तरफ़ options का menu कभी नहीं। |
-| [intent-compiler](skills/intent-compiler/SKILL.md) | इंसान की सहज भाषा — बोली, रूपक, छोटे इशारे — को पूरे spec की तरह पढ़ती है, फिर उसे पूरा execute करती है। हर बोली एक वैध grammar है; skill संस्कृति को अपनी भीतरी logic वाले context की तरह पढ़ती है, कभी stereotype की तरह नहीं। |
+| [intent-compiler](skills/intent-compiler/SKILL.md) | Compressed request को current authorization और project evidence के आधार पर actionable directive में बदलें। |
 | [invariant-floor](skills/invariant-floor/SKILL.md) | वे नंबर वाले क़ानून जो हर autonomous बदलाव को land होने से पहले पूरे करने हैं। वह floor जिस पर पूरा pack खड़ा है। |
 | [leap-protocol](skills/leap-protocol/SKILL.md) | बड़े काम को अलग-अलग सँभाली जा सकने वाली balls में तोड़ती है, उन्हें अलग worktrees में parallel builders को बाँटती है, और एक write spine से जोड़ती है। |
 | [live-research](skills/live-research/SKILL.md) | एक parallel research agent live source पढ़ता है — READMEs, docs, असली code — ताकि reasoning वहीं टिके जो सच में मौजूद है, याददाश्त में नहीं। |
 | [model-fusion](skills/model-fusion/SKILL.md) | models का एक panel parallel में drafts बनाता है, एक स्वतंत्र judge चुनता है, और जीतने वाले को मूल intent के खिलाफ़ validate किया जाता है। |
-| [optimus](skills/optimus/SKILL.md) | harness load हुए बिना कोई code नहीं। एक deterministic hook mutating tools को तब तक रोकता है जब तक agent नियम पढ़ न ले। |
+| [optimus](skills/optimus/SKILL.md) | Actual Optimus, Yoke और Build Flow bodies context में load हों; deterministic hook tools block नहीं करता। |
 | [human-voice](skills/human-voice/SKILL.md) | no-degree bar: अगर पढ़ने के लिए degree चाहिए, तो दोबारा लिखो। पूरा विचार बचाकर machine के सुराग़ हटाती है। |
 | [red-first](skills/red-first/SKILL.md) | build शुरू होने से पहले एक साबित-failing test commit करो। builder उसे छू नहीं सकता। एक grader जाँचता है कि वह कभी हिला नहीं। |
-| [repair-loop](skills/repair-loop/SKILL.md) | पूरा fix loop: floor में ज़मीन पकड़ो, reproduce करो, red test, class ठीक करो, असली path पर verify करो, independent grade, land। |
+| [repair-loop](skills/repair-loop/SKILL.md) | Current task में bounded RED → minimal fix → scoped lint/type/tests → gauntlet → independent review और requested delivery। |
 | [repo-map](skills/repo-map/SKILL.md) | code बदलने से पहले repository की असली संरचना, entrypoints, config और runtime paths का नक्शा बनाओ। |
 | [root-cause-first](skills/root-cause-first/SKILL.md) | बिना जाँच के कोई fix नहीं। माँगते ही reproduce करो, boundaries पर instrument लगाओ, data को पीछे source तक trace करो। |
 | [seam-engineering](skills/seam-engineering/SKILL.md) | खोट की class को उसके साझा primitive पर एक बार ठीक करो, हर भाई-बंधु को sweep करो, और एक guard बिठाओ जो अगले offender को पकड़े। |
-| [session-handoff](skills/session-handoff/SKILL.md) | session को एक flat file में निचोड़ती है जिसे एक बिल्कुल नया agent ठंडा पढ़कर आगे बढ़ा सके। secrets हटाकर। |
-| [sniper-testing](skills/sniper-testing/SKILL.md) | सिर्फ़ वे tests चलाओ जो छुए गए हिस्से को cover करते हैं। mock theater मारो — वे tests जो pass होते हैं जबकि capability टूटी है। |
+| [session-handoff](skills/session-handoff/SKILL.md) | वही task packet, base/candidate, RED seals, evidence, deadline और remaining budget अगले session को दें। |
+| [sniper-testing](skills/sniper-testing/SKILL.md) | Pinned base से current candidate और owned pending work का scope लेकर actual lint/type/behavior checks चलाएँ। |
 | [understanding-gates](skills/understanding-gates/SKILL.md) | Design, Plan, Build, Test, और Ship पर approve/revise/reject verdicts वाले gates, ताकि build माँग से मेल खाता रहे। |
 | [wayfinder](skills/wayfinder/SKILL.md) | खो जाने पर मंज़िल तक एक decision map बनाती है, इंसान पर सवाल टाँगने की जगह। |
+| [architecture-engineer](skills/architecture-engineer/SKILL.md) | Architecture drift, module boundaries और dependency direction जाँचें; टिकाऊ निर्णय ADR में लिखें। |
+| [backs-build-flow](skills/backs-build-flow/SKILL.md) | Context से delivery तक एक task owner; relevant skills और bounded RED/GREEN, lint/types/tests तथा gauntlet जोड़ता है। |
+| [backs-pack-sync](skills/backs-pack-sync/SKILL.md) | Private runtime और public pack का coverage मिलाएँ; अलग से reviewed public bridges ही जोड़ें। |
+| [backs-session-rollover](skills/backs-session-rollover/SKILL.md) | Context compaction और fresh-session handoff में original task, corrections और verified work बचाएँ। |
+| [building-with-backs](skills/building-with-backs/SKILL.md) | Exact checkout/path सत्यापित करके authorized change को actual runtime तक ले जाएँ। |
+| [cam-iot-inventory](skills/cam-iot-inventory/SKILL.md) | Live camera/IoT/Wi-Fi inventory में स्थिर identity और honest evidence रखें; inventory को picture proof न मानें। |
+| [co-health](skills/co-health/SKILL.md) | Harness/watchdog evidence देखें और tools/source सुरक्षित रखते हुए findings बताएँ। |
+| [conscientious-objector](skills/conscientious-objector/SKILL.md) | Harness/watchdog observations ईमानदारी से लौटाएँ; operator और agent के tools बचाएँ। |
+| [context-compiler](skills/context-compiler/SKILL.md) | context-engineer का compatible alias; वही evidence आधारित task packet। |
+| [context-engineer](skills/context-engineer/SKILL.md) | Missing execution context जुटाएँ; verified target, next action और acceptance check वाला एक packet रखें। |
+| [context_engineer](skills/context_engineer/SKILL.md) | context-engineer का underscore alias; instructions byte-identical हैं। |
+| [debugging-engineer](skills/debugging-engineer/SKILL.md) | Hard regressions, silent failures और races में falsifiable hypothesis तथा निर्णायक probes से जाँच करें। |
+| [design-critique](skills/design-critique/SKILL.md) | Actual user task, accessibility और visual coherence से product surface review करके ठोस fixes सत्यापित करें। |
+| [fix-shit](skills/fix-shit/SKILL.md) | Current Build Flow में evidence से root cause, sealed RED, class-level repair और वास्तविक delivery proof तक जाएँ। |
+| [fleet-dispatch](skills/fleet-dispatch/SKILL.md) | Configured fleet role से dispatch करें और actual route तथा provenance की receipt लौटाएँ। |
+| [harness-optimizer](skills/harness-optimizer/SKILL.md) | Bounded baseline/candidate measurements, holdouts और leakage checks से harness सुधारें। |
+| [karpathy](skills/karpathy/SKILL.md) | Disposable clone में user-defined goal, metric, file scope और budget के भीतर measured experiment करें। |
+| [operator-essence](skills/operator-essence/SKILL.md) | एक insights/fallback pass में गुणात्मक और मात्रात्मक evidence का private awareness slice; current request सबसे ऊपर। |
+| [operator-intent-deduction](skills/operator-intent-deduction/SKILL.md) | Current request, verified facts और evidence आधारित operator context से unresolved choices सुलझाएँ। |
+| [operator_intent_deduction](skills/operator_intent_deduction/SKILL.md) | operator-intent-deduction का byte-identical compatible alias। |
+| [osha-bot](skills/osha-bot/SKILL.md) | Harness/watchdog evidence देखें; tools या source छीने बिना वास्तविक findings report करें। |
+| [rea-investigation](skills/rea-investigation/SKILL.md) | Installed REA से shipped artifacts/runtime का discovery या verification evidence लें और caller को लौटाएँ। |
+| [reload-vsc-and-verify](skills/reload-vsc-and-verify/SKILL.md) | Live install topology जाँचें, requested skill wiring सुधारें और VS Code reload/discovery verify करें। |
+| [scrub-plugin-pack-literals](skills/scrub-plugin-pack-literals/SKILL.md) | Public pack से private literal leaks dry-run/apply/hook modes में हटाएँ और structural guard रखें। |
+| [truth-audit](skills/truth-audit/SKILL.md) | Read-only live probes से चल रहे code/state और breakage जाँचकर executable repair/handoff spec दें। |
+| [turn-and-burn](skills/turn-and-burn/SKILL.md) | Mission के roster, lessons और plan/design review requirements जुटाएँ; जरूरत पर missing capability absorb करें। |
+
+## Build Flow और operator context
+
+[backs-build-flow](skills/backs-build-flow/SKILL.md) context, ownership और requested
+finish को एक packet में रखता है। Target, constraints, next action और observable
+acceptance check ज्ञात हों तो execution शुरू होता है; specialist लौटता है, workflow
+फिर शुरू नहीं करता। [operator-essence](skills/operator-essence/SKILL.md) current
+preferences के साथ गुणात्मक और मात्रात्मक evidence देता है। Missing/stale file पर
+supported insights एक बार, या घोषित report/history fallback; कम evidence provisional
+रहता है। यह identity, permission या current request का विकल्प नहीं है।
+
+Build/fix में bounded RED → minimal fix → scoped lint/type/tests → clean-code-gauntlet
+और required independent review चलें। Original RED sealed रहता है; नए gaps separate
+supplemental tests पाते हैं। Base-to-candidate scope, deadline और remaining budget
+workers, reviews और handoffs में बने रहते हैं। Read-only review edits authorize नहीं
+करता; local patch पूरा होना deployed capability के **PROVEN** होने से अलग है।
 
 ## Plays
 
 | Play | क्या चलाता है |
 | --- | --- |
-| [elite-build](plays/elite-build.md) | किसी भी build, fix, या uplift का मास्टर play: intent पढ़ो, plan पर gate लगाओ, पहले red साबित करो, बनाओ, कसकर test करो, blind grade कराओ, live-proven land करो। |
+| [elite-build](plays/elite-build.md) | Explicitly selected full design/build/quality/review play; same task और budget में सभी applicable gates रखें। |
 | [agent-builds](plays/agent-builds.md) | agents और services बनाना: deterministic primitives भारी काम उठाते हैं; model सिर्फ़ वहीं सोचता है जहाँ सोच ही अकेली काम करने वाली चीज़ है। |
 | [web-app-builds](plays/web-app-builds.md) | साफ़ ढाँचे और सुरक्षित supply chain वाले web apps और sites — dependency hygiene ही play है, बाद की सोच नहीं। |
 | [design-taste](plays/design-taste.md) | ऐसा UI जो designed दिखे, generated नहीं: taste बनाना implementation से अलग, पहले tokens, agent को आँखें, accessibility पर gate। |

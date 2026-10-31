@@ -10,44 +10,18 @@
   नहीं (उसके लिए repair loop चलाएँ)।
 - findings का backlog बिना भटकाव और बिना एक-दूसरे को रौंदे parallel में निपटाना हो।
 
-पूरा hunt, एक नज़र में:
+## साझा task और limits
 
-```
-    +--------------------------------------------+
-+-->| 1 wayfinder  chart the hunt as one map,    |
-|   |   a node per seam; claim from the frontier |
-|   +--------------------------------------------+
-|   | 2 leap-protocol  one node = one ball:      |
-|   |   goal, spec, hard file scope, ONE writer  |
-|   +--------------------------------------------+
-|   | 3 root-cause-first  reproduce + review     |
-|   |   evidence BEFORE any code changes         |
-|   +--------------------------------------------+
-|   | 4 repair-loop  red-first test committed,   |<--------------------------+
-|   |   sniper-testing while iterating           |  finding or survivor ->   |
-|   +--------------------------------------------+   +---------------------+ |
-|   | 5 blind-tribunal  a non-author grader      |-->|  LORD OF THE LOOP   |-+
-|   |   attacks; jurors judge redacted work      |   | one hand drives the |
-|   +--------------------------------------------+   | loop: dispatch,     |
-|   | 6 seam-engineering  close the CLASS at     |   | judge, loop back    |
-|   |   the shared seam, never the symptom       |   | until the gate is   |
-|   +--------------------------------------------+   | green. a lane never |
-|   | 7 clean-code-gauntlet  the fixed branch    |-->| lands its own work. |
-|   |   must DIE under mutation, or stay open    |   +---------------------+
-|   +--------------------------------------------+
-|             |
-|             | jurors pass + mutant dies
-|             v
-|   +--------------------------------------------+
-|   | LANDING GATE -- leap-protocol Score gate:  |
-|   | source truth . keep-or-revert . blind      |
-|   | review . live proof . provenance -- each   |
-|   | finding ends FIXED or REFUTED-W-EVIDENCE   |
-+---| ball closed -> claim the next node         |
-    +--------------------------------------------+
-```
+यह play current [BACKS Build Flow](../skills/backs-build-flow/SKILL.md) task packet
+के भीतर चलाएँ। एक integration owner, requested `task_mode`, pinned `base_sha`, current
+`candidate_sha`, operator essence और current evidence रखें। Applicable loaded skill
+bodies reuse करें; यह play अपने domain gates जोड़ता है, task फिर शुरू नहीं करता।
 
-*Lord of the Loop = loop का मालिक — एक ही हाथ जो dispatch, judge और दोहराव तब तक चलाता है जब तक landing gate green न हो जाए; LAND = बदलाव का final उतरना — हर gate green होने पर merge होकर ship होना।*
+[bounded-loops](../skills/bounded-loops/SKILL.md) original deadline और remaining
+allowances को retries, workers, models, reviews और handoffs में संभालता है। Nested play
+के लिए उन्हें reset न करें। Exhaustion पर candidate, evidence, unmet gates और next action
+सहित **STILL-BUILDING** checkpoint करें। Useful authorized work remaining allowance में
+ही करें; missing gate कभी pass नहीं बनता।
 
 ## चेन
 
@@ -61,10 +35,13 @@
 3. [root-cause-first](../skills/root-cause-first/SKILL.md) — code में कोई भी बदलाव
    करने से पहले bug को reproduce करें और root-cause के सबूत की समीक्षा करें।
    अंदाज़े पर कोई mutation नहीं।
-4. [repair-loop](../skills/repair-loop/SKILL.md) — हर ball का भीतरी अनुशासन:
-   [red-first](../skills/red-first/SKILL.md) — fix से पहले failing test commit,
-   [sniper-testing](../skills/sniper-testing/SKILL.md) — iteration के दौरान सिर्फ़
-   scoped runs, और landing पर छुए गए modules का एक पूरा pass।
+4. [repair-loop](../skills/repair-loop/SKILL.md) — हर ball का inner discipline:
+   [red-first](../skills/red-first/SKILL.md) failing test fix से पहले commit करें;
+   [sniper-testing](../skills/sniper-testing/SKILL.md) से pinned aggregate candidate
+   diff के real lint/type/test commands scope करें; landing पर touched modules का full
+   pass करें। Original RED न बदलें; नई finding को separate supplemental test दें।
+   Play फिर शुरू किए बिना hunt owner को evidence लौटाएँ।
+
 5. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — हर finding पर adversarial
    हमला होता है: एक ऐसा grader जो उसका लेखक नहीं है, refuse-by-default रुख़ से
    हमला करता है; jurors एक author-redacted envelope पर फ़ैसला देते हैं। builder
@@ -81,6 +58,10 @@
 होकर बंद होती है — source truth, keep-or-revert, blind review, live proof,
 provenance; सबूत की कमी कभी pass में default नहीं होती। hunt की अपनी terminal
 states: हर finding या तो FIXED पर खत्म होती है या REFUTED-WITH-EVIDENCE पर।
+
+Allowance exhausted हो तो finding खुली और STILL-BUILDING checkpoint में रहती है;
+वह terminal FIXED या REFUTED-WITH-EVIDENCE claim नहीं। अगला permitted node लेने से पहले
+attempt history और remaining mission limits बचाएँ।
 
 ## शिकार के नियम
 
@@ -109,6 +90,6 @@ states: हर finding या तो FIXED पर खत्म होती ह�
 - hunt के बीच full-suite run — sniper से सिर्फ़ उस finding का अपना seam चलाएँ।
 - closure test में mock theater: ledger "बंद" बताता है जबकि bug चुपचाप फिर खुल
   जाता है।
-- कोई finding park कर दी गई — न fix हुई, न सबूत के साथ refute।
+- Finding चुपचाप park की गई या fix/evidenced refutation के बिना closed बताई गई।
 
 **Weight:** केंद्र में free शिकार-अनुशासन; heavy खर्च तिहरा है — leap fan-out, adversarial tribunal, और mutation से closure का सबूत — यह तब वसूल होता है जब पूरा backlog parallel में बंद होता है और हर closure mutation के नीचे साबित होता है।
