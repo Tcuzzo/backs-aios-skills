@@ -62,9 +62,7 @@
 - [x] Verify real package builds and isolated repeated installs preserve unrelated settings and unique discovery.
 - [x] Run the full suite and parser checks; obtain a fresh independent review of the exact code candidate.
 - [x] Fix proven findings with focused RED/GREEN checks while preserving sealed tests.
-- [ ] Publish the source and verify the remote revision and CI outcome.
-- [ ] Update the owned private plugin and verify its metadata and canonical skill files.
-- [ ] Replace the earlier personal Build Flow body with an explicit compatibility route.
+- [x] Publish the source and verify the remote revision and CI outcome.
 
 ## Verification receipts
 
@@ -124,5 +122,13 @@ desktop settings were edited, no unsupported insights invocation is claimed, and
 production productivity improvement was measured. The public repository contains
 the reusable essence method only; actual operator evidence stays private.
 
-Source publication, remote CI and the private-plugin read-back are the remaining
-delivery steps; local verification does not establish those outcomes.
+The verified source tree was published as
+[`f5292347e75392ce336361fd13560ae0082437a1`](https://github.com/Tcuzzo/backs-aios-skills/commit/f5292347e75392ce336361fd13560ae0082437a1).
+The fetched GitHub tree exactly matched the locally verified source, and its
+commit-metadata/content hygiene checks passed. The remote
+[CI run](https://github.com/Tcuzzo/backs-aios-skills/actions/runs/41185346717)
+completed successfully. This final documentation update records that observation.
+
+Owned private-plugin read-back and the personal compatibility entry are separate
+account delivery receipts. Public CI does not establish private-plugin activation
+or discovery in a running desktop session.
