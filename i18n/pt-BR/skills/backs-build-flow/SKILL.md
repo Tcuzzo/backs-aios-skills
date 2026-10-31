@@ -11,6 +11,15 @@ verificada. As skills especialistas devolvem evidências a esse responsável;
 não reiniciam o fluxo. Para uma resposta simples sem construção nem investigação,
 use apenas os passos pertinentes.
 
+## Papéis independentes do modelo
+
+Escolha pelas capacidades reais exigidas pela tarefa, disponibilidade e
+configuração atual. O mesmo modelo capaz e o mesmo provedor podem assumir vários
+papéis; não se exige lista fixa, ranking ou diversidade de modelos. A revisão
+independente usa uma sessão nova e disjunta do autor, sem herdar sua conversa
+nem seu contexto de trabalho. Registre essa separação real; não atribua ao runner
+controles que ele não implementa.
+
 ## Reúna contexto suficiente para agir
 
 1. Preserve o objetivo, as restrições, a autorização existente e o resultado

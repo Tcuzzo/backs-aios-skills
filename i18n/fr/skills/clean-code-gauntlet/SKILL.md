@@ -7,6 +7,15 @@ license: "MIT"
 # Clean Code Gauntlet — le parcours d'épreuves
 **Effort:** heavy — du vrai calcul : des runs de couverture et de complexité plus une passe de mutation bornée, puis un seul modèle de goût ; à dépenser sur les changements qui livrent. Élimine : la revue humaine ligne à ligne de diffs entiers, et les tests faux-verts derrière lesquels une régression se cache.
 
+## Rôles indépendants du modèle
+
+Choisis selon les capacités réellement nécessaires, la disponibilité et la
+configuration actuelle. Un même modèle capable et un même fournisseur peuvent
+assurer plusieurs rôles ; aucune liste fixe, aucun classement ni aucune diversité
+de modèles ne sont imposés. La revue indépendante utilise une session vierge et
+disjointe de l'auteur, sans hériter de sa conversation ni de son contexte de travail.
+Consigne cette séparation réelle ; n'attribue pas au runner des contrôles absents.
+
 ## Pourquoi ce skill existe
 
 Le code sale fait patiner les agents, et les règles enterrées dans un long prompt

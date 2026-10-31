@@ -1,31 +1,39 @@
 ---
 name: "model-fusion"
-description: "Use quando a resposta de um modelo só não é confiável o bastante — um build, conserto ou design difícil em que você quer vários modelos competindo e um juiz independente escolhendo. Um painel rascunha em paralelo, um juiz funde o vencedor, o resultado é validado contra a intenção original. Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader, fusão, painel, juiz, multimodelo, rascunhar e fundir, quem constrói não avalia."
+description: "Use quando comparar abordagens elaboradas independentemente ajudar a tarefa e couber no orçamento restante, ou quando o operador pedir um painel. Rascunhos, seleção ou síntese e verificação independentes do modelo; o mesmo modelo configurado pode assumir papéis separados em sessões isoladas."
 license: "MIT"
 ---
 
 # Model Fusion
-**Effort:** heavy — um painel completo rascunhando em paralelo mais um juiz independente (e um escritor opcional); gaste em builds e consertos difíceis que vão para produção, nunca em mudanças de uma linha. Remove: apostar a mudança no rascunho de um modelo só, e o retrabalho quando esse rascunho está errado.
+**Effort:** heavy — rascunhos independentes, um avaliador e um escritor opcional; use o painel quando seu benefício para a tarefa justificar o custo dentro do orçamento restante.
 
-Muitas vozes independentes vencem uma voz só. Um painel de modelos rascunha a
-mesma tarefa em paralelo. Um juiz — um modelo que não escreveu nenhum dos
-rascunhos — escolhe ou funde o melhor. O vencedor é então conferido contra o
-que foi pedido de fato.
+O painel é opcional. Execuções separadas elaboram a mesma tarefa; um avaliador
+que não participou dessas execuções escolhe ou combina candidatos. O resultado
+é verificado contra o pedido original. O mesmo modelo configurado e capaz pode
+rascunhar, avaliar e escrever em sessões separadas e isoladas. Não é necessário
+trocar de modelo ou provedor. O avaliador não herda a conversa nem o contexto
+de trabalho dos autores.
 
 ## Quando rodar
 
-- Qualquer build, conserto ou uplift substancial em que qualidade importa mais
-  que velocidade.
-- Quando você quer um par específico de avaliadores independentes, não
-  confiança cega num modelo.
-- NÃO para mudanças triviais de uma linha. Faça a mudança direta e verifique.
+- Quando comparar abordagens puder resolver uma incerteza concreta e sua avaliação
+  couber no orçamento restante da missão.
+- Quando o operador pedir um painel; informe papéis disponíveis e limites.
+  Uma tarefa grande, por si só, não exige um painel.
+- Para mudanças simples, faça a implementação direta com a verificação adequada.
+
+Vincule [bounded-loops](../bounded-loops/SKILL.md). Rascunhos, juiz, escritor e
+rodadas de reparo compartilham prazo, tentativas restantes e recursos da missão
+atual. Novos papéis ou sessões não reiniciam esses limites. Execute rascunhos
+independentes em paralelo quando o host permitir; caso contrário, em sequência
+dentro dos mesmos limites. Não alegue isolamento de sessão que o host não oferece.
 
 ## Os três estágios
 
-### 1. Painel — rascunhos em paralelo
+### 1. Painel — rascunhos independentes
 
-1. Mande a mesma tarefa, com o mesmo contexto, para todos os modelos do
-   painel de uma vez.
+1. Dê a mesma tarefa e o mesmo pacote de contexto a cada sessão isolada de
+   elaboração de rascunho.
 2. Cada rascunhista trabalha sozinho. Nenhum vê o trabalho do outro.
 3. Um rascunhista que dá erro, estoura o tempo ou devolve vazio é registrado
    e descartado. Ele nunca mata a rodada. Registre o descarte em voz alta —
@@ -39,9 +47,9 @@ que foi pedido de fato.
    árvore viva. Candidatos que falham no portão saem antes de o juiz os ver.
 2. Duas formas de juiz — escolha uma por config:
    - **Síntese:** o juiz analisa cada candidato (forças, defeitos, conflitos),
-     e um modelo escritor separado compõe a resposta final a partir dessa
-     análise. Escritor e juiz são papéis diferentes; mantenha modelos
-     diferentes quando puder.
+     e uma execução de escrita separada compõe a resposta final a partir dessa
+     análise. Mantenha papéis e sessões separados; o mesmo modelo configurado
+     e capaz pode assumir ambos.
    - **Seleção:** o juiz escolhe o melhor candidato que passou no portão.
      Mais barato. Use quando fundir não acrescenta nada.
 3. Se o juiz ou o escritor está indisponível, degrade EM VOZ ALTA para
@@ -64,23 +72,25 @@ que foi pedido de fato.
 
 ## A escada
 
-- A forma dos degraus da fusão: um painel largo de modelos baratos embaixo,
-  painéis mais apertados e orçamentos de saída mais apertados subindo — um
-  degrau mal configurado falha em voz alta na hora de carregar.
+- Escolha tamanho do painel e papéis por capacidades necessárias, disponibilidade
+  real, configuração atual e orçamento restante. Não fixe modelos, preferência
+  de provedor nem diversidade obrigatória. Registre lacunas de configuração.
 - Formato de config, papéis-não-nomes e resolução por sonda viva pertencem a
   [fleet-ladder](../fleet-ladder/SKILL.md).
 
 ## Regras duras — quebrou uma, a skill falhou
 
-- **Quem constrói nunca julga.** O juiz não escreveu candidato nenhum. O
-  avaliador final trabalha em uma sessão nova e disjunta do autor.
+- **Quem constrói nunca julga.** A execução avaliadora não escreveu candidatos
+  nem herdou a conversa ou o contexto de trabalho dos autores. O avaliador final
+  trabalha em uma sessão nova e disjunta do autor.
 - **Nenhum nome de modelo hardcoded** em nenhum ponto de chamada. Papéis no
   código, modelos na config.
 - **Nenhuma degradação silenciosa.** Rascunhistas descartados, fallback do
   juiz, falhas de portão e esgotamento são todos em voz alta. Um resultado
   inavaliável nunca passa por padrão.
-- **Reparo limitado.** As rodadas extras do painel têm teto duro. Esgotamento
-  é falha em voz alta, não loop infinito.
+- **Reparo limitado.** As rodadas têm teto duro e consomem o orçamento restante
+  da missão; respeite o limite alcançado primeiro. O esgotamento produz um
+  checkpoint visível, nunca um loop infinito.
 - **Testes verdes sozinhos não são "pronto".** O vencedor é provado em
   comportamento vivo.
 

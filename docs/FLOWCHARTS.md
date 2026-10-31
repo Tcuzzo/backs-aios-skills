@@ -492,7 +492,7 @@ taste, vision, or destructive/data-loss risk belongs to the human.
 ```mermaid
 flowchart TD
   accTitle: Independent grading, decision routing, and incident closure
-  accDescr: An author-redacted change is graded by another model family, findings become failing tests, ordinary repairs execute automatically, and only true human decisions interrupt the loop before live closure.
+  accDescr: An author-redacted change is graded in a fresh independent context, which may use the same capable model. Findings become failing tests, ordinary repairs execute automatically, and only true human decisions interrupt the loop before live closure.
 
   Change([Built change]) --> Redact[Remove authorship from the review envelope]
   Redact --> Eval[blind-eval]

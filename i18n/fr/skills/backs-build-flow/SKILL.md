@@ -10,6 +10,15 @@ Un responsable de l'intégration mène la demande du contexte à la livraison
 vérifiée. Les spécialistes lui rendent des preuves ; ils ne relancent pas le
 workflow. Pour une réponse simple sans build ni enquête, applique seulement les étapes pertinentes.
 
+## Rôles indépendants du modèle
+
+Choisis selon les capacités réellement nécessaires, la disponibilité et la
+configuration actuelle. Un même modèle capable et un même fournisseur peuvent
+assurer plusieurs rôles ; aucune liste fixe, aucun classement ni aucune diversité
+de modèles ne sont imposés. La revue indépendante utilise une session vierge et
+disjointe de l'auteur, sans hériter de sa conversation ni de son contexte de travail.
+Consigne cette séparation réelle ; n'attribue pas au runner des contrôles absents.
+
 ## Établir assez de contexte pour agir
 
 1. Préserve l'objectif, les contraintes, l'autorisation déjà accordée et le résultat

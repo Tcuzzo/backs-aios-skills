@@ -11,6 +11,15 @@ entrega verificada. Las skills especialistas devuelven evidencia a ese responsab
 no reinician el flujo. Para una respuesta sencilla sin construcción ni
 investigación, usa solo los pasos pertinentes.
 
+## Roles independientes del modelo
+
+Elige por las capacidades reales que exige la tarea, la disponibilidad y la
+configuración vigente. El mismo modelo capaz y el mismo proveedor pueden cubrir
+varios roles; no se exige una lista fija, un ranking ni diversidad de modelos.
+La revisión independiente usa una sesión nueva y disjunta del autor que no haya
+heredado su conversación ni su contexto de trabajo. Registra esa separación real;
+no atribuyas al runner controles que no implementa.
+
 ## Reúne suficiente contexto para actuar
 
 1. Conserva el objetivo, las restricciones, la autorización existente y el resultado

@@ -7,6 +7,16 @@ license: "MIT"
 # Clean Code Gauntlet
 **Effort:** heavy — echte Rechenzeit: Coverage- und Komplexitäts-Läufe plus ein begrenzter Mutations-Durchgang, dann ein Geschmacks-Modell; investier das in Änderungen, die ausgeliefert werden. Beseitigt: menschliches Zeile-für-Zeile-Review ganzer Diffs und die falsch-grünen Tests, hinter denen sich eine Regression versteckt.
 
+## Modellunabhängige Rollen
+
+Wähle Rollen nach den tatsächlich benötigten Fähigkeiten, der Verfügbarkeit und
+der aktuellen Laufzeitkonfiguration. Dasselbe geeignete Modell und derselbe
+Anbieter dürfen mehrere Rollen übernehmen; weder feste Modelllisten noch eine
+vorgegebene Rangfolge oder Modellvielfalt sind erforderlich. Ein unabhängiges
+Review braucht eine frische, vom Autor getrennte Sitzung, die dessen Gespräch
+oder Arbeitskontext nicht geerbt hat. Dokumentiere die tatsächliche Trennung;
+behaupte keine Durchsetzung, die der verwendete Runner nicht unterstützt.
+
 ## Warum es das gibt
 
 Unordentlicher Code lässt Agenten strampeln, und Regeln, die in einem langen

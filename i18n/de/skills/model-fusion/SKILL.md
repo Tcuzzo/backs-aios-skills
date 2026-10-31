@@ -1,29 +1,38 @@
 ---
 name: "model-fusion"
-description: "Wenn die Antwort eines einzelnen Modells nicht vertrauenswürdig genug ist — ein harter Build, Fix oder Entwurf, bei dem mehrere Modelle antreten sollen und ein unabhängiger Richter wählt. Ein Panel entwirft parallel, ein Richter merged den Sieger, das Ergebnis wird gegen die ursprüngliche Absicht validiert. Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader, Richter, Mehrmodell, Entwürfe parallel, Sieger mergen, Builder nicht Bewerter."
+description: "Wenn mehrere unabhängig erarbeitete Lösungsansätze der Aufgabe helfen und ins verbleibende Budget passen, oder der Operator ausdrücklich ein Panel verlangt. Modellunabhängige Entwürfe, Auswahl oder Synthese und Verifikation; dasselbe konfigurierte Modell darf getrennte Rollen in isolierten Sitzungen ausführen."
 license: "MIT"
 ---
 
 # Model Fusion
-**Effort:** heavy — ein volles Panel, das parallel entwirft, plus ein unabhängiger Richter (und optional ein Schreiber); investier das in harte Builds und Fixes, die ausgeliefert werden, nie in Einzeiler. Beseitigt: die Wette der ganzen Änderung auf den Entwurf eines einzigen Modells — und die Nacharbeit, wenn genau dieser Entwurf falsch ist.
+**Effort:** heavy — unabhängige Entwürfe, ein Prüfer und optional ein Schreiber; setze das Panel nur ein, wenn sein Nutzen für die Aufgabe den Aufwand im verbleibenden Budget rechtfertigt.
 
-Viele unabhängige Stimmen schlagen eine. Ein Panel aus Modellen entwirft
-dieselbe Aufgabe parallel. Ein Richter — ein Modell, das keinen der Entwürfe
-geschrieben hat — wählt oder merged den besten. Der Sieger wird dann gegen das
-geprüft, was wirklich gefragt war.
+Das Panel ist optional. Getrennte Ausführungen entwerfen dieselbe Aufgabe; ein
+Prüfer, der an keiner dieser Ausführungen beteiligt war, wählt oder kombiniert
+Kandidaten. Der gewählte Entwurf wird gegen den ursprünglichen Auftrag geprüft.
+Dasselbe geeignete konfigurierte Modell darf Entwurf, Prüfung und Schreiben in
+getrennten, isolierten Sitzungen übernehmen. Modell- oder Anbieterwechsel sind
+keine Voraussetzung. Der Prüfer erbt weder Gespräch noch Arbeitskontext der Autoren.
 
 ## Wann einsetzen
 
-- Jeder größere Build, Fix oder Uplift, bei dem Qualität mehr zählt als Tempo.
-- Wenn du ein konkretes Paar unabhängiger Bewerter willst, kein blindes
-  Vertrauen in ein Modell.
-- NICHT für triviale Einzeiler. Mach die direkte Änderung und verifizier sie.
+- Wenn unterschiedliche Ansätze eine konkrete Unsicherheit der Aufgabe klären
+  können und ihre Prüfung in das verbleibende Missionsbudget passt.
+- Wenn der Operator ausdrücklich ein Panel verlangt; benenne verfügbare Rollen
+  und Grenzen. Umfangreiche Arbeit allein macht ein Panel nicht verpflichtend.
+- Für einfache Änderungen reicht die direkte Umsetzung mit passender Verifikation.
+
+Binde [bounded-loops](../bounded-loops/SKILL.md) ein. Entwürfe, Richter, Schreiber
+und Reparaturrunden teilen Frist, Restversuche und Ressourcen der bestehenden
+Mission. Neue Rollen oder Sitzungen setzen diese Grenzen nicht zurück. Führe
+unabhängige Entwürfe parallel aus, wenn der Host es unterstützt, sonst nacheinander
+innerhalb derselben Grenzen. Behaupte keine nicht vorhandene Sitzungsisolation.
 
 ## Die drei Stufen
 
-### 1. Panel — Entwürfe parallel
+### 1. Panel — unabhängige Entwürfe
 
-1. Schick dieselbe Aufgabe mit demselben Kontext an alle Panel-Modelle zugleich.
+1. Gib jeder isolierten Entwurfssitzung dieselbe Aufgabe und dasselbe Aufgabenpaket.
 2. Jeder Entwerfer arbeitet allein. Kein Entwerfer sieht die Arbeit eines anderen.
 3. Ein Entwerfer, der einen Fehler wirft, in den Timeout läuft oder leer
    zurückkommt, wird geloggt und fallen gelassen. Er killt nie die Runde.
@@ -38,9 +47,9 @@ geprüft, was wirklich gefragt war.
    sind raus, bevor der Richter sie sieht.
 2. Zwei Richter-Formen — wähl pro Config eine:
    - **Synthese:** der Richter analysiert jeden Kandidaten (Stärken, Defekte,
-     Konflikte), dann komponiert ein separates Schreiber-Modell die finale
-     Antwort aus dieser Analyse. Schreiber und Richter sind verschiedene
-     Rollen; halt sie als verschiedene Modelle, wenn du kannst.
+     Konflikte), dann komponiert eine getrennte Schreibausführung die finale
+     Antwort aus dieser Analyse. Rollen und Sitzungen bleiben getrennt;
+     dasselbe geeignete konfigurierte Modell darf beide ausführen.
    - **Auswahl:** der Richter wählt den einen besten Kandidaten, der das Gate
      bestanden hat. Billiger. Nimm sie, wenn Mergen nichts bringt.
 3. Ist Richter oder Schreiber nicht verfügbar, degradier LAUT auf Auswahl über
@@ -64,23 +73,25 @@ geprüft, was wirklich gefragt war.
 
 ## Die Leiter
 
-- Fusions Sprossen-Form: unten ein breites Panel billiger Modelle, nach oben
-  engere Panels und engere Output-Budgets — eine falsch konfigurierte Sprosse
-  scheitert laut beim Laden.
+- Wähle Panelgröße und Rollen nach benötigten Fähigkeiten, tatsächlicher
+  Verfügbarkeit, aktueller Konfiguration und Restbudget. Keine festen Modelle,
+  Anbieterpräferenzen oder vorgeschriebene Modellvielfalt. Melde Konfigurationslücken.
 - Config-Format, Rollen-statt-Namen und Live-Probe-Auflösung gehören zu
   [fleet-ladder](../fleet-ladder/SKILL.md).
 
 ## Harte Regeln — eine gebrochen, und der Skill ist gescheitert
 
-- **Der Builder richtet nie.** Der Richter hat keinen Kandidaten geschrieben.
-  Der finale Bewerter arbeitet in einer frischen, vom Autor getrennten Sitzung.
+- **Der Builder richtet nie.** Die prüfende Ausführung hat keinen Kandidaten
+  verfasst und erbt kein Gespräch oder Arbeitskontext der Autoren. Der finale
+  Bewerter arbeitet in einer frischen, vom Autor getrennten Sitzung.
 - **Keine hartcodierten Modellnamen** an irgendeiner Aufrufstelle. Rollen im
   Code, Modelle in der Config.
 - **Kein stummes Degradieren.** Gefallene Entwerfer, Richter-Fallback,
   Gate-Fehlschläge und Erschöpfung sind alle laut. Ein nicht bewertbares
   Ergebnis besteht nie per Default.
-- **Begrenzte Reparatur.** Panel-Neuläufe haben eine harte Obergrenze.
-  Erschöpfung ist ein lauter Fehlschlag, keine Endlosschleife.
+- **Begrenzte Reparatur.** Panel-Neuläufe haben eine harte Obergrenze und
+  verbrauchen das verbleibende Missionsbudget. Es gilt die zuerst erreichte
+  Grenze. Erschöpfung ergibt einen sichtbaren Checkpoint, keine Endlosschleife.
 - **Grüne Tests allein sind nicht fertig.** Der Sieger wird am Live-Verhalten
   bewiesen.
 

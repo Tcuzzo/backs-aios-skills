@@ -35,6 +35,11 @@ act, selects skills for a purpose and exit, and carries the same bounded RED/GRE
 allowance through scoped lint, type checks, tests and the clean-code gauntlet.
 Absorb owns adoption; REA returns discovery or verification evidence to its caller.
 
+The workflow is model agnostic. One capable configured model may fill builder,
+writer and reviewer roles in separate executions. Independent review requires a
+fresh context without the author's conversation; it does not require a different
+model, provider or family. Candidate panels are optional and share the task budget.
+
 [Operator Essence](skills/operator-essence/SKILL.md) stores evidence-backed awareness
 in the current operator's private file. It combines confirmed preferences,
 qualitative examples, quantitative counts with denominators, uncertainty and
@@ -47,7 +52,8 @@ remaining choices inside it.
 The source has **62 skill folders**, including **3 compatibility aliases** and
 **8 command adapters**; each locale mirrors **54 non-command folders**. Distributed
 canonical bundles remove alias folders where the host would discover duplicate
-names. See [release 0.9.5](docs/releases/0.9.5.md) for the integration and verification.
+names. See [release 0.9.5](docs/releases/0.9.5.md) for the integration and verification,
+and [release 0.9.6](docs/releases/0.9.6.md) for the model-agnostic clarification.
 
 ## What this does
 

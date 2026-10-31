@@ -1,28 +1,38 @@
 ---
 name: "model-fusion"
-description: "Úsala cuando la respuesta de un solo modelo no da suficiente confianza — un build, fix o diseño difícil donde quieres que varios modelos compitan y un juez independiente elija. Un panel redacta en paralelo, un juez fusiona al ganador, y el resultado se valida contra la intención original. Trigger words: fusion, panel, judge, multi-model, ensemble, draft and merge, builder not grader, fusión, panel de modelos, juez, multimodelo, borradores en paralelo, el que construye no califica."
+description: "Úsala cuando comparar enfoques elaborados de forma independiente ayude a la tarea y quepa en el presupuesto restante, o cuando el operador pida un panel. Borradores, selección o síntesis y verificación independientes del modelo; un mismo modelo configurado puede cubrir roles separados en sesiones aisladas."
 license: "MIT"
 ---
 
 # Model Fusion
-**Effort:** heavy — un panel completo redactando en paralelo más un juez independiente (y un escritor opcional); gástalo en builds y arreglos difíciles que van a entregarse, nunca en cambios de una línea. Elimina: apostar el cambio al borrador de un solo modelo, y el retrabajo cuando ese único borrador está mal.
+**Effort:** heavy — borradores independientes, un evaluador y un escritor opcional; usa el panel cuando su utilidad para la tarea justifique el costo dentro del presupuesto restante.
 
-Muchas voces independientes ganan a una sola. Un panel de modelos redacta la
-misma tarea en paralelo. Un juez — un modelo que no escribió ninguno de los
-borradores — elige o fusiona al mejor. Al ganador después se le compara con lo
-que de verdad se pidió.
+El panel es opcional. Ejecuciones separadas elaboran la misma tarea; un evaluador
+que no participó en esas ejecuciones selecciona o combina candidatos. El resultado
+se verifica contra la petición original. El mismo modelo configurado y capaz puede
+redactar, evaluar y escribir mediante sesiones separadas y aisladas. No hace falta
+cambiar de modelo ni proveedor. El evaluador no hereda la conversación ni el
+contexto de trabajo de los autores.
 
 ## Cuándo correrla
 
-- Cualquier build, fix o mejora sustancial donde la calidad importa más que la velocidad.
-- Cuando quieres un par concreto de evaluadores independientes, no fe ciega en un modelo.
-- NO para cambios triviales de una línea. Haz el cambio directo y verifícalo.
+- Cuando comparar enfoques pueda resolver una incertidumbre concreta y su
+  evaluación quepa en el presupuesto restante de la misión.
+- Cuando el operador pida un panel; declara roles disponibles y límites.
+  Una tarea grande por sí sola no exige un panel.
+- Para cambios sencillos, aplica el cambio directo y la verificación pertinente.
+
+Vincula [bounded-loops](../bounded-loops/SKILL.md). Borradores, juez, escritor y
+rondas de reparación comparten plazo, intentos restantes y recursos de la misión
+actual. Nuevos roles o sesiones no reinician esos límites. Ejecuta los borradores
+independientes en paralelo si el host lo permite; si no, de forma secuencial dentro
+de los mismos límites. No inventes aislamiento de sesiones que el host no ofrece.
 
 ## Las tres etapas
 
-### 1. Panel — borradores en paralelo
+### 1. Panel — borradores independientes
 
-1. Manda la misma tarea, con el mismo contexto, a todos los modelos del panel a la vez.
+1. Da la misma tarea y el mismo paquete de contexto a cada sesión aislada de redacción.
 2. Cada redactor trabaja solo. Ningún redactor ve el trabajo de otro.
 3. Un redactor que falla, se queda sin tiempo o devuelve vacío se registra y se
    descarta. Nunca mata la ronda. Registra el descarte en voz alta — jamás lo
@@ -37,9 +47,9 @@ que de verdad se pidió.
    de que el juez los vea.
 2. Dos formas de juez — elige una por config:
    - **Síntesis:** el juez analiza cada candidato (fortalezas, defectos,
-     conflictos), y luego un modelo escritor aparte compone la respuesta final a
-     partir de ese análisis. Escritor y juez son roles distintos; mantenlos en
-     modelos distintos cuando puedas.
+     conflictos), y luego una ejecución de escritura separada compone la
+     respuesta final a partir de ese análisis. Conserva roles y sesiones separados;
+     el mismo modelo configurado y capaz puede cubrir ambos.
    - **Selección:** el juez elige el mejor candidato único que pasó la compuerta.
      Más barato. Úsalo cuando fusionar no aporta nada.
 3. Si el juez o el escritor no está disponible, degrada EN VOZ ALTA a selección
@@ -62,23 +72,25 @@ que de verdad se pidió.
 
 ## La escalera
 
-- La forma de peldaños de la fusión: un panel amplio de modelos baratos abajo,
-  paneles más apretados y presupuestos de salida más cortos subiendo — un peldaño
-  mal configurado falla en voz alta al cargarse.
+- Elige tamaño del panel y roles según capacidades necesarias, disponibilidad
+  real, configuración vigente y presupuesto restante. No fijes modelos, preferencias
+  de proveedor ni diversidad obligatoria. Declara huecos de configuración.
 - El formato de config, los roles-no-nombres y la resolución por sondeo vivo
   pertenecen a [fleet-ladder](../fleet-ladder/SKILL.md).
 
 ## Reglas duras — rompes una y la skill falló
 
-- **El que construye nunca juzga.** El juez no escribió ningún candidato. El
-  evaluador final trabaja en una sesión nueva y disjunta del autor.
+- **El que construye nunca juzga.** La ejecución evaluadora no redactó candidatos
+  ni heredó la conversación o el contexto de trabajo de sus autores. El evaluador
+  final trabaja en una sesión nueva y disjunta del autor.
 - **Nada de nombres de modelos en duro** en ningún punto de llamada. Roles en el
   código, modelos en la config.
 - **Nada de degradación silenciosa.** Redactores descartados, el fallback del
   juez, fallos de compuerta y agotamiento suenan todos en voz alta. Un resultado
   imposible de calificar nunca pasa por defecto.
-- **Reparación acotada.** Las repeticiones del panel tienen tope duro. El
-  agotamiento es un fallo en voz alta, no un loop infinito.
+- **Reparación acotada.** Las repeticiones tienen tope duro y consumen el
+  presupuesto restante de la misión; se respeta el límite que se alcance primero.
+  El agotamiento deja un checkpoint visible, nunca un loop infinito.
 - **Tests en verde por sí solos no es terminado.** El ganador se prueba en
   comportamiento vivo.
 

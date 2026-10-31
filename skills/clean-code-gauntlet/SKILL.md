@@ -5,7 +5,7 @@ license: "MIT"
 ---
 
 # Clean Code Gauntlet
-**Effort:** heavy — real compute: coverage and complexity runs plus a bounded mutation pass, then one taste model; spend it on changes that ship. Removes: line-by-line human review of whole diffs, and the fake-green tests a regression hides behind.
+**Effort:** heavy — real compute: coverage and complexity runs plus a bounded mutation pass, then an independent design review; spend it on changes that ship. Removes: line-by-line human review of whole diffs, and the fake-green tests a regression hides behind.
 
 ## Why this exists
 
@@ -35,7 +35,7 @@ evidence; review rounds and mutation campaigns do not reset the budget.
    the original [red-first](../red-first/SKILL.md) sealed contract byte-for-byte.
    Record equivalent-mutant refutations with evidence. A tool error or timeout
    is inconclusive, never a killed mutant.
-4. **Light taste review** — a model judges only what numbers cannot.
+4. **Light taste review** — a reviewer judges only what numbers cannot.
 
 ## Tools that compute this
 
@@ -104,14 +104,19 @@ delta against the pinned pre-task `base_sha`, using comparable actual coverage:
 
 ## The taste review (last, and light)
 
-Deterministic gates go first; spend a model only where reasoning is the only
-tool. The reviewer is a non-builder grader, chosen live by capability and
+Deterministic gates go first; use independent judgment for what measurements
+cannot establish. The reviewer is a non-builder grader, chosen live by capability and
 availability from the configured rung matrix (the authoring execution that
 built is recorded as provenance and disqualified; the reviewer uses a fresh
 author-disjoint session) — the builder never grades its own work. It judges
 only design and taste: naming, mixed concerns, interface width, and the six
 smells — rigidity, fragility, immobility, needless complexity, needless
 repetition, opacity. The arithmetic was already settled by the gates.
+
+**Model agnostic:** the reviewer may use the same capable model, provider, or
+family as the builder. Independence comes from a separate execution with fresh
+context that did not inherit the author's conversation. Model diversity is
+optional; no model name, provider, or family is a gate.
 
 Craft floor the review holds: functions small, doing one thing, few arguments,
 no flag arguments, honest names; deep modules — a small interface hiding real

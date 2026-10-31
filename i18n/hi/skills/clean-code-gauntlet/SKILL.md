@@ -7,6 +7,15 @@ license: "MIT"
 # Clean Code Gauntlet
 **Effort:** heavy — असली compute: coverage और complexity runs, साथ में एक bounded mutation pass, फिर एक taste model; इसे ship होने वाले बदलावों पर खर्च करें। हटाता है: पूरे diffs की line-by-line इंसानी review, और वे fake-green tests जिनके पीछे regression छिप जाता है।
 
+## Model-agnostic roles
+
+चुनाव task की वास्तविक capability, उपलब्धता और मौजूदा runtime config से करें।
+वही सक्षम model और provider कई roles संभाल सकते हैं; fixed model list, ranking
+या model diversity अनिवार्य नहीं है। Independent review के लिए fresh,
+author-disjoint session चाहिए, जिसने author की बातचीत या working context inherit
+न किया हो। वास्तविक separation दर्ज करें; runner में मौजूद न होने वाले controls
+को लागू होने का दावा न करें।
+
 ## यह क्यों है
 
 गंदा code agents को भटकाता है, और लंबे prompt में दबे नियम context के बीच में
