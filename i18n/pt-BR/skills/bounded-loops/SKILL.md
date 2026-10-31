@@ -1,68 +1,81 @@
 ---
-name: "bounded-loops"
-description: "Use antes de iniciar qualquer loop que possa fazer retry, poll, iterar ou chamar uma API externa — loops de agente, loops de conserto, agendadores, watchers. Declara tetos de orçamento, faz checkpoint na exaustão e torna martelar estruturalmente impossível. Trigger words: bounded loop, budget, ceiling, retry, backoff, rate limit, throttle, kill-switch, checkpoint, runaway, infinite loop, spin, budget exhaustion, loop limitado, orçamento, teto, limite de taxa, loop infinito, exaustão de orçamento, loop descontrolado."
-license: "MIT"
+name: bounded-loops
+description: "Use antes de trabalho que possa repetir tentativas, consultar periodicamente, iterar, despachar trabalhadores ou repetir chamadas externas, incluindo ciclos autônomos de construção, reparo, revisão e adoção."
+license: MIT
 ---
 
-# Bounded Loops
-**Effort:** free — tetos e checkpoints declarados antes de o loop começar; corta custo na raiz. Remove: gasto de loop descontrolado — cota queimada, rotas bloqueadas por 429 e progresso que um crash apaga.
+# Ciclos limitados
 
-Um loop sem limite é o bug mais caro que um agente pode entregar. Ele queima
-orçamento, martela provedores até ser bloqueado, e esconde a própria falha dentro
-do giro. Todo loop ganha um teto, um checkpoint e um jeito barulhento de morrer —
-antes de começar.
+Uma missão tem uma única cota restante. Retry, trabalhador, modelo alternativo,
+rodada de revisão, reinício de contexto ou skill aninhada consome essa cota;
+nunca a repõe. [Build Flow](../backs-build-flow/SKILL.md) controla as transições da
+tarefa. Este método controla orçamento, retries, cancelamento e checkpoints.
 
-## Quando rodar
+## Declare e carregue o contrato
 
-Antes de iniciar qualquer loop: um loop de conserto, um wrapper de retry, um
-poller, um agendador, uma execução autônoma multi-passo, qualquer coisa que possa
-reemitir uma chamada ou tentar um passo de novo.
+Antes da primeira ação repetitiva, registre no pacote existente:
 
-## Os passos
+- `mission_id`, responsável pela integração, objetivo e condição mensurável de aceitação.
+- Prazo ou duração máxima, máximo de tentativas/rodadas e tetos de recursos/chamadas.
+- Cota consumida e restante, limite menor de rodadas do episódio atual, assinatura
+  da falha e próxima ação. Use um teto interno pequeno e explícito, muitas vezes
+  três tentativas; escolha para esta tarefa sem tratar o exemplo como universal.
+- Custos/tokens/chamadas medidos quando disponíveis. Marque contadores indisponíveis
+  como desconhecidos; não invente zero, alocação ilimitada nem orçamento do provedor.
+  Fixe limites executáveis de tempo e tentativas com os contadores que este
+  ambiente realmente expõe.
 
-1. **Declare o orçamento primeiro.** Tokens, custo, tempo de relógio e máximo de
-   tentativas — por escrito, antes da primeira iteração. Loop sem orçamento
-   declarado é sem limite por definição e não começa.
-2. **Limite as rodadas internas.** Um episódio interno (um ciclo LLM/tool sobre um
-   problema) ganha um teto pequeno e fixo de rodadas (por volta de 4). O teto limita
-   o episódio, não a missão — trabalho inacabado sobe de nível, não fica moendo.
-3. **Checkpoint em cada iteração.** Estado durável em disco — manifesto da
-   execução, log de evidências, passo atual — nunca memória de chat. Qualquer um
-   (incluindo uma sessão nova) consegue retomar do último checkpoint.
-4. **Na exaustão: checkpoint, depois escale.** Entregue o checkpoint ao loop
-   externo ou ao seu humano com o que foi feito, o que falta e o bloqueio. Nunca
-   continue em silêncio depois do orçamento. Nunca pare em silêncio, também —
-   exaustão é barulhenta.
-5. **Respeite toda API externa.** Antes da primeira chamada, aprenda o rate limit e
-   a quota do provedor; quando desconhecidos, trate como estritos — uma chamada,
-   espaçamento largo — até medir. Faça throttle em toda chamada, cacheie e reuse
-   respostas, e segure um teto duro por janela.
-6. **Recue exponencialmente quando levar pushback.** Um 429 ou 503 significa
-   esperar, depois esperar mais. Zero retry instantâneo no mesmo endpoint. Um retry
-   apertado contra um endpoint é como uma rota que funciona morre: queima quota e
-   pode fazer bloquearem seu endereço de saída inteiro.
-7. **Carregue um kill-switch barulhento e limitado.** Qualquer loop que possa
-   reemitir uma chamada tem um número máximo de tentativas; quando bate, o loop
-   para ALTO com a evidência — nunca um giro infinito ou silencioso.
-8. **Pare e enfileire só em pontos seguros.** Parar significa checkpoint-depois-
-   cancelar. Trabalho novo entra na fila para o próximo ponto seguro (uma fronteira
-   de estado entre passos) — nunca injetado no meio de um passo. Uma instância de
-   loop, um escritor, escritas de estado atômicas.
+Herde limites mais estritos do usuário/projeto. Se uma tarefa comum autorizada
+não tiver limites fornecidos, escolha e declare limites proporcionais e aja sem
+nova rodada de permissão. Pergunte apenas quando o compromisso real de recursos
+precisar de autorização. Uma extensão proposta exige decisão explícita do dono
+da missão e a autorização necessária do operador; mudar trabalhadores ou táticas
+não é uma extensão.
 
-## Regras duras (o que reprova esta skill)
+## A iteração
 
-- Um loop que começa sem orçamento declarado de tokens / custo / tempo / tentativas.
-- Continuar depois de um orçamento esgotado, em silêncio ou não, sem escalar.
-- Retry instantâneo contra o mesmo endpoint, ou qualquer caminho de retry sem backoff.
-- Loop de retry sem teto de tentativas, ou um teto que falha quieto quando bate.
-- Estado de progresso guardado só na memória da conversa — um crash apaga a execução.
-- Duas instâncias de loop escrevendo o mesmo estado, ou escritas de estado não atômicas.
-- Escapar do loop enfraquecendo os próprios cheques de saída — um verde produzido
-  abaixando a barra, apagando dados ou engolindo erros é falso verde, não saída.
+1. Verifique a cota restante antes de emitir trabalho. Aloque tetos filhos dentro
+   dela, inclusive para filhos paralelos: reserve seus máximos centralmente para
+   que o gasto conjunto não ultrapasse o pai. Cada filho devolve consumo e sobra.
+2. Execute uma ação orientada por hipótese. Para construir/corrigir, preserve RED
+   real, aplique a menor correção completa, rode verificações focadas de
+   lint/tipos/comportamento e devolva evidências de qualidade por
+   [sniper-testing](../sniper-testing/SKILL.md) e
+   [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md).
+3. Salve resultados e cota restante em limites seguros. Um único escritor atualiza
+   atomicamente o estado autorizado; trabalhadores devolvem evidências a ele.
+   Para revisão estritamente somente leitura, use registro externo já autorizado
+   ou a resposta. Escopo somente leitura não autoriza um registro no repositório.
+4. Falha idêntica sem evidência nova exige outra hipótese ou tática, não outra
+   execução cega. Encerre o episódio interno esgotado. Outro episódio pode usar
+   a cota restante da missão com contabilização explícita.
+5. Ao esgotar a missão, cancelar ou bloquear um gate obrigatório: salve checkpoint,
+   explique o bloqueio e pare de repetir. Continue trabalho independente útil
+   apenas se seu escopo e sua alocação restante permitirem. Relate capacidade
+   inacabada como **STILL-BUILDING**; timeout ou gate pulado nunca é GREEN nem PROVEN.
 
-## Combina bem com
+## Chamadas externas e cancelamento
 
-- [optimus](../optimus/SKILL.md) — carregue o piso antes de qualquer loop começar.
-- [repair-loop](../repair-loop/SKILL.md) — o principal consumidor destes tetos.
-- [fleet-ladder](../fleet-ladder/SKILL.md) — fallback limitado entre modelos, não martelar um só.
-- [session-handoff](../session-handoff/SKILL.md) — aquilo em que um checkpoint escala.
+Respeite limites publicados do provedor e sinais Retry-After. Reutilize cache;
+quando os limites forem desconhecidos, comece conservadoramente e meça. Use
+backoff exponencial limitado para recusas transitórias, com duração e tentativas
+máximas. Não repita falhas permanentes de autorização/entrada como transitórias.
+Espera, backoff e alternativas contam contra o mesmo prazo da missão.
+
+Pare em uma fronteira segura de estado: registre trabalho em andamento, salve
+checkpoint e cancele. Não inicie um segundo escritor nem deixe um ciclo em segundo
+plano após cancelar. Novos pedidos orientam a missão atual nessa fronteira;
+contabilize mudanças de escopo explicitamente sem substituir o objetivo em silêncio.
+
+## Handoff e saída
+
+Quem recebe obtém a mesma identidade da missão, revisões base/candidata, identidade
+dos tests selados, cota consumida/restante, evidências e próxima ação. Verifica
+esse estado antes de retomar. Contexto novo não significa orçamento novo.
+
+O sucesso exige as verificações originais de aceitação e a entrega solicitada.
+Esgotar o orçamento exige checkpoint honesto, nunca tests enfraquecidos, erros
+engolidos, dados apagados, aprovação inventada ou ciclo externo com contador reposto.
+
+Veja [session-handoff](../session-handoff/SKILL.md) para continuar e
+[fleet-ladder](../fleet-ladder/SKILL.md) antes de despachar modelos realmente configurados.

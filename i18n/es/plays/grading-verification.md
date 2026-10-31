@@ -11,59 +11,56 @@ no se le pueda hacer trampa.
 - Una suite afirma verde y nadie la vio fallar primero.
 - Un modelo construyó el trabajo y necesitas un veredicto honesto sobre él.
 
-La calificación, de un vistazo:
+## Tarea y límites compartidos
 
-```
-+--------------------------------------------+
-| 1 red-first  confirm the suite failed --   |<--------------------------+
-|   non-zero exit -- BEFORE the fix existed  |  each finding -> a new    |
-+--------------------------------------------+  red test -> fix ->       |
-| 2 sniper-testing  scoped runs verified;    |  re-convene               |
-|   no mock theater on the changed seam      |                           |
-+--------------------------------------------+   +---------------------+ |
-| 3 independent grade  a non-builder grader, |   |  LORD OF THE LOOP   |-+
-|   chosen live by capability + availability |   | one hand drives the |
-+--------------------------------------------+   | loop: dispatch,     |
-| 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
-|   author-redacted envelope                 |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 5 clean-code-gauntlet  the grader re-runs  |   | lands its own work. |
-|   it -- never trust the builder's numbers  |   +---------------------+
-+--------------------------------------------+
-          |
-          | all jurors pass
-          v
-+--------------------------------------------+
-| LANDING GATE -- the two-sided proof:       |
-| fail-to-pass AND pass-to-pass, run         |
-| hermetically . no fake-green tell .        |
-| author-disjoint grader session . the       |
-| grader re-ran the checks itself            |
-+--------------------------------------------+
-```
+Aplica este play dentro del paquete actual de
+[BACKS Build Flow](../skills/backs-build-flow/SKILL.md). Mantén un responsable
+de integración, `task_mode` solicitado, revisiones base y candidata fijadas,
+esencia del operador y evidencia vigente. Reutiliza cuerpos pertinentes ya cargados;
+este play añade puertas de su dominio sin reiniciar la tarea.
 
-En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce la iteración — despacha, juzga y vuelve a iterar — hasta que la puerta de aterrizaje está en verde; **LAND / LANDING GATE** = aterrizar — integrar el cambio solo cuando todo está en verde.
+[bounded-loops](../skills/bounded-loops/SKILL.md) controla plazo original y cupos
+restantes entre reintentos, trabajadores, modelos, revisiones y traspasos.
+Nunca los reinicies para un play anidado. Al agotarlos, guarda **STILL-BUILDING**
+con candidato, evidencia, puertas pendientes y siguiente acción. Continúa trabajo
+útil autorizado solo dentro de su cupo restante; una puerta ausente no se vuelve aprobada.
 
 ## La cadena
 
 1. [red-first](../skills/red-first/SKILL.md) — confirma que la suite falló con
-   salida distinta de cero ANTES de que el arreglo existiera. Una suite que nunca
-   estuvo en rojo no prueba nada.
-2. [sniper-testing](../skills/sniper-testing/SKILL.md) — verifica que el constructor
-   usó tests acotados durante la iteración y no corrió teatro de mocks sobre la
-   costura que cambió.
-3. Calificación del autor disjunta — entrega el trabajo a un evaluador cuya
-   ejecución autora no construyó el cambio, elegido en vivo por capacidad y
-   disponibilidad desde la matriz de peldaños configurada; la revisión ocurre en una sesión fresca y disjunta del autor. La calificación con la misma
-   ejecución autora está descalificada de raíz.
-4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — para cambios con
-   consecuencias, convoca jurados sobre un sobre con el autor tachado. Cada hallazgo
-   se vuelve un nuevo test rojo, y el tribunal se vuelve a convocar hasta que todos
-   los jurados lo aprueben.
+   salida distinta de cero ANTES del arreglo. Una suite nunca roja no prueba nada.
+   El test fallido queda confirmado y el constructor no puede tocarlo; sus bytes
+   exactos son el contrato.
+
+2. [sniper-testing](../skills/sniper-testing/SKILL.md) — verifica comandos reales
+   de lint/tipos/tests acotados al diff agregado fijado y ausencia de teatro de mocks
+   en la costura modificada. Comprueba razones N/A y chequeos faltantes. Congela
+   la identidad del candidato para esta revisión.
+
+3. Evaluación independiente — elige en vivo por capacidad y disponibilidad
+   desde la matriz configurada (tarea → capacidad → peldaño → sondeo). Registra
+   la ejecución autora cuando el runtime lo soporte y exclúyela. Puede revisar
+   cualquier ruta capaz configurada en sesión fresca y disjunta del autor. Se prohíbe
+   una sesión que haya visto la conversación o heredado contexto del constructor.
+
+4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — para cambios importantes,
+   convoca jurados sobre un paquete sin autoría, en sesión nueva sin conversación
+   heredada. Devuelve hallazgos fundamentados al responsable de integración para
+   RED suplementario separado y reparación acotada; el original sigue sellado.
+   Reconvoca sobre el candidato revisado y congelado dentro del mismo presupuesto.
+   Todos los jurados requeridos deben aprobar antes de integrar.
+
 5. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — el evaluador
    re-corre el gauntlet por su cuenta (cobertura contra complejidad, testing de
    mutación acotado). Nunca confíes en el reporte del constructor sobre sus propios
    números.
+
+Respeta el destino inmutable de revisión. Ejecuta comprobaciones que creen caché,
+muten código o ejerciten servicios solo en aislamiento permitido; la mutación
+nunca reescribe la fuente congelada. Falta de aislamiento o soporte de runtime
+es hueco de evidencia, no permiso para reparar durante revisión. Conserva evidencia
+completa requerida de suites afectadas y separa pruebas locales de superficie
+real o entrega.
 
 ## La prueba de dos lados (ambas, o no pasa)
 
@@ -91,12 +88,17 @@ El piso de mecánica del juez vive en la sección "De-bias the judge" de
 
 ## Puertas duras — cualquiera hace fallar la jugada
 
-- La ejecución autora que construyó el cambio es la misma que firma la
-  calificación.
+- La revisión usó la ejecución autora o una sesión que vio su conversación o
+  heredó su contexto; es obligatoria una sesión nueva separada del autor.
+- Un jurado del tribunal heredó contexto o vio la conversación del autor.
 - La suite no se puede mostrar en rojo antes del arreglo.
 - Falta fail-to-pass o pass-to-pass en la corrida calificada.
 - Cualquiera de las señales de verde falso de arriba está presente.
 - El evaluador confió en el reporte del propio constructor en vez de re-correr los
   chequeos.
+
+**Brechas del entorno.** Selecciona revisores capaces mediante la escalera
+configurada y excluye la ejecución autora. Informa restricciones de runtime que
+bloqueen un revisor capaz; no afirmes silenciosamente que se resolvieron ni las evadas.
 
 **Weight:** chequeos free de rojo y francotirador por delante; el gasto heavy es el tribunal más el evaluador re-corriendo el gauntlet por su cuenta — se paga en cualquier cambio que pide aterrizar, porque un verde falso cuesta más que todas las calificaciones juntas.

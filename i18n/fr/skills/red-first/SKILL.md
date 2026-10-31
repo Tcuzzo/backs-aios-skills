@@ -1,16 +1,24 @@
 ---
 name: "red-first"
-description: "À utiliser avant d'envoyer n'importe quel builder — un agent, un modèle, ou toi-même — faire un changement qu'un test doit prouver. Committe un test de contrat prouvé en échec avant le début du build, interdit au builder d'y toucher, et fait vérifier par un correcteur indépendant que le test n'a jamais été édité. Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build, rouge d'abord, test en échec d'abord, test de contrat, base rouge, test inviolable, test avant build."
+description: "Avant d'envoyer un builder modifier un comportement prouvable par test, ou si un constat de revue ou de mutation exige un contrat de régression. Trigger words: red first, failing test first, contract test, red baseline, tamper-proof test, test before build, rouge d'abord."
 license: "MIT"
 ---
 
 # Red-First, inviolable
 **Effort:** free — pure discipline d'ordre : le test que tu écrirais de toute façon est écrit en premier, prouvé rouge, et scellé par un commit ; la vérification anti-falsification est un simple git diff. Élimine : les tests façonnés après le correctif pour passer, et les verdicts verts qu'un builder a tordus en éditant le test.
 
-Un test écrit après le fix ne prouve rien — il a été taillé pour passer.
-Un test que le builder peut éditer prouve encore moins — on peut le tordre
-pour qu'il passe. Donc le test vient d'abord, se fait verrouiller, et se fait
-noter intact.
+Un résultat vert observé seulement après le correctif ne démontre ni l'échec initial
+ni la capacité du test à le détecter. Démontre et scelle le RED initial avant le
+correctif ; le builder laisse ce fichier intact. Une régression supplémentaire
+distincte peut ensuite démontrer un échec contre un mutant contrôlé et un succès
+contre le candidat sans mutation, comme décrit ci-dessous.
+
+Utilise le dossier [BACKS Build Flow](../backs-build-flow/SKILL.md) actuel. Ce skill
+possède le sceau RED ; il ne crée pas de second responsable ou cycle de build.
+Garde `base_sha` épinglé, `candidate_sha` actuel et identité de mission. Échéance
+et essais restants de [bounded-loops](../bounded-loops/SKILL.md) couvrent
+reproduction, builders, tests supplémentaires et revues indépendantes. Réutilise
+un reçu RED valide au lieu de fabriquer un nouvel échec.
 
 ## Quand le lancer
 
@@ -27,21 +35,42 @@ capacités.
    bonne raison. Un test qui plante à l'import, ou qui passe en douce, n'est
    pas rouge. Un test rouge que personne n'a lancé est une supposition, pas
    une base.
-3. **Committe le test rouge AVANT d'envoyer le builder.** Note l'id du commit.
-   Ce commit est la base rouge — le scellé anti-falsification.
+3. **Committe le test rouge AVANT le dispatch du builder.** Note identifiant de
+   commit, chemins et octets exacts des tests, commande/sortie en échec et raison.
+   Ce commit est la référence rouge, le sceau anti-falsification. Il ne remplace
+   pas le `base_sha` initial de la mission qui délimite le changement agrégé.
 4. **Envoie le builder avec un seul job : le faire passer au vert.** Le builder
    a interdiction de toucher au fichier de test. Dis-le dans l'envoi.
 5. **Fais noter indépendamment.** Un correcteur qui n'a pas écrit le changement
    vérifie deux choses :
    - le test passe maintenant ;
    - le fichier de test est identique octet pour octet à la base rouge —
-     `git diff <red-sha> HEAD -- tests/test_contract.py` n'affiche rien.
+     `git diff <red-sha> <candidate_sha> -- tests/test_contract.py` n'affiche rien.
+     Si les contrôles incluent du travail en attente, compare aussi les octets
+     réellement testés au sceau ; un diff commité vide n'excuse pas une modification
+     indexée ou non indexée.
    Tout diff sur le fichier de test fait échouer la note. Aucune exception,
    même pas « juste corrigé une coquille ».
 6. **Préfère un garde structurel à des tests ponctuels éparpillés.** Un garde
    structurel est un check (un balayage grep, un scan AST, une règle de lint)
    qui échoue sur le PROCHAIN contrevenant, pas seulement sur cette instance.
    Un garde bat dix tests ponctuels qui épinglent chacun un cas.
+
+## Un nouveau constat après le sceau initial
+
+Un mutant survivant ou constat de revue peut révéler une assertion manquante.
+Préserve le fichier RED initial octet pour octet et ajoute un **fichier de test
+supplémentaire distinct**. Observe son échec pour le nouveau défaut avant correction ;
+pour une lacune de mutation, prouve l'échec contre le mutant contrôlé pertinent
+isolé et le succès contre le candidat intact. Consigne et scelle ces preuves
+supplémentaires avant que le prochain builder modifie la frontière. Ne prétends
+pas qu'il s'agit de la référence initiale. Le correcteur vérifie les deux sceaux
+et le candidat agrégé exact. Ajouter un test n'autorise jamais à affaiblir,
+renommer ou remplacer le contrat initial.
+
+Si le budget partagé est épuisé ou RED impossible à établir, sauvegarde
+**STILL-BUILDING** avec la lacune et la prochaine action exacte. Ne fabrique pas
+RED et ne réinitialise pas la mission pour forcer un résultat vert.
 
 ## Règles dures
 
@@ -56,8 +85,9 @@ capacités.
   disqualifiée, et toute session qui a hérité de la conversation ou du
   contexte du builder l'est aussi. Le correcteur travaille dans une session vierge
   et disjointe de l'auteur.
-- **Le vert seul n'est pas une preuve.** Vert + test intact + note
-  indépendante, ça c'est une preuve.
+- **Le vert seul n'est pas une preuve.** Vert + test intact + revue indépendante
+  prouvent ce contrat ; revendiquer une capacité réelle exige encore les preuves
+  de surface et de livraison du workflow.
 - **Quand toute une classe de défaut est en jeu, garde la classe.** Les tests
   ponctuels arrêtent ce bug ; un garde structurel arrête le suivant.
 

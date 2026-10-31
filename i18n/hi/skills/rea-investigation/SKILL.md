@@ -1,17 +1,49 @@
 ---
 name: rea-investigation
-description: जब विफलता के निदान या सुधार के लिए ज़रूरी हो, प्रकाशित executable, package या देखे गए runtime व्यवहार की जाँच में REA इस्तेमाल करें।
+description: जब shipped executable, package या requested runtime behavior में diagnosis, capability discovery या native adoption verification के लिए REA investigation चाहिए, तब उपयोग करें।
 license: MIT
 ---
 
-# REA से आर्टिफैक्ट जाँच
+# REA artifact investigation
 
-प्रकाशित binaries, packages या अनुरोधित runtime व्यवहार की जाँच में स्थापित REA engine और उसकी अलग skill इस्तेमाल करें। सामान्य source repositories के लिए सीधे source और tests देखें। यह bridge REA, Ghidra, provider या MCP server स्थापित नहीं करता और उनकी उपलब्धता का दावा नहीं करता।
+Shipped binaries, packages या requested runtime behavior की investigation में installed
+REA engine और उसकी matching standalone skill लें। सामान्य source repos में source और
+tests सीधे लें। यह bridge REA, Ghidra, provider या MCP server install नहीं करता और उनकी
+availability का दावा नहीं करता।
 
-1. सटीक लक्ष्य और प्रश्न तय करें। Host के agent skill directory में स्थापित मूल REA skill और उसके ज़रूरी references पढ़ें; इस bridge को दोबारा चुनने से बचें। उपलब्ध न हो तो बताएं और उपलब्ध tools से उपयोगी जाँच जारी रखें।
-2. जुड़े हुए REA tools उपलब्ध हों तो उनका, अन्यथा स्थापित REA CLI का इस्तेमाल करें। समर्थित native binary के लिए मौजूदा compatible Ghidra provider इस्तेमाल करें; provider न मिले तो बताएं, नतीजे न गढ़ें और बिना अनुमति dependencies स्थापित न करें।
-3. केवल पढ़ने वाली static जाँच से शुरू करें। लक्ष्य की पहचान, evidence IDs, scope, सीमाएँ और अज्ञात बातें दर्ज करें। Static निष्कर्ष runtime व्यवहार साबित नहीं करते; live observation केवल उपयोगकर्ता के अनुरोधित scope और tool की घोषित execution तथा mutation सीमाओं में करें।
-4. निष्कर्ष root-cause-first और repair-loop को दें। Open-source capability अपनाने के लिए absorb और उसके license तथा dependency checks चलाएं। Configured fleet-ladder से role और capability के आधार पर चयन करें; model IDs hardcode न करें। स्वतंत्र आकलन में blind-tribunal की नई, लेखक से अलग execution और लेखक की जानकारी हटाए हुए frozen packet का प्रयोग करें, host runtime की वास्तविक क्षमताओं के अनुसार।
+Caller का [BACKS Build Flow](../backs-build-flow/SKILL.md) task packet, integration
+owner और permitted `task_mode` लें। Direct investigation packet एक बार बनाती है।
+[bounded-loops](../bounded-loops/SKILL.md) deadline और remaining allowances का owner
+है; provider retries, model changes और handoffs वही लेते हैं। यह evidence देने वाला
+specialist है, दूसरा adoption या repair owner नहीं।
 
-Scaffold: REA by morluto, MIT license, https://github.com/morluto/rea.
-Engine, मूल skill और providers अलग-अलग installations हैं।
+1. Exact target, उसकी identity/hash, question और phase तय करें: upstream artifact की
+   **discovery** या specific native result की **verification**। Host की agent skill
+   directory से installed upstream `reverse-engineer-anything` skill और relevant
+   references पढ़ें; यही bridge recursively न चुनें। वह उपलब्ध न हो तो बताएँ और मौजूदा
+   budget में available tools से उपयोगी investigation करें।
+2. Connected REA tools उपलब्ध हों तो लें, अन्यथा installed REA CLI। Native binary
+   analysis के लिए जहाँ supported हो existing compatible Ghidra provider लें। Missing
+   या unavailable provider बताएँ; result न गढ़ें और authorization बिना dependencies
+   install न करें।
+3. Read-only static inspection से शुरू करें। Target identity, evidence IDs, scope,
+   limits और unknowns दर्ज करें। Static findings runtime behavior सिद्ध नहीं करते;
+   live observation केवल user-requested scope और declared tool की execution तथा
+   mutation boundaries में करें।
+4. Caller को evidence packet लौटाएँ: target identity, phase, commands/tool receipts,
+   evidence IDs, observations, static/runtime distinction, unknowns और remaining
+   mission budget। Next step caller का है: Absorb अपने license/dependency gates और
+   native integration चलाता है; repair owner root-cause-first और repair-loop अपनाता
+   है। इस bridge से इनमें से कोई lifecycle recursively शुरू न करें। Verification defect
+   पाए तो sealed RED और bounded fix/check loop के लिए observation लौटाएँ; repair हो
+   जाने का दावा न करें।
+5. Configured fleet-ladder से role/capability अनुसार dispatch तय करें; model IDs
+   hardcode न करें। Independent assessment जरूरी हो तो blind-tribunal का fresh
+   author-disjoint execution और author-redacted packet लें, केवल host runtime की
+   वास्तविक capabilities के अनुसार। Missing provider या exhausted budget पर उपयोगी
+   observations और exact next action के साथ **STILL-BUILDING** checkpoint दें; वह
+   कभी fabricated runtime proof नहीं। Unblocked investigation remaining allowance
+   में ही रखें।
+
+Scaffold: morluto का REA, MIT license, https://github.com/morluto/rea।
+Engine, upstream skill और providers अलग installations हैं।

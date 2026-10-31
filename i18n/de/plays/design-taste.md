@@ -11,51 +11,26 @@ Jeder Screen, jede Seite, jede Komponente, jedes Dashboard, jedes visuelle Ergeb
 das ein Mensch ansehen wird. Der erste Screen setzt den Standard für jeden danach —
 fahre dieses Play davor.
 
-Der Geschmacks-Loop auf einen Blick:
+## Gemeinsame Aufgabe und Grenzen
 
-```
-+--------------------------------------------+
-| 1 intent-compiler  WHICH taste do the      |
-|   human's words ask for? state the read    |
-+--------------------------------------------+
-| 2 human-calibration  anchor in the record  |
-|   + studied references, never a guess      |
-+--------------------------------------------+
-| 3 design-taste  emit the three-tier        |
-|   token file FIRST, before any component   |
-+--------------------------------------------+
-| 4 build with the token file as a hard      |<--------------------------+
-|   constraint -- no raw hex, px, fonts      |  critique -> fix ->       |
-+--------------------------------------------+  re-shoot                 |
-| 5 design-taste  screenshot -> critic;      |   +---------------------+ |
-|   critic resolved live via fleet-ladder    |-->|  LORD OF THE LOOP   |-+
-+--------------------------------------------+   | one hand drives the |
-| 6 design-taste  8-axis taste rubric        |   | loop: dispatch,     |
-+--------------------------------------------+   | judge, loop back    |
-| 7 design-taste  WCAG 2.2 HARD gate         |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 8 clean-code-gauntlet  the code BEHIND     |   | lands its own work. |
-|   the pixels; zero surviving mutants       |   +---------------------+
-+--------------------------------------------+
-          |
-          | rubric + WCAG green
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no ship:      |
-| WCAG 2.2 passes . 8-axis rubric scored .   |
-| zero surviving mutants behind the pixels   |
-| . critic != builder seat, capability-    |
-| resolved via fleet-ladder, never pinned    |
-+--------------------------------------------+
-```
+Wende dieses Play im aktuellen [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)-
+Aufgabenpaket an. Bewahre einen Integrationsverantwortlichen, gewünschten
+`task_mode`, feste Basis- und Kandidatenrevisionen, Operator-Essence und aktuelle
+Belege. Verwende passende geladene Skill-Texte weiter; dieses Play ergänzt seine
+Fachprüfungen, ohne die Aufgabe neu zu starten.
 
-*Labels im Diagramm: „Lord of the Loop“ = der Besitzer des Loops, der die Iteration treibt, bis das Landing-Gate grün ist; „LAND“ = die Landung — die Änderung zieht erst ein, wenn jedes Gate grün ist.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) besitzt ursprüngliche Frist und
+Restkontingente über Wiederholungen, Mitarbeiter, Modelle, Reviews und Übergaben
+hinweg. Setze sie für ein verschachteltes Play nie zurück. Bei Erschöpfung:
+**STILL-BUILDING** mit Kandidat, Belegen, offenen Gates und nächster Handlung
+sichern. Nützliche autorisierte Arbeit bleibt im Restkontingent; kein fehlendes
+Gate wird zum bestandenen erklärt.
 
 ## Die Kette
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — leite ab, WELCHEN
-   Geschmack die eigenen Worte des Menschen verlangen, und formuliere diese Lesart
-   in einer Zeile, bevor du schreibst.
+1. Nutze Absicht und Operator-Essence aus Build Flow, um den angefragten Geschmack
+   aus den Worten des Menschen abzuleiten. Benenne die Lesart einmal vor dem Schreiben.
+
 2. [human-calibration](../skills/human-calibration/SKILL.md) — verankere die Lesart
    im Verlauf dieses Menschen und in echten, studierten Referenzen — niemals in
    einer demografischen Vermutung.
@@ -66,8 +41,10 @@ Der Geschmacks-Loop auf einen Blick:
    Hardcode niemals einen rohen Hex-Wert, Pixel-Wert oder eine Font-Family in
    einer Komponente.
 5. Fahre die Screenshot-→-Kritiker-Schleife nach
-   [design-taste](../skills/design-taste/SKILL.md) und löse das Kritiker-Modell
-   live über [fleet-ladder](../skills/fleet-ladder/SKILL.md) auf.
+   [design-taste](../skills/design-taste/SKILL.md) und löse den Kritiker live über
+   [fleet-ladder](../skills/fleet-ladder/SKILL.md) auf. Jede Kritik und jedes
+   erneute Rendern verbraucht dasselbe Restbudget; gib Befunde an den aktuellen Verantwortlichen.
+
 6. Bewerte die 8-Achsen-Geschmacks-Rubrik nach
    [design-taste](../skills/design-taste/SKILL.md).
 7. Erzwinge das HARTE Barrierefreiheits-Gate nach WCAG 2.2 per
@@ -77,8 +54,12 @@ Der Geschmacks-Loop auf einen Blick:
    State-Reducer bestehen mit null überlebenden Mutanten. Ein umgedrehter
    Vergleich in einem Kontrast-Check liefert einen schönen, unzugänglichen Screen
    aus. Das Gauntlet bewertet niemals Geschmack — die Rubrik und das
-   Barrierefreiheits-Gate bleiben die visuellen Richter. Rendere in Tests echtes
-   DOM; ein gemocktes Rendering beweist nichts über das, was der Mensch sieht.
+   Barrierefreiheits-Gate bleiben die visuellen Richter. Nutze zuvor
+   [sniper-testing](../skills/sniper-testing/SKILL.md) für echte Lint-/Typ-/Tests
+   im Umfang des festgehaltenen Kandidatengesamtdiffs. Benenne N/A oder fehlende
+   Prüfungen ehrlich. Rendere echtes DOM; ein gemocktes Rendering beweist nicht,
+   was der Mensch sieht. Bewahre versiegeltes RED, ergänze separate Tests für neue
+   Lücken und erhalte unabhängiges Review, vollen betroffenen Landungslauf und echten Rendernachweis.
 
 ## Harte Gates (play-spezifisch — die eigenen harten Regeln des Skills gelten obendrauf)
 

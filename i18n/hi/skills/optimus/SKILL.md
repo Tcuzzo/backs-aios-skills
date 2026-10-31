@@ -1,6 +1,6 @@
 ---
 name: "optimus"
-description: "किसी भी agent session, job या loop की शुरुआत में लगाओ — कोई भी code लिखने से पहले। Harness-first boot: invariant floor और job के लिए ज़रूरी skills load करो, ताकि agent काम से पहले नियम पढ़े; इसमें grounding-gate hook pattern भी है जो harness load होने तक mutating tools को रोकता है। Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence, harness पहले, पहले नियम पढ़ो, बिना harness कोई code नहीं, session की शुरुआत."
+description: "Agent session, job या autonomous loop शुरू या resume करते समय BACKS harness और relevant task skills की जरूरत हो तो उपयोग करें।"
 license: "MIT"
 ---
 
@@ -15,95 +15,60 @@ hook उसे सलाह की जगह structural बना देता �
 
 ## कब चलाएँ
 
-हर session, job, mission और loop की शुरुआत में। Context reset या handoff के
-बाद फिर से। एक बार harness load करके हफ़्ते भर उसी पर चलते रहना harness load
-करना नहीं है।
+Session या नए job की शुरुआत पर; context reset या handoff के बाद revalidate करें।
+Inner retry current grounding और वही task packet reuse करता है। Missing या changed
+bodies reload करें; हर iteration में पूरा lifecycle reboot न करें।
 
 ## Boot sequence
 
-1. **Invariant floor load करो।** कुछ भी छूने से पहले
-   [invariant-floor](../invariant-floor/SKILL.md) पढ़ो। पूरा session इसी
-   floor पर खड़ा है।
-2. **इस job का नक्शा load करो।** नाम लेकर बताओ: कौन-सी files, कौन-से नियम,
-   और pack की कौन-सी skills इसी काम पर लागू हैं। नाम नहीं ले सकते, तो edit
-   करने के लिए तैयार नहीं हो।
-3. **Human profile load करो** ([human-calibration](../human-calibration/SKILL.md))
-   जब job किसी इंसान की पसंद, सतह या workflow को छूता हो।
-4. **Job को जिन skills की ज़रूरत है, उन्हें invoke करो — real time में, इसी
-   session में।** जो skill नाम भर ली गई पर invoke नहीं हुई, वह हुई ही नहीं।
-   "Skill की याद से" काम करना उसे invoke करना नहीं है।
-5. सिर्फ़ उसके बाद: code लिखो, mutating commands चलाओ, या कुछ भी बदलो।
+1. **Invariant floor load करें।** कुछ छूने से पहले
+   [invariant-floor](../invariant-floor/SKILL.md) पढ़ें; पूरा session इसी floor पर है।
+2. **[Build Flow](../backs-build-flow/SKILL.md) अपनाएँ।** Task mode, readiness to act,
+   skill selection, scoped lint/tests सहित bounded RED/GREEN, gauntlet evidence और
+   delivery उसका काम है। Verified packet reuse करें; next concrete action के लिए केवल
+   missing facts जुटाएँ। Specialists एक ही owner को लौटते हैं।
+3. **Human context अपनाएँ** ([human-calibration](../human-calibration/SKILL.md)) जहाँ
+   relevant हो। [operator-essence](../operator-essence/SKILL.md) evidence आधारित awareness
+   file और missing-file insight pass का owner है; दूसरी profile cycle न चलाएँ।
+4. **Session load करें।** Session hook actual Optimus, Yoke और Build Flow bodies, और
+   उपलब्ध हो तो proven native harness देता है। Compaction earned grounding हटाए बिना
+   उन bodies को reload करता है। Mutating tool पर missing marker loading trigger करता
+   है, tool refusal कभी नहीं। Context hook बिना hosts उपयोग कर सकते हैं:
+   ```bash
+   node "$HOME/.local/share/backs-aios/current/hooks/aios_gate.js" --load backs-aios:optimus
+   ```
+   Codex shell में active `CODEX_SESSION_ID` अंतिम argument दें। Matching
+   `aios_gate.py` loader से Python भी उपलब्ध है। Unknown skills nonzero लौटाती हैं;
+   receipt गढ़ी नहीं जाती।
+5. **अगली action की जरूरी skills अपनाएँ।** हर एक का purpose, output और exit बताएँ।
+   नाम लिया लेकिन invoke नहीं किया तो skill हुई नहीं। Current context में उपलब्ध
+   actual bodies reuse करें; याद किया summary या file hash उनका विकल्प नहीं।
+6. तभी code लिखें, mutating commands चलाएँ या कुछ बदलें।
 
-## Grounding-gate pattern
+## Automatic grounding
 
-Step 4 को structural बनाओ एक deterministic **pre-tool-use hook** से — एक
-छोटी script जिसे तुम्हारा agent runtime हर tool call से पहले बुलाता है:
+Existing hook foundation files पढ़कर उनकी bodies host context में देता है। Delivery
+के बाद ही source hashes record करता है। Context-loading receipts और actual Skill-event
+ evidence अलग हैं; pointer load या file hash करना उस skill का invocation नहीं।
 
-- हर session **RED** से शुरू होता है।
-- RED में read-only tools (read, grep, search, fetch) हमेशा pass होते हैं।
-  Agent खुलकर ख़ुद को ground करता है।
-- RED में hook **mutating tools को रोकता है** (edit, write, delete) और primary
-  mutating shell verbs भी (commit, push, rm, install, service restart,
-  in-place edits)।
-- कोई भी harness skill invoke करना session को **GREEN कर देता है** (एक
-  post-tool-use hook पकड़ता है)। फिर agent काम कर सकता है।
-- **Re-arm:** हर session की शुरुआत पर state वापस RED। लंबे sessions में हर
-  job या हर action पर re-arm करो, ताकि बासी GREEN कभी बिना-grounding वाले
-  काम में न घुसे।
-
-Hook के अपने design नियम:
-
-- **Deterministic और मुफ़्त।** न कोई model call, न network, न dependencies।
-  State हर session की एक छोटी file है, atomically लिखी हुई।
-- **यह grounding पर मजबूर करता है, sandbox नहीं है।** सिर्फ़ primary mutating
-  verbs match करो; dual-use wrappers और copy tools को छोड़ दो, ताकि grounding
-  के commands कभी न फँसें।
-- **Fail open, पर ज़ोर से।** Crash हुआ hook session को कभी न जाम करे — और
-  चुपचाप allow भी कभी न करे। Error वहाँ छापो जहाँ इंसान देख सके।
-- **Session को कभी मत फँसाओ।** Session की पहचान अनजान हो तो allow करो, एक
-  ज़ोरदार warning line के साथ। जो session कभी GREEN हो ही नहीं सकता, उसे RED
-  में कभी block नहीं किया जा सकता।
-- **एक ही इंसान-का kill-switch** (एक env var), default ON, बंद होने पर ज़ोर
-  से log करता है। Gate agents को बाँधता है, इंसान को कभी नहीं। दूसरा gate
-  कभी मत जोड़ो।
-
-Generic hook (pseudocode, ~25 lines):
-
-```python
-HARNESS_SKILLS = {"optimus", "repair-loop", "invariant-floor"}  # your pack set
-MUTATING_TOOLS = {"Edit", "Write", "Delete"}
-MUTATING_SHELL = r"^\s*(sudo\s+)?(git (commit|push|reset|checkout)|rm|pip install|" \
-                 r"npm install|systemctl (restart|stop)|sed .*-i)"
-
-def handle(event, session_id, tool, args):
-    if kill_switch_off():                    # human-owned env var, e.g. HARNESS_GATE=off
-        return ALLOW                         # disabled loudly, never silently
-    if not session_id:
-        warn("no session id — allowing; the gate never traps a session")
-        return ALLOW
-    if event == "SessionStart":
-        set_state(session_id, "RED")         # every session re-arms to RED
-        return ALLOW
-    if event == "PostToolUse":
-        if tool == "Skill" and args.get("skill") in HARNESS_SKILLS:
-            set_state(session_id, "GREEN")   # harness invoked -> agent may act
-        return ALLOW
-    if event == "PreToolUse":
-        mutating = tool in MUTATING_TOOLS or (
-            tool == "Bash" and matches(MUTATING_SHELL, args.get("command", "")))
-        if not mutating or get_state(session_id) == "GREEN":
-            return ALLOW                     # read-only always passes
-        return BLOCK("RED: invoke a harness skill first, then act")
-    return ALLOW
-```
+- Session start और compaction tools छीने बिना floor reload करते हैं।
+- Missing session marker अगले matched tool पर automatic loading करता है।
+- Missing/unreadable bodies visible diagnostic देती हैं, false receipt नहीं; operator
+  और agents के tools उपलब्ध रहते हैं।
+- `--rearm <session_id>` एक और load माँगता है; session lock कभी नहीं करता।
+- `AIOS_GATE=off` operator का existing reversible kill switch है।
+- Hooks local और deterministic हैं; model call या network dependency नहीं जुड़ती।
 
 ## Hard rules (क्या इस skill को fail करता है)
 
-- Harness load होने से पहले कोई भी mutation।
-- Report में नाम ली गई कोई skill जो session में कभी invoke नहीं हुई।
-- ऐसा hook जो read-only tools रोके, session को RED में फँसाए, या चुपचाप
-  fail हो।
-- दूसरा gate, या इंसान पर रखी कोई नई friction। Kill-switch उन्हीं का रहता है।
+- Harness load होने से पहले कोई mutation।
+- Report में ऐसी skill का नाम जो session में invoke नहीं हुई।
+- BACKS harness की जगह session memory, LLM priors या “मुझे याद है” से grounding।
+  BACKS model/context agnostic है और मजबूत memory lanes रखता है; ज्ञान harness के
+  memory files, playbooks, ledgers और ladder YAML में है, model के दिमाग में नहीं
+  (operator ruling 2026-09-26)।
+- ऐसा hook जो कोई tool refuse करे, earned grounding हटाए या बिना हुए loading का दावा करे।
+- दूसरा gate या human पर नई friction; kill switch उन्हीं का है।
 
 ## इनके साथ अच्छा चलता है
 
@@ -112,3 +77,16 @@ def handle(event, session_id, tool, args):
 - [repair-loop](../repair-loop/SKILL.md) — boot के बाद fix job जो चलाता है।
 - [bounded-loops](../bounded-loops/SKILL.md) — boot से शुरू हर loop के budgets।
 - [wayfinder](../wayfinder/SKILL.md) — जब boot दिखाए कि रास्ता पता नहीं।
+
+
+## Fleet ladder rung policy — संक्षिप्त pointer
+
+Model dispatch या frontier design/reason lift से पहले
+[fleet-ladder](../fleet-ladder/SKILL.md) invoke करें। वह `config/fleet_ladder.yaml`
+और `config/gpu_nodes.yaml` (deploy paths) पढ़वाता है, live builder seat मानता है और rung
+में frontier / `research_seams` होने पर realtime research seams (web + GitHub + Reddit
++ papers) अनिवार्य करता है। Model IDs hardcode न करें; Patch YAML का owner है।
+संदर्भ: `observe/SECURITY_OPERATOR_BUILDER_SEAT_ORDER_20260926.md`।
+
+जहाँ supported हो medium-or-higher reasoning baseline, heavy lifts से पहले research,
+और पूरा context रखने के लिए [fleet-ladder](../fleet-ladder/SKILL.md) मानें।

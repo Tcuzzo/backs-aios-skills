@@ -1,6 +1,6 @@
 ---
 name: "absorb"
-description: "À utiliser quand il te faut une capacité qu'un projet open source fournit déjà — adopte-la et réingénie-la en skill natif au lieu d'inventer un doublon. Trigger words: absorb, adopt, port, re-engineer, ingest a repo, prior art, capability port, make this native, absorber, adopter, porter, réingénier, ingérer un repo, l'existant, rendre natif."
+description: "Quand une capacité nécessaire peut déjà exister dans un projet open source, ou si l'opérateur demande adoption, portage, réingénierie, ingestion de dépôt, étude de l'existant ou intégration native."
 license: "MIT"
 ---
 
@@ -24,19 +24,32 @@ citation est un fait, pas une décoration.
 
 ## Les étapes
 
+Utilise le dossier [BACKS Build Flow](../backs-build-flow/SKILL.md) actuel et son
+responsable de l'intégration. Un appel direct crée ce dossier une fois ; un appel
+imbriqué rend ses preuves d'adoption à l'appelant. Réutilise contexte valide,
+essence opérateur et textes déjà chargés. [bounded-loops](../bounded-loops/SKILL.md)
+possède échéance et essais/tours restants ; découverte, builds, mutation, revues,
+changements de modèle et relèves consomment le même budget. Ni nouvelle phase ni
+nouvel agent ne le rechargent. Respecte `task_mode` : revue et diagnostic n'autorisent
+ni modifications natives ni livraison.
+
 1. **Chasse l'existant d'abord.** Cherche avant de construire. Un doublon que tu
    inventes vaut moins qu'un échafaudage que tu adoptes : tu hérites de zéro test
    terrain et tous les bugs sont pour toi.
-2. **Ingère au-delà du README.** Récupère les métadonnées du projet (licence, activité,
-   langage) via l'API de la plateforme. Fais un clone superficiel dans un répertoire de
-   brouillon. Lis le code et les tests. Le README, c'est du marketing ; le code, c'est
-   la vérité.
+2. **Découvrir au-delà du README.** Récupère métadonnées du projet (licence,
+   activité, langage) via l'API, clone superficiellement dans un brouillon et lis
+   code et tests. Pour un artefact distribué ou un comportement runtime demandé
+   que l'inspection des sources n'explique pas, appelle
+   [rea-investigation](../rea-investigation/SKILL.md) avec cible exacte et question
+   bornée. REA rend les preuves à cet appelant sans relancer Absorb. Consigne
+   identité amont, observations, limites et inconnues avant le choix d'adoption.
+   Les constats statiques n'établissent pas le comportement runtime.
 3. **Passe les barrières de confiance.**
    - *Licence :* permissive (MIT / Apache / BSD / MPL) = réingénierie sans risque.
      Copyleft (GPL / AGPL) = technique seulement — réingénie l'idée, ne copie jamais le
      code. Pas de licence = traite comme tous-droits-réservés, technique seulement.
      Clause non commerciale = un blocage ; remonte-le à ton humain.
-   - *Scan louche :* greppe les motifs de cloaking / spam / faux avis / arnaque.
+   - *Scan louche :* utilise `rg` pour les motifs de cloaking / spam / faux avis / arnaque.
      Signale-les fort.
    - *Pas d'installation sauvage :* jamais de `pip install` / `npm install` d'une
      dépendance non vérifiée (le typo-squatting est une vraie attaque de chaîne
@@ -56,12 +69,33 @@ citation est un fait, pas une décoration.
    (consigné à voix haute, jamais en silence), et un test-contrat en échec par capacité,
    qui vérifie un effet réel — un fichier, une ligne en base, une vraie sortie. Ne mocke
    que le transport d'une API externe payante, jamais la logique.
-6. **Reconstruis rouge d'abord.** Committe les tests en échec, puis construis jusqu'au
-   vert sur toute la couture. Un évaluateur dans une session vierge et disjointe de l'auteur note le
-   résultat ; le builder ne note jamais son propre travail.
-7. **Cite et consigne.** Écris le crédit d'échafaudage là où la capacité vit
+6. **Intégration native.** Applique [red-first](../red-first/SKILL.md) : observe
+   un vrai échec et scelle le contrat avant la correction minimale à la frontière
+   responsable. Garde le fichier de test initial intact. Cible les vraies commandes
+   lint/typage/tests du dépôt avec [sniper-testing](../sniper-testing/SKILL.md)
+   depuis `base_sha` jusqu'au `candidate_sha` actuel, chemins en attente possédés
+   compris si pertinent. Note contrôles absents ou inapplicables ; n'installe pas
+   un vérificateur arbitraire et n'invente pas de réussite. Exécute
+   [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) dans le workflow pour les
+   preuves de qualité et mutation. Une lacune reçoit une régression supplémentaire
+   distincte, jamais une modification de l'original scellé. Tout reste dans le budget partagé.
+7. **Vérifier la capacité adoptée.** Exerce le résultat natif contre la carte de
+   capacités et la surface réelle de l'utilisateur. Réutilise les preuves de
+   découverte ; demande une autre observation REA seulement pour une comparaison
+   précise non résolue, dans les limites du fournisseur et de l'exécution existants.
+   Choisis un évaluateur compétent via la matrice configurée pour une revue fraîche
+   disjointe de l'auteur sur le candidat agrégé exact ; consigne et exclue
+   l'exécution autrice. Le builder ne se note jamais. Exécute la passe obligatoire
+   des suites affectées et suis la procédure de livraison autorisée du projet.
+   Preuves statiques amont ou GREEN local seuls ne prouvent pas la livraison native réelle.
+8. **Cite et consigne.** Écris le crédit d'échafaudage là où la capacité vit
    désormais : auteur, projet, licence, ce qui est emprunté (l'échafaudage) et ce qui
    est à toi (la réingénierie). N'invente jamais un crédit. N'en retire jamais un.
+   Rends carte, candidat exact, résultats, attribution et lacunes au responsable.
+   Si le budget expire ou un contrôle requis est impossible, sauvegarde
+   **STILL-BUILDING** avec reste à faire et prochaine action ; poursuis le travail
+   utile autorisé qui ne consomme pas le quota épuisé. Ne fabrique jamais
+   **PROVEN** et n'abandonne pas silencieusement une capacité pour obtenir un succès.
 
 ## Règles dures — une seule suffit à rater le skill
 

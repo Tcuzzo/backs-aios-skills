@@ -1,26 +1,43 @@
 ---
 name: fix-shit
-description: Diagnose and close a reported failure end to end with a reproducer, root cause, class-level repair, consumer tests, and real-path proof. Use when the operator says fix shit, stop swallowing errors, or finish a stubborn bug.
+description: "Wenn der Operator kaputtes Verhalten meldet, fix shit oder stop swallowing errors sagt oder einen hartnäckigen Bug abgeschlossen haben möchte."
 license: MIT
 ---
 
 # Fix Shit
 
-Use this as the fast entry point into `root-cause-first` and `repair-loop`.
-It is a repair skill, not a permission to hide a failing signal.
+Nutze diesen schnellen Einstieg in `root-cause-first` und `repair-loop` innerhalb
+der aktuellen [BACKS Build Flow](../backs-build-flow/SKILL.md)-Aufgabe. Bewahre
+Integrationsverantwortlichen, Operator-Essence, `task_mode`, Kandidatenidentität
+und Belege; lade kein gültiges Kontextpaket erneut und starte keinen zweiten
+Lebenszyklus. Ein direkter Aufruf legt das Paket einmal an. Restbudget und Frist
+von [bounded-loops](../bounded-loops/SKILL.md) gelten für jede Reproduktion,
+Reparatur, Modell-Fallback und Prüfung. Dieser Skill setzt sie nie zurück und
+versteckt kein Fehlersignal.
 
 1. Name the user's broken behavior and the exact surface where it appears.
-2. Build a repeatable red signal from the real path. Trace the input and each
-   boundary to find where actual behavior diverges from expected behavior.
+2. Erzeuge ein wiederholbares rotes Signal auf dem echten Pfad. Verfolge Eingabe
+   und jede Grenze bis zur Abweichung zwischen tatsächlichem und erwartetem
+   Verhalten. Versiegle den ursprünglichen Fehlervertrag mit
+   [red-first](../red-first/SKILL.md), bevor ein Builder die zuständige
+   Schnittstelle ändert. Eine Diagnoseaufgabe gibt diesen Beleg zurück.
 3. Identify the root cause and all callers of the broken seam. Preserve the
    original error in logs or the operator-facing state; a fallback may protect
    the app, but it must not turn failure into false success.
-4. Make the smallest change that closes the failure class. Add a test that fails
-   on the old behavior and covers the seam that failed.
-5. Run focused tests, the affected consumers, and the actual app path. Verify
-   both the desired result and the explicit failure state. Ask an author-disjoint
-   reviewer to inspect the change when available.
-6. Report PROVEN or STILL-BUILDING, with the evidence and any remaining red bar.
+4. Nutze für einen autorisierten Fix [repair-loop](../repair-loop/SKILL.md)
+   innerhalb des Ablaufs: kleinste Reparatur der Fehlerklasse, echte Lint-/Typ-/
+   Testbefehle im Umfang des festgehaltenen Kandidatengesamtdiffs, danach Qualität
+   und Mutation mit clean-code-gauntlet. Bewahre das versiegelte Original;
+   neue Lücken erhalten separate Ergänzungstests. Verwende verifizierte Stufen weiter.
+5. Schließe vorgeschriebenes autor-disjunktes Review (author-disjoint), Landungsprüfung betroffener
+   Suiten und echte App-Pfadprüfungen für die gewünschte Lieferung ab. Prüfe
+   gewünschtes Ergebnis und ausdrücklichen Fehlerzustand. Fehlende Reviewer-
+   Fähigkeit ist eine Runtime-Lücke, kein selbst ausgestellter unabhängiger Erfolg.
+6. Gib Kandidat und Belege an den Integrationsverantwortlichen zurück. Melde PROVEN
+   nur mit erforderlichem Review und realen Lieferbelegen; andernfalls sichere
+   STILL-BUILDING mit genauem offenen Fehler und nächster Handlung. Erschöpftes
+   Budget bewahrt Arbeit und Grenzen; setze nützliche freie Arbeit nur innerhalb
+   ihres Restkontingents fort.
 
 If the error is intermittent, capture timing and a bounded reproduction rate;
 do not infer a cause from one green rerun. For code-location ambiguity, start

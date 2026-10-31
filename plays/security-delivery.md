@@ -9,48 +9,18 @@ construction: the harness enforces it, the model is never trusted to remember.
 - An agent with tools touches untrusted content — web pages, issues, email, input.
 - You are adding dependencies or CI to something that ships.
 
-The ship gate, at a glance:
+## Shared task and limits
 
-```
-+--------------------------------------------+
-| 1 secret gate  verified-only scan; one     |
-|   live credential fails the build          |
-+--------------------------------------------+
-| 2 egress lockdown  deny by default;        |
-|   canonicalize before allowlist match      |
-+--------------------------------------------+
-| 3 break the lethal trifecta  one leg       |
-|   always missing on every path             |
-+--------------------------------------------+
-| 4 taint tracking  tainted session =>       |
-|   policy-gate every exfil-capable action   |
-+--------------------------------------------+
-| 5 supply chain  hash-pin every dep, no     |
-|   install scripts, SHA-pinned CI           |
-+--------------------------------------------+
-| 6 clean-code-gauntlet  mutate detectors,   |<--------------------------+
-|   parsers, predicates to zero survivors    |  a survivor or a          |
-+--------------------------------------------+  sandbox catch ->         |
-| 7 sniper-testing  mock outbound network    |   +---------------------+ |
-|   only, never payload or parser            |   |  LORD OF THE LOOP   |-+
-+--------------------------------------------+   | one hand drives the |
-| 8 sandbox before ship  outbound blocked,   |-->| loop: dispatch,     |
-|   watch writes + calls, hard-kill armed    |   | judge, loop back    |
-+--------------------------------------------+   | until the gate is   |
-| 9 provenance  SBOM + signed provenance;    |   | green. a lane never |
-|   still review the source                  |   | lands its own work. |
-+--------------------------------------------+   +---------------------+
-          |
-          | every gate green
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no ship:      |
-| no live credential anywhere . no path      |
-| holds all three trifecta legs . deps +     |
-| CI hash-pinned . zero surviving mutants    |
-| . sandboxed before ship                    |
-+--------------------------------------------+
-```
+Apply this play inside the current [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)
+task packet. Keep one integration owner, the requested `task_mode`, pinned base
+and candidate revisions, operator essence, and current evidence. Reuse applicable
+loaded skill bodies; this play adds its domain gates without restarting the task.
+
+[bounded-loops](../skills/bounded-loops/SKILL.md) owns the original deadline and
+remaining allowances across retries, workers, models, reviews, and handoffs.
+Never reset them for a nested play. On exhaustion, checkpoint **STILL-BUILDING**
+with the candidate, evidence, unmet gates, and next action. Continue useful
+authorized work only within its remaining allowance; no missing gate becomes a pass.
 
 ## The chain
 
@@ -72,11 +42,16 @@ The ship gate, at a glance:
    every CI action to a full commit hash, not a tag.
 6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — security code
    carries the strictest bar. Run mutation testing over every detector, parser,
-   and policy predicate, and drive surviving mutants to zero. A flipped comparison
-   inside a threat check that the suite still passes IS the vulnerability.
-7. [sniper-testing](../skills/sniper-testing/SKILL.md) — mock ONLY the outbound
-   network, never the payload or the parser under test: a mocked detector is a
-   blind sensor in production.
+   and policy predicate within the shared budget; meaningful survivors block the
+   ship. Add missing assertions in separate supplemental tests, preserving the
+   sealed RED original. A flipped comparison inside a threat check that the suite
+   still passes IS the vulnerability.
+7. [sniper-testing](../skills/sniper-testing/SKILL.md) — use actual repo lint/type/test
+   commands scoped from the pinned aggregate candidate diff and report gaps or
+   justified N/A checks. Mock ONLY outbound network, never payload or the parser
+   under test: a mocked detector is a blind sensor in production. Reuse current
+   scoped evidence before gauntlet work and preserve the required full affected-
+   suite landing gate and author-disjoint review.
 8. Sandbox before ship — run the built artifact in an ephemeral sandbox with all
    outbound blocked and a resource hard-kill armed. Watch what it writes and what
    it tries to call.

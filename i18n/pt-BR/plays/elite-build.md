@@ -1,132 +1,125 @@
 # Elite Build — o play mestre
 
-O play padrão para qualquer pedido de "constrói X", "conserta X" ou "melhora X".
-O humano declara o objetivo uma vez; este play monta o ambiente inteiro para que
-ele nunca precise re-explicar a base. Leia a intenção, carregue o humano, trave
-o plano, prove o vermelho, construa, teste apertado, meça, avalie às cegas,
-pouse com prova ao vivo.
+Use este play completo quando solicitado expressamente ou quando construção,
+correção ou melhoria precisar de suas etapas compostas de design, construção,
+qualidade e revisão. O humano declara o objetivo uma vez. Mudança focada pode
+usar métodos pertinentes do BACKS Build Flow sem iniciar todo este play;
+selecioná-lo preserva todos os gates aplicáveis abaixo.
 
-## Quando rodar
+## Uma tarefa, um responsável pela integração
 
-Qualquer build, fix ou melhoria com risco real. Uma edição trivial de uma linha
-pode pular direto para [sniper-testing](../skills/sniper-testing/SKILL.md) e
-pousar.
+[BACKS Build Flow](../skills/backs-build-flow/SKILL.md) cuida do pacote da tarefa,
+`task_mode`, essência do operador e conclusão. Reutilize contexto atual, corpos
+reais carregados e evidências; atualize etapa apenas quando entradas ou candidato
+mudarem. Preserve `base_sha` fixado, `candidate_sha` atual e um responsável entre
+todas as lanes. Chamar especialista não inicia outro ciclo de vida.
 
-O loop, num relance:
-
-```
-+--------------------------------------------+
-| 0 optimus  boot the floor first            |
-+--------------------------------------------+
-| 1 intent-compiler  the ask is the spec     |
-+--------------------------------------------+
-| 2 human-calibration  load the profile      |
-+--------------------------------------------+
-| 3 understanding-gates + live-research --   |
-|   read first, then gate Design -> Ship     |
-+--------------------------------------------+
-| 4 wayfinder  lost? chart the route         |
-+--------------------------------------------+
-| 5 red-first  failing test committed first  |<--------------------------+
-+--------------------------------------------+  finding -> new red test  |
-| 6 build  fleet-ladder + model-fusion;      |   +---------------------+ |
-|   bugs: repair-loop + seam-engineering     |   |  LORD OF THE LOOP   |-+
-+--------------------------------------------+   | one hand drives the |
-| 7 sniper-testing  scoped runs only         |   | loop: dispatch,     |
-+--------------------------------------------+   | judge, loop back    |
-| 8 clean-code-gauntlet  measure + mutate    |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 9 blind-eval, then blind-tribunal          |-->| lands its own work. |
-+--------------------------------------------+   +---------------------+
-          |
-          | every juror passes
-          v
-+--------------------------------------------+
-| 10 LANDING GATE -- all green or no land:   |
-|    red test untouched . builder != grader  |
-|    every finding closed . one full pass .  |
-|    live proof on the human's own surface . |
-|    own files only . two-word report        |
-+--------------------------------------------+
-```
-
-*Lord of the Loop = o dono do loop, que conduz a iteração até o gate de pouso ficar verde; LAND = o pouso — o portão final que só abre com tudo verde.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) cuida do prazo original e cotas
+restantes. Pesquisa, builders, lint/tipos/tests, mutação, revisões, modelos
+alternativos e handoffs gastam os mesmos limites. Nunca os reinicie em play
+aninhado. Ao esgotar, salve **STILL-BUILDING** com candidato, evidências, gates
+pendentes e próxima ação; conclua trabalho útil autorizado que não consuma a cota
+esgotada. Limite de orçamento não dispensa gate.
 
 ## A cadeia
 
-0. [optimus](../skills/optimus/SKILL.md) — suba o harness antes de qualquer
-   edição. O piso carrega primeiro, toda sessão, toda vez.
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — leia o pedido como a
-   spec, inteiro. Deduza a intenção antes de levantar qualquer decisão de
-   entrega ou de opção. Nunca apresente um menu de opções quando existe uma
-   solução clara — resolva.
-2. [human-calibration](../skills/human-calibration/SKILL.md) — carregue o perfil
-   validado do humano e aplique. Nunca re-interrogue um humano que você já
-   conhece.
-3. [understanding-gates](../skills/understanding-gates/SKILL.md) — Design →
-   Plano → Build → Teste → Entrega, cada etapa com gate. Antes de qualquer
-   design: leia o que já existe via
-   [live-research](../skills/live-research/SKILL.md), reutilize o que está
-   escrito, mapeie a topologia inteira. A resposta quase sempre já está escrita.
-4. [wayfinder](../skills/wayfinder/SKILL.md) — quando se perder em qualquer
-   passo, trace a rota a partir da evidência. Nunca estacione no humano uma
-   pergunta que a evidência responde.
-5. [red-first](../skills/red-first/SKILL.md) — escreva o teste de contrato que
-   falha e commite ANTES de qualquer builder rodar. O builder não pode tocar
-   nesse teste.
-6. Construa. Espalhe lanes paralelas por padrão — nunca serialize o que pode
-   rodar junto. Cada lane ganha seu próprio branch de rascunho ou worktree.
-   Sozinho, numa sessão só? Uma lane É o fan-out — construa num branch de
-   rascunho e siga. (Um worktree é um segundo checkout do mesmo repositório em
-   outra pasta, para dois builders nunca tocarem nos mesmos arquivos.) Resolva
-   os builders por [fleet-ladder](../skills/fleet-ladder/SKILL.md); combine os
-   rascunhos com [model-fusion](../skills/model-fusion/SKILL.md). Para um bug,
-   rode o [repair-loop](../skills/repair-loop/SKILL.md) e feche a CLASSE na
-   costura compartilhada, conforme
-   [seam-engineering](../skills/seam-engineering/SKILL.md).
-7. [sniper-testing](../skills/sniper-testing/SKILL.md) — só execuções com escopo
-   enquanto itera; o passe completo dos módulos tocados espera o pouso
-   (passo 10).
-8. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — meça antes de
-   pousar: suíte sniper, score de risco complexidade-vezes-cobertura abaixo do
-   seu teto, depois teste de mutação até zero sobreviventes. Meça o código;
-   nunca avalie no olho.
-9. [blind-eval](../skills/blind-eval/SKILL.md), depois
-   [blind-tribunal](../skills/blind-tribunal/SKILL.md) — um envelope com a
-   autoria apagada vai para avaliadores em sessões frescas sem contexto do
-   autor. Quem constrói nunca avalia o próprio trabalho. Cada achado de
-   jurado vira um novo teste vermelho; reconvoque até todo jurado aprovar. Rig
-   solo? Siga a regra "Solo rig" do blind-tribunal — e registre a configuração
-   de um único degrau como proveniência, não como um gate enfraquecido.
-10. Pouse — faça um merge limpo, rode UM passe completo das suítes dos módulos
-    tocados, reinicie o serviço real e prove o comportamento na superfície do
-    próprio humano (a página que ele carrega, o comando que ele roda) — nunca
-    uma sonda proxy. Depois reporte.
+0. [optimus](../skills/optimus/SKILL.md) — estabeleça piso e Build Flow uma vez
+   por sessão. Reutilize os corpos reais ainda presentes no contexto e seus recibos
+   de origem; um recibo sozinho não substitui um corpo ausente. Uma chamada aninhada
+   não reinicia o ciclo nem afirma uma invocação que não ocorreu.
+1. Use intenção e essência estabelecidas pelo Build Flow. Leia pedido inteiro e
+   correções atuais; deduza a diretriz antes de apresentar decisões de entrega ou
+   opções. Resolva diretamente o que pode ser resolvido com evidências.
+2. [human-calibration](../skills/human-calibration/SKILL.md) — aplique o perfil
+   validado já no pacote. Carregue apenas contexto aplicável ausente; nunca
+   reinterrogue o humano nem reconstrua o mesmo perfil em cada etapa.
+3. [turn-and-burn](../skills/turn-and-burn/SKILL.md) — preserve requisitos de
+   composição da equipe e revisão do plano da missão. Consulte essência de cada
+   modelo (know-thyself), `docs/BACKS_LESSONS_LEARNED.md` e `memory/MEMORY.md`
+   quando disponíveis. São registros de capacidade e lições distintos da essência
+   do operador. Reutilize evidências atuais do burn; qualquer Absorb necessário
+   compartilha a missão e devolve resultado ao responsável pela integração.
+4. [understanding-gates](../skills/understanding-gates/SKILL.md) — preserve gates
+   Design → Plano → Construção → Tests → Entrega. Use
+   [live-research](../skills/live-research/SKILL.md) para inspecionar caminho afetado,
+   responsáveis, consumidores e costura de entrega. Siga dependências adicionais
+   quando as evidências indicarem que podem mudar o resultado; não repita
+   levantamento do sistema inteiro antes de cada edição. Comece o próximo passo
+   executável ao atender à condição de contexto suficiente do Build Flow.
+5. [architecture-engineer](../skills/architecture-engineer/SKILL.md) — se o diff
+   tocar fronteira de módulo, direção de dependência ou costura compartilhada,
+   aplique revisão estrutural e classificação de superfícies de autoridade.
+   Cite regra local ou falha concreta por trás de cada violação; use ADR para
+   decisões duradouras.
+6. [wayfinder](../skills/wayfinder/SKILL.md) — trace com evidência uma rota realmente
+   pendente. Não planeje novamente quando a rota já for conhecida.
+7. [red-first](../skills/red-first/SKILL.md) — observe e commite contrato real
+   falhando antes de executar seu builder. Registre selo e preserve arquivo original
+   byte a byte. Achados posteriores recebem tests suplementares separados; não
+   podem reescrever RED original.
+8. Construa a menor mudança completa na costura responsável. Paralelize perguntas
+   e trabalho independentes com propriedade explícita de arquivos ou worktrees
+   isolados; preserve um responsável e as regras de concorrência do projeto.
+   Resolva builders por [fleet-ladder](../skills/fleet-ladder/SKILL.md), usando
+   [model-fusion](../skills/model-fusion/SKILL.md) quando a missão exigir.
+   Para defeito, aplique [repair-loop](../skills/repair-loop/SKILL.md) dentro do
+   fluxo e feche a classe na costura compartilhada com
+   [seam-engineering](../skills/seam-engineering/SKILL.md). Devolva achados a esta
+   tarefa sem reiniciar o play recursivamente.
+9. [sniper-testing](../skills/sniper-testing/SKILL.md) — derive escopo do diff
+   agregado de base a candidato mais caminhos próprios pendentes. Execute comandos
+   reais de lint, tipos e tests focados do repo. Registre N/A com motivo e ferramentas
+   obrigatórias ausentes como lacunas; não instale verificadores arbitrários nem
+   invente aprovações. Mantenha execuções focadas durante a iteração.
+10. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — aplique qualidade,
+    complexidade/cobertura e mutação limitada no mesmo fluxo e candidato.
+    Sobrevivente significativo ou achado retorna a RED suplementar e correção
+    mínima dentro do orçamento restante. Reutilize evidência válida, nunca
+    veredito desatualizado de bytes diferentes; não inicie outro ciclo completo.
+11. [blind-eval](../skills/blind-eval/SKILL.md), depois
+    [blind-tribunal](../skills/blind-tribunal/SKILL.md) — entregue pacote congelado
+    de evidências sem autoria a revisores escolhidos ao vivo por capacidade e
+    disponibilidade. Revisão usa execuções novas separadas do autor, sem conversa
+    herdada do builder. Registre execução autora como proveniência e exclua-a.
+    Cada achado fundamentado recebe RED separado, correção e nova revisão dentro
+    da mesma cota. Todos os jurados exigidos precisam aprovar. Siga regra Solo rig
+    do tribunal quando aplicável; registre configuração real e lacunas do runtime
+    sem enfraquecer independência.
+12. Conclua o resultado solicitado. Confira identidade do candidato, rode uma
+    passagem completa das suites dos módulos tocados mais verificações obrigatórias,
+    preserve trabalho concorrente e siga integração autorizada do projeto.
+    Para implantação, verifique código instalado/em execução e superfície real
+    do humano. Reinicie serviço apenas se entrega e procedimento exigirem.
+    Patch local ou revisão não adquire escopo de publicação silenciosamente.
 
-## Gates duros (qualquer um vermelho bloqueia o pouso)
+## Gates duros
 
-- O teste que falha foi commitado antes do build e está intocado — o avaliador
-  verifica que o diff do arquivo de teste está vazio.
-- Quem constrói nunca avalia, e o avaliador roda em uma sessão fresca, sem
-  contexto do autor.
-- Todo achado levantado é fechado, ou adjudicado como "não é bug" com evidência
-  registrada. Nunca adiado em silêncio. Fechamento da costura inteira — a
-  costura é o ponto compartilhado do código onde essa classe de bug mora — ou
-  não há pouso.
-- Prova ao vivo na superfície real do humano. Teste verde com capacidade
-  quebrada é fracasso, não sucesso.
-- Reporte em duas palavras — PROVEN ou STILL-BUILDING — em
-  [human-voice](../skills/human-voice/SKILL.md). Proven significa pousado, mais
-  avaliado de forma independente, mais demonstrado ao vivo.
-- Commite só os arquivos desta mudança — nunca o trabalho em andamento de outra
-  sessão.
+- RED original observado falhando antes do fix e ainda intacto byte a byte;
+  contratos suplementares têm evidências e selos próprios.
+- Gates exigidos de qualidade, lint/tipos/tests e mutação aprovados no candidato
+  exato, com N/A justificados e lacunas reais informadas honestamente.
+- Revisão exigida em execução nova separada do autor; builder nunca avalia o
+  próprio trabalho nem fornece ao revisor a conclusão desejada.
+- Todo achado na costura própria é corrigido ou julgado com evidência. Achado
+  aberto recebe checkpoint explícito e bloqueia integração; nunca é escondido.
+- Requisitos aplicáveis de burn, essência, lições e revisão do plano satisfeitos
+  por evidências atuais. Reutilizar evidência não autoriza pular gate obrigatório.
+- Capacidade **PROVEN** significa integrada, avaliada independentemente e
+  demonstrada na superfície real do humano. Caso contrário, relate
+  **STILL-BUILDING** e a prova exata ausente com
+  [human-voice](../skills/human-voice/SKILL.md). Declare conclusão de revisão ou
+  patch solicitado separadamente de capacidade ao vivo.
+- Commite somente arquivos desta tarefa. Preserve trabalho de outras sessões.
 
-## Funciona bem com
+## Política da escada da frota
 
-- [optimus](../skills/optimus/SKILL.md) — re-suba o piso depois de uma compactação ou de um restart
-- [invariant-floor](../skills/invariant-floor/SKILL.md) — o piso travado que todo pouso precisa cumprir
-- [decision-bar](../skills/decision-bar/SKILL.md) — o que chega ao humano vs. o que executa direto
-- [bounded-loops](../skills/bounded-loops/SKILL.md) — orçamentos e kill-switches em execuções longas
-- [session-handoff](../skills/session-handoff/SKILL.md) — sele o estado antes de parar
+Use [fleet-ladder](../skills/fleet-ladder/SKILL.md) para despacho real, rotas
+configuradas, sondagens, alternativas e independência da revisão. Leia
+`config/fleet_ladder.yaml` e `config/gpu_nodes.yaml` da implantação quando
+disponíveis; o pack não cria resolvedor. Preserve exigências de pesquisa prévia
+para degraus fronteira e suas fontes permitidas de web, GitHub, Reddit e papers.
+Respeite nível de raciocínio e política de eficiência de tokens configurados;
+não fixe IDs de modelos nem trunque evidências para fabricar conformidade.
 
-**Weight:** a pilha completa — disciplina free, portões light e três passos heavy (model fusion, o gauntlet, o tribunal) — o gasto heavy se paga em qualquer coisa que vai para produção, que é exatamente para isso que este play existe.
+Use [session-handoff](../skills/session-handoff/SKILL.md) para preservar candidato,
+selos, evidências, prazo e cotas restantes antes de uma interrupção.

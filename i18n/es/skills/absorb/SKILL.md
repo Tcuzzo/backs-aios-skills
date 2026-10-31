@@ -1,6 +1,6 @@
 ---
 name: "absorb"
-description: "Úsala cuando necesites una capacidad que un proyecto open source ya ofrece — adóptala y hazle reingeniería como skill nativa en vez de inventar un duplicado. Trigger words: absorb, adopt, port, re-engineer, ingest a repo, prior art, capability port, make this native. Disparadores: absorber, adoptar, portar, reingeniería, ingerir un repo, arte previo, hazlo nativo."
+description: "Úsala cuando una capacidad necesaria pueda existir en un proyecto open source, o el operador pida absorber, adoptar, portar, hacer reingeniería, ingerir un repo, evaluar arte previo o volver nativa una capacidad."
 license: "MIT"
 ---
 
@@ -23,19 +23,32 @@ hecho, no un adorno.
 
 ## Pasos
 
+Usa el paquete actual de [BACKS Build Flow](../backs-build-flow/SKILL.md) y su
+responsable de integración. Una invocación directa crea ese paquete una vez;
+una llamada anidada devuelve evidencia de adopción a quien llama. Reutiliza
+contexto válido, esencia del operador y cuerpos ya cargados.
+[bounded-loops](../bounded-loops/SKILL.md) controla plazo y cupos restantes de la
+misión; descubrimiento, construcción, mutaciones, revisiones, cambios de modelo
+y traspasos consumen ese mismo presupuesto. Otra fase o trabajador no lo reinicia.
+Respeta `task_mode`: revisar o diagnosticar no autoriza ediciones nativas ni entrega.
+
 1. **Caza el arte previo primero.** Busca antes de construir. Un duplicado que
    inventas es peor que un andamiaje que adoptas: heredas cero pruebas de campo y
    todos los bugs corren por tu cuenta.
-2. **Ingiere más allá del README.** Trae los metadatos del proyecto (licencia,
-   actividad, lenguaje) desde la API de la plataforma. Haz un shallow-clone en un
-   directorio temporal de trabajo. Lee el código y los tests. El README es
-   marketing; el código es la verdad.
+2. **Descubre más allá del README.** Trae metadatos del proyecto (licencia,
+   actividad, lenguaje) desde la API de la plataforma. Clona superficialmente en
+   un directorio temporal. Lee código y tests. Para artefactos distribuidos o
+   comportamiento solicitado que el código no permita resolver, llama a
+   [rea-investigation](../rea-investigation/SKILL.md) con destino exacto y pregunta
+   acotada. REA devuelve evidencia a este llamador; no reinicia Absorb. Registra
+   identidad original, observaciones, límites e incógnitas antes de elegir qué
+   adoptar. Los hallazgos estáticos no establecen comportamiento de runtime.
 3. **Corre las puertas de confianza.**
    - *Licencia:* permisiva (MIT / Apache / BSD / MPL) = segura para reingeniería.
      Copyleft (GPL / AGPL) = solo la técnica — reconstruye la idea, nunca copies
      el código. Sin licencia = trátalo como todos-los-derechos-reservados, solo la
      técnica. Términos no comerciales = un bloqueo; llévaselo a tu humano.
-   - *Escaneo de cosas turbias:* haz grep buscando patrones de cloaking / spam /
+   - *Escaneo de cosas turbias:* usa `rg` para buscar patrones de cloaking / spam /
      reseñas falsas / estafa. Señálalo con ruido.
    - *Nada de instalaciones a lo loco:* nunca hagas `pip install` / `npm install`
      de una dependencia sin examinar (el typo-squatting es un ataque real a la
@@ -56,17 +69,33 @@ hecho, no un adorno.
    contrato en rojo por capacidad que verifique un efecto real — un archivo, una
    fila en la base de datos, salida de verdad. Mockea solo el transporte de una API
    externa de pago, nunca la lógica.
-6. **Reconstruye en rojo primero.** Haz commit de los tests que fallan y luego
-   construye hasta el verde en toda la costura. Un evaluador que no sea del
-   constructor, elegido en vivo por capacidad y disponibilidad desde la matriz
-   de peldaños configurada, evalúa el resultado; la ejecución autora que
-   construyó queda descalificada, igual que cualquier sesión que haya heredado
-   la conversación o el contexto del constructor. El evaluador trabaja en una
-   sesión fresca y disjunta del autor — el que construye nunca
-   califica su propio trabajo.
-7. **Cita y registra.** Escribe el crédito del andamiaje donde ahora vive la
-   capacidad: autor, proyecto, licencia, qué es prestado (el andamiaje) y qué es
-   tuyo (la reingeniería). Nunca inventes un crédito. Nunca borres uno.
+6. **Integración nativa.** Aplica [red-first](../red-first/SKILL.md): observa
+   un fallo real y sella el contrato antes del arreglo mínimo en la costura responsable.
+   Conserva intacto el test original. Acota los comandos reales de lint, tipos
+   y tests del repo mediante [sniper-testing](../sniper-testing/SKILL.md), con
+   `base_sha` fijado y `candidate_sha` actual, incluyendo rutas pendientes propias.
+   Registra comprobaciones no disponibles o no aplicables; nunca instales un
+   comprobador arbitrario ni inventes un pase. Ejecuta
+   [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) en el mismo flujo para
+   evidencia de calidad/mutación. Un hueco recibe regresión suplementaria separada,
+   nunca una edición del original sellado. Todo consume el presupuesto compartido.
+7. **Verifica la capacidad adoptada.** Ejercita el resultado nativo contra el
+   mapa de capacidades y la superficie real del usuario. Reutiliza evidencia de
+   descubrimiento; solicita otra observación REA solo para una comparación concreta
+   pendiente, dentro de sus límites existentes de proveedor y ejecución. Elige
+   evaluador capaz mediante la matriz configurada para revisión nueva independiente
+   del autor del candidato agregado exacto; registra y excluye la ejecución autora.
+   El constructor nunca se evalúa a sí mismo. Ejecuta la pasada requerida de suites
+   afectadas y sigue la entrega autorizada del proyecto. Evidencia estática original
+   o GREEN local no demuestra entrega nativa en vivo.
+8. **Cita y registra.** Conserva el crédito del andamiaje donde vive la capacidad:
+   autor, proyecto, licencia, qué se tomó prestado y qué es reingeniería propia.
+   Nunca inventes ni borres créditos. Devuelve mapa de capacidades, candidato exacto,
+   comprobaciones, atribución y huecos al responsable de integración. Si se agota
+   presupuesto o no puede ejecutarse una puerta requerida, guarda **STILL-BUILDING**
+   con trabajo restante y siguiente acción; continúa trabajo útil autorizado que
+   no consuma el cupo agotado. Nunca fabriques **PROVEN** ni omitas capacidades
+   para obtener un pase.
 
 ## Reglas duras — cualquiera de estas reprueba la skill
 

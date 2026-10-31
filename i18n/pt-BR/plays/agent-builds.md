@@ -11,49 +11,25 @@ Ao construir qualquer agente, bot, worker ou serviço de longa duração — qua
 coisa que segura ferramentas, chama a rede ou executa ações sem um humano
 vigiando cada passo.
 
-O build, num relance:
+## Tarefa e limites compartilhados
 
-```
-    +--------------------------------------------+
-    | 1 intent-compiler  mission + limits from   |
-    |   the human's own words                    |
-    +--------------------------------------------+
-+-->| 2 understanding-gates  DOMAIN PRIMITIVES   |
-|   |   first; LLM slot for genuine reasoning    |
-|   +--------------------------------------------+
-|   | 3 red-first  a failing contract test per   |<--------------------------+
-|   |   typed IO boundary, committed first       |  finding -> a new red     |
-|   +--------------------------------------------+  test -> fix ->           |
-|   | 4 build to the doctrine -- every loop      |  re-convene               |
-|   |   inside bounded-loops                     |   +---------------------+ |
-|   +--------------------------------------------+   |  LORD OF THE LOOP   |-+
-|   | 5 sniper-testing  mock transport only      |   | one hand drives the |
-|   +--------------------------------------------+   | loop: dispatch,     |
-|   | 6 clean-code-gauntlet  mutate decision     |   | judge, loop back    |
-|   |   paths to zero survivors                  |   | until the gate is   |
-|   +--------------------------------------------+   | green. a lane never |
-|   | 7 blind-tribunal  independent juror       |-->| lands its own work. |
-|   panel; capability-resolved graders      |   |                    |
-|   +--------------------------------------------+   +---------------------+
-|             |
-|             | every juror passes
-|             v
-|   +--------------------------------------------+
-|   | LANDING GATE -- all green or no ship:      |
-|   | no fail-open boundary, silent fallback,    |
-|   | or swallowed error . zero mutation         |
-|   | survivors in decision paths . cross-       |
-|   | independent pass; the builder never grades .           |
-+---| zero primitives = invalid -> redesign      |
-    +--------------------------------------------+
-```
+Aplique este play dentro do pacote atual do
+[BACKS Build Flow](../skills/backs-build-flow/SKILL.md). Mantenha um responsável
+pela integração, `task_mode` solicitado, revisões base e candidata fixadas,
+essência do operador e evidências atuais. Reutilize corpos pertinentes já carregados;
+este play acrescenta gates do domínio sem reiniciar a tarefa.
 
-*Lord of the Loop = o dono do loop, que conduz a iteração até o gate de pouso ficar verde; LAND = o pouso — o portão final que só abre com tudo verde.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) cuida do prazo original e cotas
+restantes entre retries, trabalhadores, modelos, revisões e handoffs. Nunca os
+reinicie para um play aninhado. Ao esgotar, salve **STILL-BUILDING** com candidato,
+evidências, gates pendentes e próxima ação. Continue trabalho útil autorizado só
+dentro da cota restante; gate ausente não vira aprovação.
 
 ## A cadeia
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — leia o pedido inteiro;
-   a missão e seus limites vêm das palavras do próprio humano.
+1. Use intenção e essência do operador estabelecidas pelo Build Flow; missão
+   e limites vêm do pedido inteiro e das correções atuais.
+
 2. [understanding-gates](../skills/understanding-gates/SKILL.md) — na etapa de
    design, nomeie primeiro as PRIMITIVAS DE DOMÍNIO: toda capacidade central é
    uma função determinística, offline e fail-closed (falha fechado — nega em vez
@@ -63,17 +39,24 @@ O build, num relance:
 4. Construa seguindo a doutrina abaixo. Mantenha todo loop dentro de
    [bounded-loops](../skills/bounded-loops/SKILL.md): orçamentos, checkpoints,
    backoff e um kill-switch barulhento — nunca um retry martelando.
-5. [sniper-testing](../skills/sniper-testing/SKILL.md) — só o transporte de saída
-   pode ser mockado — nunca o roteamento, a montagem do prompt ou o parsing.
+5. [sniper-testing](../skills/sniper-testing/SKILL.md) — derive escopo dos
+   comandos reais de lint/tipos/tests pelo diff agregado fixado do candidato.
+   Registre verificações ausentes e N/A justificados explicitamente. Só transporte
+   de saída pode ser mockado, nunca roteamento, prompts nem parsing.
+
 6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — os handlers de
    ferramenta e as funções de decisão do agente passam pelo gauntlet: score de
    risco abaixo do seu teto, depois mutação sobre os caminhos de decisão até
    zero sobreviventes. Lógica de branch que sobrevive a uma comparação invertida
    nunca foi testada de verdade.
-7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — avaliadores independentes em sessões
-   novas e disjuntas do autor aprovam o agente antes da entrega. Quem constrói nunca
-   avalia o próprio trabalho.
-   Cada achado de jurado vira um novo teste vermelho; reconvoque até todos os jurados passarem.
+7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — painel independente
+   aprova o agente antes da entrega. Escolha avaliadores ao vivo por capacidade
+   e disponibilidade na matriz configurada; registre e exclua a execução autora.
+   Revisam em sessões novas sem conversa nem contexto herdados do builder, que
+   nunca avalia a si mesmo. Cada achado fundamentado recebe RED suplementar separado,
+   preservando o original selado. Corrija e reconvoque dentro da mesma cota restante;
+   todos os jurados exigidos precisam aprovar. Preserve passagem completa exigida
+   das suites afetadas e prova real de entrega.
 
 ## A doutrina (o que o build precisa cumprir)
 
@@ -109,8 +92,10 @@ O build, num relance:
 - Qualquer fronteira fail-open, fallback silencioso ou erro engolido bloqueia a
   entrega.
 - Mutantes sobreviventes em caminhos de decisão bloqueiam a entrega.
-- A avaliação independente precisa passar; a execução que constrói nunca
-  avalia a si mesma.
+- A revisão independente aprova em sessão nova separada do autor, sem conversa
+  nem contexto herdados, escolhida ao vivo por capacidade e disponibilidade na
+  matriz configurada. Registre e exclua a execução autora.
+
 
 ## Funciona bem com
 

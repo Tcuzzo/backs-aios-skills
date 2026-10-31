@@ -11,49 +11,26 @@ Pour construire n'importe quel agent, bot, worker ou service qui tourne en
 continu — tout ce qui tient des outils, appelle le réseau ou agit sans qu'un
 humain surveille chaque étape.
 
-Le build, en un coup d'œil :
+## Tâche et limites communes
 
-```
-    +--------------------------------------------+
-    | 1 intent-compiler  mission + limits from   |
-    |   the human's own words                    |
-    +--------------------------------------------+
-+-->| 2 understanding-gates  DOMAIN PRIMITIVES   |
-|   |   first; LLM slot for genuine reasoning    |
-|   +--------------------------------------------+
-|   | 3 red-first  a failing contract test per   |<--------------------------+
-|   |   typed IO boundary, committed first       |  finding -> a new red     |
-|   +--------------------------------------------+  test -> fix ->           |
-|   | 4 build to the doctrine -- every loop      |  re-convene               |
-|   |   inside bounded-loops                     |   +---------------------+ |
-|   +--------------------------------------------+   |  LORD OF THE LOOP   |-+
-|   | 5 sniper-testing  mock transport only      |   | one hand drives the |
-|   +--------------------------------------------+   | loop: dispatch,     |
-|   | 6 clean-code-gauntlet  mutate decision     |   | judge, loop back    |
-|   |   paths to zero survivors                  |   | until the gate is   |
-|   +--------------------------------------------+   | green. a lane never |
-|   | 7 blind-tribunal  independent juror       |-->| lands its own work. |
-|   panel; capability-resolved graders      |   |                    |
-|   +--------------------------------------------+   +---------------------+
-|             |
-|             | every juror passes
-|             v
-|   +--------------------------------------------+
-|   | LANDING GATE -- all green or no ship:      |
-|   | no fail-open boundary, silent fallback,    |
-|   | or swallowed error . zero mutation         |
-|   | survivors in decision paths . cross-       |
-|   | independent pass; the builder never grades .           |
-+---| zero primitives = invalid -> redesign      |
-    +--------------------------------------------+
-```
+Applique ce play dans le dossier [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)
+actuel. Garde un responsable de l'intégration, le `task_mode` demandé, les
+révisions base et candidat épinglées, l'essence opérateur et les preuves actuelles.
+Réutilise les textes chargés pertinents ; ce play ajoute ses contrôles métier
+sans relancer la tâche.
 
-*Dans le schéma : LORD OF THE LOOP = le maître de la boucle, la seule main qui pilote l'itération — dispatch, jugement, rebouclage — jusqu'à ce que la barrière d'atterrissage soit verte ; LANDING GATE = la barrière d'atterrissage — tout au vert, ou pas d'atterrissage.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) possède échéance initiale et quotas
+restants à travers réessais, agents, modèles, revues et relèves. Ne les
+réinitialise jamais pour un play imbriqué. À épuisement, sauvegarde
+**STILL-BUILDING** avec candidat, preuves, barrières non satisfaites et prochaine
+action. Le travail utile autorisé reste dans son quota disponible ; aucun
+contrôle absent ne devient une réussite.
 
 ## La chaîne
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — lis la demande en
-   entier ; la mission et ses limites viennent des mots de l'humain lui-même.
+1. Utilise intention et essence opérateur établies par Build Flow ; mission et
+   limites viennent de la demande entière et des corrections actuelles.
+
 2. [understanding-gates](../skills/understanding-gates/SKILL.md) — dès la phase
    de design, nomme d'abord les PRIMITIVES MÉTIER : chaque capacité cœur est une
    fonction déterministe, hors ligne, qui échoue fermé (fail-closed). Réserve la
@@ -63,18 +40,25 @@ Le build, en un coup d'œil :
 4. Construis selon la doctrine ci-dessous. Garde chaque boucle dans
    [bounded-loops](../skills/bounded-loops/SKILL.md) : budgets, checkpoints,
    backoff, et un kill-switch bruyant — jamais de retry qui martèle.
-5. [sniper-testing](../skills/sniper-testing/SKILL.md) — seul le transport
-   sortant peut être mocké — jamais le routage, la construction du prompt ou le
-   parsing.
+5. [sniper-testing](../skills/sniper-testing/SKILL.md) — cible les vraies commandes
+   lint/typage/tests du dépôt depuis le diff agrégé épinglé du candidat. Consigne
+   contrôles indisponibles et N/A justifiés. Seul le transport sortant peut être
+   mocké, jamais routage, construction du prompt ou parsing.
+
 6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — les handlers
    d'outils et les fonctions de décision de l'agent passent le gauntlet : score
    de risque sous ton plafond, puis mutation sur les chemins de décision jusqu'à
    zéro survivant. Une logique de branche qui survit à une comparaison inversée
    n'a jamais vraiment été testée.
-7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — des graders (les
-   évaluateurs) indépendants dans des sessions vierges et disjointes de l'auteur valident l'agent avant la
-   livraison. Le builder (celui qui construit) ne note jamais son propre travail.
-   Chaque constat d'un juré devient un nouveau test rouge ; reconvoque jusqu'à ce que chaque juré valide.
+7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — un panel indépendant
+   valide l'agent avant livraison. Les évaluateurs travaillent dans des sessions
+   fraîches disjointes de l'auteur, sans conversation ni contexte hérité du builder,
+   choisis en direct par capacité et disponibilité dans la matrice configurée.
+   Consigne et exclue l'exécution autrice ; le builder ne se note jamais. Chaque
+   constat étayé reçoit un RED supplémentaire distinct, l'original scellé intact.
+   Corrige et reconvoque dans le même budget restant ; tous les jurés requis
+   doivent valider avant atterrissage. Garde le contrôle complet obligatoire des
+   suites touchées et les vraies preuves de livraison.
 
 ## La doctrine (ce que le build doit satisfaire)
 

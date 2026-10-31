@@ -1,6 +1,6 @@
 ---
 name: "repair-loop"
-description: "Beim Fixen eines Bugs, beim Schließen eines gemeldeten Issues oder beim Uplift einer Naht von Anfang bis Ende. Fährt die volle Reparatur-Schleife — im Fundament erden, auf Live-Wahrheit reproduzieren, roter Vertrags-Test, die Klasse an der Naht fixen, auf dem echten Pfad verifizieren, unabhängige Bewertung, landen — und iteriert, bis es wahr ist. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build, Reparatur-Schleife, fix das, Naht schließen, bau das fertig."
+description: "Beim Reparieren eines Bugs, Schließen eines gemeldeten Issues, Verbessern einer gemeinsamen Schnittstelle oder Fortsetzen einer unfertigen begrenzten Reparatur. Trigger words: repair loop, dev mode, fix this, uplift, close the seam, dev build, Reparaturschleife."
 license: "MIT"
 ---
 
@@ -12,19 +12,26 @@ ein Verhalten, keine Freigabe-Maschinerie: sie fügt dem Menschen null Gates und
 null Reibung hinzu. Sie bindet den Agenten an eine Disziplin, die „grün, aber
 kaputt" strukturell schwer auslieferbar macht.
 
-## Zuerst laden, vor jedem Entwurf und jedem Edit
+## In die aktuelle Aufgabe einsteigen
 
-1. [invariant-floor](../invariant-floor/SKILL.md) — lies dein Regelwerk, bevor du arbeitest.
-2. [human-calibration](../human-calibration/SKILL.md) — wende das Profil des Menschen an; verhör ihn nie neu.
-3. [understanding-gates](../understanding-gates/SKILL.md) — der Diagnose-Planer: Design → Plan → Build → Test → Ship.
-4. [wayfinder](../wayfinder/SKILL.md) — wenn du verloren bist, kartier die Route; park nie eine Frage beim Menschen.
-5. Kommt die Bitte als Prosa oder Metapher, fahr zuerst [intent-compiler](../intent-compiler/SKILL.md) und loope auf der abgeleiteten Direktive.
+Nutze [BACKS Build Flow](../backs-build-flow/SKILL.md) für Aufgabenpaket,
+Operator-Essence und einen Integrationsverantwortlichen. Verwende passende Regeln,
+Kontext, geladene Skill-Texte und Belege des Aufrufers weiter; erneuere nur
+Verändertes. Ein direkter Aufruf klärt fehlenden Kontext einmal. Lade Fundament
+und erforderliche Understanding-Gates, sofern noch nicht verfügbar; nutze wayfinder
+nur für eine offene Route. Starte für einen Reparaturbefund nicht das äußere Build-Play neu.
+
+[bounded-loops](../bounded-loops/SKILL.md) besitzt gemeinsame Frist und Restversuche/-runden.
+Bewahre `mission_id`, `task_mode`, festen `base_sha` und aktuellen `candidate_sha`
+über Reproduktion, Änderungen, Tools, Modelle, Reviews und Übergaben hinweg.
+Verschachtelte Aufrufe setzen das Budget nie zurück. Review und Diagnose liefern
+Belege ohne Änderungen oder Promotion; Build-Handlungen brauchen diesen Aufgabenrahmen.
 
 ## Die Schleife
 
-1. **Im Fundament erden.** Lade die Regeln und die eigene Wahrheit des Projekts
-   (Doku, Quellcode, Tracker), bevor du Code anfasst. Arbeit aus der Erinnerung
-   an die Regeln zählt nicht.
+1. **Den betroffenen Pfad erden.** Prüfe Regeln, aktuellen Projektcode,
+   Aufruferverträge und vorhandene Prüfungen. Nutze aktuelle relevante Belege
+   weiter, statt das ganze Repository erneut zu auditieren.
 2. **Auf Live-Wahrheit reproduzieren.** Sieh das Versagen selbst, auf dem
    echten Pfad, den der Mensch nutzt — kein Proxy-Probe, kein Vertrauen aufs
    Wort des Bug-Reports. Keine Reproduktion, kein Fix.
@@ -34,18 +41,18 @@ kaputt" strukturell schwer auslieferbar macht.
    [red-first](../red-first/SKILL.md).
 4. **Fix die KLASSE an der Naht** — kein Punkt-Pflaster pro Symptom. Die volle
    Formel steht in [seam-engineering](../seam-engineering/SKILL.md).
-5. **Auf dem echten Pfad verifizieren.** Vertrauen ist gut, prüfen ist Pflicht.
-   Fähigkeit wird auf der eigenen Oberfläche des Menschen bewiesen — die UI, in
-   die er tippt, das Kommando, das er fährt — nie über einen grünen Test auf
-   einer gemockten Naht. Prüf jede Behauptung („der andere Branch hat es
-   gelandet", „der Service ist down“) gegen die Live-Wahrheit, bevor du danach
-   handelst.
-6. **Den Fix vermessen.** Mitten in der Schleife nur die Tests fahren, die die
-   angefasste Naht abdecken — siehe [sniper-testing](../sniper-testing/SKILL.md).
-   Dann den [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) über den
-   geänderten Code: gescopte Tests, Komplexität-gegen-Coverage-Score,
-   begrenztes Mutation-Testing. Überlebt ein Mutant deinen Fix, hat der Test
-   den geänderten Zweig nie erreicht — Fake-Green; weiter iterieren.
+5. **Gezielte Prüfungen ausführen.** Leite mit [sniper-testing](../sniper-testing/SKILL.md)
+   den Umfang aus dem Gesamtdiff von festem `base_sha` bis `candidate_sha` und
+   eigenen ausstehenden Pfaden ab. Führe die echten Lint-, Typprüf- und Testbefehle
+   des Repositories für diesen Umfang aus. Erfasse Befehl, Ergebnis und Revision.
+   Kennzeichne Unanwendbares als **N/A** mit Grund; ein fehlendes Pflichttool ist
+   eine Lücke. Installiere keine beliebigen Tools und erfinde keine Erfolge.
+   Versiegelte Tests bleiben Byte für Byte identisch.
+6. **Im Ablauf messen.** Nutze [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md)
+   für Qualität und begrenzte Mutationsbelege des Kandidaten. Untersuche einen
+   überlebenden Mutanten; zeigt er eine Testlücke, ergänze eine separate Testdatei
+   und bewahre das ursprüngliche RED. Repariere die zuständige Schnittstelle und
+   wiederhole betroffene Prüfungen im selben Restbudget; schwäche nie ein Gate für GREEN.
 7. **Unabhängige Bewertung.** Ein Bewerter, der die Änderung nicht geschrieben
    hat — live nach Fähigkeit und Verfügbarkeit aus der konfigurierten
    Sprossen-Matrix gewählt; die ausführende Session, die gebaut hat, und jede
@@ -58,20 +65,24 @@ kaputt" strukturell schwer auslieferbar macht.
    verifizier, dass die laufende Arbeit anderer Sessions gesichert ist (auf
    einem Branch oder Commit). Committe oder räum nie Arbeit weg, die nicht
    deine ist.
-9. **Landen.** Ein voller Durchlauf über die Suiten der angefassten Module beim
-   Landen, dann committen. Schließ jeden Fund, den die Schleife auf dieser Naht
-   hochgebracht hat — oder halt pro Fund ein explizites, belegtes
-   „kein Bug“-Urteil fest. „Den Großen gefixt, der Rest kommt später“ landet
-   nie.
+9. **Im Umfang verifizieren und landen.** Zur Landung ein voller Durchlauf der
+   betroffenen Modulsuiten plus vorgeschriebene Projektprüfungen, dann autorisierte
+   Lieferprozedur. Prüfe Verhalten auf der echten Nutzeroberfläche oder dem echten
+   Kommando und erfasse genaue Kandidaten-/installierte Revision. Lokale Tests
+   und statische Upstream-Belege begründen keine Live-Lieferung. Schließe jeden
+   Befund dieser Schnittstelle oder dokumentiere je Befund ein ausdrückliches,
+   belegtes „kein Bug“. „Den Großen gefixt, den Rest vertagt“ landet nicht.
 
-## Iterieren, bis es wahr ist
+## Im Missionsbudget iterieren
 
-Eine noch nicht erfüllte Regel stoppt die Schleife nicht — sie treibt sie an.
-Eskalier das Modell oder die Stufe, beseitig den Blocker, versuch es neu, bis
-jeder Schritt oben wahr ist und die Änderung landet. „Gut genug“ ist kein
-Status. Bist du an derselben Naht zweimal ehrlich festgefahren, logg den
-exakten Blocker-Beweis und geh zum nächsten freien Stück — nie stumm
-weiterschleifen.
+Eine gescheiterte Prüfung liefert die nächste begrenzte Hypothese. Wiederhole
+oder wähle eine fähige konfigurierte Route nur im Restkontingent; Modellwechsel
+erzeugen keine neue Mission. Wende Stagnations- und Erschöpfungsregeln von
+bounded-loops an. An einer Grenze: **STILL-BUILDING** mit aktuellem Kandidaten,
+versiegelten Tests, Fehlerbelegen, offenen Gates und genauer nächster Handlung
+sichern. Erledige nützliche autorisierte Arbeit, die das erschöpfte Kontingent
+nicht verbraucht. Ein offener Befund blockiert die Landung, löscht aber keinen
+Fortschritt und wird nicht zu erfundenem **PROVEN**.
 
 ## Harte Regeln — eine davon, und der Skill ist gerissen
 
@@ -82,7 +93,7 @@ weiterschleifen.
   Menschen kaputt ist.
 - Der Builder hat seine eigene Änderung bewertet.
 - Ein hochgekommener Fund beim Landen stumm vertagt.
-- Schleife bei „gut genug“ abgebrochen statt eskaliert.
+- Schleife zurückgesetzt, still aufgegeben oder trotz unerfülltem Gate als grün gemeldet.
 
 ## Report
 

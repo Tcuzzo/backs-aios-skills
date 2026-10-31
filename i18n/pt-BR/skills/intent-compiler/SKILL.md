@@ -1,128 +1,85 @@
 ---
-name: "intent-compiler"
-description: "Use quando o pedido de um humano chega como prosa natural — metáfora, gíria, poesia, atalho comprimido, calor, ou \"você sabe o que eu quero dizer\" — em vez de um ticket. Traduz a linguagem numa diretiva técnica declarada, declara a leitura em uma linha, e então executa. Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing, a prosa é a spec, ler a prosa, traduzir o pedido, pedido ambíguo, o que ele quis dizer, deduzir intenção, metáfora, gíria, linguajar."
-license: "MIT"
+name: intent-compiler
+description: "Use quando um pedido vier como prosa comprimida, metáfora, gíria, abreviação ou referência ambígua e o agente precisar de uma diretriz técnica fundamentada; também quando uma correção mudar a capacidade desejada ou a conclusão solicitada."
+license: MIT
 ---
 
-# A Prosa É a Spec
-**Effort:** free — disciplina de leitura antes de qualquer build, nada extra roda. Remove: builds inteiros perdidos por uma leitura literal errada — a leitura declarada faz um palpite errado custar uma palavra, não um rebuild.
+# Compile o pedido atual
 
-Gente não escreve ticket. Gente fala — rápido, com ritmo, metáfora e calor,
-deixando de fora o que assume que você já sabe. A maioria dos agentes trata isso
-como prompt de baixa qualidade e falha de um de dois jeitos: roda as palavras ao
-pé da letra, ou estaciona uma pergunta e espera.
+Traduza o que o operador disse para um contrato executável, declare brevemente a
+interpretação e continue o trabalho. Uma expressão comprimida pode conter uma
+especificação completa. O operador não precisa reescrevê-la como ticket de engenharia.
 
-Os dois são falhas. A prosa não é um rascunho tosco de uma spec. **A prosa É a
-spec.** Ela carrega mais que um ticket carrega — prioridade, tolerância a risco,
-gosto e o porquê. Expressão comprimida não é pensamento incompleto. Um agente que
-não sabe ler isso está jogando fora a parte mais rica da entrada.
+## Uma interpretação para a tarefa atual
 
-## As três falhas proibidas
+Se o pacote já contém uma diretriz e nenhuma instrução nova a altera, reutilize-a.
+Esta skill interpreta a linguagem;
+[operator-intent-deduction](../operator-intent-deduction/SKILL.md) resolve uma
+decisão pendente dentro da diretriz. Nenhuma reinicia o fluxo completo da outra.
 
-- **Literalismo** — rodar uma metáfora como instrução. "Bota fogo em tudo" não é
-  um delete. "Mata isso" não é um destroy. "Faz isso cantar" não é áudio. Isto é
-  alucinação por dicionário, e é risco de ação destrutiva.
-- **Caricatura** — devolver a gíria, encenar o dialeto, apelar para estereótipo
-  para soar próximo. Leia a cultura; não faça cosplay dela. Um agente ocupado
-  encenando é um agente que não está escutando, e ele lê errado.
-- **Invenção** — preencher uma lacuna com algo que soa certo. Quando a âncora é
-  fraca, diga que é fraca. Nunca fabrique significado.
+### 1. Analise as palavras reais
 
-## Passo 1 — Parse: separe portador de carga
+Extraia capacidade solicitada, ação, superfícies nomeadas, quantidades, restrições
+e conclusão observável. Marque referências e metáforas não resolvidas. Repetição
+pode sinalizar ênfase sem criar outra tarefa. O tom pode expressar urgência;
+não estabelece permissão, tolerância a risco, competência nem identidade.
 
-Reduza a entrada à sua mecânica.
+Interprete linguagem figurada no contexto real da tarefa. Pedir «queima tudo»
+pode se referir a uma abordagem; por si só não autoriza apagar dados. Responda
+com clareza sem imitar um dialeto nem inventar uma persona.
 
-- **Portador** = cadência, repetição, volume, palavrão, calor. O portador marca
-  prioridade e peso emocional. É sinal de verdade. Não é conteúdo.
-- **Carga** = os substantivos, verbos, superfícies nomeadas, restrições e
-  quantidades. Esta é a instrução.
-- **Repetição é ênfase, não segundo pedido.** "Conserta, conserta agora" é um
-  conserto urgente, não dois consertos na fila.
-- **Marque toda metáfora e todo duplo sentido.** Uma palavra pode fazer dois
-  trabalhos ao mesmo tempo — esse é o ponto da forma, não um acidente.
-- **Compressão não é vagueza.** Detalhe faltando geralmente é detalhe que o humano
-  assumiu que você tinha. Vá buscar antes de chamar de faltando.
+### 2. Resolva apenas incertezas que afetam a ação
 
-Saída: o pedido reescrito como *prioridade* + *carga literal* + *uma lista das
-figuras que ainda precisam de chão*.
+Use esta ordem dentro das instruções vigentes:
 
-## Passo 2 — Ancore: prenda cada leitura em evidência
+1. Pedido explícito atual e correções do operador.
+2. Escopo e autorização estabelecidos nesta conversa.
+3. Fatos, alvos, contratos e estado atual verificados do projeto.
+4. Preferências confirmadas e observações sustentadas relevantes de
+   [operator-essence](../operator-essence/SKILL.md).
+5. Inferência provisória claramente identificada quando as evidências forem poucas.
 
-Prioridade estrita — o de cima vence o de baixo, sempre:
+Se a essência estiver ausente ou desatualizada, seu responsável faz uma única
+passagem suportada de insights e devolve um recorte provisório ou atual. Reutilize
+esse resultado nas skills aninhadas; não colete histórico repetidamente.
+Preferências históricas não podem anular instrução nova. Fatos do código podem
+limitar a rota sem reduzir o objetivo.
 
-1. **O registro do próprio humano** — decisões passadas, correções, preferências
-   salvas e perfil (veja [human-calibration](../human-calibration/SKILL.md)).
-2. **A verdade-fonte do projeto** — os arquivos, símbolos, configs e docs de verdade.
-3. **O vernáculo vivido** — o significado real e a história da frase na cultura
-   dela, lidos como contexto. Um dialeto é uma gramática válida com lógica interna própria.
-4. **Priors do modelo** — em último, e nunca sozinhos.
+Evidências qualitativas estabelecem significado e contexto de uma preferência.
+Evidências quantitativas podem descrever resultados repetidos em sua população
+declarada. Contagens isoladas não decidem o que o operador quis dizer; uma tendência
+inferida em relatório não é uma instrução confirmada por ele.
 
-Uma leitura que só alcança o degrau 4 é um chute. Rotule como fraca e siga em frente.
+### 3. Produza a diretriz
 
-## Passo 3 — Deduza: produza a diretiva de quatro partes
+Carregue estes campos no pacote existente, sem criar um segundo plano:
 
-Declare quatro coisas separadas. A divisão existe para parar o risco número um de
-desalinhamento — encolher uma visão grande em algo mais fácil de construir:
+| Campo | Conteúdo obrigatório |
+| --- | --- |
+| Capacidade desejada | O que o operador quer que exista ou aprender. |
+| Limite atual | O que o estado verificado e as capacidades disponíveis permitem hoje. |
+| Rota agora | A próxima ação útil sob a autorização existente. |
+| Rota depois | Dependências restantes para a capacidade completa. |
+| Contrato da tarefa | Modo, alvo, limites, conclusão solicitada e evidência de aceitação. |
+| Incerteza | Incógnitas decisivas e evidências que podem resolvê-las. |
 
-1. **Capacidade pretendida** — o que o humano de fato quer que exista.
-2. **Fronteira atual** — o que o sistema consegue hoje.
-3. **A rota disponível agora.**
-4. **A rota necessária depois.**
+Mantenha visível a capacidade desejada completa quando uma dependência externa
+limitar a rota atual. Uma revisão produz achados; não vira reparo silenciosamente.
 
-**Nunca rebaixe o objetivo porque a rota próxima é curta.** Construa a rota 3,
-nomeie a rota 4, mantenha a capacidade 1 intacta.
+## Declare a interpretação e aja
 
-## Protocolo de saída — declare a leitura, depois construa
+Use uma frase simples quando a interpretação importar:
 
-Abra com uma linha simples, depois execute:
+> Leitura: atualizar a integração existente, preservar sua interface pública e verificar o consumidor real antes da publicação.
 
-> **Read:** <a diretiva deduzida, em uma frase>
+Identifique inferências frágeis quando necessário. Prossiga com trabalho reversível
+justificado pela evidência. Resolva incerteza factual por inspeção ou experimento
+focado. Se faltar autorização decisiva ou houver escolha realmente pendente do
+operador, faça a preparação disponível e apresente uma recomendação concreta e
+uma pergunta; consulte [decision-bar](../decision-bar/SKILL.md). Uma preferência
+antiga não supre permissão ausente para uma nova ação importante.
 
-- Ancorada nos degraus 1–3 → `Read:`
-- Âncora fraca, quase só inferência → `Read (thin):` — e **construa mesmo assim**.
-
-Ambiguidade se resolve decidindo e dizendo — nunca estacionando uma pergunta. A
-leitura declarada é o recibo: se estiver errada, a correção do humano custa uma
-palavra em vez de um build inteiro. Uma pergunta só volta quando a decisão é
-genuinamente dele — gosto, visão, ou risco destrutivo/de perda de dados (veja
-[decision-bar](../decision-bar/SKILL.md)) — e aí como um resumo simples com
-escolhas, nunca um parágrafo de rodeio.
-
-## Fluência, não fantasia
-
-Falar a língua é compreensão e registro: entender o que as palavras significam, e
-responder em fala simples, calorosa e moderna (veja
-[human-voice](../human-voice/SKILL.md)). Fazer cosplay da língua é performance.
-Um agente que fala a língua de verdade não precisa encenar. Fluência aparece como
-acertar a leitura — não como sotaque.
-
-## Leituras de exemplo
-
-| Ele disse | Leitura literal errada | Leitura ancorada |
-|---|---|---|
-| "bota fogo em tudo" | apagar os arquivos | A abordagem está errada na raiz — redesenhe. Calor alto = prioridade máxima. Ação destrutiva ainda precisa de um sim explícito. |
-| "faz isso cantar" | áudio | A superfície deve parecer viva — movimento, transições, resposta rápida. |
-| "não constrói brinquedo" | evitar uma pasta de jogos | Tem que produzir resultado real, não uma demo. |
-| "conserta, conserta agora" | dois tickets | Um conserto, urgente. |
-
-## Bandeiras vermelhas — você está prestes a ler errado
-
-- "Este prompt é vago demais para agir." → É comprimido. Ancore primeiro.
-- "Vou perguntar o que ele quis dizer." → Declare a leitura e construa.
-- "Vou espelhar a energia dele na resposta." → Caricatura. Leia, não encene.
-- "Vou construir a versão pequena que é claramente possível." → Nunca encolha a
-  capacidade pretendida — nomeie rota-agora e rota-depois.
-- "As palavras de clima não são requisito de verdade." → O clima É uma spec. Roteie
-  leituras estéticas para [design-taste](../design-taste/SKILL.md).
-- "Vou preencher a lacuna com o que costuma fazer sentido." → Isso é prior sozinho.
-  Rotule como fraco, ou vá achar a âncora.
-
-## Combina bem com
-
-- [understanding-gates](../understanding-gates/SKILL.md) — traduza antes de
-  pontuar; um portão de estágio avaliado sobre prosa poética crua marca trabalho
-  fiel como errado.
-- [human-calibration](../human-calibration/SKILL.md) — o registro em que esta
-  skill ancora.
-- [decision-bar](../decision-bar/SKILL.md) — a única barra que uma pergunta pode cruzar.
-- [human-voice](../human-voice/SKILL.md) — o registro do caminho de volta.
+Devolva a diretriz ao [Build Flow](../backs-build-flow/SKILL.md). Invoque dedução de
+intenção apenas para uma decisão real restante. Uma correção posterior atualiza
+o pacote e as evidências pertinentes da essência; não substitui silenciosamente
+o objetivo nem reinicia o orçamento restante da missão.

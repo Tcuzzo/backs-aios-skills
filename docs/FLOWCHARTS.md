@@ -15,7 +15,9 @@ Shapes carry meaning so the guide never depends on color:
 
 ## Quick links
 
-**Skills:** [building-with-backs](../skills/building-with-backs/SKILL.md) ·
+**Skills:** [backs-build-flow](../skills/backs-build-flow/SKILL.md) ·
+[operator-essence](../skills/operator-essence/SKILL.md) ·
+[building-with-backs](../skills/building-with-backs/SKILL.md) ·
 [fix-shit](../skills/fix-shit/SKILL.md) ·
 [karpathy](../skills/karpathy/SKILL.md) ·
 [debugging-engineer](../skills/debugging-engineer/SKILL.md) ·
@@ -87,6 +89,66 @@ Shapes carry meaning so the guide never depends on color:
 [web-build](../skills/web-build/SKILL.md). `optimus` and `design-taste`
 already have canonical skill forms.
 
+## Build Flow: one context packet and one bounded owner
+
+Use Build Flow for ordinary scoped work. Invoke a full play when requested or
+required by the project. Operators' evidence belongs in private essence files;
+current instructions and project facts remain authoritative.
+
+```mermaid
+flowchart TD
+  accTitle: Build Flow from current context to bounded delivery
+  accDescr: The task owner reuses context and operator awareness, starts at a concrete acceptance check, cycles through RED, implementation and scoped quality checks within one budget, then delivers or checkpoints unresolved work.
+  Task[Current task and owner] --> Context{Enough context to act?}
+  Context -->|No| Gather[Resolve a named evidence gap]
+  Gather --> Context
+  Context -->|Yes| Red[Real RED contract]
+  Red --> Build[Complete the owning seam]
+  Build --> Check[Lint, types, tests and gauntlet]
+  Check --> Pass{Required evidence passes?}
+  Pass -->|Yes| Deliver[Verify requested delivery]
+  Pass -->|No| Budget{Mission allowance remains?}
+  Budget -->|Yes| Build
+  Budget -->|No| Save[Checkpoint STILL-BUILDING]
+```
+
+<details>
+<summary>Text version</summary>
+
+One owner reuses the current packet. Resolve missing evidence
+only when it changes the next action. Preserve real RED, implement the complete
+seam, and execute scoped lint, type, behavior and quality checks. A failure uses
+the same remaining allowance; exhaustion checkpoints the unmet gate. Successful
+checks lead to verification of the requested finish, not an assumed deployment.
+
+</details>
+
+```mermaid
+flowchart TD
+  accTitle: Operator essence lookup and insight fallback
+  accDescr: A current private essence is reused. Missing or stale evidence triggers one supported insights assessment or a supplied-evidence fallback, then returns a relevant contextual slice to the task owner.
+  Owner[Current task owner] --> Exists{Current private essence?}
+  Exists -->|Yes| Slice[Relevant awareness and limits]
+  Exists -->|No| Insight{Supported insights available?}
+  Insight -->|Yes| Assess[Run once and assess evidence]
+  Insight -->|No| Supplied[Assess supplied evidence]
+  Assess --> Essence[Grounded or provisional essence]
+  Supplied --> Essence
+  Essence --> Slice
+  Slice --> Work[Continue same task and budget]
+```
+
+<details>
+<summary>Text version</summary>
+
+Reuse a current private essence or assess available insights once.
+When the host has no callable insights workflow, label the supplied-evidence
+fallback. Unknown counts and sampling remain unknown. Return relevant awareness
+with uncertainty; it cannot grant authorization, change task mode or reset budget.
+A read-only task returns context without writing into the protected repository.
+
+</details>
+
 ## 1. Pick the play
 
 Start with the shape of the work. A play is a tested combination of skills; it does
@@ -98,7 +160,7 @@ flowchart LR
   accDescr: A request routes to one of eight named plays for general builds, agents, web apps, visual design, grading, parallel work, security, or bug hunting.
 
   Start([Human request]) --> Route{What kind of work is it?}
-  Route -->|General build or fix| Elite[[elite-build]]
+  Route -->|Full build when requested or required| Elite[[elite-build]]
   Route -->|Agent or service| Agent[[agent-builds]]
   Route -->|Web app, site, or API| Web[[web-app-builds]]
   Route -->|Visual surface| Taste[[design-taste]]
@@ -227,7 +289,7 @@ remain available throughout loading and recovery.
 flowchart TD
   accTitle: Automatic grounding without tool denial
   accDescr: Session start and compaction deliver current floor bodies. Missing grounding triggers another load, with truthful evidence and no tool refusal.
-  Start([Session start or compaction]) --> Read[Read actual harness, Optimus and Yoke]
+  Start([Session start or compaction]) --> Read[Read actual harness, Optimus, Yoke and Build Flow]
   Missing[Matched tool without session marker] --> Read
   Read --> Available{Bodies available?}
   Available -->|Yes| Deliver[Deliver bodies into host context]
@@ -243,7 +305,7 @@ flowchart TD
 
 ```text
 Session start, compaction, or a matched tool with no loaded marker
-  -> read the current harness, Optimus and Yoke bodies
+  -> read the current harness, Optimus, Yoke and Build Flow bodies
   -> bodies available: deliver context, then record hashes and marker
   -> bodies unavailable: report the missing evidence
   -> continue work with tools available

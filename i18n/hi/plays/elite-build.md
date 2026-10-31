@@ -1,123 +1,115 @@
 # Elite Build — मास्टर play
 
-किसी भी "X बनाओ", "X ठीक करो", या "X uplift करो" वाली माँग का default play। इंसान
-लक्ष्य एक बार बताता है; यह play पूरा माहौल खुद जोड़ लेता है, ताकि baseline कभी
-दोबारा समझानी न पड़े। intent पढ़ो, इंसान को load करो, plan पर gate लगाओ, पहले red
-साबित करो, बनाओ, कसकर test करो, नापो, blind grade कराओ, land करो।
+यह full play तब लें जब explicitly माँगा गया हो, या build/fix/uplift को इसके संयुक्त
+design, build, quality और review stages चाहिए हों। Human goal एक बार कहता है। Scoped
+change पूरे play को शुरू किए बिना BACKS Build Flow के relevant methods ले सकता है;
+यह play चुनने पर नीचे के हर applicable gate को बनाए रखें।
 
-## कब चलाएँ
+## एक task, एक integration owner
 
-कोई भी build, fix, या uplift जिसमें असली दाँव लगा हो। छोटा-सा one-line edit सीधे
-[sniper-testing](../skills/sniper-testing/SKILL.md) पर जाकर land हो सकता है।
+[BACKS Build Flow](../skills/backs-build-flow/SKILL.md) task packet, `task_mode`,
+operator essence और finish का owner है। Current context, actual loaded skill bodies
+और evidence reuse करें; stage के inputs/candidate बदलें तभी उसे refresh करें। सभी lanes
+में pinned `base_sha`, current `candidate_sha` और एक integration owner रखें। Specialist
+call दूसरा lifecycle शुरू नहीं करती।
 
-पूरा loop, एक नज़र में:
-
-```
-+--------------------------------------------+
-| 0 optimus  boot the floor first            |
-+--------------------------------------------+
-| 1 intent-compiler  the ask is the spec     |
-+--------------------------------------------+
-| 2 human-calibration  load the profile      |
-+--------------------------------------------+
-| 3 understanding-gates + live-research --   |
-|   read first, then gate Design -> Ship     |
-+--------------------------------------------+
-| 4 wayfinder  lost? chart the route         |
-+--------------------------------------------+
-| 5 red-first  failing test committed first  |<--------------------------+
-+--------------------------------------------+  finding -> new red test  |
-| 6 build  fleet-ladder + model-fusion;      |   +---------------------+ |
-|   bugs: repair-loop + seam-engineering     |   |  LORD OF THE LOOP   |-+
-+--------------------------------------------+   | one hand drives the |
-| 7 sniper-testing  scoped runs only         |   | loop: dispatch,     |
-+--------------------------------------------+   | judge, loop back    |
-| 8 clean-code-gauntlet  measure + mutate    |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 9 blind-eval, then blind-tribunal          |-->| lands its own work. |
-+--------------------------------------------+   +---------------------+
-          |
-          | every juror passes
-          v
-+--------------------------------------------+
-| 10 LANDING GATE -- all green or no land:   |
-|    red test untouched . builder != grader  |
-|    every finding closed . one full pass .  |
-|    live proof on the human's own surface . |
-|    own files only . two-word report        |
-+--------------------------------------------+
-```
-
-*Lord of the Loop = loop का मालिक — एक ही हाथ जो dispatch, judge और दोहराव तब तक चलाता है जब तक landing gate green न हो जाए; LAND = बदलाव का final उतरना — हर gate green होने पर merge होकर ship होना।*
+[bounded-loops](../skills/bounded-loops/SKILL.md) original deadline और remaining
+mission allowances का owner है। Research, builders, lint/type/test checks, mutation,
+reviews, fallback models और handoffs उन्हीं limits को खर्च करते हैं। Nested play में
+reset न करें। Exhaustion पर candidate, evidence, unmet gates और next action के साथ
+**STILL-BUILDING** checkpoint करें; useful authorized work exhausted allowance खर्च
+किए बिना पूरा करें। Budget limit किसी gate को माफ नहीं करती।
 
 ## चेन
 
-0. [optimus](../skills/optimus/SKILL.md) — कुछ भी edit होने से पहले harness boot
-   करें। floor सबसे पहले load होता है — हर session, हर बार।
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — माँग को ही spec की तरह,
-   पूरा पढ़ें। कोई ship या option वाला फ़ैसला सामने रखने से पहले intent निकालें।
-   जब साफ़ हल मौजूद हो, options का menu कभी न परोसें — हल कर दें।
-2. [human-calibration](../skills/human-calibration/SKILL.md) — इंसान की validated
-   profile load करें और लागू करें। जिस इंसान को आप पहले से जानते हैं, उससे दोबारा
-   पूछताछ कभी न करें।
-3. [understanding-gates](../skills/understanding-gates/SKILL.md) — Design → Plan →
-   Build → Test → Ship, हर stage पर gate। किसी भी design से पहले: जो मौजूद है उसे
-   [live-research](../skills/live-research/SKILL.md) से पढ़ें, जो लिखा है उसे reuse
-   करें, पूरी topology का नक्शा बनाएँ। जवाब अक्सर पहले से लिखा होता है।
-4. [wayfinder](../skills/wayfinder/SKILL.md) — किसी भी कदम पर खो जाएँ, तो सबूत से
-   रास्ता बनाएँ। जिस सवाल का जवाब सबूत दे सकता है, वह इंसान पर कभी न टाँगें।
-5. [red-first](../skills/red-first/SKILL.md) — failing contract test लिखें और किसी
-   भी builder के चलने से पहले commit करें। builder उस test को छू नहीं सकता।
-6. बनाएँ। default में parallel lanes फैलाएँ — जो एक साथ चल सकता है उसे कभी
-   serialize न करें। हर lane को अपनी scratch branch या worktree मिले। अकेले, एक
-   ही session में? एक lane ही fan-out है — scratch branch पर बनाएँ और आगे बढ़ें।
-   (worktree उसी repo की दूसरी checkout है, दूसरे folder में, ताकि दो builders
-   कभी एक ही files को न छुएँ।) builders को
-   [fleet-ladder](../skills/fleet-ladder/SKILL.md) से resolve करें; drafts को
-   [model-fusion](../skills/model-fusion/SKILL.md) से जोड़ें। bug के लिए
-   [repair-loop](../skills/repair-loop/SKILL.md) चलाएँ और
-   [seam-engineering](../skills/seam-engineering/SKILL.md) के हिसाब से साझा seam
-   पर पूरी CLASS बंद करें।
-7. [sniper-testing](../skills/sniper-testing/SKILL.md) — iterate करते समय सिर्फ़
-   scoped runs; छुए गए modules का एक पूरा pass landing (step 10) तक रुकता है।
-8. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — landing से पहले
-   नापें: sniper suite, complexity-गुणा-coverage वाला risk score आपकी ceiling के
-   नीचे, फिर mutation testing zero survivors तक। code को नापें; कभी सिर्फ़ आँख से
-   न आँकें।
-9. [blind-eval](../skills/blind-eval/SKILL.md), फिर
-   [blind-tribunal](../skills/blind-tribunal/SKILL.md) — एक author-redacted
-   envelope ताज़ा, लेखक-विच्छिन्न sessions में graders के पास जाता है। builder कभी
-   अपने काम का grade नहीं करता। हर juror finding एक नया red test बनती है;
-   tribunal तब तक दोबारा बैठता है जब तक हर juror pass न दे। अकेला rig है?
-   blind-tribunal के Solo rig नियम का पालन करें — और एक-rung वाले config को
-   provenience के रूप में दर्ज करें, कमज़ोर किए गए gate के रूप में नहीं।
-10. Land — साफ़ merge करें, छुए गए modules की suites पर ठीक एक पूरा pass चलाएँ,
-    असली service restart करें, और behavior को इंसान की अपनी surface पर साबित करें
-    (जो page वे खोलते हैं, जो command वे चलाते हैं) — proxy probe कभी नहीं। फिर
-    रिपोर्ट करें।
+0. [optimus](../skills/optimus/SKILL.md) — floor और Build Flow session में एक बार
+   स्थापित करें। Context में मौजूद actual bodies और उनकी source receipts reuse करें;
+   receipt अकेली missing body की जगह नहीं लेती। Nested call lifecycle reboot नहीं
+   करता और कभी न हुए invocation का दावा नहीं करता।
+1. Build Flow के established intent और operator essence लें। पूरा request और current
+   corrections पढ़ें; ship/option decision पूछने से पहले directive निकालें। Evidence
+   से सुलझ सकने वाले choice को सीधे सुलझाएँ।
+2. [human-calibration](../skills/human-calibration/SKILL.md) — task packet में मौजूद
+   validated profile अपनाएँ। Missing applicable context load करें; human से दोबारा
+   पूछताछ या हर stage में वही profile फिर न बनाएँ।
+3. [turn-and-burn](../skills/turn-and-burn/SKILL.md) — mission के roster और plan-review
+   requirements बनाए रखें। उपलब्ध हों तो हर model की essence (know-thyself),
+   `docs/BACKS_LESSONS_LEARNED.md` और `memory/MEMORY.md` देखें। ये capability/lesson
+   records operator essence से अलग हैं। Current burn evidence reuse करें; जरूरी Absorb
+   work इसी mission में रहे और integration owner को result लौटाए।
+4. [understanding-gates](../skills/understanding-gates/SKILL.md) — Design → Plan →
+   Build → Test → Ship stage gates रखें।
+   [live-research](../skills/live-research/SKILL.md) से affected path, owners,
+   consumers और delivery seam देखें। Evidence कहे कि result बदल सकता है तभी additional
+   dependencies trace करें; हर edit से पहले whole-system survey न दोहराएँ। Build Flow
+   की context readiness पूरी हो तो next executable step शुरू करें।
+5. [architecture-engineer](../skills/architecture-engineer/SKILL.md) — module boundary,
+   dependency direction या shared seam छूने वाले diff पर structural review और authority
+   surface classifier अपनाएँ। हर violation के पीछे local rule या concrete failure
+   mode दें; durable decision के लिए ADR लें।
+6. [wayfinder](../skills/wayfinder/SKILL.md) — वास्तव में unresolved route evidence से
+   chart करें। Route ज्ञात हो तो दूसरा planning pass न शुरू करें।
+7. [red-first](../skills/red-first/SKILL.md) — builder से पहले real failing contract
+   देखें और commit करें। Seal record करें, original file byte-for-byte रखें। बाद का
+   finding separate supplemental test पाए; वह original RED नहीं बदल सकता।
+8. Owning seam पर smallest complete change बनाएँ। Explicit file ownership या isolated
+   worktrees से independent questions/work parallel करें; एक integration owner और
+   project concurrency rules बनाए रखें। [fleet-ladder](../skills/fleet-ladder/SKILL.md)
+   से builders resolve करें; mission की जरूरत पर
+   [model-fusion](../skills/model-fusion/SKILL.md) लें। Defect में
+   [repair-loop](../skills/repair-loop/SKILL.md) inline लें और
+   [seam-engineering](../skills/seam-engineering/SKILL.md) के अनुसार shared seam पर class
+   बंद करें। Findings इसी task को लौटाएँ; play recursively फिर न शुरू करें।
+9. [sniper-testing](../skills/sniper-testing/SKILL.md) — pinned aggregate base-to-
+   candidate diff और owned pending paths से check scope निकालें। Repo की actual lint,
+   type-check और focused test commands चलाएँ। Inapplicable पर reason सहित N/A, missing
+   required tools को gaps लिखें; arbitrary checkers install या passes न गढ़ें। Iteration
+   में scoped runs रखें।
+10. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — same candidate पर
+    quality, complexity/coverage और bounded mutation inline करें। Meaningful survivor
+    या finding remaining budget में supplemental RED और minimal seam fix को लौटता है।
+    Valid evidence reuse करें, changed bytes के लिए stale verdict नहीं; दूसरा full
+    build lifecycle शुरू न करें।
+11. [blind-eval](../skills/blind-eval/SKILL.md), फिर
+    [blind-tribunal](../skills/blind-tribunal/SKILL.md) — capability/availability से
+    live चुने reviewers को author-redacted frozen evidence packet दें। Review fresh
+    author-disjoint executions में हो; builder conversation inherit न हो। Authoring
+    execution provenance में record और exclude करें। हर proved finding को same
+    remaining allowance में separate RED, fix और re-review दें। सभी required jurors
+    landing से पहले pass करें। Applicable हो तो tribunal का Solo rig rule मानें;
+    actual configuration और runtime gaps दर्ज करें, independence कमजोर किए बिना।
+12. Requested finish पूरा करें। Candidate identity फिर देखें, touched-module suites
+    का full pass और required project checks करें, concurrent work बचाएँ और project की
+    authorized landing procedure लें। Deployment में installed/running code तथा
+    human का real surface verify करें। Service restart तभी करें जब requested delivery
+    और actual procedure माँगे। Local patch/review चुपचाप release scope नहीं पाते।
 
-## Hard gates (कोई एक भी लाल हुआ तो landing रुक जाती है)
+## Hard gates
 
-- failing test build से पहले commit हुआ था और अछूता है — grader जाँचता है कि
-  test-file का diff खाली है।
-- builder कभी grader नहीं, और grader एक ताज़ा, लेखक-विच्छिन्न session में चलता है।
-- हर सामने आई finding बंद है, या recorded सबूत के साथ "not a bug" की adjudication
-  हुई है। चुपचाप टालना कभी नहीं। whole-seam closure — seam code की वह साझा जगह है
-  जहाँ bug की यह class रहती है — नहीं तो landing नहीं।
-- इंसान की असली surface पर live proof। टूटी capability के साथ green tests सफलता
-  नहीं, विफलता है।
-- रिपोर्ट दो शब्दों में — PROVEN या STILL-BUILDING —
-  [human-voice](../skills/human-voice/SKILL.md) में। Proven का मतलब है: landed,
-  साथ में independent grade, साथ में live प्रदर्शन।
-- commit में सिर्फ़ इसी बदलाव की अपनी files हों — किसी दूसरे session का अधूरा काम
-  कभी नहीं।
+- Original RED fix से पहले failing देखा गया और byte-identical है; supplemental
+  contracts का अपना recorded evidence और seals हैं।
+- Required quality, lint/type/test और mutation gates exact candidate पर pass हों;
+  justified N/A और actual gaps ईमानदारी से report हों।
+- Required review fresh author-disjoint execution में हो; builder अपना काम grade
+  नहीं करता और reviewer को desired conclusion नहीं देता।
+- Owned seam की हर finding fixed या evidence से adjudicated हो। Open finding explicit
+  checkpoint में हो और landing रोके; कभी छिपाई न जाए।
+- Applicable burn, essence, lesson और plan-review requirements current evidence से
+  पूरी हों। Evidence reuse करना required gate छोड़ने की अनुमति नहीं।
+- Capability **PROVEN** का मतलब landed, independently graded और human के actual
+  surface पर demonstrated है। अन्यथा **STILL-BUILDING** तथा exact missing proof
+  [human-voice](../skills/human-voice/SKILL.md) में दें। Requested review/local patch
+  पूरा होना live capability claim से अलग बताएँ।
+- केवल इस task की files commit करें; दूसरे session का काम बचाएँ।
 
-## इनके साथ अच्छा चलता है
+## Fleet ladder policy
 
-- [optimus](../skills/optimus/SKILL.md) — compaction या restart के बाद floor दोबारा boot करने के लिए
-- [invariant-floor](../skills/invariant-floor/SKILL.md) — वह locked floor जो हर landing को पूरा करना है
-- [decision-bar](../skills/decision-bar/SKILL.md) — क्या इंसान तक पहुँचता है बनाम क्या खुद execute होता है
-- [bounded-loops](../skills/bounded-loops/SKILL.md) — लंबे runs पर budget और kill-switch
-- [session-handoff](../skills/session-handoff/SKILL.md) — रुकने से पहले state सील करें
+Actual dispatch, configured routes, live probes, fallback और review independence के
+लिए [fleet-ladder](../skills/fleet-ladder/SKILL.md) लें। उपलब्ध deployment की
+`config/fleet_ladder.yaml` और `config/gpu_nodes.yaml` पढ़ें; pack resolver नहीं बनाता।
+Configured rungs की frontier research-before-lift requirements और allowed web,
+GitHub, Reddit तथा paper sources बचाएँ। Configured thinking floor और token-efficiency
+policy मानें; model IDs hardcode या evidence truncate करके compliance न गढ़ें।
 
-**Weight:** पूरा stack — free अनुशासन, light gates, और तीन heavy कदम (model fusion, gauntlet, tribunal) — heavy खर्च हर ship होने वाली चीज़ पर वसूल होता है, और यह play है ही उसी के लिए।
+Interruption से पहले candidate, seals, evidence, deadline और remaining mission
+allowances बचाने को [session-handoff](../skills/session-handoff/SKILL.md) लें।

@@ -10,64 +10,47 @@ Agents के बीच काम कैसे बाँटें कि वे 
 - एक ही window में एक से ज़्यादा agents एक ही repository को छूने वाले हैं।
 - मन कर रहा है कि दो agents parallel में code लिखें। पहले यह पढ़ लें।
 
-पूरा fan-out, एक नज़र में:
+## साझा task और limits
 
-```
-+--------------------------------------------+
-| 1 leap-protocol  balls with goals, specs,  |
-|   hard file scopes BEFORE any agent spawns |
-+--------------------------------------------+
-| 2 spawn readers, not writers -- fan out    |
-|   read-heavy work only                     |
-+--------------------------------------------+
-| 3 isolate -- every lane gets its OWN       |
-|   worktree; conflicts surface at merge     |
-+--------------------------------------------+
-| 4 clean-code-gauntlet  per lane, in its    |<--------------------------+
-|   own worktree, before it asks to land     |  red exit? back to the    |
-+--------------------------------------------+  lane -- fix, re-run      |
-| 5 blind-tribunal  the reviewer gets a      |                           |
-|   CLEAN context, never the author's        |   +---------------------+ |
-+--------------------------------------------+   |  LORD OF THE LOOP   |-+
-| 6 merge ONE lane at a time, test-gated     |   | the one write spine |
-|   by exit code, in a merge workspace       |-->| drives dispatch,    |
-+--------------------------------------------+   | judges, merges ONE  |
-          |                                      | lane at a time. a   |
-          | every merge green + verified         | lane never lands    |
-          v                                      | its own work.       |
-+--------------------------------------------+   +---------------------+
-| LANDING GATE -- all green or no land:      |
-| every merge green by exit code AND         |
-| stat-verified -- counts, diffstat, each    |
-| lane's files present . no lane outside     |
-| its scope . reviewer context stayed        |
-| clean, never the author's . one writer     |
-| per workspace . no lane lands on           |
-| another lane's green                       |
-+--------------------------------------------+
-```
+यह play current [BACKS Build Flow](../skills/backs-build-flow/SKILL.md) task packet
+के भीतर चलाएँ। एक integration owner, requested `task_mode`, pinned `base_sha`, current
+`candidate_sha`, operator essence और current evidence रखें। Applicable loaded skill
+bodies reuse करें; यह play अपने domain gates जोड़ता है, task फिर शुरू नहीं करता।
 
-*Lord of the Loop = loop का मालिक — एक ही हाथ जो dispatch, judge और दोहराव तब तक चलाता है जब तक landing gate green न हो जाए; LAND = बदलाव का final उतरना — हर gate green होने पर merge होकर ship होना।*
+[bounded-loops](../skills/bounded-loops/SKILL.md) original deadline और remaining
+allowances को retries, workers, models, reviews और handoffs में संभालता है। Nested play
+के लिए उन्हें reset न करें। Exhaustion पर candidate, evidence, unmet gates और next action
+सहित **STILL-BUILDING** checkpoint करें। Useful authorized work remaining allowance में
+ही करें; missing gate कभी pass नहीं बनता।
 
 ## चेन
 
-1. [leap-protocol](../skills/leap-protocol/SKILL.md) — किसी भी agent के spawn होने
-   से पहले काम को balls में तोड़ें: goals, specs, और सख़्त file scopes के साथ।
+1. [leap-protocol](../skills/leap-protocol/SKILL.md) — spawn से पहले goals, specs
+   और hard file scopes वाली balls में बाँटें। हर lane को current packet, pinned base/
+   candidate, RED seals और allocated remaining allowance दें। Lane limit parent
+   deadline या totals बढ़ा नहीं सकती।
+
 2. readers spawn करें, writers नहीं — subagents सिर्फ़ ऐसे read-heavy काम के लिए
    फैलाएँ जिनमें आपसी निर्भरता कम हो: research, test चलाना, security scans,
    grading। आपस में जुड़े code-लेखन के लिए कभी नहीं।
 3. हर lane को अलग रखें — हर parallel agent को अपनी ALAG worktree मिले (उसी repo
    की एक अलग checkout)। तब टकराव merge पर असली merge conflicts बनकर सामने आते
    हैं — कभी उन silent overwrites की तरह नहीं जो बिना चेतावनी data खा जाते हैं।
-4. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — हर lane, land
-   माँगने से पहले, अपनी ही worktree के अंदर अपना quality gauntlet चलाती है। पहले
-   dry-run, ताकि lane को अपनी लागत पता हो। कोई lane दूसरी lane के green पर land
-   नहीं होती।
+4. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — हर lane अपने permitted
+   worktree/isolation में landing से पहले gauntlet चलाए। पहले
+   [sniper-testing](../skills/sniper-testing/SKILL.md) से pinned aggregate candidate
+   diff के actual repo lint/type/test commands लें; missing/N/A checks बताएँ। Exact
+   same candidate और check scope की valid receipt reuse करें; different bytes के लिए
+   दूसरी lane की green कभी नहीं। Missing coverage के लिए separate supplemental file
+   जोड़ें; sealed originals बचाएँ।
+
 5. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — review करने वाले agent को
    एक साफ़ context मिले, कभी लेखक वाला नहीं। साझा context सड़ता है और खुद से ही
    सहमत हो जाता है।
-6. एक बार में एक lane merge करें, एक अलग merge workspace में, exit code से
-   test-gated।
+6. Dedicated merge workspace में एक lane एक बार merge करें, exit-code test gate के
+   साथ। Integration owner combined candidate, affected consumers और required full
+   affected-suite landing gate सत्यापित करे; independent lane passes उनका composition
+   सिद्ध नहीं करते। Delivery claims को real target evidence चाहिए।
 
 ## तालमेल के नियम
 

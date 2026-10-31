@@ -29,6 +29,7 @@ class FloorAutoloadTest(unittest.TestCase):
             'backend/prompts/BACKS_CODEX_HARNESS.md': '# Real harness fixture\nRepository source owns the rules.\n',
             'skills/optimus/SKILL.md': '# Optimus fixture\nLoad the canonical floor.\n',
             'skills/yoke/SKILL.md': '# Yoke fixture\nPreserve operator intent.\n',
+            'skills/backs-build-flow/SKILL.md': '# Build Flow fixture\nKeep one task owner.\n',
         }
         for name, body in self.bodies.items():
             target = self.deploy / name
@@ -103,7 +104,7 @@ class FloorAutoloadTest(unittest.TestCase):
     def test_portable_pack_and_installed_native_pointer_discovery(self):
         self.env.pop('BACKS_DEPLOY_ROOT')
         self.env.pop('BACKS_AI_ROOT', None)
-        for name in ('optimus', 'human-calibration'):
+        for name in ('optimus', 'human-calibration', 'backs-build-flow'):
             target = self.pack/'skills'/name/'SKILL.md'
             target.parent.mkdir(parents=True)
             target.write_text('# Portable ' + name + '\n')
@@ -152,7 +153,7 @@ class FloorAutoloadTest(unittest.TestCase):
                 str(self.pack/'hooks'/('aios_gate.'+suffix)), '--load', 'optimus', 'floor/session'],
                 capture_output=True, env=self.env, timeout=10)
             self.assertEqual(result.returncode, 0, result.stderr)
-            for name in ('optimus', 'yoke'):
+            for name in ('optimus', 'yoke', 'backs-build-flow'):
                 body = (self.deploy/'skills'/name/'SKILL.md').read_bytes()
                 self.assertIn(body, result.stdout)
             state = self.root/'home/.claude/state'
@@ -161,7 +162,7 @@ class FloorAutoloadTest(unittest.TestCase):
             digests = json.loads(receipts[0].read_text())
             self.assertEqual(digests, {name: hashlib.sha256(
                 (self.deploy/'skills'/name/'SKILL.md').read_bytes()).hexdigest()
-                for name in ('optimus','yoke')})
+                for name in ('optimus','yoke','backs-build-flow')})
             self.assertFalse((state/'backs_ground_floor').exists())
 
     def test_opencode_existing_kill_switch_warns_without_loading_or_denial(self):

@@ -1,6 +1,6 @@
 ---
 name: optimus
-description: Boot the harness — load the invariant floor and the skills this job needs before any code. Arms the grounding gate green.
+description: Boot the harness and Build Flow, then apply the skills needed for the current task.
 ---
 
 Load `skills/optimus/SKILL.md` using
@@ -8,8 +8,8 @@ Load `skills/optimus/SKILL.md` using
 (`${CURSOR_PLUGIN_ROOT}` is the managed runtime root), then run
 its boot sequence now.
 
-For hosts without a native skill/hook event, arm the session with the explicit gate
-loader before you invoke the skill:
+For hosts without a native context hook, use the explicit loader to deliver the
+Optimus, Yoke, and Build Flow bodies:
 
 ```bash
 node "${CURSOR_PLUGIN_ROOT}/hooks/aios_gate.js" --load backs-aios:optimus
@@ -21,9 +21,10 @@ Python alternate:
 python3 "${CURSOR_PLUGIN_ROOT}/hooks/aios_gate.py" --load backs-aios:optimus
 ```
 
-Order: load the invariant floor → name the map for this job (files, rules, pack
-skills that govern it) → load the human profile if the job touches a human's taste
-or surface → invoke the skills the job needs, in real time, in this session.
+Apply Build Flow's existing task packet and operator essence, readiness to act,
+bounded RED/GREEN loop, scoped lint/tests, clean-code gauntlet, and requested delivery.
+Reuse current evidence and actual loaded bodies; do not restart nested workflows.
 
-Hard gate: no code, no mutating command, and no job until the boot sequence completes.
-A skill named but not invoked did not happen.
+Read the required foundations before editing. The loader records actual delivered
+bytes; missing files report a diagnostic without denying tools or inventing a receipt.
+A named skill alone is not evidence that its method ran.

@@ -13,50 +13,20 @@ confiance au modèle pour s'en souvenir.
 - Tu ajoutes des dépendances ou de la CI à quelque chose qui part en
   production.
 
-La barrière de livraison, en un coup d'œil :
+## Tâche et limites communes
 
-```
-+--------------------------------------------+
-| 1 secret gate  verified-only scan; one     |
-|   live credential fails the build          |
-+--------------------------------------------+
-| 2 egress lockdown  deny by default;        |
-|   canonicalize before allowlist match      |
-+--------------------------------------------+
-| 3 break the lethal trifecta  one leg       |
-|   always missing on every path             |
-+--------------------------------------------+
-| 4 taint tracking  tainted session =>       |
-|   policy-gate every exfil-capable action   |
-+--------------------------------------------+
-| 5 supply chain  hash-pin every dep, no     |
-|   install scripts, SHA-pinned CI           |
-+--------------------------------------------+
-| 6 clean-code-gauntlet  mutate detectors,   |<--------------------------+
-|   parsers, predicates to zero survivors    |  a survivor or a          |
-+--------------------------------------------+  sandbox catch ->         |
-| 7 sniper-testing  mock outbound network    |   +---------------------+ |
-|   only, never payload or parser            |   |  LORD OF THE LOOP   |-+
-+--------------------------------------------+   | one hand drives the |
-| 8 sandbox before ship  outbound blocked,   |-->| loop: dispatch,     |
-|   watch writes + calls, hard-kill armed    |   | judge, loop back    |
-+--------------------------------------------+   | until the gate is   |
-| 9 provenance  SBOM + signed provenance;    |   | green. a lane never |
-|   still review the source                  |   | lands its own work. |
-+--------------------------------------------+   +---------------------+
-          |
-          | every gate green
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no ship:      |
-| no live credential anywhere . no path      |
-| holds all three trifecta legs . deps +     |
-| CI hash-pinned . zero surviving mutants    |
-| . sandboxed before ship                    |
-+--------------------------------------------+
-```
+Applique ce play dans le dossier [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)
+actuel. Garde un responsable de l'intégration, le `task_mode` demandé, les
+révisions base et candidat épinglées, l'essence opérateur et les preuves actuelles.
+Réutilise les textes chargés pertinents ; ce play ajoute ses contrôles métier
+sans relancer la tâche.
 
-*Dans le schéma : LORD OF THE LOOP = le maître de la boucle, la seule main qui pilote l'itération — dispatch, jugement, rebouclage — jusqu'à ce que la barrière d'atterrissage soit verte ; LANDING GATE = la barrière d'atterrissage — tout au vert, ou pas d'atterrissage.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) possède échéance initiale et quotas
+restants à travers réessais, agents, modèles, revues et relèves. Ne les
+réinitialise jamais pour un play imbriqué. À épuisement, sauvegarde
+**STILL-BUILDING** avec candidat, preuves, barrières non satisfaites et prochaine
+action. Le travail utile autorisé reste dans son quota disponible ; aucun
+contrôle absent ne devient une réussite.
 
 ## La chaîne
 
@@ -81,14 +51,19 @@ La barrière de livraison, en un coup d'œil :
 5. Chaîne d'approvisionnement — épingle chaque dépendance par hash et bloque
    les scripts d'installation. Épingle chaque action de CI sur un hash de
    commit complet, pas sur un tag.
-6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — le code de
-   sécurité porte la barre la plus stricte. Fais tourner les tests de mutation
-   sur chaque détecteur, parseur et prédicat de politique, et pousse les
-   mutants survivants à zéro. Une comparaison inversée dans un check de menace
-   que la suite laisse passer EST la vulnérabilité.
-7. [sniper-testing](../skills/sniper-testing/SKILL.md) — ne mocke QUE le réseau
-   sortant, jamais la charge utile ni le parseur sous test : un détecteur mocké
-   est un capteur aveugle en production.
+6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — la sécurité
+   porte la barre la plus stricte. Mute chaque détecteur, parseur et prédicat de
+   politique dans le budget partagé ; les survivants significatifs bloquent la
+   livraison. Ajoute les assertions manquantes dans des tests distincts, le RED
+   scellé intact. Une comparaison de menace inversée que la suite laisse passer EST la vulnérabilité.
+
+7. [sniper-testing](../skills/sniper-testing/SKILL.md) — utilise les vraies
+   commandes lint/typage/tests du diff agrégé épinglé ; signale lacunes ou N/A
+   justifiés. Mocke SEULEMENT le réseau sortant, jamais charge utile ou parseur
+   testé : un détecteur mocké est aveugle en production. Réutilise les preuves
+   ciblées actuelles avant le gauntlet et garde passe complète des suites touchées
+   à l'atterrissage et revue disjointe de l'auteur.
+
 8. Sandbox avant la livraison — exécute l'artefact construit dans une sandbox
    éphémère, tout trafic sortant bloqué, avec un arrêt d'urgence armé sur les
    ressources. Regarde ce qu'il écrit et ce qu'il essaie d'appeler.

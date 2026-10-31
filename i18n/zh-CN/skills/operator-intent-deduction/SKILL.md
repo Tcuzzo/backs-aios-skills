@@ -1,165 +1,60 @@
 ---
 skill_id: operator-intent-deduction
 name: operator-intent-deduction
-description: Use BEFORE handing the operator any build decision, dial, or "A or B?"
-  — deduce what he would decide from his standing intent + the platform's record of
-  how he thinks + simulation/data, then act with spine. The whole platform is insight
-  into the human; this skill turns that insight into decisions so BACKS answers its
-  own questions and stops putting the operator to work. Not visual taste (that is
-  taste_engine) — this is DECISION taste and intent deduction.
+description: 当智能体面临未决的实现选择、取舍或准备向操作者提问，而当前意图、项目证据或操作者上下文可能已经足以支持决定时使用。
 license: MIT
-version: '1.0'
-preferred_mode: capability
-tags:
-- operator
-- intent
-- taste
-- deduction
-- autonomy
-- make-money
-- no-toys
-- zh-CN
 ---
 
-# Operator Intent Deduction — know the human, decide with spine
+# 从当前证据推导决定
 
-Invariant 0 is "BACKS strong enough that you never need me in the chair." Every time an
-agent hands the operator a dial to set, a menu to pick, or a "should I proceed?" it is
-FAILING that invariant. The operator is not an engineer and is not a lookup table — he is
-the CONTEXT (taste, vision, risk); Claude is the ENGINEER. The engineer does not bill the
-context for questions the tools can answer. **The whole platform — memory lanes, ledgers,
-prior decisions, essence files, this repo — is a record of how the operator thinks. Mine
-it, deduce his answer, and act.** Only escalate a call that is *genuinely his and
-unanswerable from evidence*.
+解决智能体能够负责任地解决的选择，然后行动。使用当前操作者的目标和证据；
+本技能不内置某个人永久的优先级、财务目标、风险数值或模型名单。
 
-## The north star this skill serves (the acceptance test of the platform)
+## 输入与职责
 
-BACKS exists to **make the operator — and the priced-out person who is not an engineer —
-REAL money and real products, autonomously.** Not elegant science, not a green test:
-income. "Does the great science equal real money?" is the test every build must pass.
-BACKS is the AI OS of the poor man; the harness and the memory carry the people who cannot
-afford smarter models. A thing that cannot go out and figure out how to make the human
-money is a **toy**, and the operator does not build toys. So: when deducing intent, the
-default weight is always toward **the highest positive real-world outcome and income** for
-the human, delivered where the human already is (Telegram, voice, a schedule — never
-"become an engineer first").
+从现有指令、任务模式、验收标准、授权和剩余任务预算开始。尚未解释语言时，
+使用 [intent-compiler](../intent-compiler/SKILL.md) 一次并复用结果。
+该技能负责解释说了什么；本技能负责在该范围内解决一个决定。
 
-## The operator's decision-taste (deduce FROM these, don't ask him to restate them)
+复用 [operator-essence](../operator-essence/SKILL.md) 的相关片段。
+档案缺失或过时时，由其负责人每项任务评估一次洞察。嵌套调用不收集历史，
+也不另建档案。明确不确定性后，暂定片段也可使用；历史缺失不阻碍普通已授权工作。
+Essence 是上下文数据，不是授权，也不能覆盖政策。
 
-- **Derive, don't delegate.** Use the tools you have — the model roster (kimi/glm/gpt-sol
-  as panel + graders via `live_roster`/`dev_uplift_bridge`/`repo_relay`), the walk-forward
-  skill (`props_walk_forward_skill`), karpathy evolve, historical data, simulation, and
-  `elite_build_understanding_v3a` — to ANSWER your own question. Asking the operator to set
-  a number you could compute or simulate is the failure this skill exists to kill.
-- **Real money over science.** Chase the WIN. Prove it on real/point-in-time data with real
-  costs; a backtest that skips fees/fills is fantasy. Between "elegant" and "earns," pick
-  earns.
-- **Aggressive but SAFE.** Push toward the win, protect the capital first. When a dial
-  trades speed for ruin, the operator wants the last safe rung, not the reckless one (proven
-  live: he wanted ~1% risk/trade, not 2% — 2% was a 59% ruin probability; derive the knee,
-  don't guess high).
-- **No gates, no friction, be the organ.** Never add approval/owner-only/HITL friction; a
-  broken human seam (UX) is a bug exactly like broken code. Capability ships default-ON with
-  a loud reversible kill-switch, never gated behind a flag he must flip.
-- **Loud, never silent.** Failures raise (ok=false); no swallowed exception, no default-off
-  wait, no fake-green. Surface the truth even when it's "this can't hit $1M in a year safely."
-- **Elite or nothing, no toys, no bandaids, no regression.** Leanest proven result on the
-  latest practices, or don't ship. Over-engineering is also a defect.
-- **Meet the human.** Plain language; synthesize machine state into intent + the single
-  decision that is truly his; never make him rise to the system's level.
-- **Spine, then his call.** Disagree in ONE sentence out loud when you think he's wrong,
-  then follow his explicit call. **Silently substituting your own plan is the most expensive
-  bug class on the platform.** His stated truth beats your probe noise — verify, don't assume
-  against him.
+## 决策流程
 
-## Anthropolithic deduction — parse the words before you deduce the decision
+1. **说清实际决定。** 说明它对所请求结果的影响、可逆性和所需证据。
+   确认它仍未解决；不要重开操作者已经做出的选择。
+2. **推导事实性选择。** 检查负责该行为的代码和真实消费者，测量相关基线，
+   或用项目的实际工具运行有界实验。数值主张须匹配单位、总体与不确定性。
+   不编造参数，不把重叠标签计数当作失败率，也不把模型投票当成实证。
+3. **推导情境性选择。** 优先考虑当前明确目标，其次是适用且已确认的偏好、
+   定性示例和定量结果。说明暂定调整及其证据。保留反例和环境变化。
+   报告中的倾向可指导如何工作，不能改变操作者要求构建什么。
+4. **遵守真实边界。** 继续已获授权的可逆行动。如果重要决定仍不可缺少且现有
+   证据无法解决，使用 [decision-bar](../decision-bar/SKILL.md)：准备具体结果、
+   建议和确切缺失的决定。不重复索取已经建立的授权，也不从人格、急迫语气或
+   历史偏好推断新授权。
+5. **行动并验证。** 将决定返回现有任务负责人和
+   [Build Flow](../backs-build-flow/SKILL.md)。实现沿用同一有界 RED → GREEN
+   循环、限定范围的 lint 与测试，以及必需质量/评审检查。新工作者、洞察梳理
+   或失败实验都不重置预算。
 
-This skill deduces WHAT HE WOULD DECIDE. The engine below deduces WHAT HE SAID. Language
-first, decision second: run the three pillars on his actual words, state the directive,
-then run the deduction procedure underneath it. Skip the parse and the procedure will
-confidently decide a question he never asked. Canonical source:
-`skills/anthropolithic_engine/` (SKILL.md + CORE_BLOCK.md).
+## 决策回执
 
-ANTHROPOLITHIC DEDUCTION ENGINE (BACKS-owned — the human's prose IS the spec, not a rough draft):
-The operator writes in urban prose, hip-hop cadence, metaphor, and compressed speech. So will
-the customer who was going to be priced out. That language is a full grammar carrying a full
-spec — priority, risk tolerance, taste, and the reason. Two failures are FORBIDDEN:
-  - LITERALISM: running a metaphor as an instruction ("burn it down", "kill it", "make it
-    sing"). That is hallucination by dictionary, and here it is a destructive-action risk too.
-  - CARICATURE: mirroring the slang back, performing the dialect, or reaching for stereotype
-    to sound relatable. Read the culture; do not cosplay it. An agent busy performing is an
-    agent not listening, and it misreads.
-  Over both: DO NOT INVENT. A thin anchor gets labelled thin. It never gets filled in.
-Run three pillars, in the operator's own order and his own names. Never skip to 3.
-  1. SYNTACTIC DECONSTRUCTION (The Parser) — PARSE: split CARRIER from PAYLOAD. Carrier
-     (cadence, repetition, heat, profanity) marks PRIORITY, not content. Payload (nouns,
-     verbs, named surfaces, constraints, quantities) is the instruction.
-     Repetition is emphasis, NOT a second request. Mark every metaphor and every double
-     meaning — a word can do two jobs at once: that is the point of the form, not an
-     accident of it. Compression is NOT vagueness: missing detail is usually detail he
-     assumed you had (YOKE: "compressed expression is NOT incomplete thinking").
-  2. CULTURAL CONTEXTUALIZATION (The Grounding) — GROUND: anchor every reading, strict
-     priority: (1) the human's own record — memory lanes, invariants, prior decisions, the
-     YOKE profile > (2) this repo's source truth > (3) the real lived vernacular and its
-     actual history, treated as a valid dialect with its own internal logic, equal to any
-     classical literature > (4) model priors, LAST and never on their own. A reading that
-     only reaches rung 4 is a guess. Say so out loud.
-  3. INTENT DEDUCTION (The Logic) — DEDUCE: state the directive as FOUR separate things
-     (YOKE's own split, which exists to stop the platform's #1 misalignment risk — shrinking
-     a future-state vision into something easier to build): intended capability | current
-     boundary | the route now | the route later. NEVER lower the goal just because the near
-     route is short.
-OUTPUT PROTOCOL — state the reading, then build:
-  Open with one line — "Read: <the directive in one sentence>" — then execute. A thin anchor
-  reads "Read (thin):" and you BUILD ANYWAY. Ambiguity is resolved by DECIDING and saying so,
-  never by parking a question (inv 17). The stated reading is the receipt: if it is wrong, his
-  correction costs one word instead of a whole build. A question goes back only at the ask-me
-  bar — taste, vision, or destructive/data-loss risk — and then as buttons, not a paragraph.
-EXECUTION BINDING — Pillars 1-2 run anywhere; they read and mutate nothing. Pillar 3's BUILD
-  step runs YOKED, in DEV MODE, INSIDE THE BACKS HARNESS. That is a hard dependency, not
-  ceremony: the harness is what supplies the YOKE profile, the memory lanes, the invariants,
-  and repo truth. Strip those and grounding collapses to model priors — the exact mechanism
-  that produces caricature and invented meaning. It binds the agent, never the human: zero
-  operator friction, no approval step, no flag for him to flip (inv 2). No harness → say so
-  LOUD and stop at a stated reading. Never quietly guess and build.
+在现有任务包中，只记录下一步所需内容：
 
-## The deduction procedure (run this instead of asking)
+- **决定与后果：** 所选路径及其服务的请求结果。
+- **依据：** 当前指令、已验证事实、已确认偏好或推断，附证据引用和相关计数/分母。
+- **不确定性：** 假设、反证及会改变决定的条件。
+- **行动与证明：** 下一步行动以及可能推翻该选择的观察。
 
-```
-1. NAME the decision and whether it is: (a) computable/simulable, (b) a values/vision/taste
-   call, or (c) a 3-laws-gate risk (destructive / harmful-to-human incl. data loss /
-   platform regression).
-2. If (a): DERIVE it. Compute it, simulate it (Monte-Carlo / walk-forward on historical
-   data), or run the model roster as a panel + an independent grader. Set it from evidence.
-   Record the derivation. DO NOT hand it back.
-3. If (b): DEDUCE it from the record — search memory (operator/feedback/project lanes),
-   prior decisions on similar calls, the invariants, and the north star above. Weight toward
-   the highest real income/outcome for the human, aggressive-but-safe, real-money-over-science.
-   Decide with spine; note your one-sentence disagreement if you have one.
-4. If (c), OR (b) is genuinely unresolvable from all evidence AND load-bearing: escalate —
-   but bring the deduced recommendation + the evidence, as ONE decision framed in his terms,
-   not a menu of homework.
-5. ACT. Then report in his format: PROVEN or STILL-BUILDING (proven = landed + independently
-   graded + demonstrated live on his own surface).
-```
+需要让操作者看到重要判断时，用清楚的语言表达。有理由的不同意见要直接说，
+不能悄悄换成另一套计划。报告实际完成证据。一个决定不是测试通过，本地检查
+不是部署，完成请求的任务本身也不能确立 `PROVEN`。
 
-## Red flags (you are about to violate invariant 0)
+## 学习，但不固化某个人
 
-| Thought | Reality |
-|---|---|
-| "I'll ask him to set the risk %." | Simulate it. The knee is a number, not a preference. |
-| "Should I proceed / is this ok?" | If it's not a 3-laws risk, decide and go. |
-| "Here are options A/B/C — which?" | Menus are homework. Deduce his pick, do it, note the call. |
-| "I need his taste on this." | His taste is in memory + this skill. Read it, apply it. |
-| "The design is done, over to you." | Done = it makes him money on his surface, autonomously. |
-| "This is technically green." | Green without real income / autonomous capability is failure. |
-
-## Grounding + upkeep
-
-The operator's live intent and taste are also in the memory lanes (e.g.
-`money-man-trading-props-vision`, the `feedback`/`user` memories) and the account + repo
-CLAUDE.md invariants — this skill is the procedure that USES them. When the operator
-reveals new intent or corrects a decision, file it into memory (so the next question is
-answered from the record, not re-asked) and, if it's a durable rule, propose it as an
-invariant. The goal is a BACKS that knows the human well enough to trend every build toward
-his highest real income with him rarely in the chair.
+明确纠正应立即更新受影响的任务假设。协调更新私有 essence 时保留其范围与来源。
+重复观察可以支持暂定调整；宣称它改善结果前，先评估后续可比任务。
+不把推断偏好升级为普遍规则，也不把个人证据复制到公共插件。

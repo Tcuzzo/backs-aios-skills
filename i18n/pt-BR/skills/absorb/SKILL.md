@@ -1,6 +1,6 @@
 ---
 name: "absorb"
-description: "Use quando você precisa de uma capacidade que um projeto open source já entrega — adote e reengenheire como skill nativa em vez de inventar uma cópia. Trigger words: absorb, adopt, port, re-engineer, ingest a repo, prior art, capability port, make this native, absorver, adotar, portar, reengenharia, ingerir um repo, arte prévia, tornar nativo."
+description: "Use quando uma capacidade necessária puder existir em projeto open source, ou o operador pedir para absorver, adotar, portar, reengenheirar, ingerir um repo, avaliar arte prévia ou tornar nativa uma capacidade."
 license: "MIT"
 ---
 
@@ -22,18 +22,32 @@ fato, não um enfeite.
 
 ## Passos
 
+Use o pacote atual do [BACKS Build Flow](../backs-build-flow/SKILL.md) e seu
+responsável pela integração. Invocação direta cria esse pacote uma vez; chamada
+aninhada devolve evidências de adoção ao chamador. Reutilize contexto válido,
+essência do operador e corpos já carregados.
+[bounded-loops](../bounded-loops/SKILL.md) cuida do prazo e cotas restantes da
+missão; descoberta, construção, mutações, revisões, trocas de modelo e handoffs
+gastam o mesmo orçamento. Fase ou trabalhador novo não o reinicia. Respeite
+`task_mode`: revisão ou diagnóstico não autoriza edições nativas nem entrega.
+
 1. **Cace a arte prévia primeiro.** Pesquise antes de construir. Uma cópia que você
    inventa é pior que um scaffold que você adota: você herda zero teste de campo e
    fica devendo todos os bugs.
-2. **Vá além do README.** Puxe os metadados do projeto (licença, atividade,
-   linguagem) pela API da plataforma. Faça um shallow-clone num diretório de rascunho.
-   Leia o código e os testes. O README é marketing; o código é a verdade.
+2. **Descubra além do README.** Busque metadados do projeto (licença, atividade,
+   linguagem) pela API da plataforma. Faça clone raso em diretório temporário.
+   Leia código e tests. Para artefatos distribuídos ou comportamento solicitado
+   que inspeção do código não resolva, chame
+   [rea-investigation](../rea-investigation/SKILL.md) com alvo exato e pergunta
+   limitada. REA devolve evidências a este chamador; não reinicia Absorb. Registre
+   identidade original, observações, limites e incógnitas antes de escolher o que
+   adotar. Achados estáticos não estabelecem comportamento de runtime.
 3. **Rode os portões de confiança.**
    - *Licença:* permissiva (MIT / Apache / BSD / MPL) = seguro reengenheirar.
      Copyleft (GPL / AGPL) = só a técnica — reengenheire a ideia, nunca copie o
      código. Sem licença = trate como todos-os-direitos-reservados, só a técnica.
      Termos não-comerciais = bloqueio; leve para o seu humano.
-   - *Varredura de coisa suspeita:* grep por padrões de cloak / spam / fake-review /
+   - *Varredura de coisa suspeita:* use `rg` para padrões de cloak / spam / fake-review /
      golpe. Sinalize alto.
    - *Nada de install selvagem:* nunca dê `pip install` / `npm install` numa
      dependência não auditada (typo-squatting é um ataque real de supply chain).
@@ -53,12 +67,31 @@ fato, não um enfeite.
    falha por capacidade, afirmando um efeito colateral real — um arquivo, uma linha
    no banco, saída de verdade. Mocke só o transporte de uma API externa paga, nunca
    a lógica.
-6. **Reconstrua red-first.** Commite os testes falhando, depois construa até ficar
-   verde na costura inteira. Um avaliador em uma sessão nova e disjunta do autor avalia o
-   resultado; o builder nunca avalia o próprio trabalho.
-7. **Cite e registre.** Escreva o crédito do scaffold onde a capacidade agora vive:
-   autor, projeto, licença, o que é emprestado (o scaffold) e o que é seu (a
-   reengenharia). Nunca invente um crédito. Nunca apague um.
+6. **Integração nativa.** Aplique [red-first](../red-first/SKILL.md): observe
+   falha real e sele o contrato antes da correção mínima na costura responsável.
+   Preserve intacto o test original. Delimite comandos reais de lint, tipos e tests
+   do repo por [sniper-testing](../sniper-testing/SKILL.md), com `base_sha` fixado
+   e `candidate_sha` atual, incluindo caminhos pendentes próprios. Registre
+   verificações indisponíveis ou inaplicáveis; nunca instale verificador arbitrário
+   nem invente aprovação. Rode [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md)
+   no mesmo fluxo para evidências de qualidade/mutação. Lacuna recebe regressão
+   suplementar separada, nunca edição do original selado. Tudo fica no orçamento
+   compartilhado.
+7. **Verifique a capacidade adotada.** Exercite resultado nativo contra mapa
+   de capacidades e superfície real do usuário. Reutilize evidências de descoberta;
+   solicite outra observação REA apenas para comparação concreta pendente, dentro
+   dos limites existentes de provedor e execução. Escolha avaliador capaz pela
+   matriz configurada para revisão nova separada do autor do candidato agregado
+   exato; registre e exclua a execução autora. O builder nunca avalia a si mesmo.
+   Execute a passagem exigida das suites afetadas e siga a entrega autorizada do
+   projeto. Evidência estática original ou GREEN local não prova entrega nativa ao vivo.
+8. **Cite e registre.** Preserve o crédito do scaffold onde vive a capacidade:
+   autor, projeto, licença, o que foi emprestado e o que é reengenharia própria.
+   Nunca invente nem apague crédito. Devolva mapa de capacidades, candidato exato,
+   verificações, atribuição e lacunas ao responsável pela integração. Se o orçamento
+   acabar ou gate obrigatório não puder rodar, salve **STILL-BUILDING** com trabalho
+   restante e próxima ação; continue trabalho útil autorizado que não gaste a cota
+   esgotada. Nunca fabrique **PROVEN** nem omita capacidade para obter aprovação.
 
 ## Regras duras — qualquer uma delas reprova a skill
 

@@ -1,6 +1,6 @@
 # Instalação — acople o pacote a um agente de verdade
 
-> **v0.7 portable installer:** Registro atual em um passo para Claude Code, Codex, Cursor, OpenCode e agentes portáteis: `./install.sh --target all --locale pt-BR`. O script não sobrescreve nada; no PowerShell, use `./install.ps1`. A matriz completa de caminhos atuais está no [guia canônico de instalação](../../INSTALL.md).
+> **Instalador portátil:** Registro atual em um passo para Claude Code, Codex, Cursor, OpenCode e agentes portáteis: `./install.sh --target all --locale pt-BR`. O script não sobrescreve nada; no PowerShell, use `./install.ps1`. A matriz completa de caminhos atuais está no [guia canônico de instalação](../../INSTALL.md).
 
 O pacote é um conjunto de pastas de markdown. Cada skill é
 `skills/<name>/SKILL.md`. Cada play é `plays/<name>.md`. Sem binários, sem
@@ -20,12 +20,18 @@ Dois comandos dentro do Claude Code:
     /plugin marketplace add Tcuzzo/backs-aios-skills
     /plugin install backs-aios
 
-Isso instala tudo de uma vez: as skills carregam, os comandos de barra ficam
-disponíveis (digite `/optimus` para subir o piso), e o hook de aterramento já
-vem ligado — ele bloqueia ferramentas de mutação até o harness carregar. O
-kill-switch do hook é seu: defina `AIOS_GATE=off` no ambiente para desligá-lo,
-com alarde. As atualizações fluem por `/plugin` quando o repo do marketplace
-avança.
+O plugin fornece skills, comandos de barra e o hook de carregamento de contexto
+(digite `/optimus` para carregar o piso). Em hosts compatíveis, o hook entrega os
+corpos reais de Optimus, Yoke e Build Flow ao iniciar ou compactar a sessão e
+quando falta o marcador. Não bloqueia ferramentas nem revoga aterramento adquirido.
+Corpos ilegíveis geram diagnóstico visível sem recibo falso. `AIOS_GATE=off`
+continua sendo o interruptor reversível do operador. Atualizações são gerenciadas
+por `/plugin` quando o repositório do marketplace avança.
+
+Escolher `--locale pt-BR` sobrepõe os `SKILL.md` traduzidos às pastas canônicas;
+scripts e referências compartilhados são preservados. Copie a árvore efetiva
+completa, não apenas os Markdown traduzidos. Verifique registro e entrega real de
+contexto no host: copiar arquivos não prova que suas configurações foram atualizadas.
 
 ## 2. Claude Code, manual
 

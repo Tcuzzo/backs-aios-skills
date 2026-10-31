@@ -1,17 +1,49 @@
 ---
 name: rea-investigation
-description: Usa REA para investigar un ejecutable distribuido, paquete o comportamiento de ejecución cuando sea necesario para diagnosticar o reparar un fallo.
+description: "Úsala cuando ejecutables distribuidos, paquetes o comportamiento solicitado de runtime necesiten investigación REA para diagnóstico, descubrimiento de capacidades o verificación de una adopción nativa."
 license: MIT
 ---
 
 # Investigación de artefactos con REA
 
-Usa el motor REA instalado y su skill independiente para binarios distribuidos, paquetes o comportamiento de ejecución solicitado. Para repositorios de código fuente normales, usa directamente el código y las pruebas. Este puente no instala REA, Ghidra, proveedores ni servidores MCP, ni afirma que estén disponibles.
+Usa el motor REA instalado y su skill independiente para binarios distribuidos,
+paquetes o comportamiento solicitado de runtime. Para repositorios de código
+ordinarios, usa directamente código y tests. Este puente no instala REA, Ghidra,
+proveedores ni servidores MCP, y no afirma que estén disponibles.
 
-1. Identifica el objetivo exacto y la pregunta. Lee la skill REA original instalada y sus referencias pertinentes en el directorio de skills del agente, evitando seleccionar este puente recursivamente. Si falta, dilo y continúa la investigación útil con las herramientas disponibles.
-2. Usa las herramientas REA conectadas cuando estén disponibles o la CLI instalada. Para binarios nativos compatibles usa un proveedor Ghidra existente y compatible; informa si falta o no está disponible, sin inventar resultados ni instalar dependencias sin autorización.
-3. Empieza con inspección estática de solo lectura. Registra la identidad del objetivo, los identificadores de evidencia, el alcance, los límites y las incógnitas. Los hallazgos estáticos no prueban el comportamiento en ejecución; observa en vivo solo dentro del alcance solicitado por el usuario y de los límites declarados de ejecución y modificación de la herramienta.
-4. Lleva los hallazgos a root-cause-first y repair-loop. Para adoptar una capacidad de código abierto, invoca absorb y sus controles de licencia y dependencias. Selecciona por rol y capacidad mediante el fleet-ladder configurado, sin fijar identificadores de modelo. Para una evaluación independiente usa una ejecución nueva separada del autor de blind-tribunal y un paquete congelado sin datos del autor, sujeto a las capacidades reales del entorno.
+Usa el paquete de [BACKS Build Flow](../backs-build-flow/SKILL.md), responsable de
+integración y `task_mode` permitido de quien llama. La investigación directa
+establece el paquete una vez. [bounded-loops](../bounded-loops/SKILL.md) controla
+plazo y cupos restantes; los heredan reintentos de proveedor, modelos y traspasos.
+Esta skill produce evidencia; no crea otro responsable de adopción o reparación.
 
-Scaffold: REA by morluto, MIT license, https://github.com/morluto/rea.
-El motor, la skill original y los proveedores se instalan por separado.
+1. Resuelve destino exacto, identidad/hash, pregunta y fase: **descubrimiento**
+   del artefacto original o **verificación** de un resultado nativo concreto.
+   Lee la skill instalada `reverse-engineer-anything` y sus referencias pertinentes
+   desde el directorio de skills del host; evita seleccionar recursivamente este
+   puente. Si falta, informa y continúa investigación útil con herramientas
+   disponibles dentro del presupuesto existente.
+2. Usa herramientas REA conectadas cuando existan o la CLI instalada. Para binarios
+   nativos compatibles, usa un proveedor Ghidra existente; informa ausencia o
+   indisponibilidad sin inventar resultados ni instalar dependencias sin autorización.
+3. Empieza con inspección estática de solo lectura. Registra identidad del destino,
+   IDs de evidencia, alcance, límites e incógnitas. Hallazgos estáticos no prueban
+   comportamiento de runtime; observa en vivo solo dentro del alcance solicitado
+   y los límites declarados de ejecución y mutación de la herramienta.
+4. Devuelve a quien llama un paquete con identidad, fase, comandos/recibos,
+   IDs de evidencia, observaciones, distinción estática/runtime, incógnitas y
+   presupuesto restante. El llamador controla el siguiente paso: Absorb aplica
+   puertas de licencia/dependencias e integración nativa; el responsable de reparación
+   aplica root-cause-first y repair-loop. No inicies recursivamente esos ciclos
+   desde el puente. Si la verificación halla un defecto, devuelve la observación
+   para RED sellado y ciclo acotado de arreglo/comprobación; no afirmes haber reparado.
+5. Enruta por rol y capacidad mediante fleet-ladder configurado; nunca fijes IDs
+   de modelos. Para evaluación independiente requerida, usa la ejecución nueva
+   separada del autor de blind-tribunal y un paquete sin autoría, según las
+   capacidades reales del host. Proveedor ausente o presupuesto agotado produce
+   checkpoint **STILL-BUILDING** con observaciones útiles y siguiente acción exacta;
+   nunca prueba inventada de runtime. Mantén investigación desbloqueada dentro
+   de su cupo restante.
+
+Andamiaje: REA de morluto, licencia MIT, https://github.com/morluto/rea.
+Motor, skill original y proveedores son instalaciones independientes.

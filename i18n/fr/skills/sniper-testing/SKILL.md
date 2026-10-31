@@ -1,75 +1,79 @@
 ---
-name: "sniper-testing"
-description: "À utiliser pendant toute boucle de fix ou de build, et avant de croire n'importe quel test vert. Ne lance que les tests qui couvrent ce que tu as touché, et tue le théâtre de mocks — les tests qui passent pendant que la capacité est cassée. Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat, tests ciblés, périmètre de test, théâtre de mocks, faux vert, suite complète, tests au sniper."
-license: "MIT"
+name: sniper-testing
+description: "Pendant une boucle de build ou de réparation, ou avant de croire un résultat vert, quand la vérification doit couvrir le vrai candidat sans relancer inutilement toute la suite."
+license: MIT
 ---
 
 # Sniper Testing
-**Effort:** free — pure discipline, aucun run en plus ; il réduit le coût net tout court en supprimant les relances de suite complète pendant l'itération. Élimine : le gonflement de tests (des runs de suite entière pour un diff minuscule) et les verts de théâtre de mocks sur lesquels tu bâtirais sinon.
 
-## Pourquoi ce skill existe
+Vérifie le comportement modifié par son vrai consommateur. Choisis les contrôles
+à partir du diff complet de la tâche, puis ne relance que ceux touchés par la
+modification suivante. Hérite du même quota de mission depuis
+[bounded-loops](../bounded-loops/SKILL.md).
 
-Deux modes d'échec brûlent l'essentiel du temps de test. Le gonflement de
-tests : lancer toute la suite pour un changement minuscule. Le théâtre de
-mocks : des tests qui passent pendant que la vraie capacité est physiquement
-cassée. Ce skill tue les deux.
+## 1. Épingler le vrai périmètre
 
-## Règle 1 — le diff définit le périmètre, pas l'optimisme
+Conserve le `base_sha` vérifié d'avant la tâche et le `candidate_sha` commité
+actuel dans le dossier [Build Flow](../backs-build-flow/SKILL.md). Un arbre propre
+après les commits RED et correction possède toujours un diff de tâche.
+`git diff HEAD` seul le perd.
 
-Pendant la boucle d'itération fix/build, tu as interdiction de lancer la suite
-de tests entière.
+Utilise l'outil de périmètre en lecture seule depuis le répertoire résolu du skill :
 
-1. Lance `git diff --name-only HEAD` pour voir exactement quels fichiers tu as
-   touchés.
-2. Associe chaque fichier touché aux fichiers de test qui le couvrent
-   directement (ex. `src/payments/refund.py` → `tests/test_refund.py`).
-3. Annonce ta cible de test précise, puis lance UNIQUEMENT ces fichiers
-   (Python : `pytest tests/test_refund.py` ;
-   JS : `npx vitest run tests/refund.test.js` ;
-   Go : `go test ./payments/ -run TestRefund`).
-4. Un test déjà passé ne se relance pas, sauf si ton changement suivant touche
-   du code qu'il exerce. Le diff définit le périmètre — pas l'optimisme, pas
-   la peur.
-5. À l'atterrissage — la porte du commit — lance UNE passe complète sur la
-   suite de chaque module touché. Cette unique passe attrape les couplages
-   indirects exactement une fois. La vitesse d'itération et un atterrissage
-   sain font tous deux partie du job.
+```bash
+python scripts/changed_files.py --repo <verified-repo> --base <base-sha> --candidate <candidate-sha>
+```
 
-## Règle 2 — tue le théâtre de mocks
+Pendant l'itération, ajoute `--include-worktree` seulement si le candidat est HEAD.
+L'outil distingue chemins commités, indexés, non indexés et non suivis, en
+préservant les noms inhabituels. Le périmètre agrégé comprend suppressions et deux
+côtés des renommages. Signale le travail sans rapport en attente comme préservé ;
+ne revendique pas chaque chemin retourné. Une base absente ou une révision invalide
+est une erreur à résoudre, jamais un périmètre vide justifiant de sauter les
+contrôles. L'outil ne récupère ni ne modifie l'historique.
 
-Un test de capacité doit asserter un effet de bord réel et physique :
+## 2. Choisir et exécuter de vrais contrôles
 
-- « produit une vidéo » → un vrai fichier existe sur le disque avec une taille
-  > 0 octet.
-- « stocke un souvenir » → la ligne se relit depuis une vraie base de données
-  locale.
-- « affiche le widget » → un vrai élément DOM existe sur la page.
+Associe fichiers modifiés et appelants/consommateurs affectés aux tests de
+comportement, puis lis scripts, CI et configuration réels du dépôt pour les commandes applicables.
 
-Ne mocke pas la base de données. Ne mocke pas le système de fichiers. Ne mocke
-pas les sockets réseau locales.
+| Contrôle | Périmètre et preuve |
+| --- | --- |
+| Lint et contrôle de format | Fichiers modifiés pris en charge avec la configuration existante ; mode contrôle avant de décider de reformater. |
+| Typage ou compilateur | Frontière de paquet/projet concernée ; les dépendances de types peuvent exiger une cible plus large. |
+| Tests de comportement | Vrai chemin modifié et régression qui échoue quand la capacité casse. |
+| Tests de contrat/intégration | Consommateurs, alias, paquetage, préservation des réglages ou frontières runtime touchés. |
+| Contrôles d'atterrissage obligatoires | Suites exigées par le dépôt une fois le candidat stabilisé. |
 
-Le seul mock légal est la feuille de transport externe payante — l'appel HTTP
-vers une API tierce facturée. Même là, le test doit traverser toute la vraie
-logique autour : construction de la requête, routage, parsing de la réponse.
-Mocke le fil, jamais le cerveau.
+Précise chaque commande, le risque couvert, révision/état en attente, résultat
+exécuté et échecs restants. Un linter ou vérificateur de types absent est
+**indisponible** ou **inapplicable**, avec une raison ; n'invente pas une réussite.
+N'installe pas un nouvel outil parce qu'un exemple le nomme. Un lint vert ne remplace pas des tests de comportement.
 
-## Audite avant de faire confiance
+Pendant l'itération, choisis la plus petite cible utile. Un contrôle déjà réussi
+n'a pas à être relancé si aucun code exercé, entrée ou environnement pertinent
+n'a changé. Un couplage concret non résolu ou un contrôle projet obligatoire
+justifie des tests plus larges ; note pourquoi. À l'atterrissage, exécute une fois
+les contrôles agrégés requis sur le candidat final. Les changements suivants
+invalident seulement les preuves affectées et les contrôles de commit obligatoires.
 
-Avant de t'appuyer sur un test, lis-le. Si c'est du théâtre de mocks — vert
-grâce aux mocks, sans assertion physique — supprime le mock et réécris le test
-pour asserter un vrai effet de bord. Un test qui ne peut pas échouer est pire
-que pas de test : il certifie un mensonge, et tu construiras sur ce mensonge.
+## 3. Faire détecter de vraies pannes aux tests
 
-## Règles dures (une seule enfreinte fait échouer le skill)
+Affirme un effet observable : artefact existant et valide, données relues dans une
+vraie base locale, octets réels de contexte reçus par l'hôte, ou élément d'UI rendu.
+Exerce fichiers locaux, bases et sockets au lieu de les simuler. Une feuille de
+transport externe facturée peut être remplacée par une fixture déterministe,
+pendant que construction de requête, routage, analyse et consommateur local restent
+réels. Ne prétends jamais que la fixture prouve l'exécution du service externe.
 
-- Aucun run de suite complète pendant l'itération.
-- Aucune déclaration de vert sans assertion d'effet de bord réel.
-- Aucun mock au-delà de la feuille de transport externe payante dans un test
-  de capacité.
-- Aucun atterrissage sans l'unique passe complète sur les modules touchés.
+Préserve octet pour octet le fichier RED scellé de [red-first](../red-first/SKILL.md).
+Pour une nouvelle lacune, ajoute un fichier de régression supplémentaire distinct
+en suivant les règles de preuve et de scellement de ce skill. N'affaiblis, ne
+renomme, ne remplace et ne modifie jamais le fichier scellé initial.
 
-## Fonctionne bien avec
+## Sortie
 
-- [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) — le périmètre sniper alimente sa première porte
-- [red-first](../red-first/SKILL.md) — écrire le test en échec avant le fix
-- [seam-engineering](../seam-engineering/SKILL.md) — fixer la classe, puis balayer avec des tests ciblés
+Rends périmètre du candidat, résultats lint/typage/tests exécutés, effets réels
+observés et contrôles non résolus au même responsable.
+[clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) utilise ces preuves comme
+première étape, sans répéter les contrôles inchangés.

@@ -1,8 +1,21 @@
 # Install BACKS AIOS
 
-BACKS AIOS ships 56 public skill folders, 8 named plays, and 15 command
+BACKS AIOS ships 62 source skill folders, 8 named plays, and 15 command
 entry points with native packaging for Claude Code, Codex, Cursor, and OpenCode.
 There is no build step and no runtime dependency for the skills themselves.
+
+## What an update changes
+
+The loose-skill installers and plugin registration are separate surfaces. The
+all-target installer refreshes managed skill files and supported adapters; it does
+not merge arbitrary Claude JSON or Codex TOML settings. The Codex refresh command
+updates its managed catalog entry and instructions while preserving unrelated data.
+An explicit `--home` is propagated to the child installer, so a disposable-home
+verification cannot silently target the caller's home. Verify each host in a fresh
+session before claiming it loaded the new release.
+
+Keep operator essence in the current operator's selected private data location.
+Install only the reusable skill, validator and format, not a personal profile.
 
 ## Fast path: register every local coding agent
 
@@ -32,10 +45,10 @@ Supported `--target` / `-Target` values:
 
 | Target | Registration path | What loads it |
 | --- | --- | --- |
-| `codex` | `~/.codex/skills/<name>/SKILL.md` | Codex CLI, app, and IDE extension; all 56 public skill folders; arming requires the explicit gate loader — no native Codex skill lifecycle |
+| `codex` | `~/.codex/skills/<name>/SKILL.md` | Codex CLI, app, and IDE extension; all 62 source skill folders; plain skills use the explicit loader when no context hook is active |
 | `cursor` | `~/.cursor/plugins/local/backs-aios` | Cursor IDE and Cursor CLI (`agent`); full plugin with skills, commands, and native hook |
 | `opencode` | `~/.config/opencode/skills/<name>/SKILL.md` + `commands/*.md` + `~/.config/opencode/plugins/backs-aios.js` | OpenCode terminal and desktop, including all 15 slash commands and the ESM adapter that calls the shared JavaScript gate evaluator |
-| `claude` | `~/.claude/skills/<name>/SKILL.md` | Claude Code loads all 56 public skills directly; no duplicate legacy commands and no hook; the marketplace plugin adds the hook |
+| `claude` | `~/.claude/skills/<name>/SKILL.md` | Claude Code loads the canonical skills directly; no duplicate legacy commands and no hook; the marketplace plugin adds the hook |
 | `portable` | `~/.agents/skills/<name>/SKILL.md` | Agent Skills runtimes, including the 8 play adapters and 2 canonical command equivalents |
 | `all` | Every native and portable path above | Claude Code, Codex, Cursor, OpenCode, and Agent Skills runtimes |
 
@@ -45,7 +58,7 @@ stable English invocation keys; skill-only targets use the selected language.
 
 ## Claude Code: full plugin
 
-The full Claude Code plugin carries all 56 public skills, all 15 slash commands, and the
+The full Claude Code plugin carries the canonical skills, all 15 slash commands, and the
 grounding hook:
 
 ```text
@@ -53,9 +66,10 @@ grounding hook:
 /plugin install backs-aios
 ```
 
-Start a fresh Claude Code session and run `/optimus`. The hook starts each session
-RED, leaves all read-only tools alone, and blocks mutating agent tools until a pack
-skill loads. `AIOS_GATE=off` is the human-owned, loud kill-switch.
+Start a fresh Claude Code session and run `/optimus`. The hook delivers the actual
+Optimus, human-calibration and Build Flow bodies. A matched tool without a current
+receipt triggers loading; missing files produce a diagnostic without tool denial
+or a false receipt. `AIOS_GATE=off` is the existing reversible switch.
 
 Use `./install.sh --target claude` for the same skills without duplicate commands
 and without the plugin hook. Use the marketplace plugin when you also want the
@@ -63,18 +77,11 @@ grounding hook and namespaced plugin lifecycle.
 
 ## Codex: plugin or plain skills
 
-For the local Codex plugin, global skill instructions, and automatic refresh,
-follow [the Codex skills guide](docs/CODEX_SKILLS.md). The installed `codex`
-CLI on this workstation does not currently expose plugin commands; the guide
-uses the desktop local marketplace and the managed plain skills path.
-
-The richer local plugin development flow can point a Codex marketplace entry at this clone and run:
-
-```bash
-codex plugin add backs-aios@<marketplace-name>
-```
-
-The marketplace name belongs to the local catalog that references the clone; it is not hardcoded by this repository.
+For the local Codex plugin, global skill instructions, and managed refresh,
+follow [the Codex skills guide](docs/CODEX_SKILLS.md). Use the actual plugin
+capabilities exposed by your installed host; do not assume a CLI subcommand.
+The managed local bundle includes its own playbooks and removes duplicate alias
+folders while preserving loose-skill compatibility paths.
 
 For a direct GitHub clone, the portable route is:
 
@@ -82,14 +89,15 @@ For a direct GitHub clone, the portable route is:
 ./install.sh --target codex
 ```
 
-Codex discovers the 56 public skill folders on the next
+Codex discovers the 62 source skill folders on the next
 thread. `optimus` and `design-taste` already exist as canonical skills, so all 15
 command capabilities are invocable without duplicate adapters. Codex plugins do not
 ingest `command-adapters/`; invoke the matching namespaced skill (for example,
 `backs-aios:elite-build`).
 
-Codex has no native skill/hook lifecycle in this pack. To arm a Codex session, run
-the explicit gate loader against the managed runtime root:
+Plain skill installation does not register a Codex hook. The managed local plugin
+has its own hook declaration and host trust flow. When a context hook is unavailable,
+load the foundations explicitly from the managed runtime:
 
 ```bash
 node "$HOME/.local/share/backs-aios/current/hooks/aios_gate.js" --load backs-aios:optimus
@@ -101,8 +109,9 @@ Python alternate:
 python3 "$HOME/.local/share/backs-aios/current/hooks/aios_gate.py" --load backs-aios:optimus
 ```
 
-The `--load` call prints the skill body and atomically arms the same session marker.
-Unknown skills return nonzero and do not arm. There is no `codex --load` CLI flag.
+The `--load` call emits the actual foundation bodies and records source hashes only
+after delivery. Unknown or unavailable skills return nonzero without a false receipt.
+This is the pack's loader command, not a `codex --load` CLI flag.
 
 ## Cursor IDE and terminal
 
@@ -115,7 +124,7 @@ the full bundle with:
 
 This creates `~/.cursor/plugins/local/backs-aios` as a symlink to the clone. Restart
 Cursor or run **Developer: Reload Window**. In Cursor CLI, start a new `agent`
-session. The 56 public skills appear in skill discovery, the 15 commands appear in `/`,
+session. The installed skills appear in skill discovery, the 15 commands appear in `/`,
 and `hooks/cursor-hooks.json` drives the same grounding gate through Cursor's native
 lowercase event protocol.
 

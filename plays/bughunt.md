@@ -9,42 +9,18 @@ every finding adversarially, and close whole seams — never single symptoms.
   repair loop for that).
 - A backlog of findings needs to be attacked in parallel without drift or trampling.
 
-The hunt, at a glance:
+## Shared task and limits
 
-```
-    +--------------------------------------------+
-+-->| 1 wayfinder  chart the hunt as one map,    |
-|   |   a node per seam; claim from the frontier |
-|   +--------------------------------------------+
-|   | 2 leap-protocol  one node = one ball:      |
-|   |   goal, spec, hard file scope, ONE writer  |
-|   +--------------------------------------------+
-|   | 3 root-cause-first  reproduce + review     |
-|   |   evidence BEFORE any code changes         |
-|   +--------------------------------------------+
-|   | 4 repair-loop  red-first test committed,   |<--------------------------+
-|   |   sniper-testing while iterating           |  finding or survivor ->   |
-|   +--------------------------------------------+   +---------------------+ |
-|   | 5 blind-tribunal  a non-author grader      |-->|  LORD OF THE LOOP   |-+
-|   |   attacks; jurors judge redacted work      |   | one hand drives the |
-|   +--------------------------------------------+   | loop: dispatch,     |
-|   | 6 seam-engineering  close the CLASS at     |   | judge, loop back    |
-|   |   the shared seam, never the symptom       |   | until the gate is   |
-|   +--------------------------------------------+   | green. a lane never |
-|   | 7 clean-code-gauntlet  the fixed branch    |-->| lands its own work. |
-|   |   must DIE under mutation, or stay open    |   +---------------------+
-|   +--------------------------------------------+
-|             |
-|             | jurors pass + mutant dies
-|             v
-|   +--------------------------------------------+
-|   | LANDING GATE -- leap-protocol Score gate:  |
-|   | source truth . keep-or-revert . blind      |
-|   | review . live proof . provenance -- each   |
-|   | finding ends FIXED or REFUTED-W-EVIDENCE   |
-+---| ball closed -> claim the next node         |
-    +--------------------------------------------+
-```
+Apply this play inside the current [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)
+task packet. Keep one integration owner, the requested `task_mode`, pinned base
+and candidate revisions, operator essence, and current evidence. Reuse applicable
+loaded skill bodies; this play adds its domain gates without restarting the task.
+
+[bounded-loops](../skills/bounded-loops/SKILL.md) owns the original deadline and
+remaining allowances across retries, workers, models, reviews, and handoffs.
+Never reset them for a nested play. On exhaustion, checkpoint **STILL-BUILDING**
+with the candidate, evidence, unmet gates, and next action. Continue useful
+authorized work only within its remaining allowance; no missing gate becomes a pass.
 
 ## The chain
 
@@ -58,8 +34,10 @@ The hunt, at a glance:
    review the root-cause evidence BEFORE any code changes. No mutation on a guess.
 4. [repair-loop](../skills/repair-loop/SKILL.md) — the inner discipline of every
    ball: [red-first](../skills/red-first/SKILL.md) failing test committed before the
-   fix, [sniper-testing](../skills/sniper-testing/SKILL.md) scoped runs during
-   iteration, one full touched-module pass at landing.
+   fix, [sniper-testing](../skills/sniper-testing/SKILL.md) scoped real lint/type/test
+   commands from the pinned aggregate candidate diff, one full touched-module pass
+   at landing. Keep the original RED unchanged; a new finding gets a separate
+   supplemental test. Return evidence to the hunt owner without restarting a play.
 5. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — every finding is attacked
    adversarially: a grader that did not author it attacks refuse-by-default, jurors
    judge an author-redacted envelope. The builder never grades its own work.
@@ -75,6 +53,10 @@ A ball closes only through [leap-protocol](../skills/leap-protocol/SKILL.md)'s
 Score gate — source truth, keep-or-revert, blind review, live proof, provenance;
 missing evidence never defaults to pass. Hunt-specific terminal states: every
 finding ends FIXED or REFUTED-WITH-EVIDENCE.
+
+An exhausted allowance leaves the finding open with a STILL-BUILDING checkpoint;
+it is not a terminal FIXED or REFUTED-WITH-EVIDENCE claim. Preserve its attempt
+history and remaining mission limits before claiming another permitted node.
 
 ## Rules of the hunt
 
@@ -100,6 +82,6 @@ finding ends FIXED or REFUTED-WITH-EVIDENCE.
 - A full-suite run mid-hunt — sniper the finding's own seam only.
 - Mock theater in a closure test: it silently re-opens the bug while the ledger
   claims it is shut.
-- A finding parked instead of fixed or refuted with evidence.
+- A finding silently parked or marked closed without a fix or evidenced refutation.
 
 **Weight:** free hunt discipline at the core; the heavy spend is triple (leap fan-out, the adversarial tribunal, and mutation closure proof); it pays when a whole backlog closes in parallel with every closure proven under mutation.

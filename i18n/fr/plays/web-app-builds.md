@@ -10,51 +10,26 @@ l'hygiène EST donc le play, pas une réflexion d'après-coup.
 Pour construire ou étendre toute app web, site, API ou dépôt livré que
 quelqu'un d'autre va installer et exécuter.
 
-Le build, en un coup d'œil :
+## Tâche et limites communes
 
-```
-+--------------------------------------------+
-| 1 intent-compiler  read the ask whole      |
-+--------------------------------------------+
-| 2 understanding-gates  structure first:    |
-|   one entrypoint, manifest, lockfile       |
-+--------------------------------------------+
-| 3 dependency hygiene  validate + hash-pin  |
-|   every dep, no install scripts, pin CI    |
-+--------------------------------------------+
-| 4 red-first  contract tests for routes,    |<--------------------------+
-|   loaders, validation -- committed first   |  finding -> a new red     |
-+--------------------------------------------+  test -> fix ->           |
-| 5 build to the doctrine; any UI runs       |  re-convene               |
-|   the design-taste method                  |                           |
-+--------------------------------------------+   +---------------------+ |
-| 6 sniper-testing  never mock your own      |   |  LORD OF THE LOOP   |-+
-|   validation or serialization              |   | one hand drives the |
-+--------------------------------------------+   | loop: dispatch,     |
-| 7 clean-code-gauntlet  mutate validation   |   | judge, loop back    |
-|   + auth predicates until none survive     |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 8 blind-tribunal  independent juror       |-->| lands its own work. |
-|   panel; capability-resolved grader        |   |                    |
-+--------------------------------------------+   +---------------------+
-          |
-          | every juror passes
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no deploy:    |
-| no unpinned dep . no committed secret .    |
-| zero mutation survivors in validation +    |
-| auth predicates . no external network      |
-| during tests (loopback is fine)            |
-+--------------------------------------------+
-```
+Applique ce play dans le dossier [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)
+actuel. Garde un responsable de l'intégration, le `task_mode` demandé, les
+révisions base et candidat épinglées, l'essence opérateur et les preuves actuelles.
+Réutilise les textes chargés pertinents ; ce play ajoute ses contrôles métier
+sans relancer la tâche.
 
-*Dans le schéma : LORD OF THE LOOP = le maître de la boucle, la seule main qui pilote l'itération — dispatch, jugement, rebouclage — jusqu'à ce que la barrière d'atterrissage soit verte ; LANDING GATE = la barrière d'atterrissage — tout au vert, ou pas d'atterrissage.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) possède échéance initiale et quotas
+restants à travers réessais, agents, modèles, revues et relèves. Ne les
+réinitialise jamais pour un play imbriqué. À épuisement, sauvegarde
+**STILL-BUILDING** avec candidat, preuves, barrières non satisfaites et prochaine
+action. Le travail utile autorisé reste dans son quota disponible ; aucun
+contrôle absent ne devient une réussite.
 
 ## La chaîne
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — lis la demande en
-   entier avant de choisir une stack ou une structure.
+1. Utilise intention et essence opérateur établies par Build Flow avant de
+   choisir stack ou structure ; applique toute la demande et les corrections actuelles.
+
 2. [understanding-gates](../skills/understanding-gates/SKILL.md) — conçois la
    structure d'abord : un point d'entrée documenté, un manifeste de dépendances
    explicite, et un lockfile commité. Pas d'étalement de fichiers au fil de
@@ -82,18 +57,25 @@ Le build, en un coup d'œil :
 5. Construis selon la doctrine ci-dessous. Pour toute surface d'UI, applique la
    méthode [design-taste](../skills/design-taste/SKILL.md) — les tokens
    d'abord, l'accessibilité en barrière dure.
-6. [sniper-testing](../skills/sniper-testing/SKILL.md) — ne mocke jamais ta
-   propre validation ni ta sérialisation : une frontière web mockée livre une
-   app qui accepte ce qu'elle devrait rejeter.
-7. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — les handlers
-   de routes, les loaders de données et les chemins de formulaire/validation
-   passent avant le déploiement ; fais tourner la mutation sur les prédicats de
-   validation et d'authentification jusqu'à ce que rien ne survive. Un check de
-   frontière dont la comparaison inversée passe encore la suite est une porte
-   ouverte sur une surface publique.
-8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — notation indépendante dans des sessions vierges et disjointes de l'auteur
-   avant le déploiement.
-   Chaque constat d'un juré devient un nouveau test rouge ; reconvoque jusqu'à ce que chaque juré valide.
+6. [sniper-testing](../skills/sniper-testing/SKILL.md) — utilise les vraies
+   commandes lint/typage/tests du dépôt depuis le diff agrégé épinglé ; signale
+   lacunes et N/A justifiés. Ne mocke jamais ta validation ou sérialisation : une
+   frontière web mockée livre une app qui accepte ce qu'elle devrait rejeter.
+
+7. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — handlers de
+   routes, loaders et chemins de formulaire/validation doivent passer avant
+   déploiement. Mute validation et authentification dans le budget partagé ; les
+   survivants significatifs bloquent le déploiement. Ajoute toute régression
+   manquante dans un fichier distinct et préserve RED initial scellé. Une comparaison
+   de frontière inversée que la suite laisse passer ouvre la porte sur une surface publique.
+
+8. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — panel indépendant avant
+   déploiement, chaque juré choisi en direct selon capacité et disponibilité dans
+   la matrice configurée. Consigne et exclue l'exécution autrice ; le relecteur
+   utilise une session fraîche disjointe de l'auteur. Chaque constat étayé reçoit
+   un RED distinct et une réparation bornée dans cette tâche. Reconvoque dans le
+   budget restant ; tous les jurés requis doivent valider. Garde la passe complète
+   des suites touchées et vérifie la livraison autorisée sur la vraie surface de l'app.
 
 ## La doctrine (ce que le build doit satisfaire)
 

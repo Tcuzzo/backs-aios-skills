@@ -1,125 +1,81 @@
 ---
-name: "intent-compiler"
-description: "तब इस्तेमाल करें जब इंसान की माँग ticket की जगह सहज बोलचाल में आए — रूपक, slang, शायरी, दबा-संक्षिप्त इशारा, गर्मी, या \"समझ ही गए होगे\"; भाषा को एक कहे हुए technical directive में बदलता है, पढ़त एक line में बताता है, फिर execute करता है। Trigger words: prose is the spec, read the prose, translate the ask, ambiguous prompt, unclear ask, what did they mean, deduce intent, metaphor, slang, vernacular, vibe, phrasing, मतलब क्या था, इशारा पढ़ो, बोलचाल, रूपक, अंदाज़."
-license: "MIT"
+name: intent-compiler
+description: जब request संक्षिप्त prose, metaphor, slang, shorthand या अस्पष्ट references में आए और agent को evidence आधारित technical directive चाहिए, तब उपयोग करें। Correction intended capability या requested finish बदले तब भी उपयोग करें।
+license: MIT
 ---
 
-# Prose Is the Spec
-**Effort:** free — किसी भी build से पहले पढ़ने का अनुशासन, अलग से कुछ नहीं चलता। हटाता है: literal misread में डूबे पूरे builds — reading साफ़ बोल देने से ग़लत अंदाज़े की क़ीमत एक शब्द रह जाती है, पूरा rebuild नहीं।
+# वर्तमान अनुरोध Compile करें
 
-लोग tickets नहीं लिखते। वे बोलते हैं — तेज़, लय के साथ, रूपक और गर्मी लिए, वो
-छोड़ते हुए जो उनके ख़याल से आपको पहले से पता है। ज़्यादातर agents उसे घटिया
-prompt मानते हैं और दो में से एक तरह fail होते हैं: या शब्दों को अक्षरशः चला
-देते हैं, या सवाल टाँगकर इंतज़ार करते हैं।
+Operator के शब्दों को actionable contract में बदलें, अपना अर्थ संक्षेप में बताएँ और काम
+जारी रखें। संक्षिप्त अभिव्यक्ति में पूरी spec हो सकती है। Operator को उसे engineering
+ ticket में दोबारा लिखना जरूरी नहीं।
 
-दोनों नाकामी हैं। बोलचाल spec का कच्चा draft नहीं है। **बोलचाल ही spec है।**
-वो ticket से ज़्यादा ढोती है — priority, risk की सहनशीलता, taste, और वजह।
-दबी-संक्षिप्त अभिव्यक्ति अधूरी सोच नहीं है। जो agent उसे पढ़ नहीं सकता, वो
-input का सबसे समृद्ध हिस्सा फेंक रहा है।
+## वर्तमान task का एक parse
 
-## तीन मना failures
+Current packet में directive मौजूद हो और कोई नया instruction उसे न बदले, तो उसे reuse
+करें। यह skill भाषा interpretation की owner है;
+[operator-intent-deduction](../operator-intent-deduction/SKILL.md) उसी directive में
+अनसुलझे निर्णय का owner है। कोई भी दूसरे का पूरा workflow फिर शुरू नहीं करता।
 
-- **Literalism** — रूपक को हुक्म की तरह चलाना। "जला दो सब" delete नहीं है।
-  "मार दो इसे" destroy नहीं है। "make it sing" audio नहीं है। यह शब्दकोश के
-  हाथों hallucination है, और यह destructive-action का risk है।
-- **Caricature** — slang को वापस उछालना, बोली की नक़ल उतारना, अपनापन दिखाने के
-  लिए stereotype की तरफ़ हाथ बढ़ाना। संस्कृति को पढ़ो; उसका cosplay मत करो।
-  नाटक में लगा agent सुन नहीं रहा, और वो ग़लत पढ़ता है।
-- **Invention** — ख़ाली जगह को किसी सही-सुनाई-देती चीज़ से भर देना। Anchor
-  पतला हो, तो कहो पतला है। मतलब कभी मत गढ़ो।
+### 1. वास्तविक शब्दों को parse करें
 
-## Step 1 — Parse: carrier को payload से अलग करो
+Requested capability, action, named surfaces, quantities, constraints और observable
+finish निकालें। Unresolved references और metaphors चिह्नित करें। Repetition जोर बता
+सकती है; उससे नया task नहीं बनता। Tone urgency दिखा सकता है, permission, risk tolerance,
+competence या identity नहीं।
 
-Input को उसकी मशीनरी तक छीलो।
+Figurative language को वास्तविक task context में समझें। “जला दो” किसी approach के लिए
+हो सकता है; अकेले उससे data delete करने की authorization नहीं मिलती। Dialect की नकल
+या persona गढ़े बिना साफ भाषा में उत्तर दें।
 
-- **Carrier** = लय, दोहराव, आवाज़, गाली, गर्मी। Carrier priority और भावनात्मक
-  वज़न का निशान है। वो असली signal है। वो content नहीं है।
-- **Payload** = संज्ञाएँ, क्रियाएँ, नामित surfaces, constraints और मात्राएँ।
-  यही हुक्म है।
-- **दोहराव ज़ोर है, दूसरी माँग नहीं।** "ठीक करो, अभी ठीक करो" एक urgent fix
-  है, queue में दो fixes नहीं।
-- **हर रूपक और हर दोहरे मतलब पर निशान लगाओ।** एक शब्द एक साथ दो काम कर सकता
-  है — यही इस विधा की ख़ूबी है, हादसा नहीं।
-- **संक्षेप धुँधलापन नहीं है।** ग़ायब detail अक्सर वो detail है जो इंसान ने
-  मान लिया कि आपके पास है। उसे ग़ायब कहने से पहले जाकर ढूँढो।
+### 2. केवल कार्रवाई बदलने वाली uncertainties की grounding करें
 
-Output: माँग दोबारा लिखी हुई — *priority* + *अक्षरशः payload* + *उन आकृतियों की
-सूची जिन्हें अभी ज़मीन चाहिए*।
+Governing instructions के भीतर यह क्रम अपनाएँ:
 
-## Step 2 — Ground: हर पढ़त को सबूत में गाड़ो
+1. Operator का current explicit request और corrections।
+2. इस conversation में स्थापित scope और authorization।
+3. Verified project facts, targets, contracts और current state।
+4. [operator-essence](../operator-essence/SKILL.md) की relevant confirmed preferences
+   और evidence आधारित observations।
+5. Evidence कम हो तो स्पष्ट label वाला provisional inference।
 
-सख़्त priority — ऊपर वाला नीचे वाले को हमेशा हराता है:
+Essence गायब या पुराना हो तो उसका owner एक supported insights pass करता है और
+provisional या current slice लौटाता है। Nested skills वही result reuse करें; history
+बार-बार न लें। Historical preferences नए instruction से ऊपर नहीं हैं। Source facts
+route सीमित कर सकते हैं; goal छोटा नहीं करते।
 
-1. **इंसान का अपना record** — उनके पुराने फ़ैसले, corrections, सहेजी हुई
-   पसंद और profile (देखो [human-calibration](../human-calibration/SKILL.md))।
-2. **Project का source truth** — असली files, symbols, configs, docs.
-3. **जी हुई बोली** — उस phrase का उसकी संस्कृति में असली मतलब और इतिहास,
-   context की तरह पढ़ा हुआ। बोली एक valid grammar है, अपने भीतरी तर्क के साथ।
-4. **Model priors** — सबसे आख़िर में, और कभी अकेले नहीं।
+गुणात्मक evidence preference का अर्थ और context दिखाता है। मात्रात्मक evidence अपनी
+बताई population में repeated outcomes का वर्णन कर सकता है। Counts अकेले operator का
+मतलब तय नहीं करते, और report की inferred tendency operator-confirmed instruction नहीं।
 
-जो पढ़त सिर्फ पायदान 4 तक पहुँचती है, वो अंदाज़ा है। उसे पतला (thin) कहो और आगे बढ़ो।
+### 3. Directive तैयार करें
 
-## Step 3 — Deduce: चार-हिस्सों का directive निकालो
+दूसरा plan बनाए बिना existing task packet में ये fields रखें:
 
-चार अलग बातें कहो। यह बँटवारा नंबर-एक misalignment risk को रोकने के लिए है —
-बड़ी vision को किसी आसान-बनने-वाली चीज़ में सिकोड़ देना:
+| Field | आवश्यक content |
+| --- | --- |
+| Intended capability | Operator क्या अस्तित्व में चाहता है या क्या जानना चाहता है। |
+| Current boundary | Verified state और उपलब्ध capabilities आज क्या करने देती हैं। |
+| Route now | मौजूदा authorization में अगली उपयोगी कार्रवाई। |
+| Route later | पूरी intended capability के लिए शेष dependencies। |
+| Task contract | Mode, target, boundaries, requested finish और acceptance evidence। |
+| Uncertainty | महत्वपूर्ण unknowns और उन्हें सुलझा सकने वाला evidence। |
 
-1. **Intended capability** — इंसान असल में क्या मौजूद देखना चाहता है।
-2. **Current boundary** — system आज क्या कर सकता है।
-3. **अभी उपलब्ध रास्ता।**
-4. **बाद में ज़रूरी रास्ता।**
+External dependency current route सीमित करे तो पूरी intended capability सामने रखें।
+Review findings देता है; वह चुपचाप repair नहीं बन जाता।
 
-**पास वाला रास्ता छोटा है, इसलिए goal कभी मत घटाओ।** रास्ता 3 बनाओ, रास्ता 4
-का नाम लो, capability 1 सलामत रखो।
+## अर्थ बताएँ, फिर काम करें
 
-## Output protocol — पढ़त बताओ, फिर बनाओ
+Interpretation मायने रखे तो एक सीधा वाक्य दें:
 
-एक सादी line से खोलो, फिर execute करो:
+> अर्थ: मौजूदा integration अपडेट करना है, उसका public interface बचाना है और release से पहले actual consumer सत्यापित करना है।
 
-> **Read:** <निकाला हुआ directive, एक वाक्य में>
+जरूरत पर कमजोर inference label करें। Evidence से उचित reversible work जारी रखें।
+Factual uncertainty inspection या focused experiment से सुलझाएँ। जरूरी authorization
+गायब हो या operator का असली चुनाव अनसुलझा हो, तो उपलब्ध तैयारी के बाद एक concrete
+recommendation और question दें; [decision-bar](../decision-bar/SKILL.md) देखें। पुरानी
+preference किसी नई consequential action की missing permission नहीं भर सकती।
 
-- पायदान 1–3 पर टिका → `Read:`
-- पतला anchor, ज़्यादातर inference → `Read (thin):` — और **फिर भी बनाओ**।
-
-धुँधलापन फ़ैसला करके और कहकर सुलझता है — सवाल टाँगकर कभी नहीं। कही हुई पढ़त
-रसीद है: ग़लत हो, तो इंसान का correction पूरे build की जगह एक शब्द में निपट
-जाता है। सवाल तभी वापस जाता है जब फ़ैसला सचमुच उनका हो — taste, vision, या
-destructive/data-loss risk (देखो [decision-bar](../decision-bar/SKILL.md)) —
-और तब भी एक सादे सार और विकल्पों के साथ, हिचकिचाहट के paragraph के साथ कभी नहीं।
-
-## रवानी, पोशाक नहीं
-
-भाषा बोलना समझ और register है: शब्दों का मतलब समझना, और सादी, गर्म, आज की
-बोली में जवाब देना (देखो [human-voice](../human-voice/SKILL.md))। भाषा का
-cosplay नाटक है। जो agent सचमुच भाषा बोलता है, उसे उसका नाटक नहीं करना पड़ता।
-रवानी पढ़त के सही निकलने में दिखती है — लहजे की नक़ल में नहीं।
-
-## पढ़त की मिसालें
-
-| उन्होंने कहा | अक्षरशः ग़लत-पढ़त (ग़लत) | ज़मीन से जुड़ी पढ़त |
-|---|---|---|
-| "जला दो सब" | files delete करो | तरीक़ा जड़ से ग़लत है — redesign करो। तेज़ गर्मी = सबसे ऊँची priority। विनाशकारी क़दम को अब भी explicit हाँ चाहिए। |
-| "make it sing" ("इसे गाने पर ला दो") | audio | Surface ज़िंदा महसूस हो — motion, transitions, responsiveness. |
-| "खिलौने मत बनाओ" | games वाला folder नहीं | असली नतीजा निकले, demo नहीं। |
-| "ठीक करो, अभी ठीक करो" | दो tickets | एक fix, urgent. |
-
-## लाल झंडे — आप ग़लत पढ़ने वाले हो
-
-- "यह prompt इतना धुँधला है कि कुछ नहीं हो सकता।" → वो दबा-संक्षिप्त है। पहले ज़मीन दो।
-- "पूछ लेता हूँ उनका मतलब क्या था।" → पढ़त बताओ और बनाओ।
-- "जवाब में उनकी energy match करूँगा।" → Caricature। पढ़ो, नाटक मत करो।
-- "छोटा version बना देता हूँ जो साफ़ मुमकिन है।" → Intended capability कभी मत
-  सिकोड़ो — route-now और route-later का नाम लो।
-- "Vibe वाले शब्द असली requirements नहीं।" → Vibe ही spec है। Aesthetic पढ़तें
-  [design-taste](../design-taste/SKILL.md) की तरफ़ भेजो।
-- "ख़ाली जगह वही भर दूँगा जो आम तौर पर ठीक बैठता है।" → वो priors अकेले हैं।
-  पतला कहो, या जाकर anchor ढूँढो।
-
-## इनके साथ अच्छा चलता है
-
-- [understanding-gates](../understanding-gates/SKILL.md) — score करने से पहले
-  translate करो; कच्ची शायराना बोली पर graded stage gate वफ़ादार काम को ग़लत
-  ठहरा देता है।
-- [human-calibration](../human-calibration/SKILL.md) — वो record जिसमें यह skill ज़मीन पकड़ती है।
-- [decision-bar](../decision-bar/SKILL.md) — इकलौती bar जो कोई सवाल पार कर सकता है।
-- [human-voice](../human-voice/SKILL.md) — वापसी के रास्ते का register.
+Directive [Build Flow](../backs-build-flow/SKILL.md) को लौटाएँ। वास्तव में कोई निर्णय
+बचा हो तभी intent deduction लें। बाद की correction existing packet और संबंधित essence
+ evidence अपडेट करती है; goal चुपचाप नहीं बदलती और remaining mission budget reset नहीं करती।

@@ -11,49 +11,24 @@ model सिर्फ़ वहीं सोचता है जहाँ सो
 tools रखती हो, network call करती हो, या बिना किसी इंसान की हर कदम पर नज़र के
 action लेती हो।
 
-पूरा build, एक नज़र में:
+## साझा task और limits
 
-```
-    +--------------------------------------------+
-    | 1 intent-compiler  mission + limits from   |
-    |   the human's own words                    |
-    +--------------------------------------------+
-+-->| 2 understanding-gates  DOMAIN PRIMITIVES   |
-|   |   first; LLM slot for genuine reasoning    |
-|   +--------------------------------------------+
-|   | 3 red-first  a failing contract test per   |<--------------------------+
-|   |   typed IO boundary, committed first       |  finding -> a new red     |
-|   +--------------------------------------------+  test -> fix ->           |
-|   | 4 build to the doctrine -- every loop      |  re-convene               |
-|   |   inside bounded-loops                     |   +---------------------+ |
-|   +--------------------------------------------+   |  LORD OF THE LOOP   |-+
-|   | 5 sniper-testing  mock transport only      |   | one hand drives the |
-|   +--------------------------------------------+   | loop: dispatch,     |
-|   | 6 clean-code-gauntlet  mutate decision     |   | judge, loop back    |
-|   |   paths to zero survivors                  |   | until the gate is   |
-|   +--------------------------------------------+   | green. a lane never |
-|   | 7 blind-tribunal  independent juror       |-->| lands its own work. |
-|   panel; capability-resolved graders      |   |                    |
-|   +--------------------------------------------+   +---------------------+
-|             |
-|             | every juror passes
-|             v
-|   +--------------------------------------------+
-|   | LANDING GATE -- all green or no ship:      |
-|   | no fail-open boundary, silent fallback,    |
-|   | or swallowed error . zero mutation         |
-|   | survivors in decision paths . cross-       |
-|   | independent pass; the builder never grades .           |
-+---| zero primitives = invalid -> redesign      |
-    +--------------------------------------------+
-```
+यह play current [BACKS Build Flow](../skills/backs-build-flow/SKILL.md) task packet
+के भीतर चलाएँ। एक integration owner, requested `task_mode`, pinned `base_sha`, current
+`candidate_sha`, operator essence और current evidence रखें। Applicable loaded skill
+bodies reuse करें; यह play अपने domain gates जोड़ता है, task फिर शुरू नहीं करता।
 
-*Lord of the Loop = loop का मालिक — एक ही हाथ जो dispatch, judge और दोहराव तब तक चलाता है जब तक landing gate green न हो जाए; LAND = बदलाव का final उतरना — हर gate green होने पर merge होकर ship होना।*
+[bounded-loops](../skills/bounded-loops/SKILL.md) original deadline और remaining
+allowances को retries, workers, models, reviews और handoffs में संभालता है। Nested play
+के लिए उन्हें reset न करें। Exhaustion पर candidate, evidence, unmet gates और next action
+सहित **STILL-BUILDING** checkpoint करें। Useful authorized work remaining allowance में
+ही करें; missing gate कभी pass नहीं बनता।
 
 ## चेन
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — माँग को पूरा पढ़ें;
-   mission और उसकी सीमाएँ इंसान के अपने शब्दों से आती हैं।
+1. Build Flow में स्थापित intent और operator essence लें; mission और उसकी limits
+   human के पूरे request और current corrections से आती हैं।
+
 2. [understanding-gates](../skills/understanding-gates/SKILL.md) — design के स्तर
    पर सबसे पहले DOMAIN PRIMITIVES के नाम तय करें: हर core capability एक
    deterministic, offline, fail-closed function हो। LLM वाली जगह सिर्फ़ असली
@@ -63,17 +38,23 @@ action लेती हो।
 4. नीचे दिए doctrine के हिसाब से बनाएँ। हर loop को
    [bounded-loops](../skills/bounded-loops/SKILL.md) के अंदर रखें: budget,
    checkpoint, backoff, और एक ज़ोरदार kill-switch — hammering retry कभी नहीं।
-5. [sniper-testing](../skills/sniper-testing/SKILL.md) — mock सिर्फ़ बाहर जाने
-   वाले transport का हो सकता है — routing, prompt-building, या parsing का कभी नहीं।
+5. [sniper-testing](../skills/sniper-testing/SKILL.md) — pinned aggregate candidate
+   diff से repo के real lint/type/test commands scope करें। Unavailable checks और
+   reason सहित N/A स्पष्ट लिखें। केवल outbound transport mock हो सकता है; routing,
+   prompt-building या parsing कभी नहीं।
+
 6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — agent के tool
    handlers और decision functions gauntlet से गुज़रें: risk score आपकी ceiling के
-   नीचे, फिर decision paths पर mutation testing चलाकर zero survivors तक। जो
+   नीचे, फिर shared budget में decision paths पर mutation; gate के लिए zero survivors चाहिए। जो
    branch logic उलटी comparison के बाद भी ज़िंदा बच जाए, वह असल में कभी test हुई
    ही नहीं थी।
-7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — ship से पहले
-   independent juror panel (capability-resolved, non-author seat) agent को पास करें। builder कभी अपने ही काम का grade नहीं
-   करता।
-   हर juror finding एक नया red test बनती है; tribunal तब तक दोबारा बिठाएँ जब तक हर juror pass न कर दे।
+7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — ship से पहले independent
+   juror panel। हर grader configured rung matrix से capability/availability अनुसार
+   live चुना जाए; authoring execution provenance में record और exclude हो। Review
+   fresh author-disjoint session में हो; builder अपना काम grade नहीं करता। हर proved
+   finding को separate supplemental RED दें, original sealed file बचाएँ। उसी remaining
+   budget में fix और re-convene करें; landing से पहले हर required juror pass करे।
+   Required full affected-suite landing check और real delivery proof रखें।
 
 ## Doctrine (build को क्या-क्या पूरा करना है)
 

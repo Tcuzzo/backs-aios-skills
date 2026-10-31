@@ -1,6 +1,6 @@
 ---
 name: "optimus"
-description: "Use when starting any agent session, job, or loop — before writing any code. Harness-first boot: load the invariant floor and the skills the job needs, so the agent reads the rules before it works; includes the grounding loader that delivers the floor automatically without denying tools. Trigger words: optimus, harness-boot, harness first, load the harness, boot the floor, grounding gate, read the floor, no code without harness, session start, boot sequence."
+description: "Use when starting or resuming an agent session, job, or autonomous loop that needs the BACKS harness and relevant task skills."
 license: "MIT"
 ---
 
@@ -14,18 +14,22 @@ loading the rules is the first act, and a hook makes it structural instead of ad
 
 ## When to run
 
-At the start of every session, job, mission, and loop. Again after a context reset or a
-handoff. Loading the harness once and coasting for a week is not loading the harness.
+At the start of a session or new job; revalidate after a context reset or handoff.
+An inner retry reuses current grounding and the same task packet. Reload missing or
+changed bodies; do not reboot the whole lifecycle for every iteration.
 
 ## The boot sequence
 
 1. **Load the invariant floor.** Read [invariant-floor](../invariant-floor/SKILL.md)
    before touching anything. This is the floor the whole session stands on.
-2. **Load the map for this job.** Name which files, which rules, and which pack skills
-   govern this specific work. If you cannot name them, you are not ready to edit.
-3. **Load the human profile** ([human-calibration](../human-calibration/SKILL.md)) when the
-   job touches a human's taste, surface, or workflow.
-4. **Load the session.** The session hook delivers the actual Optimus and Yoke
+2. **Apply [Build Flow](../backs-build-flow/SKILL.md).** It owns task mode,
+   readiness to act, skill selection, bounded RED/GREEN with scoped lint and tests,
+   gauntlet evidence, and delivery. Reuse a verified packet; gather only missing
+   facts needed for the next concrete action. Specialists return to one owner.
+3. **Apply human context** ([human-calibration](../human-calibration/SKILL.md)) when
+   relevant. [operator-essence](../operator-essence/SKILL.md) owns the evidence-backed
+   awareness file and missing-file insight pass; do not run a second profile cycle.
+4. **Load the session.** The session hook delivers the actual Optimus, Yoke, and Build Flow
    bodies, plus the proven native harness when available. Compaction reloads those
    bodies without revoking earned grounding. A missing marker at a mutating tool
    triggers loading, never a tool refusal. Hosts without a context hook can use:
@@ -35,8 +39,9 @@ handoff. Loading the harness once and coasting for a week is not loading the har
    In a Codex shell, pass the active `CODEX_SESSION_ID` as the final argument.
    Python is available through the matching `aios_gate.py` loader. Unknown skills
    return nonzero without inventing a receipt.
-5. **Invoke the skills the job needs — in real time, in this session.** A skill named
-   but not invoked did not happen. Working "from memory of a skill" is not invoking it.
+5. **Apply the skills the next action needs.** Name each purpose, output, and exit.
+   A skill named but not invoked did not happen. Reuse actual bodies still available
+   in current context; a remembered summary or file hash does not replace them.
 6. Only then: write code, run mutating commands, or change anything.
 
 ## Automatic grounding

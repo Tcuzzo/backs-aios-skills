@@ -11,44 +11,20 @@ et ferme des coutures entières — jamais des symptômes isolés.
 - Un backlog de trouvailles à attaquer en parallèle, sans dérive et sans que
   les agents se marchent dessus.
 
-La chasse, en un coup d'œil :
+## Tâche et limites communes
 
-```
-    +--------------------------------------------+
-+-->| 1 wayfinder  chart the hunt as one map,    |
-|   |   a node per seam; claim from the frontier |
-|   +--------------------------------------------+
-|   | 2 leap-protocol  one node = one ball:      |
-|   |   goal, spec, hard file scope, ONE writer  |
-|   +--------------------------------------------+
-|   | 3 root-cause-first  reproduce + review     |
-|   |   evidence BEFORE any code changes         |
-|   +--------------------------------------------+
-|   | 4 repair-loop  red-first test committed,   |<--------------------------+
-|   |   sniper-testing while iterating           |  finding or survivor ->   |
-|   +--------------------------------------------+   +---------------------+ |
-|   | 5 blind-tribunal  a non-author grader      |-->|  LORD OF THE LOOP   |-+
-|   |   attacks; jurors judge redacted work      |   | one hand drives the |
-|   +--------------------------------------------+   | loop: dispatch,     |
-|   | 6 seam-engineering  close the CLASS at     |   | judge, loop back    |
-|   |   the shared seam, never the symptom       |   | until the gate is   |
-|   +--------------------------------------------+   | green. a lane never |
-|   | 7 clean-code-gauntlet  the fixed branch    |-->| lands its own work. |
-|   |   must DIE under mutation, or stay open    |   +---------------------+
-|   +--------------------------------------------+
-|             |
-|             | jurors pass + mutant dies
-|             v
-|   +--------------------------------------------+
-|   | LANDING GATE -- leap-protocol Score gate:  |
-|   | source truth . keep-or-revert . blind      |
-|   | review . live proof . provenance -- each   |
-|   | finding ends FIXED or REFUTED-W-EVIDENCE   |
-+---| ball closed -> claim the next node         |
-    +--------------------------------------------+
-```
+Applique ce play dans le dossier [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)
+actuel. Garde un responsable de l'intégration, le `task_mode` demandé, les
+révisions base et candidat épinglées, l'essence opérateur et les preuves actuelles.
+Réutilise les textes chargés pertinents ; ce play ajoute ses contrôles métier
+sans relancer la tâche.
 
-*Dans le schéma : LORD OF THE LOOP = le maître de la boucle, la seule main qui pilote l'itération — dispatch, jugement, rebouclage — jusqu'à ce que la barrière d'atterrissage soit verte ; LANDING GATE = la barrière d'atterrissage — tout au vert, ou pas d'atterrissage.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) possède échéance initiale et quotas
+restants à travers réessais, agents, modèles, revues et relèves. Ne les
+réinitialise jamais pour un play imbriqué. À épuisement, sauvegarde
+**STILL-BUILDING** avec candidat, preuves, barrières non satisfaites et prochaine
+action. Le travail utile autorisé reste dans son quota disponible ; aucun
+contrôle absent ne devient une réussite.
 
 ## La chaîne
 
@@ -63,11 +39,14 @@ La chasse, en un coup d'œil :
 3. [root-cause-first](../skills/root-cause-first/SKILL.md) — reproduis le bug et
    passe en revue les preuves de la cause racine AVANT de toucher au code.
    Aucune mutation sur une intuition.
-4. [repair-loop](../skills/repair-loop/SKILL.md) — la discipline intérieure de
-   chaque ball : un test qui échoue commité avant le correctif
-   ([red-first](../skills/red-first/SKILL.md)), des runs ciblés pendant
-   l'itération ([sniper-testing](../skills/sniper-testing/SKILL.md)), une seule
-   passe complète des modules touchés à l'atterrissage.
+4. [repair-loop](../skills/repair-loop/SKILL.md) — discipline interne de chaque
+   ball : test [red-first](../skills/red-first/SKILL.md) en échec commité avant
+   correction, vraies commandes lint/typage/tests de
+   [sniper-testing](../skills/sniper-testing/SKILL.md) ciblées sur le diff agrégé
+   épinglé, une passe complète des modules touchés à l'atterrissage. Garde RED
+   initial intact ; chaque nouveau constat reçoit un test distinct. Rends les
+   preuves au responsable de la chasse sans relancer un play.
+
 5. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — chaque trouvaille est
    attaquée de façon adversariale : un grader qui n'en est pas l'auteur attaque
    en mode refus-par-défaut, des jurés jugent une enveloppe dont l'auteur est
@@ -86,6 +65,10 @@ garder-ou-annuler, revue à l'aveugle, preuve en conditions réelles,
 provenance ; une preuve manquante ne devient jamais un « pass » par défaut.
 États terminaux propres à la chasse : chaque trouvaille finit CORRIGÉE ou
 RÉFUTÉE-AVEC-PREUVES.
+
+Un quota épuisé laisse le constat ouvert avec une sauvegarde STILL-BUILDING ;
+ce n'est pas une conclusion FIXED ou REFUTED-WITH-EVIDENCE. Préserve historique
+d'essais et limites restantes avant de réclamer un autre nœud permis.
 
 ## Les règles de la chasse
 
@@ -117,6 +100,6 @@ RÉFUTÉE-AVEC-PREUVES.
   la trouvaille, au sniper.
 - Du théâtre de mocks dans un test de fermeture : il rouvre le bug en silence
   pendant que le registre le dit fermé.
-- Une trouvaille mise de côté au lieu d'être corrigée ou réfutée avec preuves.
+- Une trouvaille mise de côté en silence ou déclarée fermée sans correction ni réfutation étayée.
 
 **Weight:** une discipline de chasse free au cœur ; la dépense heavy est triple — l'éventail leap, le tribunal adversarial, et la preuve de clôture par mutation — elle se rentabilise quand tout un backlog se ferme en parallèle, chaque clôture prouvée sous mutation.

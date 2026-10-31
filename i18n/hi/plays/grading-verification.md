@@ -10,55 +10,50 @@ Adversarial grading का play। इसका एक ही विश्वा
 - कोई suite green होने का दावा करती है और किसी ने उसे पहले fail होते नहीं देखा।
 - काम एक model ने बनाया है और आपको उस पर एक ईमानदार verdict चाहिए।
 
-पूरा grade, एक नज़र में:
+## साझा task और limits
 
-```
-+--------------------------------------------+
-| 1 red-first  confirm the suite failed --   |<--------------------------+
-|   non-zero exit -- BEFORE the fix existed  |  each finding -> a new    |
-+--------------------------------------------+  red test -> fix ->       |
-| 2 sniper-testing  scoped runs verified;    |  re-convene               |
-|   no mock theater on the changed seam      |                           |
-+--------------------------------------------+   +---------------------+ |
-| 3 independent grade  a non-builder seat,   |   |  LORD OF THE LOOP   |-+
-|   chosen live by capability + availability |   | one hand drives the |
-+--------------------------------------------+   | loop: dispatch,     |
-| 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
-|   author-redacted envelope                 |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 5 clean-code-gauntlet  the grader re-runs  |   | lands its own work. |
-|   it -- never trust the builder's numbers  |   +---------------------+
-+--------------------------------------------+
-          |
-          | all jurors pass
-          v
-+--------------------------------------------+
-| LANDING GATE -- the two-sided proof:       |
-| fail-to-pass AND pass-to-pass, run         |
-| hermetically . no fake-green tell .        |
-| author and reviewer sessions differ . the  |
-| grader re-ran the checks itself            |
-+--------------------------------------------+
-```
+यह play current [BACKS Build Flow](../skills/backs-build-flow/SKILL.md) task packet
+के भीतर चलाएँ। एक integration owner, requested `task_mode`, pinned `base_sha`, current
+`candidate_sha`, operator essence और current evidence रखें। Applicable loaded skill
+bodies reuse करें; यह play अपने domain gates जोड़ता है, task फिर शुरू नहीं करता।
 
-*Lord of the Loop = loop का मालिक — एक ही हाथ जो dispatch, judge और दोहराव तब तक चलाता है जब तक landing gate green न हो जाए; LAND = बदलाव का final उतरना — हर gate green होने पर merge होकर ship होना।*
+[bounded-loops](../skills/bounded-loops/SKILL.md) original deadline और remaining
+allowances को retries, workers, models, reviews और handoffs में संभालता है। Nested play
+के लिए उन्हें reset न करें। Exhaustion पर candidate, evidence, unmet gates और next action
+सहित **STILL-BUILDING** checkpoint करें। Useful authorized work remaining allowance में
+ही करें; missing gate कभी pass नहीं बनता।
 
 ## चेन
 
 1. [red-first](../skills/red-first/SKILL.md) — पक्का करें कि fix के आने से पहले
    suite non-zero exit के साथ fail हुई थी। जो suite कभी red थी ही नहीं, वह कुछ
    साबित नहीं करती।
-2. [sniper-testing](../skills/sniper-testing/SKILL.md) — जाँचें कि builder ने
-   iteration के दौरान scoped tests चलाए और जिस seam को बदला, उस पर कोई mock
-   theater नहीं किया।
-3. Independent grade — reviewer को live capability और availability के आधार पर configured rung matrix से चुनें। एक fresh, author-disjoint session में समीक्षा करें; authoring session और उसकी बातचीत या reasoning reviewer को न दें। वास्तविक route को provenance में दर्ज करें।
-   Builder की identity provenance है, authority नहीं; स्वतंत्रता session से साबित होती है।
-4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — गंभीर नतीजों वाले बदलावों
-   के लिए, jurors को एक author-redacted envelope पर बिठाएँ। हर finding एक नया red
-   test बनती है, और tribunal तब तक दोबारा बैठता है जब तक सारे jurors pass न दें।
+2. [sniper-testing](../skills/sniper-testing/SKILL.md) — सत्यापित करें builder ने
+   pinned aggregate candidate diff के scoped actual repo lint/type/test commands लिए
+   और changed seam पर mock theater नहीं किया। Explicit N/A reasons और missing checks
+   जाँचें। इस review के लिए candidate identity freeze करें।
+
+3. Independent grade — configured rung matrix से capability और availability के
+   अनुसार live reviewer चुनें (task → capability → rung → live probe)। Builder की
+   authoring execution को supported provenance में दर्ज और exclude करें। fresh, author-disjoint session किसी भी capable configured route से review कर सकता है। Builder
+   conversation या inherited context देखने वाले session की grade निषिद्ध है। Model
+   identity provenance है, authority नहीं।
+
+4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — consequential changes के लिए
+   author-redacted envelope पर fresh session में jurors बैठें, inherited conversation
+   बिना। Proven findings separate supplemental RED और bounded repair के लिए integration
+   owner को लौटाएँ; original RED sealed रहे। Revised frozen candidate पर same remaining
+   budget में re-convene करें। Landing से पहले हर required juror pass करे।
+
 5. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — grader खुद
    gauntlet दोबारा चलाता है (coverage-बनाम-complexity, सीमित mutation testing)।
    builder की अपने ही आँकड़ों की रिपोर्ट पर कभी भरोसा न करें।
+
+Review mode का immutable target मानें। Cache बनाने, code mutate करने या services
+exercise करने वाले checks केवल permitted isolation में चलाएँ; mutation testing frozen
+source कभी न बदले। Missing isolation/runtime support evidence gap है, review में patch
+करने की permission नहीं। Required full affected-suite landing evidence रखें और local
+checks को real-surface/delivery proof से अलग बताएँ।
 
 ## दो-तरफ़ा सबूत (दोनों चाहिए, वरना pass नहीं)
 

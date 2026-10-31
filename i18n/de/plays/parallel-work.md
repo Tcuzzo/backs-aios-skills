@@ -11,50 +11,28 @@ Die Regel, die alles andere bezahlt: ein Schreib-Rückgrat, viele Leser.
 - Du bist versucht, zwei Agenten parallel Code schreiben zu lassen. Lies das hier
   zuerst.
 
-Das Auffächern auf einen Blick:
+## Gemeinsame Aufgabe und Grenzen
 
-```
-+--------------------------------------------+
-| 1 leap-protocol  balls with goals, specs,  |
-|   hard file scopes BEFORE any agent spawns |
-+--------------------------------------------+
-| 2 spawn readers, not writers -- fan out    |
-|   read-heavy work only                     |
-+--------------------------------------------+
-| 3 isolate -- every lane gets its OWN       |
-|   worktree; conflicts surface at merge     |
-+--------------------------------------------+
-| 4 clean-code-gauntlet  per lane, in its    |<--------------------------+
-|   own worktree, before it asks to land     |  red exit? back to the    |
-+--------------------------------------------+  lane -- fix, re-run      |
-| 5 blind-tribunal  the reviewer gets a      |                           |
-|   CLEAN context, never the author's        |   +---------------------+ |
-+--------------------------------------------+   |  LORD OF THE LOOP   |-+
-| 6 merge ONE lane at a time, test-gated     |   | the one write spine |
-|   by exit code, in a merge workspace       |-->| drives dispatch,    |
-+--------------------------------------------+   | judges, merges ONE  |
-          |                                      | lane at a time. a   |
-          | every merge green + verified         | lane never lands    |
-          v                                      | its own work.       |
-+--------------------------------------------+   +---------------------+
-| LANDING GATE -- all green or no land:      |
-| every merge green by exit code AND         |
-| stat-verified -- counts, diffstat, each    |
-| lane's files present . no lane outside     |
-| its scope . reviewer context stayed        |
-| clean, never the author's . one writer     |
-| per workspace . no lane lands on           |
-| another lane's green                       |
-+--------------------------------------------+
-```
+Wende dieses Play im aktuellen [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)-
+Aufgabenpaket an. Bewahre einen Integrationsverantwortlichen, gewünschten
+`task_mode`, feste Basis- und Kandidatenrevisionen, Operator-Essence und aktuelle
+Belege. Verwende passende geladene Skill-Texte weiter; dieses Play ergänzt seine
+Fachprüfungen, ohne die Aufgabe neu zu starten.
 
-*Labels im Diagramm: „Lord of the Loop“ = der Besitzer des Loops, der die Iteration treibt, bis das Landing-Gate grün ist; „LAND“ = die Landung — die Änderung zieht erst ein, wenn jedes Gate grün ist.*
+[bounded-loops](../skills/bounded-loops/SKILL.md) besitzt ursprüngliche Frist und
+Restkontingente über Wiederholungen, Mitarbeiter, Modelle, Reviews und Übergaben
+hinweg. Setze sie für ein verschachteltes Play nie zurück. Bei Erschöpfung:
+**STILL-BUILDING** mit Kandidat, Belegen, offenen Gates und nächster Handlung
+sichern. Nützliche autorisierte Arbeit bleibt im Restkontingent; kein fehlendes
+Gate wird zum bestandenen erklärt.
 
 ## Die Kette
 
-1. [leap-protocol](../skills/leap-protocol/SKILL.md) — zerlege die Arbeit in Bälle
-   mit Zielen, Spezifikationen und harten Datei-Scopes, BEVOR irgendein Agent
-   spawnt.
+1. [leap-protocol](../skills/leap-protocol/SKILL.md) — zerlege vor jedem Agentenstart
+   in Bälle mit Ziel, Spezifikation und hartem Dateiumfang. Jede Lane bekommt
+   aktuelles Paket, feste Basis/Kandidat, RED-Siegel und zugeteiltes Restkontingent.
+   Keine Lane darf Frist oder Gesamtkontingent der Elternmission verlängern.
+
 2. Spawne Leser, keine Schreiber — fächere Subagenten NUR für lese-lastige Arbeit
    mit wenigen Querabhängigkeiten auf: Recherche, Test-Läufe, Security-Scans,
    Benotung. Niemals für voneinander abhängiges Code-Schreiben.
@@ -62,15 +40,21 @@ Das Auffächern auf einen Blick:
    separaten Checkout desselben Repos). Konflikte tauchen dann beim Merge als
    echte Merge-Konflikte auf, nie als stille Überschreibungen, die ohne Warnung
    Daten verlieren.
-4. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — jede Lane fährt
-   ihr eigenes Qualitäts-Gauntlet im eigenen Worktree, bevor sie landen will. Erst
-   der Dry-Run, damit die Lane ihre eigenen Kosten kennt. Keine Lane landet auf
-   dem Grün einer anderen Lane.
+4. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — jede Lane führt
+   ihr Qualitäts-Gauntlet in erlaubtem Worktree/Isolation vor Landung aus. Nutze
+   zuerst [sniper-testing](../skills/sniper-testing/SKILL.md) für echte Lint-/Typ-/
+   Testbefehle aus dem festen Kandidatengesamtdiff; benenne fehlende oder N/A-Checks.
+   Verwende gültige Belege nur für exakt gleichen Kandidaten und Prüfumfang weiter,
+   nie das Grün einer anderen Lane für andere Bytes. Fehlende Abdeckung erhält
+   eine separate Ergänzungsdatei unter Erhalt der versiegelten Originale.
+
 5. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — der prüfende Agent
    bekommt einen SAUBEREN Kontext, niemals den des Autors. Geteilter Kontext
    verrottet und stimmt sich selbst zu.
-6. Merge eine Lane nach der anderen, in einem eigenen Merge-Arbeitsbereich,
-   test-gegatet über den Exit-Code.
+6. Merge eine Lane nach der anderen im eigenen Merge-Arbeitsbereich, am Test-Exitcode
+   geprüft. Der Integrationsverantwortliche verifiziert gemeinsamen Kandidaten,
+   betroffene Verbraucher und vorgeschriebenen vollen Landungslauf. Einzelne
+   Lane-Erfolge beweisen ihre Zusammensetzung nicht. Lieferbehauptungen brauchen Belege am echten Ziel.
 
 ## Koordinationsregeln
 

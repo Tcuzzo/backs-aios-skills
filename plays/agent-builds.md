@@ -9,47 +9,23 @@ thing that works. A design that is all-LLM with zero primitives is invalid.
 Building any agent, bot, worker, or long-running service — anything that holds
 tools, calls networks, or takes actions without a human watching every step.
 
-The build, at a glance:
+## Shared task and limits
 
-```
-    +--------------------------------------------+
-    | 1 intent-compiler  mission + limits from   |
-    |   the human's own words                    |
-    +--------------------------------------------+
-+-->| 2 understanding-gates  DOMAIN PRIMITIVES   |
-|   |   first; LLM slot for genuine reasoning    |
-|   +--------------------------------------------+
-|   | 3 red-first  a failing contract test per   |<--------------------------+
-|   |   typed IO boundary, committed first       |  finding -> a new red     |
-|   +--------------------------------------------+  test -> fix ->           |
-|   | 4 build to the doctrine -- every loop      |  re-convene               |
-|   |   inside bounded-loops                     |   +---------------------+ |
-|   +--------------------------------------------+   |  LORD OF THE LOOP   |-+
-|   | 5 sniper-testing  mock transport only      |   | one hand drives the |
-|   +--------------------------------------------+   | loop: dispatch,     |
-|   | 6 clean-code-gauntlet  mutate decision     |   | judge, loop back    |
-|   |   paths to zero survivors                  |   | until the gate is   |
-|   +--------------------------------------------+   | green. a lane never |
-|   | 7 blind-tribunal  independent juror       |-->| lands its own work. |
-|   |   panel; capability-resolved graders      |   |                    |
-|   +--------------------------------------------+   +---------------------+
-|             |
-|             | every juror passes
-|             v
-|   +--------------------------------------------+
-|   | LANDING GATE -- all green or no ship:      |
-|   | no fail-open boundary, silent fallback,    |
-|   | or swallowed error . zero mutation         |
-|   | survivors in decision paths . independent  |
-|   | pass; the builder never grades .           |
-+---| zero primitives = invalid -> redesign      |
-    +--------------------------------------------+
-```
+Apply this play inside the current [BACKS Build Flow](../skills/backs-build-flow/SKILL.md)
+task packet. Keep one integration owner, the requested `task_mode`, pinned base
+and candidate revisions, operator essence, and current evidence. Reuse applicable
+loaded skill bodies; this play adds its domain gates without restarting the task.
+
+[bounded-loops](../skills/bounded-loops/SKILL.md) owns the original deadline and
+remaining allowances across retries, workers, models, reviews, and handoffs.
+Never reset them for a nested play. On exhaustion, checkpoint **STILL-BUILDING**
+with the candidate, evidence, unmet gates, and next action. Continue useful
+authorized work only within its remaining allowance; no missing gate becomes a pass.
 
 ## The chain
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — read the ask whole;
-   the mission and its limits come from the human's own words.
+1. Use the intent and operator essence established through Build Flow; the
+   mission and its limits come from the human's whole request and current corrections.
 2. [understanding-gates](../skills/understanding-gates/SKILL.md) — at the design
    stage, name the DOMAIN PRIMITIVES first: every core capability is a
    deterministic, offline, fail-closed function. Reserve the LLM slot for genuine
@@ -59,8 +35,10 @@ The build, at a glance:
 4. Build to the doctrine below. Keep every loop inside
    [bounded-loops](../skills/bounded-loops/SKILL.md): budgets, checkpoints,
    backoff, and a loud kill-switch — never a hammering retry.
-5. [sniper-testing](../skills/sniper-testing/SKILL.md) — only the outbound
-   transport may be mocked, never routing, prompt-building, or parsing.
+5. [sniper-testing](../skills/sniper-testing/SKILL.md) — scope the repository's
+   real lint/type/test commands from the pinned aggregate candidate diff. Record
+   unavailable checks and justified N/A explicitly. Only outbound transport may
+   be mocked, never routing, prompt-building, or parsing.
 6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — the agent's tool
    handlers and decision functions pass the gauntlet: risk score under your
    ceiling, then mutation over the decision paths to zero survivors. Branch logic
@@ -71,8 +49,10 @@ The build, at a glance:
    chosen live by capability and availability from the configured rung matrix
    (the authoring execution that built is recorded as provenance and excluded;
    review uses a fresh author-disjoint session). The builder never grades
-   its own work. Every juror finding becomes a new red test; re-convene until
-   every juror passes.
+   its own work. Each substantiated finding gets a separate supplemental RED,
+   preserving the original sealed file. Fix and re-convene within the same
+   remaining budget; every required juror must pass before landing. Keep the
+   required full affected-suite landing check and real delivery proof.
 
 ## The doctrine (what the build must satisfy)
 

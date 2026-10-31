@@ -10,50 +10,27 @@ todo lo demás: una sola espina de escritura, muchos lectores.
 - Más de un agente va a tocar el mismo repositorio en la misma ventana.
 - Te tienta dejar que dos agentes escriban código en paralelo. Lee esto primero.
 
-El reparto, de un vistazo:
+## Tarea y límites compartidos
 
-```
-+--------------------------------------------+
-| 1 leap-protocol  balls with goals, specs,  |
-|   hard file scopes BEFORE any agent spawns |
-+--------------------------------------------+
-| 2 spawn readers, not writers -- fan out    |
-|   read-heavy work only                     |
-+--------------------------------------------+
-| 3 isolate -- every lane gets its OWN       |
-|   worktree; conflicts surface at merge     |
-+--------------------------------------------+
-| 4 clean-code-gauntlet  per lane, in its    |<--------------------------+
-|   own worktree, before it asks to land     |  red exit? back to the    |
-+--------------------------------------------+  lane -- fix, re-run      |
-| 5 blind-tribunal  the reviewer gets a      |                           |
-|   CLEAN context, never the author's        |   +---------------------+ |
-+--------------------------------------------+   |  LORD OF THE LOOP   |-+
-| 6 merge ONE lane at a time, test-gated     |   | the one write spine |
-|   by exit code, in a merge workspace       |-->| drives dispatch,    |
-+--------------------------------------------+   | judges, merges ONE  |
-          |                                      | lane at a time. a   |
-          | every merge green + verified         | lane never lands    |
-          v                                      | its own work.       |
-+--------------------------------------------+   +---------------------+
-| LANDING GATE -- all green or no land:      |
-| every merge green by exit code AND         |
-| stat-verified -- counts, diffstat, each    |
-| lane's files present . no lane outside     |
-| its scope . reviewer context stayed        |
-| clean, never the author's . one writer     |
-| per workspace . no lane lands on           |
-| another lane's green                       |
-+--------------------------------------------+
-```
+Aplica este play dentro del paquete actual de
+[BACKS Build Flow](../skills/backs-build-flow/SKILL.md). Mantén un responsable
+de integración, `task_mode` solicitado, revisiones base y candidata fijadas,
+esencia del operador y evidencia vigente. Reutiliza cuerpos pertinentes ya cargados;
+este play añade puertas de su dominio sin reiniciar la tarea.
 
-En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce la iteración — despacha, juzga y vuelve a iterar — hasta que la puerta de aterrizaje está en verde; **LAND / LANDING GATE** = aterrizar — integrar el cambio solo cuando todo está en verde.
+[bounded-loops](../skills/bounded-loops/SKILL.md) controla plazo original y cupos
+restantes entre reintentos, trabajadores, modelos, revisiones y traspasos.
+Nunca los reinicies para un play anidado. Al agotarlos, guarda **STILL-BUILDING**
+con candidato, evidencia, puertas pendientes y siguiente acción. Continúa trabajo
+útil autorizado solo dentro de su cupo restante; una puerta ausente no se vuelve aprobada.
 
 ## La cadena
 
-1. [leap-protocol](../skills/leap-protocol/SKILL.md) — descompone el trabajo en
-   bolas con objetivos, specs y alcances duros de archivos ANTES de lanzar cualquier
-   agente.
+1. [leap-protocol](../skills/leap-protocol/SKILL.md) — divide el trabajo en bolas
+   con objetivos, specs y alcance estricto de archivos ANTES de lanzar agentes.
+   Entrega a cada carril paquete vigente, base/candidato fijados, sellos RED y cupo
+   restante asignado. Su límite no puede ampliar plazo ni totales de la misión.
+
 2. Lanza lectores, no escritores — despliega subagentes SOLO para trabajo de mucha
    lectura con pocas dependencias cruzadas: investigación, correr tests, escaneos de
    seguridad, calificación. Nunca para autoría de código interdependiente.
@@ -61,15 +38,21 @@ En el diagrama: **Lord of the Loop** = el dueño del bucle, la mano que conduce 
    separado del mismo repo). Los conflictos entonces afloran en el merge como
    conflictos de merge reales, nunca como sobrescrituras silenciosas que pierden
    datos sin aviso.
-4. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — cada carril corre
-   su propio gauntlet de calidad dentro de su propio worktree antes de pedir
-   aterrizar. Primero en seco (dry-run), para que el carril conozca su propio costo.
-   Ningún carril aterriza sobre el verde de otro carril.
+4. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — cada carril
+   ejecuta su gauntlet en el aislamiento/worktree permitido antes de integrar.
+   Usa primero [sniper-testing](../skills/sniper-testing/SKILL.md) para comandos
+   reales de lint/tipos/tests del diff agregado fijado; declara ausencias o N/A.
+   Reutiliza recibos válidos solo del mismo candidato y alcance; no apliques el
+   verde de otro carril a bytes distintos. Cobertura faltante recibe archivo
+   suplementario separado, conservando originales sellados.
+
 5. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — el agente revisor recibe un
    contexto LIMPIO, nunca el del autor. El contexto compartido se pudre y se da la
    razón a sí mismo.
-6. Mergea un carril a la vez, en un espacio de merge dedicado, con puerta de tests
-   por código de salida.
+6. Fusiona un carril por vez en un workspace dedicado, con puerta de tests
+   por código de salida. El responsable de integración verifica candidato combinado,
+   consumidores y pasada completa requerida de suites afectadas; pases independientes
+   no prueban la composición. Afirmar entrega exige evidencia del destino real.
 
 ## Reglas de coordinación
 

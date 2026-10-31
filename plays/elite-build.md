@@ -1,158 +1,122 @@
 # Elite Build — the master play
 
-The default play for any "build X", "fix X", or "uplift X" ask. The human states the
-goal once; this play assembles the whole environment so they never re-explain the
-baseline. Read the intent, load the human, burn the roster, gate the plan, prove it
-red, build, test tight, measure, grade blind, land.
+Use this full play when explicitly requested or when a build, fix, or uplift needs
+its composed design, build, quality, and review stages. The human states the goal
+once. A scoped change can use BACKS Build Flow's relevant methods without starting
+this entire play; selecting this play preserves every applicable gate below.
 
-## When to run
+## One task, one integration owner
 
-Any build, fix, or uplift with real stakes. A trivial one-line edit may skip straight
-to [sniper-testing](../skills/sniper-testing/SKILL.md) and land.
+[BACKS Build Flow](../skills/backs-build-flow/SKILL.md) owns the task packet,
+`task_mode`, operator essence, and finish. Reuse current context, actual loaded
+skill bodies, and evidence; refresh a stage only when its inputs or candidate
+change. Keep the pinned `base_sha`, current `candidate_sha`, and one integration
+owner across all lanes. Calling a specialist does not start a second lifecycle.
 
-The loop, at a glance:
-
-```
-+--------------------------------------------+
-| 0 optimus  boot the floor first            |
-+--------------------------------------------+
-| 1 intent-compiler  the ask is the spec     |
-+--------------------------------------------+
-| 2 human-calibration  load the profile      |
-+--------------------------------------------+
-| 3 turn-and-burn  load essence + lessons    |
-|   know-thyself + cross-session memory --   |
-|   so this build never repeats a paid-     |
-|   for mistake                            |
-+--------------------------------------------+
-| 4 understanding-gates + live-research --   |
-|   read first, then gate Design -> Ship     |
-+--------------------------------------------+
-| 5 architecture-engineer  boundary check    |
-|   on every diff (declared vs runtime,      |
-|   dependency direction, ADR-worthy moves)  |
-+--------------------------------------------+
-| 6 wayfinder  lost? chart the route         |
-+--------------------------------------------+
-| 7 red-first  failing test committed first  |<--------------------------+
-+--------------------------------------------+  finding -> new red test  |
-| 8 build  fleet-ladder + model-fusion;      |   +---------------------+ |
-|   bugs: repair-loop + seam-engineering     |   |  LORD OF THE LOOP   |-+
-+--------------------------------------------+   | one hand drives the |
-| 9 sniper-testing  scoped runs only         |   | loop: dispatch,     |
-+--------------------------------------------+   | judge, loop back    |
-| 10 clean-code-gauntlet  measure + mutate   |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 11 blind-eval, then blind-tribunal         |-->| lands its own work. |
-          |
-          | every juror passes
-          v
-+--------------------------------------------+
-| 12 LANDING GATE -- all green or no land:   |
-|    red test untouched . builder != grader  |
-|    every finding closed . one full pass .  |
-|    live proof on the human's own surface . |
-|    own files only . two-word report        |
-+--------------------------------------------+
-```
+[bounded-loops](../skills/bounded-loops/SKILL.md) owns the original deadline and
+remaining mission allowances. Research, builders, lint/type/test checks, mutation,
+reviews, fallback models, and handoffs spend those same limits. Never reset them
+in a nested play. On exhaustion, checkpoint **STILL-BUILDING** with candidate,
+evidence, unmet gates, and the next action; complete useful authorized work that
+does not consume the exhausted allowance. A budget limit never waives a gate.
 
 ## The chain
 
-0. [optimus](../skills/optimus/SKILL.md) — boot the harness before
-   anything edits. The floor loads first, every session, every time.
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) — read the ask as the
-   spec, whole. Deduce intent before surfacing any ship or option decision. Never
-   present an option menu when a clear solve exists — solve it.
-2. [human-calibration](../skills/human-calibration/SKILL.md) — load the human's validated
-   profile and apply it. Never re-interrogate a human you already know.
-3. [turn-and-burn](../skills/turn-and-burn/SKILL.md) — burn the roster before
-   the build. Load each model's essence (know-thyself), read
-   `docs/BACKS_LESSONS_LEARNED.md` + `memory/MEMORY.md` (cross-session memory),
-   and absorb any missing skill the mission surfaced. Local prompts must be
-   capability-aware: every lane consults essence + lessons so the same mistake
-   is not paid for twice. This is the operator's "stop redundant failures
-   across the board" floor.
-4. [understanding-gates](../skills/understanding-gates/SKILL.md) — Design → Plan →
-   Build → Test → Ship, each stage gated. Before any design: read what exists via
-   [live-research](../skills/live-research/SKILL.md), reuse what is written, map the
-   whole topology. The answer is usually already written.
-5. [architecture-engineer](../skills/architecture-engineer/SKILL.md) — for any
-   diff that touches a module boundary, dependency direction, or shared seam,
-   run the structural review recipe (fixed point, declared vs runtime, local
-   rule check, structural review, severity + smallest fix, ADR when durable).
-   Cite the local rule or concrete failure mode behind every violation. Never
-   bypass the authority surface classifier.
-6. [wayfinder](../skills/wayfinder/SKILL.md) — when lost at any step, chart the route
-   from evidence. Never park on the human a question that evidence can answer.
-7. [red-first](../skills/red-first/SKILL.md) — write the failing contract test and
-   commit it BEFORE any builder runs. The builder may not touch that test.
-8. Build. Fan out parallel lanes by default — never serialize what can run at once.
-   Each lane gets its own scratch branch or worktree. Solo, one session? One lane IS
-   the fan-out — build on a scratch branch and continue. (A worktree is a second
-   checkout of the same repo in another folder, so two builders never touch the same
-   files.) Resolve builders through [fleet-ladder](../skills/fleet-ladder/SKILL.md);
-   combine drafts with [model-fusion](../skills/model-fusion/SKILL.md). For a bug,
-   run the [repair-loop](../skills/repair-loop/SKILL.md) and close the CLASS at the
-   shared seam per [seam-engineering](../skills/seam-engineering/SKILL.md).
-9. [sniper-testing](../skills/sniper-testing/SKILL.md) — scoped runs only while
-   iterating; the one full touched-module pass waits for the landing (step 12).
-10. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — measure before
-    landing: sniper suite, complexity-times-coverage risk score under your ceiling,
-    then mutation testing to zero survivors. Measure the code; never eyeball it.
+0. [optimus](../skills/optimus/SKILL.md) — establish the floor and Build Flow once
+   per session. Reuse actual bodies still present in context and their source
+   receipts; a receipt alone cannot substitute for a missing body. A nested call
+   does not reboot the lifecycle or claim an invocation that never occurred.
+1. Use the intent and operator essence established through Build Flow. Read the
+   whole request and current corrections; deduce the directive before surfacing
+   a ship or option decision. Solve an evidence-resolvable choice directly.
+2. [human-calibration](../skills/human-calibration/SKILL.md) — apply the human's
+   validated profile already in the task packet. Load missing applicable context;
+   never re-interrogate a human or reconstruct the same profile at every stage.
+3. [turn-and-burn](../skills/turn-and-burn/SKILL.md) — retain the mission's roster
+   and plan-review requirements. Consult each model's essence (know-thyself),
+   `docs/BACKS_LESSONS_LEARNED.md`, and `memory/MEMORY.md` when available. These
+   capability and lesson records are distinct from operator essence. Reuse the
+   current burn evidence; any necessary Absorb work shares this mission and
+   returns its result to the integration owner.
+4. [understanding-gates](../skills/understanding-gates/SKILL.md) — preserve the
+   Design → Plan → Build → Test → Ship stage gates. Use
+   [live-research](../skills/live-research/SKILL.md) to inspect the affected path,
+   owners, consumers, and delivery seam. Follow additional dependencies when
+   evidence says they can change the result; do not repeat a whole-system survey
+   before each edit. Begin the next executable step when Build Flow's context
+   readiness conditions hold.
+5. [architecture-engineer](../skills/architecture-engineer/SKILL.md) — for a diff
+   touching a module boundary, dependency direction, or shared seam, apply its
+   structural review and authority surface classifier. Cite the local rule or
+   concrete failure mode behind each violation; use an ADR for a durable decision.
+6. [wayfinder](../skills/wayfinder/SKILL.md) — chart a genuinely unresolved route
+   from evidence. Do not start another planning pass when the route is known.
+7. [red-first](../skills/red-first/SKILL.md) — observe and commit the real failing
+   contract before its builder runs. Record the seal and preserve the original
+   file byte-for-byte. A later finding receives a separate supplemental test;
+   it cannot rewrite the original RED.
+8. Build the smallest complete change at the owning seam. Parallelize independent
+   questions and work with explicit file ownership or isolated worktrees; retain
+   one integration owner and the project's concurrency rules. Resolve builders
+   through [fleet-ladder](../skills/fleet-ladder/SKILL.md), using
+   [model-fusion](../skills/model-fusion/SKILL.md) where the mission calls for it.
+   For a defect, apply [repair-loop](../skills/repair-loop/SKILL.md) inline and
+   close the class at the shared seam per
+   [seam-engineering](../skills/seam-engineering/SKILL.md). Return findings to this
+   task rather than recursively restarting the play.
+9. [sniper-testing](../skills/sniper-testing/SKILL.md) — derive check scope from
+   the pinned aggregate base-to-candidate diff plus owned pending paths. Run the
+   repository's actual lint, type-check, and focused test commands. Record N/A
+   with a reason where inapplicable and missing required tools as gaps; do not
+   install arbitrary checkers or invent passes. Keep scoped runs during iteration.
+10. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — apply quality,
+    complexity/coverage, and bounded mutation checks inline to the same candidate.
+    A meaningful survivor or finding returns to a supplemental RED and minimal
+    seam fix within the remaining budget. Reuse valid evidence, never a stale
+    verdict for changed bytes; do not launch another full build lifecycle.
 11. [blind-eval](../skills/blind-eval/SKILL.md), then
-    [blind-tribunal](../skills/blind-tribunal/SKILL.md) — an author-redacted envelope
-    goes to a grader seat that did not build the change, chosen live by capability
-    and availability from the rung matrix. The builder's identity, when the
-    portable runner records it as provenance,
-    is carried only as far as that runner carries it — provenance, not a
-    universal capability gate. The seat that built never grades its own work.
-    Every juror finding becomes a new red test; re-convene until every juror
-    passes. Solo rig? Follow blind-tribunal's Solo rig rule — and record the
-    single-rung configuration as provenance, not a weakened gate, in the
-    landing report.
-12. Land: merge cleanly, run ONE full pass over the touched modules' suites, restart
-    the real service, and prove the behavior on the human's own surface (the page
-    they load, the command they run) — never a proxy probe. Then report.
+    [blind-tribunal](../skills/blind-tribunal/SKILL.md) — provide an author-redacted
+    frozen evidence packet to reviewers selected live by capability and
+    availability. Review must use fresh author-disjoint executions with no
+    inherited builder conversation. Record the authoring execution as provenance
+    and exclude it. Every substantiated finding gets a separate RED, fix, and
+    re-review within the same remaining allowance. All required jurors must pass
+    before landing. Follow the tribunal's Solo rig rule where applicable; record
+    the actual configuration and runtime gaps without weakening independence.
+12. Complete the requested finish. Recheck candidate identity, run one full
+    touched-module suite pass plus required project checks, preserve concurrent
+    work, and use the project's authorized landing procedure. For a deployment,
+    verify installed/running code and the human's real surface. Restart a service
+    only when the requested delivery and actual procedure require it. A local
+    patch or review does not silently acquire release scope.
 
-## Hard gates (any one red blocks the landing)
+## Hard gates
 
-- The failing test was committed before the build and is untouched — the grader
-  verifies the test-file diff is empty.
-- The grader execution did not build the change: the rung matrix resolves a
-  capable reviewer in a fresh author-disjoint session. Record the authoring
-  execution as provenance where the runner supports it.
-- Every surfaced finding is closed, or adjudicated "not a bug" with recorded
-  evidence. Never silently deferred. Whole-seam closure (the seam is the shared
-  spot in the code where this class of bug lives) or no landing.
-- The burn ritual (step 3) was honored — essence + lessons were consulted
-  before the build. The mission's absorb pass landed any missing skill the
-  build surfaced.
-- Live proof on the human's real surface. Green tests with broken capability is
-  failure, not success.
-- Report in two words, PROVEN or STILL-BUILDING, in
-  [human-voice](../skills/human-voice/SKILL.md). Proven means landed, plus
-  independently graded, plus demonstrated live.
-- Commit only this change's own files — never another session's in-flight work.
+- The original RED was observed failing before the fix and remains byte-identical;
+  supplemental contracts have their own recorded evidence and seals.
+- Required quality, lint/type/test, and mutation gates pass on the exact candidate,
+  with justified N/A checks and actual gaps reported honestly.
+- The required review uses a fresh author-disjoint execution; the builder never
+  grades its own work or supplies the reviewer's desired conclusion.
+- Every finding on the owned seam is fixed or adjudicated with evidence. An open
+  finding is checkpointed explicitly and blocks landing; it is never hidden.
+- Applicable burn, essence, lesson, and plan-review requirements are satisfied by
+  current evidence. Reusing evidence is not permission to skip a required gate.
+- Capability **PROVEN** means landed, independently graded, and demonstrated on
+  the human's actual surface. Otherwise report **STILL-BUILDING** and the precise
+  missing proof in [human-voice](../skills/human-voice/SKILL.md). State completion
+  of a requested review or local patch separately from a live capability claim.
+- Commit only this task's files. Preserve another session's work.
 
-## Works well with
+## Fleet ladder policy
 
-- [optimus](../skills/optimus/SKILL.md) — re-boot the floor after a compaction or restart
-- [turn-and-burn](../skills/turn-and-burn/SKILL.md) — the burn ritual; pair this play with it on every mission
-- [architecture-engineer](../skills/architecture-engineer/SKILL.md) — the boundary check; pair on any seam-touching change
-- [seam-engineering](../skills/seam-engineering/SKILL.md) — close the CLASS at the seam; partner to architecture-engineer
-- [invariant-floor](../skills/invariant-floor/SKILL.md) — the locked floor every landing must meet
-- [decision-bar](../skills/decision-bar/SKILL.md) — what reaches the human vs. what executes
-- [bounded-loops](../skills/bounded-loops/SKILL.md) — budgets and kill-switches on long runs
-- [session-handoff](../skills/session-handoff/SKILL.md) — seal state before stopping
+Use [fleet-ladder](../skills/fleet-ladder/SKILL.md) for actual dispatch, configured
+routes, live probes, fallback, and review independence. Read the deployment's
+`config/fleet_ladder.yaml` and `config/gpu_nodes.yaml` where provided; the pack does
+not create a resolver. Preserve frontier research-before-lift requirements on
+configured rungs and their allowed web, GitHub, Reddit, and paper sources. Honor
+the configured thinking floor and token-efficiency policy; do not hardcode model
+IDs or truncate evidence to manufacture compliance.
 
-**Weight:** the full stack — free discipline, light gates, and three heavy steps (model fusion, the gauntlet, the tribunal); the heavy spend pays on anything that ships, which is exactly what this play is for.
-
-
-## Fleet ladder rung policy
-
-Build/dispatch step uses [fleet-ladder](../skills/fleet-ladder/SKILL.md): read deploy
-`config/fleet_ladder.yaml` + `config/gpu_nodes.yaml`, honor the live builder seat, and
-HARD-gate frontier research-before-lift (web + GitHub + Reddit + papers; never disable
-web_search on those rungs). Patch owns yaml; skill rails only.
-
-Thinking / tokens: [fleet-ladder](../skills/fleet-ladder/SKILL.md) ??? research seams first (`token_efficiency` ??? cheap_builder_specs), thinking_floor=medium (ultra???medium only), no truncation hacks.
+Use [session-handoff](../skills/session-handoff/SKILL.md) to preserve candidate,
+seals, evidence, deadline, and remaining mission allowances before an interruption.

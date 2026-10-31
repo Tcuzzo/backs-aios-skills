@@ -118,6 +118,7 @@ class PackContractTest(unittest.TestCase):
             ROOT / ".claude-plugin" / "plugin.json",
             ROOT / ".codex-plugin" / "plugin.json",
             ROOT / ".cursor-plugin" / "plugin.json",
+            ROOT / "plugin.json",
         )
         parsed = [json.loads(path.read_text(encoding="utf-8")) for path in manifests]
         self.assertEqual({"backs-aios"}, {manifest["name"] for manifest in parsed})

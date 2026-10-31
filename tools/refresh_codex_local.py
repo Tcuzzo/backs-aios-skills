@@ -2,7 +2,8 @@
 """Refresh managed BACKS AIOS host skills and a personal Codex local plugin.
 
 The source must be a clean, released public-pack checkout by default. The Codex
-bundle is an allowlist: skill folders, the grounding hook, manifest, and license.
+bundle is an allowlist: canonical skill folders, plays, the grounding hook,
+manifest, and license.
 It never copies provider code, private runtime state, or a Codex cache directory.
 """
 
@@ -18,6 +19,11 @@ import subprocess
 import sys
 import uuid
 
+if __package__:
+    from .build_claude_plugin import ALIASES
+else:
+    from build_claude_plugin import ALIASES
+
 
 MANAGED = ".backs-aios-managed"
 SKILL_MARKER = "backs-aios-managed"
@@ -30,8 +36,8 @@ HOOK_FILES = ("aios_gate.js", "aios_gate.py", "hooks.json")
 RETIRED_SNAPSHOTS = {"hive-clone-boot": "1f819aff84015e4b9f57f0bcc7b6277ecaeb3760d239c1b5340f79b1fad6b08d"}
 
 
-def command(*args: str, cwd: Path) -> str:
-    result = subprocess.run(args, cwd=cwd, text=True, capture_output=True, check=False)
+def command(*args: str, cwd: Path, env: dict[str, str] | None = None) -> str:
+    result = subprocess.run(args, cwd=cwd, env=env, text=True, capture_output=True, check=False)
     if result.returncode:
         raise RuntimeError(f"{args[0]} failed ({result.returncode}): {result.stderr.strip()}")
     return result.stdout.strip()
@@ -79,15 +85,28 @@ def assert_inside(path: Path, root: Path) -> None:
         raise RuntimeError("Refusing to move or remove a path outside the managed plugin root")
 
 
+def is_link(path: Path) -> bool:
+    return path.is_symlink() or (hasattr(path, "is_junction") and path.is_junction())
+
+
 def copy_safe_tree(source: Path, destination: Path) -> None:
+    if is_link(source):
+        raise RuntimeError(f"Symlink in packaged tree root: {source.name}")
     for path in source.rglob("*"):
-        if path.is_symlink() or (hasattr(path, "is_junction") and path.is_junction()):
-            raise RuntimeError(f"Symlink in packaged skills: {path.relative_to(source)}")
+        if is_link(path):
+            raise RuntimeError(f"Symlink in packaged {source.name}: {path.relative_to(source)}")
     shutil.copytree(
         source,
         destination,
         ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".pytest_cache"),
     )
+
+
+def copy_canonical_skills(source: Path, destination: Path) -> None:
+    copy_safe_tree(source, destination)
+    # Loose installs retain compatibility aliases; packaged discovery uses one name.
+    for alias in ALIASES:
+        shutil.rmtree(destination / alias, ignore_errors=True)
 
 
 def digest(root: Path, *, exclude_marker: str = MANAGED) -> str:
@@ -111,7 +130,8 @@ def stage_bundle(source: Path, plugin_root: Path, revision: str) -> Path:
                 raise RuntimeError(f"Symlink in packaged root file: {name}")
         shutil.copy2(source / "plugin.json", stage / "plugin.json")
         shutil.copy2(source / "LICENSE", stage / "LICENSE")
-        copy_safe_tree(source / "skills", stage / "skills")
+        copy_canonical_skills(source / "skills", stage / "skills")
+        copy_safe_tree(source / "plays", stage / "plays")
         (stage / "hooks").mkdir()
         for name in HOOK_FILES:
             path = source / "hooks" / name
@@ -243,11 +263,16 @@ def update_policy(source: Path, home: Path) -> bool:
     return write_atomic(target, updated)
 
 
-def install_hosts(source: Path) -> None:
+def install_hosts(source: Path, home: Path) -> None:
     shell = shutil.which("pwsh") or shutil.which("powershell.exe") or shutil.which("powershell")
     if not shell:
         raise RuntimeError("PowerShell is required for the all-surface installer")
-    command(shell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(source / "install.ps1"), "-Target", "all", cwd=source)
+    # PowerShell initializes $HOME from HOME on Unix and USERPROFILE on Windows.
+    # Scope the selected installation home to this child, leaving our environment
+    # and the caller's real host configuration unchanged.
+    install_env = {**os.environ, "HOME": str(home), "USERPROFILE": str(home)}
+    command(shell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+            str(source / "install.ps1"), "-Target", "all", cwd=source, env=install_env)
 
 
 def prune_retired_managed_skills(source: Path, home: Path) -> list[str]:
@@ -295,7 +320,7 @@ def refresh(source: Path, home: Path, *, update_source: bool = False,
     revision = checked_source(source, allow_dirty=allow_dirty, update_source=update_source)
     preflight_home(home)
     if not skip_host_install:
-        install_hosts(source)
+        install_hosts(source, home)
     retired_pruned = prune_retired_managed_skills(source, home)
     plugin_root = home / ".codex" / "plugins"
     stage = stage_bundle(source, plugin_root, revision)

@@ -10,50 +10,18 @@
 - tools वाला कोई agent untrusted content छूता है — web pages, issues, email, input।
 - आप किसी ship होने वाली चीज़ में dependencies या CI जोड़ रहे हैं।
 
-ship gate, एक नज़र में:
+## साझा task और limits
 
-```
-+--------------------------------------------+
-| 1 secret gate  verified-only scan; one     |
-|   live credential fails the build          |
-+--------------------------------------------+
-| 2 egress lockdown  deny by default;        |
-|   canonicalize before allowlist match      |
-+--------------------------------------------+
-| 3 break the lethal trifecta  one leg       |
-|   always missing on every path             |
-+--------------------------------------------+
-| 4 taint tracking  tainted session =>       |
-|   policy-gate every exfil-capable action   |
-+--------------------------------------------+
-| 5 supply chain  hash-pin every dep, no     |
-|   install scripts, SHA-pinned CI           |
-+--------------------------------------------+
-| 6 clean-code-gauntlet  mutate detectors,   |<--------------------------+
-|   parsers, predicates to zero survivors    |  a survivor or a          |
-+--------------------------------------------+  sandbox catch ->         |
-| 7 sniper-testing  mock outbound network    |   +---------------------+ |
-|   only, never payload or parser            |   |  LORD OF THE LOOP   |-+
-+--------------------------------------------+   | one hand drives the |
-| 8 sandbox before ship  outbound blocked,   |-->| loop: dispatch,     |
-|   watch writes + calls, hard-kill armed    |   | judge, loop back    |
-+--------------------------------------------+   | until the gate is   |
-| 9 provenance  SBOM + signed provenance;    |   | green. a lane never |
-|   still review the source                  |   | lands its own work. |
-+--------------------------------------------+   +---------------------+
-          |
-          | every gate green
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no ship:      |
-| no live credential anywhere . no path      |
-| holds all three trifecta legs . deps +     |
-| CI hash-pinned . zero surviving mutants    |
-| . sandboxed before ship                    |
-+--------------------------------------------+
-```
+यह play current [BACKS Build Flow](../skills/backs-build-flow/SKILL.md) task packet
+के भीतर चलाएँ। एक integration owner, requested `task_mode`, pinned `base_sha`, current
+`candidate_sha`, operator essence और current evidence रखें। Applicable loaded skill
+bodies reuse करें; यह play अपने domain gates जोड़ता है, task फिर शुरू नहीं करता।
 
-*Lord of the Loop = loop का मालिक — एक ही हाथ जो dispatch, judge और दोहराव तब तक चलाता है जब तक landing gate green न हो जाए; LAND = बदलाव का final उतरना — हर gate green होने पर merge होकर ship होना।*
+[bounded-loops](../skills/bounded-loops/SKILL.md) original deadline और remaining
+allowances को retries, workers, models, reviews और handoffs में संभालता है। Nested play
+के लिए उन्हें reset न करें। Exhaustion पर candidate, evidence, unmet gates और next action
+सहित **STILL-BUILDING** checkpoint करें। Useful authorized work remaining allowance में
+ही करें; missing gate कभी pass नहीं बनता।
 
 ## चेन
 
@@ -74,14 +42,18 @@ ship gate, एक नज़र में:
    harness में policy-gate लगे — यह कभी model के विवेक पर नहीं छूटता।
 5. Supply chain — हर dependency को hash-pin करें और install-time scripts block
    करें। हर CI action को पूरे commit hash पर pin करें, tag पर नहीं।
-6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — security code
-   पर सबसे सख़्त bar लगती है। हर detector, parser, और policy predicate पर
-   mutation testing चलाएँ, और बचे हुए mutants को शून्य तक ले जाएँ। threat check
-   के अंदर उलटी हुई comparison, जिसे suite फिर भी pass कर दे — वही vulnerability
-   है।
-7. [sniper-testing](../skills/sniper-testing/SKILL.md) — mock सिर्फ़ बाहर जाते
-   network का करें, कभी उस payload या parser का नहीं जो test के नीचे है: mocked
-   detector production में एक अंधा sensor है।
+6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — security code पर
+   strictest bar। Shared budget में हर detector, parser और policy predicate की mutation
+   testing करें; meaningful survivors ship रोकते हैं। Missing assertions separate
+   supplemental tests में जोड़ें; original sealed RED बचाएँ। Threat check का flipped
+   comparison suite में pass हो जाए तो वही vulnerability है।
+
+7. [sniper-testing](../skills/sniper-testing/SKILL.md) — pinned aggregate candidate
+   diff से scoped actual repo lint/type/test commands लें; gaps और reason वाले N/A
+   लिखें। केवल outbound network mock करें, tested payload/parser कभी नहीं; mocked
+   detector production में blind sensor है। Gauntlet से पहले current scoped evidence
+   reuse करें और required full affected-suite landing gate तथा author-disjoint review रखें।
+
 8. Ship से पहले sandbox — बने हुए artifact को एक ephemeral sandbox में चलाएँ,
    जिसमें सारा outbound blocked हो और resource hard-kill तैयार हो। देखें कि वह
    क्या लिखता है और किसे call करने की कोशिश करता है।

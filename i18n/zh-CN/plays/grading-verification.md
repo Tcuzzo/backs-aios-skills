@@ -9,55 +9,43 @@
 - 测试套件声称全绿，但没人看着它先失败过。
 - 一个模型干了活，你需要对它的一个诚实判定。
 
-整个评审，一图看懂：
+## 共享任务与限制
 
-```
-+--------------------------------------------+
-| 1 red-first  confirm the suite failed --   |<--------------------------+
-|   non-zero exit -- BEFORE the fix existed  |  each finding -> a new    |
-+--------------------------------------------+  red test -> fix ->       |
-| 2 sniper-testing  scoped runs verified;    |  re-convene               |
-|   no mock theater on the changed seam      |                           |
-+--------------------------------------------+   +---------------------+ |
-| 3 independent grade  a non-builder grader, |   |  LORD OF THE LOOP   |-+
-|   chosen live by capability + availability |   | one hand drives the |
-+--------------------------------------------+   | loop: dispatch,     |
-| 4 blind-tribunal  jurors judge an          |-->| judge, loop back    |
-|   author-redacted envelope                 |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 5 clean-code-gauntlet  the grader re-runs  |   | lands its own work. |
-|   it -- never trust the builder's numbers  |   +---------------------+
-+--------------------------------------------+
-          |
-          | all jurors pass
-          v
-+--------------------------------------------+
-| LANDING GATE -- the two-sided proof:       |
-| fail-to-pass AND pass-to-pass, run         |
-| hermetically . no fake-green tell .        |
-| author-disjoint grader session . the       |
-| grader re-ran the checks itself            |
-+--------------------------------------------+
-```
+在当前 [BACKS Build Flow](../skills/backs-build-flow/SKILL.md) 任务包内应用本战术。
+保留一位集成负责人、请求的 `task_mode`、固定 `base_sha`、当前 `candidate_sha`、
+operator essence 和当前证据。复用适用的已载入技能正文；本战术增加领域关卡，
+不重启任务。
 
-图中两个特殊标签：Lord of the Loop = 循环之主，即由一只手驱动整个迭代（派发、评判、循环回炉）、直到落地门槛转绿的循环负责人；LANDING GATE（LAND，落地门槛）= 全部条件转绿才放行落地的最终关卡。
+[bounded-loops](../skills/bounded-loops/SKILL.md) 负责原始截止时间和剩余额度，
+贯穿重试、工作者、模型、评审和交接。嵌套战术不得重置它们。耗尽时建立
+**STILL-BUILDING** 检查点，保留候选版本、证据、未过关卡和下一步。
+有用且已授权工作仅在剩余额度内继续；缺失关卡不能变成通过。
 
 ## 链路
 
 1. [red-first](../skills/red-first/SKILL.md) —— 确认在修复存在之前，
    测试套件确实以非零退出码失败过。从没红过的套件，什么也证明不了。
-2. [sniper-testing](../skills/sniper-testing/SKILL.md) —— 核实构建者迭代期间
-   用的是限定范围的测试，并且没有在它改动的接缝上搞 mock 剧场
-   （测试全靠 mock 演出来的通过）。
-3. 与作者无关的评审——把活交给一个评审者：其构建候选的作者执行
-   没有构建本次变更；按能力与可用性从配置好的梯级矩阵里在线
-   选出；评审者必须使用全新且与作者无关的会话。作者自己签
-   评分，是从根子上取消资格的。
-4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) —— 重大变更要开庭：
-   陪审员评审一份抹去作者信息的卷宗。每条发现都变成一条新的红测试，
-   法庭反复开庭，直到所有陪审员都放行。
+2. [sniper-testing](../skills/sniper-testing/SKILL.md) — 核实构建者按固定汇总候选
+   差异运行仓库实际 lint/类型/测试命令，未在改动接缝上搞模拟通过。核实明确的
+   N/A 理由和缺失检查，为本次评审冻结候选身份。
+
+3. 独立评分 — 按配置梯级矩阵中的能力与可用性在线选择未构建本改动的执行
+   （任务 → 能力 → 梯级 → 实时探测）。运行器支持时记录作者执行并排除它。
+   全新且与作者无关的会话可以通过任何有能力的已配置路径评审。禁止在看过构建者
+   对话或继承其上下文的会话中评分。模型身份是来源事实，不是权威。
+
+4. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — 重要变更由陪审员在不继承
+   对话的全新会话中评审去除作者信息的卷宗。证实的发现返回集成负责人，建立
+   独立补充 RED 并有界修复；原始 RED 继续封存。在相同剩余预算内对修订后的
+   冻结候选复审。落地前所有必需陪审员须通过。
+
 5. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) —— 评审亲自
    重跑关卡（覆盖率对复杂度、有界变异测试）。绝不相信构建者自己报的数字。
+
+遵守评审模式不可变的目标。创建缓存、变异代码或调用服务的检查只在允许的隔离
+环境运行；变异测试绝不重写冻结源码。缺少隔离或运行时支持属于证据缺口，不是
+边评审边修补的许可。保留必需的完整受影响测试集落地证据，并将本地检查与真实
+界面或交付证明分别报告。
 
 ## 双向证明（两条都要，缺一不过）
 
@@ -82,7 +70,7 @@
 
 ## 硬门槛——踩中任何一条，整场战术判负
 
-- 构建本次变更的作者执行，自己签了评分。
+- 评分在构建者的作者执行中运行，或继承了构建者对话；全新且与作者隔离的会话是底线。
 - 无法展示修复前套件是红的。
 - 被评审的运行里缺 fail-to-pass 或缺 pass-to-pass。
 - 出现上面任何一条假绿马脚。

@@ -9,49 +9,23 @@
 构建任何 agent、bot、worker 或长期运行的服务——凡是握着工具、访问网络、
 或在无人盯着每一步的情况下自己采取行动的东西。
 
-整个构建，一图看懂：
+## 共享任务与限制
 
-```
-    +--------------------------------------------+
-    | 1 intent-compiler  mission + limits from   |
-    |   the human's own words                    |
-    +--------------------------------------------+
-+-->| 2 understanding-gates  DOMAIN PRIMITIVES   |
-|   |   first; LLM slot for genuine reasoning    |
-|   +--------------------------------------------+
-|   | 3 red-first  a failing contract test per   |<--------------------------+
-|   |   typed IO boundary, committed first       |  finding -> a new red     |
-|   +--------------------------------------------+  test -> fix ->           |
-|   | 4 build to the doctrine -- every loop      |  re-convene               |
-|   |   inside bounded-loops                     |   +---------------------+ |
-|   +--------------------------------------------+   |  LORD OF THE LOOP   |-+
-|   | 5 sniper-testing  mock transport only      |   | one hand drives the |
-|   +--------------------------------------------+   | loop: dispatch,     |
-|   | 6 clean-code-gauntlet  mutate decision     |   | judge, loop back    |
-|   |   paths to zero survivors                  |   | until the gate is   |
-|   +--------------------------------------------+   | green. a lane never |
-|   | 7 blind-tribunal  independent juror       |-->| lands its own work. |
-|   panel; capability-resolved graders      |   |                    |
-|   +--------------------------------------------+   +---------------------+
-|             |
-|             | every juror passes
-|             v
-|   +--------------------------------------------+
-|   | LANDING GATE -- all green or no ship:      |
-|   | no fail-open boundary, silent fallback,    |
-|   | or swallowed error . zero mutation         |
-|   | survivors in decision paths . cross-       |
-|   | independent pass; the builder never grades .           |
-+---| zero primitives = invalid -> redesign      |
-    +--------------------------------------------+
-```
+在当前 [BACKS Build Flow](../skills/backs-build-flow/SKILL.md) 任务包内应用本战术。
+保留一位集成负责人、请求的 `task_mode`、固定 `base_sha`、当前 `candidate_sha`、
+operator essence 和当前证据。复用适用的已载入技能正文；本战术增加领域关卡，
+不重启任务。
 
-图中两个特殊标签：Lord of the Loop = 循环之主，即由一只手驱动整个迭代（派发、评判、循环回炉）、直到落地门槛转绿的循环负责人；LANDING GATE（LAND，落地门槛）= 全部条件转绿才放行落地的最终关卡。
+[bounded-loops](../skills/bounded-loops/SKILL.md) 负责原始截止时间和剩余额度，
+贯穿重试、工作者、模型、评审和交接。嵌套战术不得重置它们。耗尽时建立
+**STILL-BUILDING** 检查点，保留候选版本、证据、未过关卡和下一步。
+有用且已授权工作仅在剩余额度内继续；缺失关卡不能变成通过。
 
 ## 链路
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) —— 把需求完整读懂；
-   任务和它的边界来自这个人自己说的话。
+1. 使用 Build Flow 已建立的意图和 operator essence；任务及其限制来自用户完整
+   请求和当前纠正。
+
 2. [understanding-gates](../skills/understanding-gates/SKILL.md) —— 在设计阶段，
    先点名领域原语（DOMAIN PRIMITIVES）：每个核心能力都是确定性、离线、
    fail-closed（出错即拒绝）的函数。LLM 的位置只留给真正的推理。
@@ -60,15 +34,19 @@
 4. 按下面的守则构建。每个循环都套上
    [bounded-loops](../skills/bounded-loops/SKILL.md)：预算、检查点、
    退避（backoff）、响亮的急停开关——绝不做狂轰滥炸式的重试。
-5. [sniper-testing](../skills/sniper-testing/SKILL.md) —— 只允许 mock 出站
-   传输层——路由、prompt 组装、解析逻辑一律不许 mock。
+5. [sniper-testing](../skills/sniper-testing/SKILL.md) — 根据固定汇总候选差异限定
+   仓库真实 lint/类型/测试命令，明确记录不可用检查和有理由的 N/A。
+   只允许模拟出站传输，不模拟路由、提示构造或解析。
+
 6. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) —— agent 的
    工具处理器和决策函数要跑完整个关卡：风险分低于你的上限，然后对决策路径
-   跑变异测试，直到零幸存。翻转一个比较符还能活下来的分支逻辑，
+   在共享预算内跑变异测试；零幸存是关卡要求。翻转一个比较符还能活下来的分支逻辑，
    等于从来没被测过。
-7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) —— 上线前由全新、与作者上下文隔离的会话中的独立
-   评审放行。构建者绝不给自己的活打分。
-   陪审员的每条发现都变成一条新的红色测试；重新开庭，直到每位陪审员都放行。
+7. [blind-tribunal](../skills/blind-tribunal/SKILL.md) — 发布前由独立陪审团放行。
+   按配置梯级矩阵的能力与可用性在线选择评分者，记录并排除作者执行；使用全新、
+   与作者隔离的评审会话，构建者永不自评。每个证实的发现另加补充 RED，保留原始
+   封存文件。在同一剩余预算内修复并复审，所有必需陪审员通过后才可落地。
+   保留必需的完整受影响测试集落地检查和真实交付证明。
 
 ## 守则（构建必须满足的条件）
 

@@ -10,67 +10,44 @@
 任何会被人看到的屏幕、页面、组件、仪表盘或视觉交付物。第一个屏幕
 会给之后所有屏幕定标准——动手前先跑这套。
 
-品味循环，一图看懂：
+## 共享任务与限制
 
-```
-+--------------------------------------------+
-| 1 intent-compiler  WHICH taste do the      |
-|   human's words ask for? state the read    |
-+--------------------------------------------+
-| 2 human-calibration  anchor in the record  |
-|   + studied references, never a guess      |
-+--------------------------------------------+
-| 3 design-taste  emit the three-tier        |
-|   token file FIRST, before any component   |
-+--------------------------------------------+
-| 4 build with the token file as a hard      |<--------------------------+
-|   constraint -- no raw hex, px, fonts      |  critique -> fix ->       |
-+--------------------------------------------+  re-shoot                 |
-| 5 design-taste  screenshot -> critic;      |   +---------------------+ |
-|   critic resolved live via fleet-ladder    |-->|  LORD OF THE LOOP   |-+
-+--------------------------------------------+   | one hand drives the |
-| 6 design-taste  8-axis taste rubric        |   | loop: dispatch,     |
-+--------------------------------------------+   | judge, loop back    |
-| 7 design-taste  WCAG 2.2 HARD gate         |   | until the gate is   |
-+--------------------------------------------+   | green. a lane never |
-| 8 clean-code-gauntlet  the code BEHIND     |   | lands its own work. |
-|   the pixels; zero surviving mutants       |   +---------------------+
-+--------------------------------------------+
-          |
-          | rubric + WCAG green
-          v
-+--------------------------------------------+
-| LANDING GATE -- all green or no ship:      |
-| WCAG 2.2 passes . 8-axis rubric scored .   |
-| zero surviving mutants behind the pixels   |
-| . critic != builder seat, capability-    |
-| resolved via fleet-ladder, never pinned    |
-+--------------------------------------------+
-```
+在当前 [BACKS Build Flow](../skills/backs-build-flow/SKILL.md) 任务包内应用本战术。
+保留一位集成负责人、请求的 `task_mode`、固定 `base_sha`、当前 `candidate_sha`、
+operator essence 和当前证据。复用适用的已载入技能正文；本战术增加领域关卡，
+不重启任务。
 
-图中两个特殊标签：Lord of the Loop = 循环之主，即由一只手驱动整个迭代（派发、评判、循环回炉）、直到落地门槛转绿的循环负责人；LANDING GATE（LAND，落地门槛）= 全部条件转绿才放行落地的最终关卡。
+[bounded-loops](../skills/bounded-loops/SKILL.md) 负责原始截止时间和剩余额度，
+贯穿重试、工作者、模型、评审和交接。嵌套战术不得重置它们。耗尽时建立
+**STILL-BUILDING** 检查点，保留候选版本、证据、未过关卡和下一步。
+有用且已授权工作仅在剩余额度内继续；缺失关卡不能变成通过。
 
 ## 链路
 
-1. [intent-compiler](../skills/intent-compiler/SKILL.md) —— 从这个人自己的话
-   里推断出他要的是哪一种品味，动笔前用一行话把你的解读说出来。
+1. 根据 Build Flow 已建立的意图和 operator essence，推导用户文字要求哪种品味。
+   动笔前说明一次自己的理解。
+
 2. [human-calibration](../skills/human-calibration/SKILL.md) —— 把解读锚定在
    这个人的记录和真正研究过的参考上，绝不靠人群标签瞎猜。
 3. 先产出三层设计 token 文件，再写任何组件——完整的 token 规范和
    禁用默认值清单见 [design-taste](../skills/design-taste/SKILL.md)。
 4. 把 token 文件当硬约束注入后再写组件。组件里绝不硬编码裸的十六进制
    色值、像素值或字体族。
-5. 按 [design-taste](../skills/design-taste/SKILL.md) 跑"截图 → 评审"循环，
-   评审模型通过 [fleet-ladder](../skills/fleet-ladder/SKILL.md) 实时解析。
+5. 按 [design-taste](../skills/design-taste/SKILL.md) 运行截图 → 评审循环，
+   经 [fleet-ladder](../skills/fleet-ladder/SKILL.md) 在线解析评审模型。每次评论和
+   重渲染消耗同一剩余预算；向当前负责人返回发现。
+
 6. 按 [design-taste](../skills/design-taste/SKILL.md) 给 8 轴品味量表打分。
 7. 按 [design-taste](../skills/design-taste/SKILL.md) 执行 WCAG 2.2
    无障碍硬门槛。
-8. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) —— 只跑
-   像素背后的代码：token 解析器、主题切换、对比度计算器、状态 reducer
-   必须通过，变异体零幸存。对比度检查里一个翻转的比较符，交付出去的
-   就是一块漂亮却用不了的屏幕。关卡从不给品味打分——量表和无障碍门槛
-   才是视觉裁判。测试里渲染真实 DOM；mock 出来的渲染，
-   证明不了人眼看到什么。
+8. [clean-code-gauntlet](../skills/clean-code-gauntlet/SKILL.md) — 检查像素背后的
+   代码：token 解析器、主题切换、对比度计算器和状态 reducer 需零幸存变异通过。
+   对比度检查中翻转比较仍通过，就会交付漂亮却不可访问的画面。Gauntlet 不评品味；
+   视觉判断仍归评分量表和无障碍关卡。先用
+   [sniper-testing](../skills/sniper-testing/SKILL.md) 按固定汇总候选差异运行仓库
+   实际 lint/类型/测试命令，如实说明 N/A 和缺失检查。测试应渲染真实 DOM，模拟
+   渲染不能证明用户所见。保留封存 RED，新缺口另加补充测试；保留必需独立评审、
+   完整受影响测试集落地检查和真实渲染证明。
 
 ## 硬门槛（战术专属——技能自身的硬规则叠加生效）
 

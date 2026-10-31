@@ -1,69 +1,74 @@
 ---
-name: "sniper-testing"
-description: "किसी भी fix या build loop के दौरान लगाओ, और किसी भी green test पर भरोसा करने से पहले। सिर्फ़ वे tests चलाता है जो तुम्हारे छुए हुए code को cover करते हैं, और mock theater को मारता है — वे tests जो pass होते हैं जबकि capability टूटी पड़ी है। Trigger words: sniper testing, scoped tests, test scope, mock theater, fake green, full suite, test bloat, सिर्फ़ ज़रूरी tests, नक़ली green, पूरी suite मत चलाओ, test का दायरा."
-license: "MIT"
+name: sniper-testing
+description: "Build या repair loop में, या green result पर भरोसा करने से पहले, जब verification को बेकार whole-suite reruns के बिना actual candidate cover करना हो, तब उपयोग करें।"
+license: MIT
 ---
 
 # Sniper Testing
-**Effort:** free — शुद्ध अनुशासन, कोई अतिरिक्त run नहीं; iteration के दौरान full-suite reruns मिटाकर net लागत सीधे घटाता है। हटाता है: test bloat (नन्हे-से diff पर पूरी suite के runs) और वे mock-theater greens जिन पर आप वरना आगे का काम खड़ा करते।
 
-## यह क्यों है
+बदले हुए behavior को उसके real consumer से सत्यापित करें। Checks चुनने में पूरा task
+ diff लें, फिर अगली change से प्रभावित checks ही दोहराएँ।
+[bounded-loops](../bounded-loops/SKILL.md) की वही mission allowance अपनाएँ।
 
-Test का ज़्यादातर वक़्त दो failure modes खा जाते हैं। Test bloat: ज़रा-से
-बदलाव पर पूरी suite चलाना। Mock theater: tests जो pass होते हैं जबकि असली
-capability physically टूटी है। यह skill दोनों को मारती है।
+## 1. असली scope स्थिर करें
 
-## Rule 1 — scope diff तय करता है, optimism नहीं
+[Build Flow](../backs-build-flow/SKILL.md) packet में verified pre-task `base_sha`
+और current committed `candidate_sha` सुरक्षित रखें। RED और fix commit करने के बाद
+clean working tree में भी task diff होता है। अकेला `git diff HEAD` उसे खो देता है।
 
-Fix/build के iteration loop के दौरान पूरी test suite चलाना तुम्हारे लिए मना
-है।
+इस skill की resolved directory से bundled read-only scope helper चलाएँ:
 
-1. `git diff --name-only HEAD` चलाओ, ठीक-ठीक देखो कौन-सी files छुई हैं।
-2. हर छुई file को उन test files से map करो जो उसे सीधे cover करती हैं
-   (जैसे `src/payments/refund.py` → `tests/test_refund.py`)।
-3. अपना specific test target बोलकर बताओ, फिर सिर्फ़ वही files चलाओ
-   (Python: `pytest tests/test_refund.py`;
-   JS: `npx vitest run tests/refund.test.js`;
-   Go: `go test ./payments/ -run TestRefund`)।
-4. जो test पहले pass हो चुका, वह दोबारा नहीं चलता — जब तक तुम्हारा अगला
-   बदलाव उस code को न छुए जिसे वह exercise करता है। Scope diff तय करता है —
-   न optimism, न डर।
-5. Landing के वक़्त — commit gate पर — हर छुए module की suite पर EK full
-   pass चलाओ। वही अकेला pass indirect couplings ठीक एक बार पकड़ता है।
-   Iteration की रफ़्तार और पक्की landing — दोनों काम का हिस्सा हैं।
+```bash
+python scripts/changed_files.py --repo <verified-repo> --base <base-sha> --candidate <candidate-sha>
+```
 
-## Rule 2 — mock theater को मारो
+Iteration में `--include-worktree` तभी जोड़ें जब candidate HEAD हो। यह committed,
+staged, unstaged और untracked paths अलग दिखाता है, unusual filenames बचाते हुए।
+Aggregate scope में deletions और rename के दोनों sides शामिल हैं। असंबंधित pending
+काम को preserved बताएँ; हर लौटे path को अपना न कहें। Missing base या invalid revision
+सुलझाने वाला error है, checks छोड़ने का empty scope नहीं। Helper fetch नहीं करता और
+history नहीं बदलता।
 
-Capability test को एक असली, physical side-effect assert करना ही होगा:
+## 2. वास्तविक checks चुनें और चलाएँ
 
-- "video बनाता है" → disk पर असली file मौजूद है, size > 0 bytes।
-- "memory store करता है" → row असली local database से वापस पढ़ी जाती है।
-- "widget render करता है" → page पर असली DOM element मौजूद है।
+Changed files तथा affected callers/consumers को behavior tests से जोड़ें, फिर repo के
+वास्तविक scripts, CI और configuration पढ़कर applicable commands चुनें।
 
-Database mock मत करो। File system mock मत करो। Local network sockets mock
-मत करो।
+| Check | Scope और evidence |
+| --- | --- |
+| Lint और format-check | Existing config से changed supported files; reformat तय करने से पहले check mode लें। |
+| Typecheck या compiler | प्रभावित package/project boundary; type dependencies broader target माँग सकती हैं। |
+| Behavior tests | Real changed path और capability टूटने पर fail होने वाला regression। |
+| Contract/integration tests | इस change से प्रभावित consumers, aliases, packaging, settings preservation या runtime boundaries। |
+| Required landing gates | Candidate स्थिर होने पर repository-mandated suites। |
 
-एक ही mock जायज़ है: paid external transport की पत्ती — metered third-party
-API वाली HTTP call। तब भी test को उसके इर्द-गिर्द की सारी असली logic से
-गुज़रना होगा: request बनाना, routing, response parse करना। Wire को mock करो,
-दिमाग़ को कभी नहीं।
+हर command, वह किस risk को cover करती है, revision/pending state, executed result और
+remaining failures बताएँ। Linter/typechecker न हो तो reason के साथ **unavailable** या
+**not applicable** लिखें; pass न गढ़ें। Example में नाम होने भर से नया tool install न करें।
+Green lint run behavior tests का विकल्प नहीं।
 
-## भरोसे से पहले audit
+Iteration में सबसे संकीर्ण सार्थक target चुनें। Exercised code, inputs या relevant
+environment न बदले हों तो पहले पास हुआ check फिर जरूरी नहीं। कोई ठोस unresolved coupling
+या required project gate broader testing का आधार है; कारण दर्ज करें। Landing पर final
+candidate के required aggregate checks एक बार चलाएँ। उसके बाद के बदलाव केवल affected
+evidence और required commit gates को अमान्य करते हैं।
 
-किसी भी test पर टिकने से पहले उसे पढ़ो। वह mock theater है — mocks की वजह से
-green, कोई physical assertion नहीं — तो mock हटाओ और test को दोबारा लिखो
-ताकि वह असली side-effect assert करे। जो test fail हो ही नहीं सकता, वह test न
-होने से बदतर है: वह झूठ को certify करता है, और तुम उसी झूठ पर आगे बनाओगे।
+## 3. Tests को असली breakage पकड़ने दें
 
-## Hard rules (कोई एक भी टूटा तो skill fail)
+Observable effect assert करें: artifact मौजूद और valid है, real local database से data
+पढ़ता है, host actual context bytes पाता है, या UI element render होता है। Local files,
+databases और sockets exercise करें, उन्हें mock न करें। Metered external transport leaf
+को deterministic fixture से बदल सकते हैं, जबकि request construction, routing, parsing
+और local consumer वास्तविक रहें। Fixture से external service चलने का दावा कभी न करें।
 
-- Iteration के दौरान कोई full-suite run नहीं।
-- असली side-effect assertion के बिना कोई green का दावा नहीं।
-- Capability test में paid external transport की पत्ती से आगे कोई mock नहीं।
-- छुए modules पर उस अकेले full pass के बिना कोई landing नहीं।
+[red-first](../red-first/SKILL.md) की sealed RED file byte-identical रखें। नया gap
+मिले तो उस skill के evidence और sealing नियमों के अनुसार अलग supplemental
+regression file जोड़ें। Original sealed file को कभी कमजोर, rename, replace
+या edit न करें।
 
-## इनके साथ अच्छा चलता है
+## Exit
 
-- [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) — sniper scope उसके पहले gate की ख़ुराक है
-- [red-first](../red-first/SKILL.md) — fix से पहले failing test लिखो
-- [seam-engineering](../seam-engineering/SKILL.md) — class ठीक करो, फिर scoped tests से sweep करो
+Candidate scope, executed lint/type/test results, real side-effect evidence और
+unresolved gates उसी owner को लौटाएँ।
+[clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) इसे अपना first stage evidence
+मानता है; unchanged checks फिर चलाने की वजह नहीं।
