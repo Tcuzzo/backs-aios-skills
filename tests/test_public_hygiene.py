@@ -58,6 +58,13 @@ _PRIVATE_IP = re.compile(
 # First char after the slash must be a word char, so prose shapes like
 # "/mnt/..." or "/opt/..." in documentation do not false-fire.
 _HOME_PATH = re.compile(r"(/home/[A-Za-z][\w.-]*|/mnt/[\w-][\w.-]*|/opt/[A-Za-z][\w.-]*)")
+# Hardware (MAC) addresses identify real devices on someone's home network.
+# Only the RFC 7042 documentation range 00:00:5E:00:53:xx is allowed.
+_MAC = re.compile(r"(?<![0-9A-Fa-f:])(?:[0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}(?![0-9A-Fa-f:])")
+_DOC_MAC = re.compile(r"00:00:5e:00:53:[0-9a-f]{2}", re.I)
+# A placeholder root followed by concrete directory names still publishes the
+# operator's private layout; the whole root must be one placeholder.
+_PLACEHOLDER_TAIL = re.compile(r"<placeholder-mount>/[A-Za-z_]")
 _EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 _COAUTHOR = re.compile(r"Co-Authored-By:\s*", re.I)
 _DEPENDABOT_COAUTHOR = re.compile(
@@ -137,6 +144,21 @@ class PublicHygieneTest(unittest.TestCase):
         bad = self._violations(_HOME_PATH)
         self.assertEqual(
             [], bad, "real machine paths found in tracked files:\n" + "\n".join(bad[:20])
+        )
+
+    def test_no_real_device_macs_in_tracked_files(self) -> None:
+        bad = [
+            v for v in self._violations(_MAC)
+            if any(not _DOC_MAC.fullmatch(m) for m in _MAC.findall(v.split(": ", 1)[1]))
+        ]
+        self.assertEqual(
+            [], bad, "device hardware (MAC) addresses found in tracked files:\n" + "\n".join(bad[:20])
+        )
+
+    def test_no_private_layout_after_placeholder_root(self) -> None:
+        bad = self._violations(_PLACEHOLDER_TAIL)
+        self.assertEqual(
+            [], bad, "private directory names after a placeholder root:\n" + "\n".join(bad[:20])
         )
 
     def test_no_real_emails_in_tracked_files(self) -> None:
