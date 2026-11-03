@@ -60,7 +60,8 @@ class PackContractTest(unittest.TestCase):
                     data = frontmatter(skill_file)
                     name = data.get("name")
                     description = data.get("description")
-                    canonical = {skill_file.parent.name, data.get("skill_id")} - {None}
+                    skill_id = data.get("skill_id") or (data.get("metadata") or {}).get("skill_id")
+                    canonical = {skill_file.parent.name, skill_id} - {None}
                     self.assertIn(name, canonical)
                     self.assertRegex(name, NAME_RE)
                     self.assertLessEqual(len(name), 64)

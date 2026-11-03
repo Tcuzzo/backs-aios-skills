@@ -9,7 +9,6 @@ import contextlib
 import copy
 import hmac
 import importlib.util
-import itertools
 import json
 import os
 from pathlib import Path

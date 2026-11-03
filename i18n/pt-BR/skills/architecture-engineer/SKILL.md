@@ -7,8 +7,8 @@ description: 'Analyze BACKS architecture, detect structural drift, evaluate prop
   structural drift, dependency direction, ADR, boundary change, responsibility leak,
   architecture review, design drift, rules compliance.'
 license: MIT
-tags:
-- pt-BR
+metadata:
+  tags: "pt-BR"
 ---
 
 # Architecture Engineer — drift detection + ADR authorship

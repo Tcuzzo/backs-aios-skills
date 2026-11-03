@@ -1,8 +1,9 @@
 ---
-skill_id: operator-intent-deduction
 name: operator-intent-deduction
 description: "Face à un choix d'implémentation, un compromis ou une question proposée à l'opérateur encore non résolus, lorsque intention actuelle, preuves du projet ou contexte opérateur peuvent déjà fonder une décision."
 license: MIT
+metadata:
+  skill_id: "operator-intent-deduction"
 ---
 
 # Déduire la décision des preuves actuelles

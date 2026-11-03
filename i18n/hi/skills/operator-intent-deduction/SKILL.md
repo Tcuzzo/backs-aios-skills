@@ -1,8 +1,9 @@
 ---
-skill_id: operator-intent-deduction
 name: operator-intent-deduction
 description: जब implementation choice, tradeoff या operator से पूछने वाला प्रश्न अनसुलझा हो और current intent, project evidence या operator context से निर्णय निकल सकता हो, तब उपयोग करें।
 license: MIT
+metadata:
+  skill_id: "operator-intent-deduction"
 ---
 
 # वर्तमान Evidence से निर्णय निकालें
