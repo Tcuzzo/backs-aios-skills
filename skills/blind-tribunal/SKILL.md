@@ -21,10 +21,9 @@ Nothing lands on the builder's word alone.
 ## The seats
 
 Eight jurors, one lens each. Each is picked live from a rung that carries the
-lens's required capability, with the authoring execution that built recorded as
-provenance on the run record where the runner supports it. Exclude the authoring
-execution and any session that inherited the builder's conversation or context.
-Each reviewer uses a fresh, author-disjoint session.
+lens's required capability. Exclude the authoring execution (recorded as
+provenance where the runner supports it) and any session that inherited the
+builder's conversation or context; each reviewer uses a fresh, author-disjoint session.
 A juror asked to check everything checks nothing well.
 
 | Juror | Lens id | Tier | The question it asks |
@@ -56,12 +55,9 @@ Route each tier to what the lens needs, not to the biggest model you own:
   and refuse, before sending, a prompt the rung cannot hold. When an optional verifier
   is fused with the primary it judges the same prompt and the local primary verdict
   stands on its own evidence when the verifier is unavailable (no cloud rung live),
-  flagged **UNVERIFIED** in the review and the summary — never silently "verified".
-  An independently sufficient local verdict is allowed to PASS without a cloud rung
-  or a fused verifier when the task contract does not require one; only a verifier
-  the task contract actually requires is HOLD when absent. Local judges obey the
-  same evidence floor as cloud judges: no vendor-based guarantee, no mandatory cloud
-  requirement when the local judge is independently sufficient. After every local
+  flagged **UNVERIFIED** in the review and the summary — never silently "verified"
+  (see *The verdict* for when a missing verifier is a HOLD). Local judges obey the
+  same evidence floor as cloud judges. After every local
   call read the node's own numbers: cap the answer (`num_predict`), refuse an answer
   whose prompt filled the window (`prompt_eval_count` + answer budget ≥ `num_ctx`
   is a measured truncation), and check residency (`size_vram == size` on `/api/ps`) —
@@ -109,7 +105,7 @@ Round 4 held two lenses with zero refusals, and every link was on the record. Th
 
 - **State the answer shape next to the answer.** The protocol footer carries the literal lens name (`"lens": "defect"`), never the `<your lens>` placeholder. A juror asked to recall the lens from 350 KB earlier, inside an artifact that names all eight lenses, answered the wrong lens three times in two rounds. Fill the placeholder at render time.
 - **A rejected rung leaves its words on the record.** A wrong-lens answer or a voided verdict carries a bounded `raw_tail` on the rejected entry, so the next round reads the cause instead of inferring it.
-- **Route depth is a measured capacity, not a magic floor.** Every tier should hold enough capability-sufficient rungs to absorb the expected failures; the configured ladder decides depth, not a universal "three cloud rungs" count. (`context_tokens` and `num_ctx` on Ollama; the 4096 default truncates silently.) One wrong lens plus one void must never hold a lens.
+- **Route depth is a measured capacity, not a magic floor.** Every tier should hold enough capability-sufficient rungs to absorb the expected failures; the configured ladder decides depth, not a universal "three cloud rungs" count. (Size it with `context_tokens` / `num_ctx`, as above.) One wrong lens plus one void must never hold a lens.
 - **A structured verdict never shares its budget with thinking.** A reasoning model asked for a bare JSON verdict spent its whole 65536-token budget thinking about a 131k-token artifact and emitted nothing (`finish_reason=length`); the role's time ceiling then killed the next rung mid-walk. Reasoning channel and budget controls follow the route and the output shape — some clouds disable reasoning for JSON, others keep medium; recorded as a measured incident, not a universal rule. (`reasoning_effort: none` on clouds that let the channel be disabled; `finish_reason=length` on a structured verdict is a verdict rejection, not a slow pass.)
 - **Nothing else writes into the tribunal's repo while it convenes.** A concurrent grader's status file inside the checkout changed bytes under a seat, and the organ voided that verdict honestly: it cannot attribute a change. Serialize writers, or convene on a separate worktree of the same commit.
 
@@ -220,11 +216,10 @@ Strict machine-parseable JSON, one object, no prose:
    that commit. The builder may not touch the test ([red-first](../red-first/SKILL.md)).
 2. Build to green.
 3. Build the envelope from the CURRENT files.
-4. Seat the eight jurors by tier, excluding the authoring execution that built
+4. Seat the eight jurors by tier in fresh author-disjoint sessions
    ([fleet-ladder](../fleet-ladder/SKILL.md) resolves what is live; the authoring
-   execution that built is recorded as provenance and excluded; reviewers use
-   fresh author-disjoint sessions). Seat them in parallel; local cards
-   serialize themselves.
+   execution is recorded as provenance and excluded). Seat them in parallel;
+   local cards serialize themselves.
 5. The deep-state jurors also verify, not just read: the new tests pass; the regression
    suite is no worse than baseline; and a fake-green check — a test that SHOULD fail
    (the bug re-introduced) does fail. A fake green is a refuse.

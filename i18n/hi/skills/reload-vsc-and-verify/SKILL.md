@@ -8,8 +8,8 @@ description: 'Use when a new BACKS AIOS skill has been added to the plugin pack 
   load. Trigger words: reload VS Code, force reload, IDE reload, skills not loaded,
   plugin pack reload, claude code reload, refresh VS Code, code --reload-window.'
 license: MIT
-tags:
-- hi
+metadata:
+  tags: "hi"
 ---
 
 # reload-vsc-and-verify

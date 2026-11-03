@@ -1,8 +1,9 @@
 ---
-skill_id: operator-intent-deduction
 name: operator-intent-deduction
 description: 当智能体面临未决的实现选择、取舍或准备向操作者提问，而当前意图、项目证据或操作者上下文可能已经足以支持决定时使用。
 license: MIT
+metadata:
+  skill_id: "operator-intent-deduction"
 ---
 
 # 从当前证据推导决定

@@ -11,8 +11,8 @@ description: 'Use when the Conscientious Objector (or any watchdog) needs a heal
   health doctor, autonomic self-healer, watchdog health, watchdog self-test, CO self-test,
   watchdog alive, watchdog up, is the CO running.'
 license: MIT
-tags:
-- de
+metadata:
+  tags: "de"
 ---
 
 # CO Health — the autonomic watchdog doctor

@@ -1,5 +1,4 @@
 """Real local HTTP consumer contract; fixture replaces only paid upstream HTTP."""
-import asyncio
 import json
 import subprocess
 import sys

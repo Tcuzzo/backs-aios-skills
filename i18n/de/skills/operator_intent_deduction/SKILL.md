@@ -1,8 +1,9 @@
 ---
-skill_id: operator-intent-deduction
 name: operator-intent-deduction
 description: "Wenn eine offene Implementierungswahl, Abwägung oder vorgeschlagene Operatorfrage vorliegt und aktuelle Absicht, Projektbelege oder Operatorkontext bereits eine Entscheidung tragen könnten."
 license: MIT
+metadata:
+  skill_id: "operator-intent-deduction"
 ---
 
 # Entscheidungen aus aktuellen Belegen ableiten

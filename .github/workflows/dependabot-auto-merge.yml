@@ -10,8 +10,14 @@ name: dependabot auto-merge
 # held four dependency PRs hostage behind a red test.
 #
 # Scoped to Dependabot only. No other author's PR is touched.
+#
+# Trigger is pull_request (not pull_request_target) and the gate is the PR
+# author, not github.actor: actor is whoever caused the latest event, so a
+# human re-run or push could otherwise inherit write scope (confused deputy).
+# Pattern per GitHub Docs "Automating Dependabot with GitHub Actions"; the
+# explicit permissions block below is what grants write on Dependabot PRs.
 
-on: pull_request_target
+on: pull_request
 
 permissions:
   contents: write
@@ -19,7 +25,7 @@ permissions:
 
 jobs:
   auto-merge:
-    if: github.actor == 'dependabot[bot]'
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: read the bump metadata
