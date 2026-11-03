@@ -31,7 +31,7 @@ from __future__ import annotations
 import shlex
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Callable, Mapping, Optional, Sequence
+from typing import Callable, Mapping, Optional
 
 from evolve import (
     AutoResearchError,

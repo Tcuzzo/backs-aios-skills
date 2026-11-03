@@ -1,8 +1,9 @@
 ---
-skill_id: operator-intent-deduction
 name: operator-intent-deduction
 description: "Use quando restar uma escolha de implementação, compensação ou pergunta proposta ao operador e a intenção atual, as evidências do projeto ou o contexto do operador já puderem sustentar uma decisão."
 license: MIT
+metadata:
+  skill_id: "operator-intent-deduction"
 ---
 
 # Deduza a decisão a partir das evidências atuais

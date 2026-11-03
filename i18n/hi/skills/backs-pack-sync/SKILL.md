@@ -2,8 +2,8 @@
 name: "backs-pack-sync"
 description: "Compare private BACKS runtime skill coverage with the public AIOS pack without disclosing names or content. Add a public skill only from a separately authored, reviewed public bridge. Trigger words: pack drift, public skills sync, safe bridge, AIOS pack."
 license: "MIT"
-tags:
-- hi
+metadata:
+  tags: "hi"
 ---
 
 # Privacy-safe pack sync

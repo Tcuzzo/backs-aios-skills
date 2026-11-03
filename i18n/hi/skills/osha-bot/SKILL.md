@@ -11,8 +11,8 @@ description: 'Use when a watchdog or quality gate (CO, Sentry, Tribunal, doctor 
   constitution watchdog, philosophy watchdog, quality watchdog, bullshit detector,
   kill watchdog tools, bot pack safety, bot foreman, harness equals safety.'
 license: MIT
-tags:
-- hi
+metadata:
+  tags: "hi"
 ---
 
 # OSHA Bot — watchdog of watchdogs

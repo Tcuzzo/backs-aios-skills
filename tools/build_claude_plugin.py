@@ -21,7 +21,6 @@ Usage:  python3 tools/build_claude_plugin.py [OUT.plugin]
 """
 from __future__ import annotations
 
-import json
 import pathlib
 import re
 import shutil
