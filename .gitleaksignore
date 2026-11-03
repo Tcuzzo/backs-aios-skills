@@ -1,0 +1,11 @@
+# gitleaks false positive (generic-api-key), reviewed 2026-11-02 by structure only:
+# tests/test_provider_minimax.py (line 140 in history, 139 after an unused import
+# was removed) is a quoted URL fixture (lowercase letters, '.', '/', ':' only;
+# no digits, no mixed case) inside
+# test_endpoint_allowlist_rejects_credential_and_redirect_destinations.
+# Fingerprints are pinned to this one line so any new hit still fails the scan.
+tests/test_provider_minimax.py:generic-api-key:139
+3897eec4091efbc4ef8936753dd207d06548a639:tests/test_provider_minimax.py:generic-api-key:140
+94878484b1d4422ebdb42ac09ebc6ee72367f854:tests/test_provider_minimax.py:generic-api-key:140
+01c05e3e9703c218cc6656725073c015359ff0c7:tests/test_provider_minimax.py:generic-api-key:140
+14530cd481d57149c4b4bf74c78d5f2a9fba72b8:tests/test_provider_minimax.py:generic-api-key:140
