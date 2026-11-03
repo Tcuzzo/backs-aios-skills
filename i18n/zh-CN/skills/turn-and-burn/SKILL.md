@@ -7,8 +7,8 @@ description: 'Use when BACKS gets a mission of any size — runs the plays, quic
   burn, mission intake, run the plays, blindspot, absorb missing skills, verified
   skills, elite state, skill update, skill research, mission burn, ritual burn.'
 license: MIT
-tags:
-- zh-CN
+metadata:
+  tags: "zh-CN"
 ---
 
 # Turn and Burn — every mission carries the skill-research organ

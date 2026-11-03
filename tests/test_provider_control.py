@@ -2,14 +2,11 @@ from __future__ import annotations
 
 import contextlib
 import copy
-import hmac
 import importlib.util
 import io
 import json
 import os
 from pathlib import Path
-import subprocess
-import sys
 import tempfile
 import unittest
 import urllib.error

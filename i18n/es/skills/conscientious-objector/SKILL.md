@@ -12,8 +12,8 @@ description: 'Use when an IDE agent (Cursor, Codex, Claude Code) is operating in
   veto, RED flip, tool strip, RED FLAG, dual-factor kill switch, sentry lock, BACKSAIOS
   IDE watchdog.'
 license: MIT
-tags:
-- es
+metadata:
+  tags: "es"
 ---
 
 # Conscientious Objector — the BACKS harness watchdog

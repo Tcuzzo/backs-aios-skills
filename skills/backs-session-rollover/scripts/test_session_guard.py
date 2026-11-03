@@ -1,6 +1,5 @@
 """Run with python3 -m unittest discover -s scripts -p test_session_guard.py."""
 import copy
-import json
 import os
 from pathlib import Path
 import stat

@@ -2,7 +2,8 @@
 name: karpathy
 description: Improve a clean Git project through a bounded, measured experiment in a disposable clone. The human writes a Markdown goal, metric gate, Fair game files, and budget; the engine rejects out-of-scope edits and keeps only proven improvements in the clone.
 license: MIT
-version: "1.1"
+metadata:
+  version: "1.1"
 ---
 
 # karpathy — program the Markdown, not the code

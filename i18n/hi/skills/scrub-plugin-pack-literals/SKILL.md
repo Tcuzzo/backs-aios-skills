@@ -10,8 +10,8 @@ description: 'Use when a tracked skill file in the BACKS AIOS plugin pack may ca
   literal, /mnt literal, private IP scrub, Co-Authored-By trailer, inv_21 hygiene,
   BACKS AIOS public hygiene.'
 license: MIT
-tags:
-- hi
+metadata:
+  tags: "hi"
 ---
 
 # scrub-plugin-pack-literals
