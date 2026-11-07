@@ -67,8 +67,9 @@ def test_refresh_is_allowlisted_idempotent_and_preserves_other_user_entries(tmp_
     bundle = home / ".codex" / "plugins" / "backs-aios"
     assert (bundle / "skills" / "optimus" / "SKILL.md").is_file()
     assert (bundle / "hooks" / "hooks.json").is_file()
+    # Codex reads the compatibility manifest; a root plugin.json would shadow its hooks.
     assert {p.name for p in bundle.iterdir()} == {
-        "plugin.json", "LICENSE", "skills", "plays", "hooks", REFRESH.MANAGED,
+        ".codex-plugin", "LICENSE", "skills", "plays", "hooks", REFRESH.MANAGED,
     }
     assert not (bundle / "provider").exists()
     assert "PRIVATE" not in "".join(p.read_text(encoding="utf-8") for p in bundle.rglob("*") if p.is_file())
@@ -283,3 +284,19 @@ def test_retired_skill_prune_requires_marker_containment_and_exact_snapshot(tmp_
     removed = REFRESH.prune_retired_managed_skills(source, home)
     assert len(removed) == 2
     assert not codex.exists() and not claude.exists()
+
+
+def test_codex_bundle_exposes_native_hooks_without_shadowing_portable_source(tmp_path):
+    source = source_fixture(tmp_path)
+    portable_before = (source / "plugin.json").read_bytes()
+    stage = REFRESH.stage_bundle(source, tmp_path / "codex-plugins", "sealed-contract")
+    legacy_path = stage / ".codex-plugin" / "plugin.json"
+    assert legacy_path.is_file(), "Codex-compatible native manifest missing: current IDE discovers zero hooks"
+    manifest = json.loads(legacy_path.read_text(encoding="utf-8"))
+    assert manifest["name"] == "backs-aios"
+    assert manifest["skills"] == "./skills/"
+    assert manifest["hooks"] == "./hooks/hooks.json"
+    assert not (stage / "plugin.json").exists(), "This installed Codex ignores hooks when a modern root manifest shadows the compatibility view"
+    assert (source / "plugin.json").read_bytes() == portable_before
+    assert (stage / "skills" / "optimus" / "SKILL.md").is_file()
+    assert (stage / "hooks" / "hooks.json").is_file()

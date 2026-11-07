@@ -18,10 +18,27 @@ operator_awareness:
   slice: relevant observation, evidence, adaptation, uncertainty
 mission:
   mission_id: persistent identity across workers and resumes
-  deadline: explicit wall-clock stop point
-  attempts_remaining: shared remaining allowance
-  inner_round_limit: declared before the current episode
-  resources_remaining: measured tokens/cost/calls or explicitly unavailable
+  constraints: operator-specified limits and applicable provider constraints
+  resources: measured usage or explicitly unavailable
+episode:
+  episode_id: current bounded-loop identity
+  deadline: declared wall-clock boundary
+  attempt_allowance: declared attempts or rounds
+  attempts_used: measured attempts or rounds spent
+  resource_budget: call_ceiling and cost_ceiling (number or null), plus other applicable limits
+  resources_used: calls_used and cost_used (measured number or null), plus other usage
+  prior_counters: immutable exhausted-episode counters retained across continuation
+worker_state:
+  status: active | idle | failed | completed
+  workers: actual worker/session identifiers and terminal evidence; empty when none
+continuation_binding:  # required only when native same-thread Stop continuation is requested
+  session_id: exact native Codex session identity
+  workspace: absolute active worktree path
+  scope: nonempty changed/owned path list
+  checkpoint_identity: durable checkpoint or candidate identity
+  stall_limit: bounded repeated-progress allowance
+  stall_count: measured repeated-progress observations
+  progress_signature: current observable progress identity
 skills: relevant body/source, purpose, evidence to return, exit condition
 evidence:
   red: failing behavior command, revision, output, sealed file hash
@@ -34,5 +51,4 @@ next_action: concrete action and owner
 
 Do not paste full histories, credentials, or other operators' profiles. A skill
 receipt proves delivery of a body, not execution of its method. Revalidate stale
-revision/runtime facts rather than rebuilding all context. The receiving worker
-acknowledges remaining budget and ownership; it cannot silently replenish either.
+revision/runtime facts rather than rebuilding all context. The receiving worker acknowledges ownership, actual constraints, and the next action.

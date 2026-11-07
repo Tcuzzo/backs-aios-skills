@@ -4,8 +4,8 @@ This pack has two Codex delivery paths. The managed plain skills at
 `~/.codex/skills/<name>/SKILL.md` work in Codex CLI, the desktop app, and the
 IDE extension. The local Codex plugin adds a namespaced skill bundle and a
 grounding hook in the desktop app. The plugin is built from the public skill
-pack's skills, playbooks and hook files; it does not copy BACKS production code or runtime
-data.
+pack's skills, referenced public playbooks, local pack rules, and hook files;
+it does not copy BACKS production code or runtime data.
 
 ## The behavior Codex should follow
 
@@ -35,6 +35,23 @@ Run the fallback in the active Codex session and pass `CODEX_SESSION_ID` as
 the final argument when shell and host session IDs differ. Do not report a
 hook as active just because the file exists.
 
+### Native hook context budget
+
+Codex can replace large hook context with a preview and a saved-file pointer.
+The observed default threshold was 2,500 tokens; a 16,325-token BACKS startup
+payload therefore reached the model only in part. The context-producing
+SessionStart and PreToolUse handlers declare `additionalContextLimit: 32768`.
+This is a positive, bounded host setting, not a trust or tool-permission change.
+The loader scripts, hook matchers, and skill bodies remain unchanged.
+
+`tests/test_codex_hook_context_budget.py` stages the actual package and feeds
+its definitions to the installed Codex parser through transient session flags.
+Set `CODEX_BIN` to the IDE's executable when running it. It starts no model turn,
+installs no plugin, and grants no hook trust. Registry acceptance alone does not
+prove live delivery: after reviewing the changed hook hashes, verify a fresh
+native callback and its model-visible context. This correction does not supply
+the separate Stop/continuation wiring or certify a complete foundation receipt.
+
 ## One refresh command for the local machine
 
 Run this from a clean, released public-pack checkout after reviewing its
@@ -50,9 +67,14 @@ managed runtime, then updates a personal local Codex plugin under
 `~/.codex/plugins/backs-aios`. It merges one entry into
 `~/.agents/plugins/marketplace.json` and a bounded managed block into
 `~/.codex/AGENTS.md`, preserving unrelated entries and instructions. The
-Codex plugin copy includes only `plugin.json`, canonical `skills/`, `plays/`, three
-grounding-hook files, and `LICENSE`. Compatibility aliases are omitted from this
-bundle to prevent duplicate discovery; loose skill paths remain compatible. An existing unmarked plugin directory or conflicting
+Codex plugin copy includes the derived `.codex-plugin/plugin.json`, canonical
+`skills/`, `plays/`, the public pack's `CLAUDE.md`, grounding-hook files, and
+`LICENSE`. Compatibility aliases are omitted from this bundle to prevent duplicate
+discovery; loose skill paths remain compatible. The playbooks and local rules
+travel with the artifact: a copied skill must not depend on a separate managed
+installation to resolve its method. `tests/test_packaged_skill_dependencies.py`
+stages the real pack and follows every local skill reference recursively,
+including playbook references. An existing unmarked plugin directory or conflicting
 BACKS AIOS marketplace entry causes a visible error and stays untouched.
 
 The selected `--home` is passed only to the child installer environment; it does

@@ -45,7 +45,7 @@ BIN_OWNERS = {
     "reload-vsc-and-verify": "reload-vsc-and-verify",
 }
 PUBLIC_TOP_LEVEL = frozenset({
-    ".claude-plugin", "skills", "hooks", "plays", "command-adapters", "LICENSE",
+    ".claude-plugin", "skills", "hooks", "plays", "command-adapters", "LICENSE", "CLAUDE.md",
 })
 # This seat boot encodes private BACKS topology and operator-specific handoffs.
 PRIVATE_SKILLS = frozenset({"hive-clone-boot"})

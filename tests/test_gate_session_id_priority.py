@@ -56,6 +56,8 @@ class SessionIdPriorityTest(unittest.TestCase):
         merged = os.environ.copy()
         for key in SESSION_IDENTITY_KEYS:
             merged.pop(key, None)
+        # The host's live deployment is not part of this contract; keep the gate on the pack.
+        merged.pop("BACKS_DEPLOY_ROOT", None)
         merged.update({"HOME": self.home.name, "USERPROFILE": self.home.name, **overrides})
         return merged
 
