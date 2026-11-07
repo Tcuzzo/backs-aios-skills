@@ -558,10 +558,14 @@ function evaluateStop(payload) {
     return {decision: "allow"};
   }
   const result = childProcess.spawnSync(process.env.PYTHON || "python3", [adapter, "stop"], {
-    input: JSON.stringify(payload), encoding: "utf8",
+    input: JSON.stringify(payload), encoding: "utf8", timeout: 30000, killSignal: "SIGKILL",
     env: {...process.env, BACKS_DEPLOY_ROOT: root, PYTHONPATH: path.join(root, "backend")},
   });
   if (result.stderr) process.stderr.write(result.stderr);
+  if (result.error) {
+    process.stderr.write(`BACKS continuation unavailable: adapter did not finish (${result.error.code || result.error.message})\n`);
+    return {decision: "allow"};
+  }
   if (result.status !== 0 || !result.stdout.trim()) return {decision: "allow"};
   try {
     const decision = JSON.parse(result.stdout);

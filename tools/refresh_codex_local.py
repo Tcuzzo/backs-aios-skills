@@ -152,6 +152,8 @@ def copy_method_dependencies(source: Path, stage: Path) -> None:
         if path.is_symlink():
             raise RuntimeError(f"Symlink in packaged method: {name}")
         if not path.exists():
+            if name == "plays":
+                raise RuntimeError("Packaged skills reference plays, but the source has no plays directory")
             continue
         if path.is_dir():
             copy_safe_tree(path, stage / name)

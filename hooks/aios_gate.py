@@ -606,18 +606,27 @@ def _handle_stop(payload: dict) -> None:
     if not root or not os.path.isfile(adapter):
         sys.stderr.write("BACKS continuation unavailable: deployed owner or adapter missing\n")
         return
-    result = subprocess.run(
-        [os.environ.get("PYTHON", "python3"), adapter, "stop"],
-        input=json.dumps(payload), text=True, capture_output=True,
-        env={**os.environ, "BACKS_DEPLOY_ROOT": root,
-             "PYTHONPATH": os.path.join(root, "backend")},
-        timeout=30,
-    )
+    try:
+        result = subprocess.run(
+            [os.environ.get("PYTHON", "python3"), adapter, "stop"],
+            input=json.dumps(payload), text=True, capture_output=True,
+            env={**os.environ, "BACKS_DEPLOY_ROOT": root,
+                 "PYTHONPATH": os.path.join(root, "backend")},
+            timeout=30,
+        )
+    except subprocess.TimeoutExpired:
+        sys.stderr.write("BACKS continuation unavailable: adapter did not finish (ETIMEDOUT)\n")
+        return
     if result.stderr:
         sys.stderr.write(result.stderr)
-    if result.returncode == 0 and result.stdout.strip():
+    if result.returncode != 0 or not result.stdout.strip():
+        return
+    try:
         json.loads(result.stdout)
-        _write_stdout(result.stdout.rstrip("\n") + "\n")
+    except ValueError as exc:
+        sys.stderr.write(f"BACKS continuation unavailable: malformed adapter output ({exc})\n")
+        return
+    _write_stdout(result.stdout.rstrip("\n") + "\n")
 
 
 def _cursor_protocol(payload, event):
