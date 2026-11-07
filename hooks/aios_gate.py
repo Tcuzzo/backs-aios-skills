@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 import tempfile
 import time
@@ -107,7 +108,41 @@ def _remove_state(session_id: str) -> None:
         os.remove(path)
 
 
+def _canonical_manifest_path() -> str:
+    root = _deploy_root()
+    return os.path.join(root, "config/foundation_manifest.json") if root else ""
+
+
+def _has_canonical_manifest() -> bool:
+    return bool(_canonical_manifest_path() and os.path.isfile(_canonical_manifest_path()))
+
+
+def _receipt_matches(receipt, session_id, root, rows) -> bool:
+    expected = {'kind': 'foundation_delivery', 'session_id': session_id,
+                'source_root': root, 'order': [row['path'] for row in rows],
+                'sha256': {row['path']: row['sha256'] for row in rows}}
+    if not isinstance(receipt, dict):
+        return False
+    return (all(receipt.get(key) == value for key, value in expected.items())
+            and float(receipt.get('expires_at', 0)) > time.time())
+
+
+def _canonical_receipt_valid(session_id: str) -> bool:
+    try:
+        root = os.path.realpath(_deploy_root())
+        _foundation_manifest_bodies(root)
+        key = hashlib.sha256(str(session_id).encode()).hexdigest()
+        receipt_path = os.path.join(os.path.expanduser('~'), '.claude/state', f'backs_load_{key}.json')
+        with open(receipt_path, encoding='utf-8') as handle:
+            receipt = json.load(handle)
+        return _receipt_matches(receipt, session_id, root, _foundation_rows(root))
+    except (OSError, ValueError, KeyError, TypeError):
+        return False
+
+
 def _state_exists(session_id: str) -> bool:
+    if _has_canonical_manifest():
+        return _canonical_receipt_valid(session_id)
     return os.path.isfile(_state_file(session_id))
 
 
@@ -361,9 +396,22 @@ def _foundation_bodies() -> list[dict]:
     return bodies
 
 
+def _canonical_pointer(root: str) -> str:
+    _foundation_manifest_bodies(root)
+    rows = _foundation_rows(root)
+    context = '=== BACKS FOUNDATION (pinned; not yet delivered whole this session) ===\n'
+    context += 'Load every file below in full. Only actual host-observed complete output can certify delivery; a skill marker or stdout success cannot.\n'
+    context += '\n'.join(f"{index}. {os.path.join(root, row['path'])} sha256:{row['sha256']}" for index, row in enumerate(rows, 1))
+    if len(context.encode()) > 10000:
+        raise ValueError('foundation pointer exceeds measured host limit')
+    return context
+
+
 def _floor_context() -> tuple[str, list[dict]]:
     bodies = []
     root = _deploy_root()
+    if _has_canonical_manifest():
+        return _canonical_pointer(root), []
     harness = os.path.join(root, 'backend/prompts/BACKS_CODEX_HARNESS.md')
     if root and os.path.isfile(harness):
         bodies.append(_read_body((harness, 'harness', 'deploy_native')))
@@ -373,6 +421,118 @@ def _floor_context() -> tuple[str, list[dict]]:
         context.append(f"## BACKS loaded: {entry['canonical']}\n{entry['body']}")
     receipts = [{key: value for key, value in entry.items() if key != 'body'} for entry in bodies]
     return '\n\n'.join(context), receipts
+
+
+def _foundation_rows(root: str) -> list:
+    with open(os.path.join(root, 'config/foundation_manifest.json'), encoding='utf-8') as handle:
+        manifest = json.load(handle)
+    if not isinstance(manifest, dict):
+        raise ValueError('foundation manifest must be an object')
+    rows = manifest.get('bodies')
+    if not isinstance(rows, list) or not rows:
+        raise ValueError('foundation manifest bodies missing')
+    return rows
+
+
+def _foundation_relative(row: dict) -> str:
+    if not isinstance(row, dict):
+        raise ValueError('unsafe foundation row')
+    relative = row.get('path')
+    if not isinstance(relative, str) or not relative:
+        raise ValueError('unsafe foundation path')
+    if os.path.isabs(relative) or "\\" in relative:
+        raise ValueError('unsafe foundation path')
+    if any(part in {'', '.', '..'} for part in relative.split('/')):
+        raise ValueError('unsafe foundation path')
+    return relative
+
+
+def _foundation_body(root: str, row: dict) -> bytes:
+    relative = _foundation_relative(row)
+    target = os.path.realpath(os.path.join(root, *relative.split('/')))
+    if os.path.commonpath((root, target)) != root or not os.path.isfile(target):
+        raise ValueError(f'foundation body unavailable: {relative}')
+    with open(target, 'rb') as handle:
+        body = handle.read()
+    expected = row.get('sha256')
+    if not isinstance(expected, str) or not re.fullmatch(r'[0-9a-f]{64}', expected):
+        raise ValueError(f'foundation hash mismatch: {relative}')
+    if hashlib.sha256(body).hexdigest() != expected:
+        raise ValueError(f'foundation hash mismatch: {relative}')
+    return body + b'\n\n'
+
+
+def _foundation_manifest_bodies(root: str) -> bytes | None:
+    """Verify the whole ordered set before writing any body to stdout."""
+    if not root or not os.path.isfile(os.path.join(root, 'config/foundation_manifest.json')):
+        return None
+    root = os.path.realpath(root)
+    return b''.join(_foundation_body(root, row) for row in _foundation_rows(root))
+
+
+_CODEX_SENTINEL = "printf '%s\\n' BACKS_CODEX_HOOK_SENTINEL_V1"
+
+
+def _shape_of(value, depth: int = 0):
+    """Describe bounded payload structure without retaining raw values."""
+    if isinstance(value, str):
+        bounded = value[:262144]
+        return {'type': 'string', 'bytes': len(value.encode()),
+                'sha256': hashlib.sha256(bounded.encode()).hexdigest()}
+    primitive = _primitive_shape(value)
+    if primitive is not None:
+        return primitive
+    return _collection_shape(value, depth)
+
+
+def _primitive_shape(value):
+    if value is None:
+        return {'type': 'null'}
+    if isinstance(value, (bool, int, float)):
+        return {'type': type(value).__name__}
+    return None
+
+
+def _collection_shape(value, depth):
+    if depth >= 3:
+        return {'type': 'array' if isinstance(value, list) else 'object'}
+    if isinstance(value, list):
+        return {'type': 'array', 'length': len(value),
+                'items': [_shape_of(item, depth + 1) for item in value[:8]]}
+    if not isinstance(value, dict):
+        return {'type': type(value).__name__}
+    safe = {'output', 'stdout', 'stderr', 'content', 'text', 'type',
+            'exit_code', 'session_id'}
+    return {(key if key in safe else f'field_{index}'):
+            _shape_of(value[key], depth + 1)
+            for index, key in enumerate(list(value)[:16])}
+
+
+def _observe_codex_tool(payload: dict) -> None:
+    tool_input = payload.get('tool_input') or {}
+    if (payload.get('tool_name') != 'Bash'
+            or tool_input.get('command') != _CODEX_SENTINEL
+            or not all(payload.get(key) for key in ('turn_id', 'tool_use_id', 'session_id'))):
+        return
+    digest = lambda value: hashlib.sha256(str(value).encode()).hexdigest()
+    target = os.path.join(_state_dir(), f"codex_tool_shape_{digest(payload['session_id'])}.json")
+    evidence = {
+        'kind': 'tool_payload_shape',
+        'session_sha256': digest(payload['session_id']),
+        'turn_sha256': digest(payload['turn_id']),
+        'call_sha256': digest(payload['tool_use_id']),
+        'command_sha256': digest(_CODEX_SENTINEL),
+        'observed_at': time.time(),
+        'tool_response': _shape_of(payload.get('tool_response')),
+    }
+    try:
+        fd = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, 'w', encoding='utf-8') as handle:
+            json.dump(evidence, handle)
+    except FileExistsError:
+        return
+    except OSError as exc:
+        sys.stderr.write(f'BACKS observer unavailable: {exc.errno}\n')
 
 
 def _write_stdout(body: str) -> None:
@@ -393,6 +553,8 @@ def _deliver_floor(cursor_protocol: bool, session_id: str, event: str) -> None:
         output = ({'additional_context': context} if cursor_protocol else
                   {'hookSpecificOutput': {'hookEventName': event, 'additionalContext': context}})
         _write_stdout(json.dumps(output) + '\n')
+        if _has_canonical_manifest():
+            return
         target = _state_file(session_id) + '.load.json'
         tmp = target + f'.{os.getpid()}.{os.urandom(6).hex()}.tmp'
         try:
@@ -413,99 +575,154 @@ def _deliver_floor(cursor_protocol: bool, session_id: str, event: str) -> None:
 def handle(payload: dict) -> None:
     event = str(payload.get("hook_event_name") or "")
     tool_name = str(payload.get("tool_name") or "")
-    cursor_protocol = (
-        event in {"sessionStart", "preToolUse", "postToolUse"}
-        or bool(payload.get("cursor_version"))
-    )
+    cursor_protocol = _cursor_protocol(payload, event)
     raw_tool_input = payload.get("tool_input")
     tool_input = raw_tool_input or {}
     if not isinstance(tool_input, dict):
         tool_input = {}
     session_id = _session_id(payload)
 
-    if event in {"SessionStart", "sessionStart"}:
+    if event == "Stop":
+        _handle_stop(payload)
+        return
+
+    if event in {"SessionStart", "sessionStart", "UserPromptSubmit"}:
         _deliver_floor(cursor_protocol, session_id, event)
         return
 
     if event in {"PostToolUse", "postToolUse"}:
-        if tool_name == "Skill":
-            skill = _invoked_skill(tool_input)
-            if skill:
-                try:
-                    pack = _pack_skill_names()
-                except (OSError, ValueError) as exc:
-                    print(
-                        f"aios_gate: WARNING skill catalog unreadable or empty, grounding evidence unavailable ({exc})",
-                        file=sys.stderr,
-                    )
-                else:
-                    if skill in pack:
-                        _write_floor_marker(session_id)
-                        try:
-                            digests = {}
-                            info = _resolve_native_or_pack_skill(skill)
-                            if info:
-                                rp, rn, _ = info
-                                with open(rp, "rb") as sfh:
-                                    digests[rn] = hashlib.sha256(sfh.read()).hexdigest()
-                            _write_co_grounding_evidence(session_id, digests)
-                        except Exception as err:
-                            sys.stderr.write(f"aios_gate: WARNING CO evidence write failed ({err})\n")
+        _handle_post(payload, tool_name, tool_input, session_id)
         return
 
     if event in {"PreToolUse", "preToolUse"}:
-        red = not _state_exists(session_id)
-        if tool_name in {"Bash", "Shell"}:
-            if red and _bash_is_mutating(str(tool_input.get("command") or "")):
-                _deliver_floor(cursor_protocol, session_id, event)
-            return  # read-only shell always passes, red or green
-        if tool_name not in MUTATING_TOOLS and not _codex_exec_invokes_patch(
-            tool_name, raw_tool_input
-        ):
-            return  # read-only and unknown tools always pass
-        if not red:
-            return  # floor loaded this session: allow
-        _deliver_floor(cursor_protocol, session_id, event)
+        _handle_pre(tool_name, tool_input, raw_tool_input, session_id, cursor_protocol, event)
         return
     # Any other event: no decision.
 
 
+def _handle_stop(payload: dict) -> None:
+    adapter = os.path.join(_plugin_root(), "hooks", "codex_stop_continuation.py")
+    root = _deploy_root()
+    if not root or not os.path.isfile(adapter):
+        sys.stderr.write("BACKS continuation unavailable: deployed owner or adapter missing\n")
+        return
+    try:
+        result = subprocess.run(
+            [os.environ.get("PYTHON", "python3"), adapter, "stop"],
+            input=json.dumps(payload), text=True, capture_output=True,
+            env={**os.environ, "BACKS_DEPLOY_ROOT": root,
+                 "PYTHONPATH": os.path.join(root, "backend")},
+            timeout=30,
+        )
+    except subprocess.TimeoutExpired:
+        sys.stderr.write("BACKS continuation unavailable: adapter did not finish (ETIMEDOUT)\n")
+        return
+    if result.stderr:
+        sys.stderr.write(result.stderr)
+    if result.returncode != 0 or not result.stdout.strip():
+        return
+    try:
+        json.loads(result.stdout)
+    except ValueError as exc:
+        sys.stderr.write(f"BACKS continuation unavailable: malformed adapter output ({exc})\n")
+        return
+    _write_stdout(result.stdout.rstrip("\n") + "\n")
+
+
+def _cursor_protocol(payload, event):
+    return event in {'sessionStart', 'preToolUse', 'postToolUse'} or bool(payload.get('cursor_version'))
+
+
+def _handle_post(payload, tool_name, tool_input, session_id):
+    _observe_codex_tool(payload)
+    if tool_name != 'Skill' or not (skill := _invoked_skill(tool_input)):
+        return
+    try:
+        pack = _pack_skill_names()
+    except (OSError, ValueError) as exc:
+        print(f"aios_gate: WARNING skill catalog unreadable or empty, grounding evidence unavailable ({exc})", file=sys.stderr)
+        return
+    if skill in pack:
+        _record_skill_evidence(skill, session_id)
+
+
+def _record_skill_evidence(skill, session_id):
+    _write_floor_marker(session_id)
+    try:
+        digests = {}
+        if info := _resolve_native_or_pack_skill(skill):
+            filename, name, _ = info
+            with open(filename, 'rb') as handle_:
+                digests[name] = hashlib.sha256(handle_.read()).hexdigest()
+        _write_co_grounding_evidence(session_id, digests)
+    except Exception as exc:
+        sys.stderr.write(f"aios_gate: WARNING CO evidence write failed ({exc})\n")
+
+
+def _handle_pre(tool_name, tool_input, raw_tool_input, session_id, cursor_protocol, event):
+    red = not _state_exists(session_id)
+    if tool_name in {'Bash', 'Shell'}:
+        mutating = _bash_is_mutating(str(tool_input.get('command') or ''))
+    else:
+        mutating = (tool_name in MUTATING_TOOLS
+                    or _codex_exec_invokes_patch(tool_name, raw_tool_input))
+    if red and mutating:
+        _deliver_floor(cursor_protocol, session_id, event)
+
+
 def _load(argv: list) -> int:
     try:
-        if not argv:
-            sys.stderr.write("aios_gate: skill not found\n")
-            return 2
-        skill_arg = argv[0]
-        if ":" in skill_arg:
-            if not skill_arg.startswith("backs-aios:"):
-                sys.stderr.write("aios_gate: skill not found\n")
-                return 2
-            canonical = skill_arg[len("backs-aios:"):]
-        else:
-            canonical = skill_arg
-        if not canonical or not re.match(r"^[a-z0-9]+([_-][a-z0-9]+)*$", canonical):
-            sys.stderr.write("aios_gate: skill not found\n")
-            return 2
+        canonical = _canonical_skill_arg(argv[0] if argv else '')
+        if canonical is None:
+            return _skill_not_found()
         resolved_info = _resolve_native_or_pack_skill(canonical)
         if not resolved_info:
-            sys.stderr.write("aios_gate: skill not found\n")
-            return 2
-        resolved_name = resolved_info[1]
-        bodies = (_foundation_bodies() if resolved_name == 'optimus'
-                  else [_read_body(resolved_info)])
-        body = '\n\n'.join(entry['body'] for entry in bodies)
-        session_id = _session_id({}, argv[1] if len(argv) > 1 else None)
-        digests = {entry['canonical']: entry['sha256'] for entry in bodies}
-        _write_stdout(body)
-        _write_floor_marker(session_id)
-        try:
-            _write_co_grounding_evidence(session_id, digests)
-        except Exception as err:
-            sys.stderr.write(f"aios_gate: WARNING CO evidence write failed ({err})\n")
-        return 0
+            return _skill_not_found()
+        return _emit_load(canonical, resolved_info, argv[1] if len(argv) > 1 else None)
     except Exception as exc:
         sys.stderr.write(f"aios_gate: load failed ({type(exc).__name__}: {exc})\n")
         return 1
+
+
+def _emit_load(canonical, resolved_info, session_arg):
+    manifest_body = _foundation_manifest_bodies(_deploy_root()) if canonical == 'optimus' else None
+    if manifest_body is not None:
+        _write_stdout(manifest_body.decode('utf-8'))
+        return 0
+    bodies = (_foundation_bodies() if resolved_info[1] == 'optimus'
+              else [_read_body(resolved_info)])
+    _write_stdout('\n\n'.join(entry['body'] for entry in bodies))
+    session_id = _session_id({}, session_arg)
+    _write_floor_marker(session_id)
+    _write_invocation_digests(session_id, bodies)
+    return 0
+
+
+def _write_invocation_digests(session_id, bodies):
+    digests = {entry['canonical']: entry['sha256'] for entry in bodies}
+    target = os.path.join(_co_state_dir(), f"backs_ground_{_state_component(session_id)}.hashes.json")
+    temporary = target + f".{os.getpid()}.tmp"
+    try:
+        fd = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, 'w', encoding='utf-8') as handle_:
+            json.dump(digests, handle_)
+        os.replace(temporary, target)
+    finally:
+        with contextlib.suppress(FileNotFoundError):
+            os.unlink(temporary)
+
+
+def _canonical_skill_arg(skill_arg: str) -> str | None:
+    if ':' in skill_arg:
+        if not skill_arg.startswith('backs-aios:'):
+            return None
+        skill_arg = skill_arg[len('backs-aios:'):]
+    return skill_arg if re.fullmatch(r'[a-z0-9]+(?:[_-][a-z0-9]+)*', skill_arg) else None
+
+
+def _skill_not_found() -> int:
+    sys.stderr.write('aios_gate: skill not found\n')
+    return 2
 
 
 def _rearm(argv: list) -> int:

@@ -2,8 +2,8 @@
 """Refresh managed BACKS AIOS host skills and a personal Codex local plugin.
 
 The source must be a clean, released public-pack checkout by default. The Codex
-bundle is an allowlist: canonical skill folders, plays, the grounding hook,
-manifest, and license.
+bundle is an allowlist: canonical skill folders, their public playbooks and local
+rules, the grounding hook, manifest, and license.
 It never copies provider code, private runtime state, or a Codex cache directory.
 """
 
@@ -22,6 +22,7 @@ import uuid
 if __package__:
     from .build_claude_plugin import ALIASES
 else:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
     from build_claude_plugin import ALIASES
 
 
@@ -29,7 +30,11 @@ MANAGED = ".backs-aios-managed"
 SKILL_MARKER = "backs-aios-managed"
 START = "<!-- BACKS-AIOS-CODEX-MANAGED:START -->"
 END = "<!-- BACKS-AIOS-CODEX-MANAGED:END -->"
-HOOK_FILES = ("aios_gate.js", "aios_gate.py", "hooks.json")
+HOOK_FILES = ("aios_gate.js", "aios_gate.py", "codex_stop_continuation.py", "hooks.json")
+CODEX_MANIFEST_KEYS = (
+    "name", "version", "description", "author", "homepage", "repository",
+    "license", "keywords",
+)
 # Exact 26-file tree observed in the prior managed host install. The retired
 # public skill is absent from the new source. Its previous Git HEAD tree has a
 # different hash, so do not claim this is a Git HEAD hash.
@@ -119,6 +124,43 @@ def digest(root: Path, *, exclude_marker: str = MANAGED) -> str:
     return h.hexdigest()
 
 
+def codex_compatibility_manifest(source: Path) -> dict[str, object]:
+    """Build the legacy view required by Codex without copying provider state.
+
+    Codex 0.164 discovers hooks only through ``.codex-plugin/plugin.json`` when
+    the staged bundle has no modern root manifest.  The public source manifest
+    remains canonical; this view projects only its public identity and interface.
+    """
+    portable = json.loads((source / "plugin.json").read_text(encoding="utf-8"))
+    manifest = {key: portable[key] for key in CODEX_MANIFEST_KEYS if key in portable}
+    interface = portable.get("interface")
+    if not isinstance(interface, dict):
+        extensions = portable.get("extensions")
+        openai = extensions.get("com.openai") if isinstance(extensions, dict) else None
+        interface = openai.get("interface") if isinstance(openai, dict) else None
+    if isinstance(interface, dict):
+        manifest["interface"] = interface
+    manifest["skills"] = "./skills/"
+    manifest["hooks"] = "./hooks/hooks.json"
+    return manifest
+
+
+def copy_method_dependencies(source: Path, stage: Path) -> None:
+    """Carry public methods referenced by skills without copying runtime state."""
+    for name in ("plays", "CLAUDE.md"):
+        path = source / name
+        if path.is_symlink():
+            raise RuntimeError(f"Symlink in packaged method: {name}")
+        if not path.exists():
+            if name == "plays":
+                raise RuntimeError("Packaged skills reference plays, but the source has no plays directory")
+            continue
+        if path.is_dir():
+            copy_safe_tree(path, stage / name)
+        else:
+            shutil.copy2(path, stage / name)
+
+
 def stage_bundle(source: Path, plugin_root: Path, revision: str) -> Path:
     plugin_root.mkdir(parents=True, exist_ok=True)
     stage = plugin_root / f".backs-aios-stage-{uuid.uuid4().hex}"
@@ -128,10 +170,15 @@ def stage_bundle(source: Path, plugin_root: Path, revision: str) -> Path:
         for name in ("plugin.json", "LICENSE"):
             if (source / name).is_symlink():
                 raise RuntimeError(f"Symlink in packaged root file: {name}")
-        shutil.copy2(source / "plugin.json", stage / "plugin.json")
         shutil.copy2(source / "LICENSE", stage / "LICENSE")
+        compatibility_root = stage / ".codex-plugin"
+        compatibility_root.mkdir()
+        (compatibility_root / "plugin.json").write_text(
+            json.dumps(codex_compatibility_manifest(source), indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
         copy_canonical_skills(source / "skills", stage / "skills")
-        copy_safe_tree(source / "plays", stage / "plays")
+        copy_method_dependencies(source, stage)
         (stage / "hooks").mkdir()
         for name in HOOK_FILES:
             path = source / "hooks" / name

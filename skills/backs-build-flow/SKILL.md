@@ -46,6 +46,10 @@ reload only what the next action needs. For each selected specialist, state its
 purpose, expected evidence, and exit condition; read deeper references on demand.
 One current task packet tracks ownership, state, and the next action
 ([packet and handoff format](references/task-packet.md)). Avoid duplicate ledgers.
+For a Codex run that requests native same-thread continuation, bind that packet at
+each durable checkpoint with `python hooks/codex_stop_continuation.py bind-task-packet RUN_ID < task-packet.json`. The packet is the producer; the Stop
+adapter is the callback owner. Rebind after recording real progress and cumulative
+usage, never from an inferred or reset counter.
 
 For adoption, [absorb](../absorb/SKILL.md) owns capability mapping and native
 integration. [rea-investigation](../rea-investigation/SKILL.md) supplies discovery
@@ -56,7 +60,15 @@ recursively starting Absorb. Ordinary source work uses source and tests directly
 
 Bind [bounded-loops](../bounded-loops/SKILL.md) before retries: one `mission_id`,
 deadline, attempt/round allowance, and remaining resource budget. Child workers,
-model changes, repair findings, and review rounds spend that same allowance.
+model changes, repair findings, and review rounds spend that same episode allowance.
+Carry the same mission and evidence through implementation, review, and landing.
+A self-imposed deadline or attempt count ends the bounded episode, not the authorized
+mission: checkpoint at a safe boundary, preserve the counters, and continue with the
+next useful action only after binding [bounded-loops](../bounded-loops/SKILL.md) again
+with a freshly declared episode allowance. The task packet retains the exhausted
+episode's counters alongside the new allowance; continuation never resets or overwrites
+prior usage. Respect actual provider limits, explicit operator constraints,
+cancellation, and required review.
 
 1. **RED:** [red-first](../red-first/SKILL.md) establishes a real failing behavior
    check before the fix. Preserve its sealed file and baseline identity. For a
@@ -69,11 +81,13 @@ model changes, repair findings, and review rounds spend that same allowance.
    tests. Record exact commands, revision, results, and unavailable or inapplicable
    checks. A clean working tree does not erase committed scope.
 4. **Quality:** [clean-code-gauntlet](../clean-code-gauntlet/SKILL.md) uses that same
-   scope and budget for measured quality, bounded isolated mutation, and independent
+   scope for measured quality, isolated mutation, and independent
    review. Add supplemental tests for new gaps without rewriting the sealed RED.
 5. **Respond to evidence:** fix a proven finding and rerun only affected checks.
-   Repeated identical failures require a changed hypothesis or tactic. On exhausted
-   limits, checkpoint unresolved work; never reset the budget or lower the checks.
+   Repeated identical failures require a changed hypothesis or tactic. Report actual
+   blockers and preserve evidence. When an episode allowance is exhausted, checkpoint
+   it before continuing the mission; do not lower the checks, reset old counters, or
+   claim a worker is active when it is not.
 
 Use the repository's required aggregate landing gates once the candidate settles.
 Report actual capabilities of this host; do not invent tools, tests, or reviews.
@@ -88,6 +102,6 @@ current action, evidence, and where to inspect live work; follow their cadence.
 Distinguish **requested task delivered** from the invariant floor's **PROVEN**
 capability status. A completed local patch or read-only review does not imply live
 deployment. Failed or unavailable required gates remain visible: checkpoint
-**STILL-BUILDING** with the exact blocker, remaining allowance, and next action.
+**STILL-BUILDING** with the exact blocker, actual worker state, and next action.
 In read-only mode return the packet in the response or an already-authorized
 external task record; do not create a repository ledger or essence file implicitly.

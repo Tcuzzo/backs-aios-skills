@@ -40,9 +40,10 @@ _GUARD_TESTS = {
     "bin/scrub-plugin-pack-literals",
 }
 
-# Earlier public commits have legacy model trailers. Enforce from the audited
-# release base forward; GitHub's signed Dependabot coauthor is a bot, not a model.
-_TRAILER_POLICY_BASE = "b032db975f807190c230bcd5698ee319a17a3850"
+# Earlier public commits have legacy model trailers. Enforce from the last
+# published main (2026-11-03) forward; the previous base left the lineage in a
+# history rewrite. GitHub's signed Dependabot coauthor is a bot, not a model.
+_TRAILER_POLICY_BASE = "4a411877f26552ad9a2a3a6ceeb46d5372d55fb0"
 # This model trailer was already present in upstream commit ce379d2 before
 # this release. Bind the exception to both its immutable commit and line.
 _LEGACY_MODEL_TRAILER = {
@@ -182,6 +183,18 @@ class PublicHygieneTest(unittest.TestCase):
                     bad.append(f"{rel}:{i}: {addr}")
         self.assertEqual(
             [], bad, "real email addresses found in tracked files:\n" + "\n".join(bad[:20])
+        )
+
+    def test_trailer_policy_base_is_in_published_lineage(self) -> None:
+        # A base outside HEAD's history makes rev-list scan everything, so the
+        # guard either errors or flags already-published commits instead of new ones.
+        result = subprocess.run(
+            ["git", "merge-base", "--is-ancestor", _TRAILER_POLICY_BASE, "HEAD"],
+            cwd=REPO_ROOT, capture_output=True, text=True,
+        )
+        self.assertEqual(
+            0, result.returncode,
+            f"trailer policy base {_TRAILER_POLICY_BASE[:12]} is not an ancestor of HEAD",
         )
 
     def test_no_model_coauthor_trailers_in_history(self) -> None:

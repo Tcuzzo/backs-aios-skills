@@ -53,7 +53,8 @@ The source has **62 skill folders**, including **3 compatibility aliases** and
 **8 command adapters**; each locale mirrors **54 non-command folders**. Distributed
 canonical bundles remove alias folders where the host would discover duplicate
 names. See [release 0.9.5](docs/releases/0.9.5.md) for the integration and verification,
-and [release 0.9.6](docs/releases/0.9.6.md) for the model-agnostic clarification.
+[release 0.9.6](docs/releases/0.9.6.md) for the model-agnostic clarification, and
+[release 0.9.7](docs/releases/0.9.7.md) for native Codex Build Flow continuation.
 
 ## What this does
 

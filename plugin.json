@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "backs-aios",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "description": "Portable BACKS AIOS skills for grounded coding, repair, review, and delivery.",
   "author": {
     "name": "Tcuzzo",

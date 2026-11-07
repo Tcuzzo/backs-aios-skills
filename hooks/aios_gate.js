@@ -12,6 +12,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const crypto = require("crypto");
+const childProcess = require("child_process");
 
 const KILL_ENV = "AIOS_GATE";
 const MUTATING_TOOLS = new Set([
@@ -121,8 +122,34 @@ function removeState(sessionId) {
   if (fs.existsSync(p)) fs.unlinkSync(p);
 }
 
+function canonicalManifestPath() {
+  const root = deployRoot();
+  return root ? path.join(root, "config/foundation_manifest.json") : "";
+}
+function hasCanonicalManifest() {
+  const filename = canonicalManifestPath();
+  return Boolean(filename && fs.existsSync(filename));
+}
+function canonicalReceiptValid(sessionId) {
+  try {
+    const root = fs.realpathSync(deployRoot());
+    foundationManifestBodies(root);
+    const rows = JSON.parse(fs.readFileSync(canonicalManifestPath(), "utf8")).bodies;
+    const key = crypto.createHash("sha256").update(String(sessionId)).digest("hex");
+    const receipt = JSON.parse(fs.readFileSync(path.join(os.homedir(), ".claude/state", `backs_load_${key}.json`), "utf8"));
+    return receiptMatches(receipt, sessionId, root, rows);
+  } catch { return false; }
+}
+function receiptMatches(receipt, sessionId, root, rows) {
+  const expectedHashes = Object.fromEntries(rows.map(row => [row.path, row.sha256]));
+  return receipt.kind === "foundation_delivery" &&
+    receipt.session_id === sessionId && receipt.source_root === root &&
+    receipt.expires_at > Date.now() / 1000 &&
+    JSON.stringify(receipt.order) === JSON.stringify(rows.map(row => row.path)) &&
+    JSON.stringify(receipt.sha256) === JSON.stringify(expectedHashes);
+}
 function stateExists(sessionId) {
-  return fs.existsSync(stateFile(sessionId));
+  return hasCanonicalManifest() ? canonicalReceiptValid(sessionId) : fs.existsSync(stateFile(sessionId));
 }
 
 
@@ -404,6 +431,15 @@ function foundationBodies() {
 }
 
 function floorContext() {
+  if (hasCanonicalManifest()) {
+    foundationManifestBodies(deployRoot());
+    const rows = JSON.parse(fs.readFileSync(canonicalManifestPath(), "utf8")).bodies;
+    const context = "=== BACKS FOUNDATION (pinned; not yet delivered whole this session) ===\n" +
+      "Load every file below in full. Only actual host-observed complete output can certify delivery; a skill marker or stdout success cannot.\n" +
+      rows.map((row, index) => `${index + 1}. ${path.join(deployRoot(), row.path)} sha256:${row.sha256}`).join("\n");
+    if (Buffer.byteLength(context) > 10000) throw new Error("foundation pointer exceeds measured host limit");
+    return {context, bodies: [], pending: true};
+  }
   const bodies = [];
   const root = deployRoot();
   if (root && fs.existsSync(path.join(root, "backend/prompts/BACKS_CODEX_HARNESS.md"))) {
@@ -411,6 +447,52 @@ function floorContext() {
   }
   bodies.push(...foundationBodies());
   return {context: wakeLoadContext() + "\n\n" + bodies.map(x => `## BACKS loaded: ${x.canonical}\n${x.body}`).join("\n\n"), bodies};
+}
+
+function foundationManifestBodies(root) {
+  const manifestPath = root && path.join(root, "config", "foundation_manifest.json");
+  if (!manifestPath || !fs.existsSync(manifestPath) || !fs.statSync(manifestPath).isFile()) return null;
+  const rootReal = fs.realpathSync(root);
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  if (!Array.isArray(manifest.bodies) || manifest.bodies.length === 0) throw new Error("foundation manifest bodies missing");
+  return Buffer.concat(manifest.bodies.flatMap(row => [foundationBody(rootReal, row), Buffer.from("\n\n")]));
+}
+function foundationRelative(row) {
+  const relative = row && row.path;
+  if (typeof relative !== "string" || !relative || path.isAbsolute(relative) || relative.includes("\\") || relative.split("/").some(p => !p || p === "." || p === "..")) {
+    throw new Error(`unsafe foundation path: ${String(relative)}`);
+  }
+  return relative;
+}
+function foundationBody(rootReal, row) {
+  const relative = foundationRelative(row);
+  const target = fs.realpathSync(path.join(rootReal, ...relative.split("/")));
+  if (target !== rootReal && !target.startsWith(rootReal + path.sep)) throw new Error(`foundation path escapes deployment: ${relative}`);
+  if (!fs.statSync(target).isFile()) throw new Error(`foundation body unavailable: ${relative}`);
+  const body = fs.readFileSync(target);
+  const expected = row.sha256;
+  const actual = crypto.createHash("sha256").update(body).digest("hex");
+  if (typeof expected !== "string" || !/^[0-9a-f]{64}$/.test(expected) || actual !== expected) throw new Error(`foundation hash mismatch: ${relative}`);
+  return body;
+}
+
+// A shape capture is observation only: it never certifies context delivery.
+const CODEX_SENTINEL = "printf '%s\\n' BACKS_CODEX_HOOK_SENTINEL_V1";
+function shapeOf(value, depth = 0) {
+  if (typeof value === "string") return {type: "string", bytes: Buffer.byteLength(value), sha256: crypto.createHash("sha256").update(value.slice(0, 262144)).digest("hex")};
+  if (value === null || typeof value !== "object") return {type: value === null ? "null" : typeof value};
+  if (depth >= 3) return {type: Array.isArray(value) ? "array" : "object"};
+  if (Array.isArray(value)) return {type: "array", length: value.length, items: value.slice(0, 8).map(v => shapeOf(v, depth + 1))};
+  const safe = new Set(["output", "stdout", "stderr", "content", "text", "type", "exit_code", "session_id"]);
+  return Object.fromEntries(Object.keys(value).slice(0, 16).map((k, i) => [safe.has(k) ? k : `field_${i}`, shapeOf(value[k], depth + 1)]));
+}
+function observeCodexTool(payload) {
+  if (payload.tool_name !== "Bash" || payload.tool_input?.command !== CODEX_SENTINEL || !payload.turn_id || !payload.tool_use_id || !payload.session_id) return;
+  const hash = value => crypto.createHash("sha256").update(String(value)).digest("hex");
+  const target = path.join(stateDir(), `codex_tool_shape_${hash(payload.session_id)}.json`);
+  const evidence = {kind: "tool_payload_shape", session_sha256: hash(payload.session_id), turn_sha256: hash(payload.turn_id), call_sha256: hash(payload.tool_use_id), command_sha256: hash(CODEX_SENTINEL), observed_at: Date.now() / 1000, tool_response: shapeOf(payload.tool_response)};
+  try { fs.writeFileSync(target, JSON.stringify(evidence), {flag: "wx", mode: 0o600}); }
+  catch (error) { if (error.code !== "EEXIST") process.stderr.write(`BACKS observer unavailable: ${error.code}\n`); }
 }
 
 function deliverFloor(cursorProtocol, sessionId, event, options = {}) {
@@ -428,6 +510,7 @@ function deliverFloor(cursorProtocol, sessionId, event, options = {}) {
     } else {
       return {decision: "allow", additionalContext: floor.context, delivered: false};
     }
+    if (floor.pending) return {decision: "allow", delivered: false};
     const receipt = {session_id: sessionId, kind: "context_delivery", bodies: floor.bodies.map(({body, ...entry}) => entry)};
     const target = stateFile(sessionId) + ".load.json";
     const tmp = target + `.${process.pid}.${crypto.randomBytes(6).toString("hex")}.tmp`;
@@ -447,126 +530,152 @@ function deliverFloor(cursorProtocol, sessionId, event, options = {}) {
 
 function evaluate(payload, options = {}) {
   const kill = String(process.env[KILL_ENV] || "").trim().toLowerCase();
-  if (["off", "0", "false", "no"].includes(kill)) {
-    if (options.emit !== false) {
-      process.stderr.write("aios_gate: disabled by AIOS_GATE; allowing\n");
-    }
-    return { decision: "allow", reason: "disabled by AIOS_GATE" };
-  }
+  if (["off", "0", "false", "no"].includes(kill)) return disabledDecision(options);
 
+  return routeEvent(payload, options);
+}
+function routeEvent(payload, options) {
   const event = String(payload.hook_event_name || "");
   const toolName = String(payload.tool_name || "");
-  const cursorProtocol =
-    event === "sessionStart" ||
-    event === "preToolUse" ||
-    event === "postToolUse" ||
-    Boolean(payload.cursor_version);
+  const cursorProtocol = ["sessionStart", "preToolUse", "postToolUse"].includes(event) || Boolean(payload.cursor_version);
   const rawToolInput = payload.tool_input;
-  let toolInput = rawToolInput || {};
-  if (typeof toolInput !== "object" || toolInput === null || Array.isArray(toolInput)) {
-    toolInput = {};
-  }
+  const toolInput = rawToolInput && typeof rawToolInput === "object" && !Array.isArray(rawToolInput) ? rawToolInput : {};
   const sessionId = sessionIdOf(payload);
-
-  if (event === "SessionStart" || event === "sessionStart") {
+  if (event === "Stop") return evaluateStop(payload);
+  if (isSessionEvent(event)) {
     return deliverFloor(cursorProtocol, sessionId, event, options);
   }
-
-  if (event === "PostToolUse" || event === "postToolUse") {
-    if (toolName === "Skill") {
-      const skill = invokedSkill(toolInput);
-      if (skill) {
-        let pack = null;
-        try {
-          pack = packSkillNames();
-        } catch (err) {
-          process.stderr.write(
-            `aios_gate: WARNING skill catalog unreadable or empty, grounding evidence unavailable (${err.name}: ${err.message})\n`,
-          );
-        }
-        if (pack && pack.has(skill)) {
-          writeFloorMarker(sessionId);
-          try {
-            const digests = {};
-            const resolved = resolveNativeOrPackSkill(skill);
-            if (resolved) {
-              digests[resolved.canonical] = crypto.createHash('sha256').update(fs.readFileSync(resolved.path)).digest('hex');
-            }
-            writeCoGroundingEvidence(sessionId, digests);
-          } catch (err) {
-            process.stderr.write(`aios_gate: WARNING CO evidence write failed (${err.message})\n`);
-          }
-        }
-      }
-    }
-    return { decision: "allow" };
-  }
-
-  if (event === "PreToolUse" || event === "preToolUse") {
-    const red = !stateExists(sessionId);
-    if (toolName === "Bash" || toolName === "Shell") {
-      if (red && bashIsMutating(String(toolInput.command || ""))) {
-        return deliverFloor(cursorProtocol, sessionId, event, options);
-      }
-      return { decision: "allow" };
-    }
-    if (!MUTATING_TOOLS.has(toolName) && !codexExecInvokesPatch(toolName, rawToolInput)) {
-      return { decision: "allow" };
-    }
-    if (!red) {
-      return { decision: "allow" };
-    }
-    return deliverFloor(cursorProtocol, sessionId, event, options);
-  }
+  if (isPostEvent(event)) return evaluatePost(payload, toolName, toolInput, sessionId);
+  if (isPreEvent(event)) return evaluatePre(toolName, toolInput, rawToolInput, sessionId, cursorProtocol, event, options);
 
   return { decision: "allow" };
+}
+function evaluateStop(payload) {
+  const adapter = path.join(pluginRoot(), "hooks", "codex_stop_continuation.py");
+  const root = deployRoot();
+  if (!root || !fs.existsSync(adapter)) {
+    process.stderr.write("BACKS continuation unavailable: deployed owner or adapter missing\n");
+    return {decision: "allow"};
+  }
+  const result = childProcess.spawnSync(process.env.PYTHON || "python3", [adapter, "stop"], {
+    input: JSON.stringify(payload), encoding: "utf8", timeout: 30000, killSignal: "SIGKILL",
+    env: {...process.env, BACKS_DEPLOY_ROOT: root, PYTHONPATH: path.join(root, "backend")},
+  });
+  if (result.stderr) process.stderr.write(result.stderr);
+  if (result.error) {
+    process.stderr.write(`BACKS continuation unavailable: adapter did not finish (${result.error.code || result.error.message})\n`);
+    return {decision: "allow"};
+  }
+  if (result.status !== 0 || !result.stdout.trim()) return {decision: "allow"};
+  try {
+    const decision = JSON.parse(result.stdout);
+    const data = Buffer.from(JSON.stringify(decision) + "\n");
+    let offset = 0;
+    while (offset < data.length) offset += fs.writeSync(1, data, offset);
+    return decision;
+  } catch (error) {
+    process.stderr.write(`BACKS continuation unavailable: malformed adapter output (${error.message})\n`);
+    return {decision: "allow"};
+  }
+}
+function isSessionEvent(event) {
+  return ["SessionStart", "sessionStart", "UserPromptSubmit"].includes(event);
+}
+function isPostEvent(event) {
+  return event === "PostToolUse" || event === "postToolUse";
+}
+function isPreEvent(event) {
+  return event === "PreToolUse" || event === "preToolUse";
+}
+function disabledDecision(options) {
+  if (options.emit !== false) process.stderr.write("aios_gate: disabled by AIOS_GATE; allowing\n");
+  return {decision: "allow", reason: "disabled by AIOS_GATE"};
+}
+function evaluatePost(payload, toolName, toolInput, sessionId) {
+  observeCodexTool(payload);
+  if (toolName !== "Skill") return {decision: "allow"};
+  const skill = invokedSkill(toolInput);
+  if (!skill) return {decision: "allow"};
+  let pack;
+  try { pack = packSkillNames(); }
+  catch (err) {
+    process.stderr.write(`aios_gate: WARNING skill catalog unreadable or empty, grounding evidence unavailable (${err.name}: ${err.message})\n`);
+    return {decision: "allow"};
+  }
+  if (pack.has(skill)) recordSkillEvidence(skill, sessionId);
+  return {decision: "allow"};
+}
+function recordSkillEvidence(skill, sessionId) {
+  writeFloorMarker(sessionId);
+  try {
+    const digests = {};
+    const resolved = resolveNativeOrPackSkill(skill);
+    if (resolved) digests[resolved.canonical] = crypto.createHash("sha256").update(fs.readFileSync(resolved.path)).digest("hex");
+    writeCoGroundingEvidence(sessionId, digests);
+  } catch (err) { process.stderr.write(`aios_gate: WARNING CO evidence write failed (${err.message})\n`); }
+}
+function evaluatePre(toolName, toolInput, rawToolInput, sessionId, cursorProtocol, event, options) {
+  const red = !stateExists(sessionId);
+  if (["Bash", "Shell"].includes(toolName)) {
+    return red && bashIsMutating(String(toolInput.command || ""))
+      ? deliverFloor(cursorProtocol, sessionId, event, options) : {decision: "allow"};
+  }
+  const mutating = MUTATING_TOOLS.has(toolName) || codexExecInvokesPatch(toolName, rawToolInput);
+  return red && mutating ? deliverFloor(cursorProtocol, sessionId, event, options) : {decision: "allow"};
 }
 
 function load(argv) {
   try {
-    if (argv.length < 1) {
-      process.stderr.write("aios_gate: skill not found\n");
-      return 2;
+    const canonical = canonicalSkillArg(argv[0]);
+    if (!canonical) return skillNotFound();
+    const resolvedInfo = resolvedSkillOrNull(canonical);
+    if (!resolvedInfo) return skillNotFound();
+    if (canonical === "optimus") {
+      const manifestBody = foundationManifestBodies(deployRoot());
+      if (manifestBody !== null) return writeAll(manifestBody);
     }
-    const skillArg = argv[0];
-    let canonical;
-    if (skillArg.includes(":")) {
-      if (!skillArg.startsWith("backs-aios:")) {
-        process.stderr.write("aios_gate: skill not found\n");
-        return 2;
-      }
-      canonical = skillArg.slice("backs-aios:".length);
-    } else {
-      canonical = skillArg;
-    }
-    if (!canonical || !/^[a-z0-9]+([_-][a-z0-9]+)*$/.test(canonical)) {
-      process.stderr.write("aios_gate: skill not found\n");
-      return 2;
-    }
-    const resolvedInfo = resolveNativeOrPackSkill(canonical);
-    if (!resolvedInfo) {
-      process.stderr.write("aios_gate: skill not found\n");
-      return 2;
-    }
-    const bodies = resolvedInfo.canonical === "optimus" || canonical === "optimus"
-      ? foundationBodies() : [readBody(resolvedInfo)];
-    const body = bodies.map(entry => entry.body).join("\n\n");
-    const sessionId = sessionIdOf({}, argv[1]);
-    const digests = Object.fromEntries(bodies.map(entry => [entry.canonical, entry.sha256]));
-    const data = Buffer.from(body);
-    let offset = 0;
-    while (offset < data.length) offset += fs.writeSync(1, data, offset);
-    writeFloorMarker(sessionId);
-    try {
-      writeCoGroundingEvidence(sessionId, digests);
-    } catch (err) {
-      process.stderr.write(`aios_gate: WARNING CO evidence write failed (${err.message})\n`);
-    }
-    return 0;
+    return loadPortable(canonical, resolvedInfo, argv[1]);
   } catch (err) {
     process.stderr.write(`aios_gate: load failed (${err.name}: ${err.message})\n`);
     return 1;
   }
+}
+function loadPortable(canonical, resolvedInfo, sessionArg) {
+    const bodies = resolvedInfo.canonical === "optimus" || canonical === "optimus"
+      ? foundationBodies() : [readBody(resolvedInfo)];
+    const body = bodies.map(entry => entry.body).join("\n\n");
+    const sessionId = sessionIdOf({}, sessionArg);
+    const digests = Object.fromEntries(bodies.map(entry => [entry.canonical, entry.sha256]));
+    const data = Buffer.from(body);
+    writeAll(data);
+    writeFloorMarker(sessionId);
+    const invocationPath = path.join(coStateDir(), `backs_ground_${stateComponent(sessionId)}.hashes.json`);
+    const temporary = invocationPath + `.${process.pid}.tmp`;
+    try {
+      fs.writeFileSync(temporary, JSON.stringify(digests), {mode: 0o600, flag: "wx"});
+      fs.renameSync(temporary, invocationPath);
+    } finally { try { fs.unlinkSync(temporary); } catch {} }
+    return 0;
+}
+function resolvedSkillOrNull(canonical) {
+  return resolveNativeOrPackSkill(canonical);
+}
+function writeAll(data) {
+  let offset = 0;
+  while (offset < data.length) offset += fs.writeSync(1, data, offset);
+  return 0;
+}
+function canonicalSkillArg(skillArg) {
+  if (!skillArg) return null;
+  if (skillArg.includes(":")) {
+    if (!skillArg.startsWith("backs-aios:")) return null;
+    skillArg = skillArg.slice("backs-aios:".length);
+  }
+  return /^[a-z0-9]+([_-][a-z0-9]+)*$/.test(skillArg) ? skillArg : null;
+}
+function skillNotFound() {
+  process.stderr.write("aios_gate: skill not found\n");
+  return 2;
 }
 
 function rearm(argv) {
