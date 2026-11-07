@@ -9,9 +9,11 @@ import sys
 import tempfile
 import unittest
 
+from backs_owner import deployed_owner
+
 
 ROOT = Path(__file__).resolve().parents[1]
-DEPLOY = Path(os.environ["BACKS_DEPLOY_ROOT"])
+DEPLOY = deployed_owner()
 HOOK = ROOT / "hooks/aios_gate.js"
 ADAPTER = ROOT / "hooks/codex_stop_continuation.py"
 

@@ -7,10 +7,11 @@ import os
 from pathlib import Path
 
 import pytest
+from backs_owner import deployed_owner
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEPLOY = Path(os.environ["BACKS_DEPLOY_ROOT"])
+DEPLOY = deployed_owner()
 HELPER_PATH = ROOT / "hooks/codex_stop_continuation.py"
 
 
