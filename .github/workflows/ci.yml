@@ -58,3 +58,5 @@ jobs:
           node-version: "20"
       - name: node syntax check on the shipped hooks
         run: for f in hooks/*.js; do node --check "$f"; done
+      - name: gate contract tests on node
+        run: node --test tests/*.test.js

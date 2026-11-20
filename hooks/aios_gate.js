@@ -48,6 +48,11 @@ const BASH_MUTATING = [
 ].map((p) => new RegExp(p));
 
 const SAFE_TARGET_PREFIXES = ["/tmp/", "/dev/shm/"];
+// A session start may skip an already delivered body only for a plain startup.
+// Any other source (resume, fork, compact, clear, anything new) opens a
+// history that nothing proves carries the earlier grounding, so the bodies
+// must reach the session again.
+const SKIPPABLE_STARTUP_SOURCES = new Set(["startup"]);
 
 /** Blank out quoted segments so text inside quotes cannot false-match. */
 function stripQuoted(command) {
@@ -120,6 +125,38 @@ function stateFile(sessionId) {
 function removeState(sessionId) {
   const p = stateFile(sessionId);
   if (fs.existsSync(p)) fs.unlinkSync(p);
+}
+
+/** The delivery receipt of one session, shared by every plugin install. */
+function deliveryReceiptPath(sessionId) {
+  return stateFile(sessionId) + ".load.json";
+}
+
+/** The receipt of the last real delivery, or null when there is none to trust. */
+function readDeliveryReceipt(sessionId) {
+  let raw;
+  try {
+    raw = fs.readFileSync(deliveryReceiptPath(sessionId), "utf8");
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      process.stderr.write("aios_gate: WARNING delivery receipt unreadable (" + err.code + "); delivering" + os.EOL);
+    }
+    return null;
+  }
+  try {
+    const receipt = JSON.parse(raw);
+    if (!receipt || typeof receipt !== "object" || Array.isArray(receipt)) throw new Error("not an object");
+    return receipt;
+  } catch {
+    process.stderr.write("aios_gate: WARNING delivery receipt malformed; delivering" + os.EOL);
+    return null;
+  }
+}
+
+/** True when this session already received exactly this content. */
+function alreadyDelivered(sessionId, contextHash) {
+  const receipt = readDeliveryReceipt(sessionId);
+  return Boolean(receipt && receipt.session_id === sessionId && receipt.context_sha256 === contextHash);
 }
 
 function canonicalManifestPath() {
@@ -495,10 +532,27 @@ function observeCodexTool(payload) {
   catch (error) { if (error.code !== "EEXIST") process.stderr.write(`BACKS observer unavailable: ${error.code}\n`); }
 }
 
-function deliverFloor(cursorProtocol, sessionId, event, options = {}) {
+/** True when this session event may skip a body the session already received. */
+function maySkipDelivery(event, source) {
+  if (!isSessionStartEvent(event)) return true;
+  const value = String(source || "").trim().toLowerCase();
+  return value === "" || SKIPPABLE_STARTUP_SOURCES.has(value);
+}
+
+function deliverFloor(cursorProtocol, sessionId, event, options = {}, source = "") {
   try {
     const floor = floorContext();
-    if (typeof options.deliverContext === "function") {
+    const contextHash = crypto.createHash("sha256").update(floor.context, "utf8").digest("hex");
+    // Only a hook that prints its own output may skip. A host that rebuilds a
+    // per-request block through its own callback needs the content every call.
+    const hostCallback = typeof options.deliverContext === "function";
+    if (!floor.pending && !hostCallback && isSessionEvent(event)
+        && maySkipDelivery(event, source)
+        && alreadyDelivered(sessionId, contextHash)) {
+      process.stderr.write("aios_gate: grounding already delivered for this session (context " + contextHash.slice(0, 12) + "); allowing" + os.EOL);
+      return {decision: "allow", delivered: false};
+    }
+    if (hostCallback) {
       options.deliverContext(floor.context);
     } else if (options.emit !== false) {
       const output = cursorProtocol ? {additional_context: floor.context} : {
@@ -511,8 +565,8 @@ function deliverFloor(cursorProtocol, sessionId, event, options = {}) {
       return {decision: "allow", additionalContext: floor.context, delivered: false};
     }
     if (floor.pending) return {decision: "allow", delivered: false};
-    const receipt = {session_id: sessionId, kind: "context_delivery", bodies: floor.bodies.map(({body, ...entry}) => entry)};
-    const target = stateFile(sessionId) + ".load.json";
+    const receipt = {session_id: sessionId, kind: "context_delivery", context_sha256: contextHash, bodies: floor.bodies.map(({body, ...entry}) => entry)};
+    const target = deliveryReceiptPath(sessionId);
     const tmp = target + `.${process.pid}.${crypto.randomBytes(6).toString("hex")}.tmp`;
     try {
       fs.writeFileSync(tmp, JSON.stringify(receipt), {mode: 0o600, flag: "wx"});
@@ -543,7 +597,7 @@ function routeEvent(payload, options) {
   const sessionId = sessionIdOf(payload);
   if (event === "Stop") return evaluateStop(payload);
   if (isSessionEvent(event)) {
-    return deliverFloor(cursorProtocol, sessionId, event, options);
+    return deliverFloor(cursorProtocol, sessionId, event, options, String(payload.source || ""));
   }
   if (isPostEvent(event)) return evaluatePost(payload, toolName, toolInput, sessionId);
   if (isPreEvent(event)) return evaluatePre(toolName, toolInput, rawToolInput, sessionId, cursorProtocol, event, options);
@@ -580,6 +634,9 @@ function evaluateStop(payload) {
 }
 function isSessionEvent(event) {
   return ["SessionStart", "sessionStart", "UserPromptSubmit"].includes(event);
+}
+function isSessionStartEvent(event) {
+  return event === "SessionStart" || event === "sessionStart";
 }
 function isPostEvent(event) {
   return event === "PostToolUse" || event === "postToolUse";
@@ -681,13 +738,20 @@ function skillNotFound() {
 function rearm(argv) {
   try {
     const sid = sessionIdOf({}, argv[0]);
-    const p = stateFile(sid);
-    if (fs.existsSync(p)) {
-      fs.unlinkSync(p);
-      console.log("aios_gate: re-armed");
-    } else {
-      console.log("aios_gate: already armed");
+    let armed = false;
+    const marker = stateFile(sid);
+    if (fs.existsSync(marker)) {
+      fs.unlinkSync(marker);
+      armed = true;
     }
+    // The delivery receipt is what suppresses the next delivery: remove it too,
+    // so the next session event sends the bodies again.
+    const receipt = deliveryReceiptPath(sid);
+    if (fs.existsSync(receipt)) {
+      fs.unlinkSync(receipt);
+      armed = true;
+    }
+    console.log(armed ? "aios_gate: re-armed" : "aios_gate: already armed");
     return 0;
   } catch (err) {
     process.stderr.write(`aios_gate: re-arm failed (${err.name}: ${err.message})\n`);

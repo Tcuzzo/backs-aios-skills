@@ -24,6 +24,12 @@ MUTATING_TOOLS = {
     "apply_patch", "functions.apply_patch",
 }
 CODEX_EXEC_TOOL = "functions.exec"
+_SESSION_EVENTS = {"SessionStart", "sessionStart", "UserPromptSubmit"}
+# A session start may skip an already delivered body only for a plain startup.
+# Any other source (resume, fork, compact, clear, anything new) opens a history
+# that nothing proves carries the earlier grounding, so the bodies must reach
+# the session again.
+_SESSION_START_SKIP_SOURCES = {"startup"}
 _CODEX_PATCH_CALL = re.compile(r"\b(?:tools|functions)\s*\.\s*apply_patch\s*\(")
 
 # A verb counts only at a command position: line start, after ; & |, or inside
@@ -546,21 +552,57 @@ def _write_stdout(body: str) -> None:
         remaining = remaining[written:]
 
 
-def _deliver_floor(cursor_protocol: bool, session_id: str, event: str) -> None:
+def _delivery_receipt_path(session_id: str) -> str:
+    """The delivery receipt of one session, shared by every plugin install."""
+    return _state_file(session_id) + '.load.json'
+
+
+def _already_delivered(session_id: str, context_hash: str) -> bool:
+    """True when this session already received exactly this content."""
+    try:
+        with open(_delivery_receipt_path(session_id), encoding='utf-8') as handle:
+            receipt = json.load(handle)
+    except FileNotFoundError:
+        return False
+    except (OSError, ValueError) as exc:
+        print(f'aios_gate: WARNING delivery receipt unreadable ({exc}); delivering', file=sys.stderr)
+        return False
+    if not isinstance(receipt, dict):
+        print('aios_gate: WARNING delivery receipt malformed; delivering', file=sys.stderr)
+        return False
+    return receipt.get('session_id') == session_id and receipt.get('context_sha256') == context_hash
+
+
+def _may_skip_delivery(event: str, source: str) -> bool:
+    """True when this session event may skip a body the session already received."""
+    if event not in {'SessionStart', 'sessionStart'}:
+        return True
+    value = str(source or '').strip().lower()
+    return value == '' or value in _SESSION_START_SKIP_SOURCES
+
+
+def _deliver_floor(cursor_protocol: bool, session_id: str, event: str, source: str = '') -> None:
     """Deliver actual bodies, then record loading separately from Skill events."""
     try:
         context, bodies = _floor_context()
+        pending = _has_canonical_manifest()
+        context_hash = hashlib.sha256(context.encode('utf-8')).hexdigest()
+        if (not pending and event in _SESSION_EVENTS
+                and _may_skip_delivery(event, source)
+                and _already_delivered(session_id, context_hash)):
+            print(f'aios_gate: grounding already delivered for this session (context {context_hash[:12]}); allowing', file=sys.stderr)
+            return
         output = ({'additional_context': context} if cursor_protocol else
                   {'hookSpecificOutput': {'hookEventName': event, 'additionalContext': context}})
         _write_stdout(json.dumps(output) + '\n')
-        if _has_canonical_manifest():
+        if pending:
             return
-        target = _state_file(session_id) + '.load.json'
+        target = _delivery_receipt_path(session_id)
         tmp = target + f'.{os.getpid()}.{os.urandom(6).hex()}.tmp'
         try:
             fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
             with os.fdopen(fd, 'w', encoding='utf-8') as handle:
-                json.dump({'session_id': session_id, 'kind': 'context_delivery', 'bodies': bodies}, handle)
+                json.dump({'session_id': session_id, 'kind': 'context_delivery', 'context_sha256': context_hash, 'bodies': bodies}, handle)
                 handle.flush()
                 os.fsync(handle.fileno())
             os.replace(tmp, target)
@@ -586,8 +628,8 @@ def handle(payload: dict) -> None:
         _handle_stop(payload)
         return
 
-    if event in {"SessionStart", "sessionStart", "UserPromptSubmit"}:
-        _deliver_floor(cursor_protocol, session_id, event)
+    if event in _SESSION_EVENTS:
+        _deliver_floor(cursor_protocol, session_id, event, str(payload.get('source') or ''))
         return
 
     if event in {"PostToolUse", "postToolUse"}:
@@ -728,12 +770,18 @@ def _skill_not_found() -> int:
 def _rearm(argv: list) -> int:
     try:
         sid = _session_id({}, argv[0] if argv else None)
-        path = _state_file(sid)
-        if os.path.isfile(path):
-            os.remove(path)
-            print("aios_gate: re-armed")
-        else:
-            print("aios_gate: already armed")
+        armed = False
+        marker = _state_file(sid)
+        if os.path.isfile(marker):
+            os.remove(marker)
+            armed = True
+        # The delivery receipt is what suppresses the next delivery: remove it
+        # too, so the next session event sends the bodies again.
+        receipt = _delivery_receipt_path(sid)
+        if os.path.isfile(receipt):
+            os.remove(receipt)
+            armed = True
+        print("aios_gate: re-armed" if armed else "aios_gate: already armed")
         return 0
     except Exception as exc:
         sys.stderr.write(f"aios_gate: re-arm failed ({type(exc).__name__}: {exc})\n")

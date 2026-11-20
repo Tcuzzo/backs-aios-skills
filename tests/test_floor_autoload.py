@@ -56,6 +56,9 @@ class FloorAutoloadTest(FloorFixture, unittest.TestCase):
         self.bodies[name] = '# Optimus\r\nOperator sovereignty — loaded.\r\n'
         (self.deploy/name).write_bytes(self.bodies[name].encode())
         for suffix in ('js', 'py'):
+            # Each runtime is checked on its own: one session's receipt is shared by
+            # every install, so a second runtime would correctly send nothing.
+            shutil.rmtree(self.root/'home/.aios', ignore_errors=True)
             context = self.context(self.run_gate(suffix, 'SessionStart'))
             for body in self.bodies.values(): self.assertIn(body, context)
             self.assert_receipt('floor-contract', {str(self.deploy/n): b for n,b in self.bodies.items()})
@@ -68,6 +71,7 @@ class FloorAutoloadTest(FloorFixture, unittest.TestCase):
             target.parent.mkdir(parents=True)
             target.write_text('# Portable ' + name + '\n')
         for suffix in ('js', 'py'):
+            shutil.rmtree(self.root/'home/.aios', ignore_errors=True)
             context = self.context(self.run_gate(suffix, 'SessionStart'))
             self.assertIn('# Portable optimus', context)
             self.assertNotIn('# Real harness fixture', context)
@@ -75,6 +79,7 @@ class FloorAutoloadTest(FloorFixture, unittest.TestCase):
         pointer.parent.mkdir(parents=True)
         pointer.symlink_to(self.deploy/'skills/optimus', target_is_directory=True)
         for suffix in ('js', 'py'):
+            shutil.rmtree(self.root/'home/.aios', ignore_errors=True)
             context = self.context(self.run_gate(suffix, 'SessionStart'))
             for body in self.bodies.values(): self.assertIn(body, context)
             self.assert_receipt('floor-contract', {str(self.deploy/n): b for n,b in self.bodies.items()})
