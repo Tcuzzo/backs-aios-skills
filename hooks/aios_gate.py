@@ -24,6 +24,10 @@ MUTATING_TOOLS = {
     "apply_patch", "functions.apply_patch",
 }
 CODEX_EXEC_TOOL = "functions.exec"
+_SESSION_EVENTS = {"SessionStart", "sessionStart", "UserPromptSubmit"}
+# A SessionStart with one of these sources replaced the history: the grounding
+# must reach the session again even when the content itself is unchanged.
+_REPLACED_HISTORY_SOURCES = {"compact", "clear"}
 _CODEX_PATCH_CALL = re.compile(r"\b(?:tools|functions)\s*\.\s*apply_patch\s*\(")
 
 # A verb counts only at a command position: line start, after ; & |, or inside
@@ -546,21 +550,49 @@ def _write_stdout(body: str) -> None:
         remaining = remaining[written:]
 
 
-def _deliver_floor(cursor_protocol: bool, session_id: str, event: str) -> None:
+def _delivery_receipt_path(session_id: str) -> str:
+    """The delivery receipt of one session, shared by every plugin install."""
+    return _state_file(session_id) + '.load.json'
+
+
+def _already_delivered(session_id: str, context_hash: str) -> bool:
+    """True when this session already received exactly this content."""
+    try:
+        with open(_delivery_receipt_path(session_id), encoding='utf-8') as handle:
+            receipt = json.load(handle)
+    except FileNotFoundError:
+        return False
+    except (OSError, ValueError) as exc:
+        print(f'aios_gate: WARNING delivery receipt unreadable ({exc}); delivering', file=sys.stderr)
+        return False
+    if not isinstance(receipt, dict):
+        print('aios_gate: WARNING delivery receipt malformed; delivering', file=sys.stderr)
+        return False
+    return receipt.get('session_id') == session_id and receipt.get('context_sha256') == context_hash
+
+
+def _deliver_floor(cursor_protocol: bool, session_id: str, event: str, source: str = '') -> None:
     """Deliver actual bodies, then record loading separately from Skill events."""
     try:
         context, bodies = _floor_context()
+        pending = _has_canonical_manifest()
+        context_hash = hashlib.sha256(context.encode('utf-8')).hexdigest()
+        if (not pending and event in _SESSION_EVENTS
+                and str(source or '').strip().lower() not in _REPLACED_HISTORY_SOURCES
+                and _already_delivered(session_id, context_hash)):
+            print(f'aios_gate: grounding already delivered for this session (context {context_hash[:12]}); allowing', file=sys.stderr)
+            return
         output = ({'additional_context': context} if cursor_protocol else
                   {'hookSpecificOutput': {'hookEventName': event, 'additionalContext': context}})
         _write_stdout(json.dumps(output) + '\n')
-        if _has_canonical_manifest():
+        if pending:
             return
-        target = _state_file(session_id) + '.load.json'
+        target = _delivery_receipt_path(session_id)
         tmp = target + f'.{os.getpid()}.{os.urandom(6).hex()}.tmp'
         try:
             fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
             with os.fdopen(fd, 'w', encoding='utf-8') as handle:
-                json.dump({'session_id': session_id, 'kind': 'context_delivery', 'bodies': bodies}, handle)
+                json.dump({'session_id': session_id, 'kind': 'context_delivery', 'context_sha256': context_hash, 'bodies': bodies}, handle)
                 handle.flush()
                 os.fsync(handle.fileno())
             os.replace(tmp, target)
@@ -586,8 +618,8 @@ def handle(payload: dict) -> None:
         _handle_stop(payload)
         return
 
-    if event in {"SessionStart", "sessionStart", "UserPromptSubmit"}:
-        _deliver_floor(cursor_protocol, session_id, event)
+    if event in _SESSION_EVENTS:
+        _deliver_floor(cursor_protocol, session_id, event, str(payload.get('source') or ''))
         return
 
     if event in {"PostToolUse", "postToolUse"}:
