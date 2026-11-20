@@ -25,9 +25,11 @@ MUTATING_TOOLS = {
 }
 CODEX_EXEC_TOOL = "functions.exec"
 _SESSION_EVENTS = {"SessionStart", "sessionStart", "UserPromptSubmit"}
-# A SessionStart with one of these sources replaced the history: the grounding
-# must reach the session again even when the content itself is unchanged.
-_REPLACED_HISTORY_SOURCES = {"compact", "clear"}
+# A session start may skip an already delivered body only for a plain startup.
+# Any other source (resume, fork, compact, clear, anything new) opens a history
+# that nothing proves carries the earlier grounding, so the bodies must reach
+# the session again.
+_SESSION_START_SKIP_SOURCES = {"startup"}
 _CODEX_PATCH_CALL = re.compile(r"\b(?:tools|functions)\s*\.\s*apply_patch\s*\(")
 
 # A verb counts only at a command position: line start, after ; & |, or inside
@@ -571,6 +573,14 @@ def _already_delivered(session_id: str, context_hash: str) -> bool:
     return receipt.get('session_id') == session_id and receipt.get('context_sha256') == context_hash
 
 
+def _may_skip_delivery(event: str, source: str) -> bool:
+    """True when this session event may skip a body the session already received."""
+    if event not in {'SessionStart', 'sessionStart'}:
+        return True
+    value = str(source or '').strip().lower()
+    return value == '' or value in _SESSION_START_SKIP_SOURCES
+
+
 def _deliver_floor(cursor_protocol: bool, session_id: str, event: str, source: str = '') -> None:
     """Deliver actual bodies, then record loading separately from Skill events."""
     try:
@@ -578,7 +588,7 @@ def _deliver_floor(cursor_protocol: bool, session_id: str, event: str, source: s
         pending = _has_canonical_manifest()
         context_hash = hashlib.sha256(context.encode('utf-8')).hexdigest()
         if (not pending and event in _SESSION_EVENTS
-                and str(source or '').strip().lower() not in _REPLACED_HISTORY_SOURCES
+                and _may_skip_delivery(event, source)
                 and _already_delivered(session_id, context_hash)):
             print(f'aios_gate: grounding already delivered for this session (context {context_hash[:12]}); allowing', file=sys.stderr)
             return
@@ -760,12 +770,18 @@ def _skill_not_found() -> int:
 def _rearm(argv: list) -> int:
     try:
         sid = _session_id({}, argv[0] if argv else None)
-        path = _state_file(sid)
-        if os.path.isfile(path):
-            os.remove(path)
-            print("aios_gate: re-armed")
-        else:
-            print("aios_gate: already armed")
+        armed = False
+        marker = _state_file(sid)
+        if os.path.isfile(marker):
+            os.remove(marker)
+            armed = True
+        # The delivery receipt is what suppresses the next delivery: remove it
+        # too, so the next session event sends the bodies again.
+        receipt = _delivery_receipt_path(sid)
+        if os.path.isfile(receipt):
+            os.remove(receipt)
+            armed = True
+        print("aios_gate: re-armed" if armed else "aios_gate: already armed")
         return 0
     except Exception as exc:
         sys.stderr.write(f"aios_gate: re-arm failed ({type(exc).__name__}: {exc})\n")

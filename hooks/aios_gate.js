@@ -48,9 +48,11 @@ const BASH_MUTATING = [
 ].map((p) => new RegExp(p));
 
 const SAFE_TARGET_PREFIXES = ["/tmp/", "/dev/shm/"];
-// A SessionStart with one of these sources replaced the history: the grounding
-// must reach the session again even when the content itself is unchanged.
-const REPLACED_HISTORY_SOURCES = new Set(["compact", "clear"]);
+// A session start may skip an already delivered body only for a plain startup.
+// Any other source (resume, fork, compact, clear, anything new) opens a
+// history that nothing proves carries the earlier grounding, so the bodies
+// must reach the session again.
+const SKIPPABLE_STARTUP_SOURCES = new Set(["startup"]);
 
 /** Blank out quoted segments so text inside quotes cannot false-match. */
 function stripQuoted(command) {
@@ -530,17 +532,27 @@ function observeCodexTool(payload) {
   catch (error) { if (error.code !== "EEXIST") process.stderr.write(`BACKS observer unavailable: ${error.code}\n`); }
 }
 
+/** True when this session event may skip a body the session already received. */
+function maySkipDelivery(event, source) {
+  if (!isSessionStartEvent(event)) return true;
+  const value = String(source || "").trim().toLowerCase();
+  return value === "" || SKIPPABLE_STARTUP_SOURCES.has(value);
+}
+
 function deliverFloor(cursorProtocol, sessionId, event, options = {}, source = "") {
   try {
     const floor = floorContext();
     const contextHash = crypto.createHash("sha256").update(floor.context, "utf8").digest("hex");
-    if (!floor.pending && isSessionEvent(event)
-        && !REPLACED_HISTORY_SOURCES.has(String(source || "").trim().toLowerCase())
+    // Only a hook that prints its own output may skip. A host that rebuilds a
+    // per-request block through its own callback needs the content every call.
+    const hostCallback = typeof options.deliverContext === "function";
+    if (!floor.pending && !hostCallback && isSessionEvent(event)
+        && maySkipDelivery(event, source)
         && alreadyDelivered(sessionId, contextHash)) {
       process.stderr.write("aios_gate: grounding already delivered for this session (context " + contextHash.slice(0, 12) + "); allowing" + os.EOL);
       return {decision: "allow", delivered: false};
     }
-    if (typeof options.deliverContext === "function") {
+    if (hostCallback) {
       options.deliverContext(floor.context);
     } else if (options.emit !== false) {
       const output = cursorProtocol ? {additional_context: floor.context} : {
@@ -622,6 +634,9 @@ function evaluateStop(payload) {
 }
 function isSessionEvent(event) {
   return ["SessionStart", "sessionStart", "UserPromptSubmit"].includes(event);
+}
+function isSessionStartEvent(event) {
+  return event === "SessionStart" || event === "sessionStart";
 }
 function isPostEvent(event) {
   return event === "PostToolUse" || event === "postToolUse";
@@ -723,13 +738,20 @@ function skillNotFound() {
 function rearm(argv) {
   try {
     const sid = sessionIdOf({}, argv[0]);
-    const p = stateFile(sid);
-    if (fs.existsSync(p)) {
-      fs.unlinkSync(p);
-      console.log("aios_gate: re-armed");
-    } else {
-      console.log("aios_gate: already armed");
+    let armed = false;
+    const marker = stateFile(sid);
+    if (fs.existsSync(marker)) {
+      fs.unlinkSync(marker);
+      armed = true;
     }
+    // The delivery receipt is what suppresses the next delivery: remove it too,
+    // so the next session event sends the bodies again.
+    const receipt = deliveryReceiptPath(sid);
+    if (fs.existsSync(receipt)) {
+      fs.unlinkSync(receipt);
+      armed = true;
+    }
+    console.log(armed ? "aios_gate: re-armed" : "aios_gate: already armed");
     return 0;
   } catch (err) {
     process.stderr.write(`aios_gate: re-arm failed (${err.name}: ${err.message})\n`);
