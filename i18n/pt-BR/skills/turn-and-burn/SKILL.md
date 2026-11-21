@@ -59,6 +59,34 @@ isn't repeated.
    the mission surfaced that the skill did not already encode. Land the
    skill update alongside the mission's main artifact (whole-seam closure).
 
+## O contrato de evidencia do ponto cego
+
+Uma resposta sobre um ponto cego e **evidencia, nao opiniao**. O contrato
+completo, com pseudocódigo e cenarios de aceitacao, esta em ingles:
+[references/blindspot_protocol.md](../../../../skills/turn-and-burn/references/blindspot_protocol.md).
+
+- **Um +1 exige cada predicado obrigatorio com evidencia atual.** Evidencia
+  ausente, antiga, incompleta, duplicada ou malformada deixa o veredicto em -1, e
+  o motivo nomeia o predicado que falhou. Nunca uma aprovacao frouxa, nunca um
+  simples "parece certo".
+- **Admitido, executado e observado sao tres fatos diferentes.** Poder rodar nao
+  e rodar. Rodar nao e conclusao observada. Uma etapa que nunca chegou a
+  observacao nunca e reportada como concluida.
+- **O construtor nao pode redigir a propria verificacao positiva autoritativa.**
+  Ele pode fornecer evidencia; o +1 autoritativo vem da checagem que observóu a
+  coisa, ou de um revisor independente em uma sessao nova e sem o contexto do
+  autor.
+- **A revisao independente roda sobre entradas congeladas, em um scratch
+  separado.** O isolamento e alegado so quando o runtime o impoe e ele foi
+  demonstrado - nunca porque foi pedido ao revisor que fosse independente.
+- **Confianca repetida sem evidencia nova e sinal, nao progrèsso.** Rode uma
+  sonda decisiva que separe as causas vivas, entao responda -1 com o motivo ou
+  escale. Nunca uma terceira repeticao da mesma conclusao.
+- **Use os orgaos que o seu host ja traz.** Um teste vermelho, um revisor
+  independente, um efeito real para afirmar, um loop limitado com checkpoint.
+  Qualquer mecanismo que o host nao consiga impor fica "nao validado ate ser
+  demonstrado".
+
 ## How the absorbs flow runs
 
 `skills/absorb/SKILL.md` is the canonical absorb organ. The burn invokes it

@@ -576,6 +576,69 @@ Each host -> invoke the same named capability -> resolve the real skill/play
 
 </details>
 
+## 10. The mission flow: turn, burn, learn
+
+Every mission runs the same loop. The turn sharpens the roster before the burn
+uses it, and the learn step files what the mission taught so the next turn
+starts sharper. The skill that carries this loop is
+[turn-and-burn](../skills/turn-and-burn/SKILL.md), and the evidence contract it
+leans on is in
+[references/blindspot_protocol.md](../skills/turn-and-burn/references/blindspot_protocol.md).
+
+```mermaid
+flowchart TD
+  accTitle: The mission flow - turn, burn, learn
+  accDescr: A mission boots the harness, then turns the roster with a blind tribunal and an absorb pass, burns the mission with a red contract and an independent grade, and files the lesson back so the next mission starts sharper.
+
+  MISSION["Mission arrives"] --> BOOT["Boot: harness, floor, human profile"]
+  BOOT --> TURN
+
+  subgraph TURN["TURN - sharpen the roster before the work"]
+    T1["Essence and lessons"] --> T2["Play dispatch"]
+    T2 --> T3["Blind tribunal on plan and design"]
+    T3 --> T4["Three questions"]
+    T4 --> T5["Absorb missing skills, upgrade current skills"]
+  end
+
+  TURN --> BURN
+
+  subgraph BURN["BURN - run the mission on the upgraded kit"]
+    B1["Red contract test, committed"] --> B2["Build"]
+    B2 --> B3["Sniper tests and quality gauntlet"]
+    B3 --> B4["Independent blind grade"]
+    B4 --> B5["Land, prove on the real surface"]
+  end
+
+  BURN --> LEARN
+
+  subgraph LEARN["LEARN - feed the next mission"]
+    L1["File the lesson"] --> L2["Upgrade the skill that missed it"]
+  end
+
+  LEARN --> MISSION
+```
+
+<details>
+<summary>Text version</summary>
+
+```text
+Mission arrives
+  -> Boot: harness, invariant floor, human profile
+
+TURN - sharpen the roster before the work
+  essence and lessons -> play dispatch -> blind tribunal on plan and design
+  -> three questions -> absorb missing skills and upgrade current skills
+
+BURN - run the mission on the upgraded kit
+  red contract test (committed) -> build -> sniper tests and quality gauntlet
+  -> independent blind grade -> land and prove on the real surface
+
+LEARN - feed the next mission
+  file the lesson -> upgrade the skill that missed it -> next mission
+```
+
+</details>
+
 ## Read the diagrams in practice
 
 1. Pick the closest play in chart 1.

@@ -59,6 +59,34 @@ isn't repeated.
    the mission surfaced that the skill did not already encode. Land the
    skill update alongside the mission's main artifact (whole-seam closure).
 
+## El contrato de evidencia del punto ciego
+
+Una respuesta sobre un punto ciego es **evidencia, no opinion**. El contrato
+completo, con pseudocódigo y escenarios de aceptacion, está en inglés:
+[references/blindspot_protocol.md](../../../../skills/turn-and-burn/references/blindspot_protocol.md).
+
+- **Un +1 exige cada predicado obligatorio con evidencia vigente.** La evidencia
+  ausente, obsoleta, incompleta, duplicada o malformada deja el veredicto en -1,
+  y el motivo nombra el predicado que falló. Nunca una aprobacion blanda, nunca
+  un simple "parece bien".
+- **Admitido, ejecutado y observado son tres hechos distintos.** Poder ejecutarse
+  no es ejecutarse. Ejecutarse no es una finalización observada. Una etapa que
+  nunca llegó a observacion nunca se reporta como terminada.
+- **El constructor no puede redactar su propia verificación positiva
+  autoritativa.** Puede aportar evidencia; el +1 autoritativo viene de la
+  comprobación que lo observó, o de un revisor independiente en una sesión nueva
+  y sin el contexto del autor.
+- **La revisión independiente se ejecuta sobre entradas congeladas, en un
+  entorno aparte.** El aislamiento solo se afirma cuando el runtime lo impone y
+  se demostro, nunca porque se le pidio al revisor que fuera independiente.
+- **La confianza repetida sin evidencia nueva es una señal, no progrèso.** Ejecuta
+  una sonda decisiva que separe las causas vivas, y responde -1 con el motivo o
+  escala. Nunca una tercera repetición de la misma conclusión.
+- **Usa los organos que tu host ya trae.** Una prueba roja, un revisor
+  independiente, un efecto real que afirmar, un bucle acotado con checkpoint.
+  Todo mecanismo que el host no pueda imponer queda como "no validado hasta que
+  se demuestre".
+
 ## How the absorbs flow runs
 
 `skills/absorb/SKILL.md` is the canonical absorb organ. The burn invokes it

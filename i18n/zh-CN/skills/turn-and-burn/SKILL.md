@@ -59,6 +59,26 @@ isn't repeated.
    the mission surfaced that the skill did not already encode. Land the
    skill update alongside the mission's main artifact (whole-seam closure).
 
+## 盲点证据契约
+
+关于盲点的回答是**证据，不是意见**。完整契约、伪代码和验收场景见英文版：
+[references/blindspot_protocol.md](../../../../skills/turn-and-burn/references/blindspot_protocol.md)。
+
+- **+1 需要每个必需的判定项都配上当前有效的证据。** 证据缺失、过期、不完整、
+  重复或格式错误，判定就停在 -1，并写明是哪一项没通过。绝不放水，也绝不含糊
+  地写"看起来没问题"。
+- **准入、执行、观察是三件不同的事。** 允许运行不等于运行，运行不等于观察到
+  完成。没有走到观察这一步的阶段，绝不报成已完成。
+- **构建者不能给自己写权威的正向验证。** 他可以提供证据；权威的 +1 来自真正
+  观察到这件事的检查，或来自一个全新的、与作者无关的会话中的独立评审者。
+- **独立评审在冻结的输入上、在独立的工作区里跑。** 只有运行时强制隔离并且被
+  证明时，才能声称隔离——不能因为要求评审者"独立"就算数。
+- **没有新证据的重复自信是信号，不是进展。** 跑一个能分清真实成因的决定性探
+  针，然后给 -1 并写明原因，或者升级。绝不把同一个结论重复第三遍。
+- **用你的宿主已经有的器官。** 一个红测试、一个独立评审者、一个可以断言的真
+  实副作用、一个带检查点的有界循环。宿主无法强制的机制，在有现场凭证证明它真
+  的生效之前，一律标为"未验证"。
+
 ## How the absorbs flow runs
 
 `skills/absorb/SKILL.md` is the canonical absorb organ. The burn invokes it

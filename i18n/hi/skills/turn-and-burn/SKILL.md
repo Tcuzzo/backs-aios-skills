@@ -59,6 +59,33 @@ isn't repeated.
    the mission surfaced that the skill did not already encode. Land the
    skill update alongside the mission's main artifact (whole-seam closure).
 
+## अंधे धब्बे का सबूत-अनुबंध
+
+अंधे धब्बे के बारे में कोई जवाब **सबूत है, राय नहीं।** पूरा अनुबंध, उसका
+pseudocode और स्वीकृति के परिदृश्य अंग्रेज़ी में हैं:
+[references/blindspot_protocol.md](../../../../skills/turn-and-burn/references/blindspot_protocol.md).
+
+- **+1 के लिए हर ज़रूरी predicate की मौजूदा evidence चाहिए।** जो evidence गायब,
+  पुरानी, अधूरी, duplicate या बिगड़ी हुई हो, verdict -1 पर रहता है, और कारण
+  बताता है कि कौन-सा predicate fail हुआ। कभी soft pass नहीं, कभी सिर्फ "ठीक
+  लगता है" नहीं।
+- **Admitted, exécutéd और observed तीन अलग बातें हैं।** चलने की अनुमति चलना नहीं
+  है। चलना observed completion नहीं है। जो stage observe तक नहीं पहुँचा, उसे
+  कभी पूरा बताया नहीं जाता।
+- **Builder अपना खुद का authoritative positive verification नहीं लिख सकता।** वह
+  evidence दे सकता है; authoritative +1 उस check से आता है जिसने चीज़ observe
+  की, या fresh, author-disjoint session में किसी independent reviewer से।
+- **Independent review frozen inputs पर, अलग scratch में चलता है।** Isolation
+  तब ही claim की जाती है जब runtime उसे enforce करे और वह दिखाया गया हो —
+  इसलिए नहीं कि reviewer से कहा गया कि "independent रहो"।
+- **बिना नए evidence के बार-बार same confidence progrèss नहीं, signal है।** एक
+  decisive probe चलाओ जो ज़िंदा causes को अलग कर सके, फिर कारण के साथ -1 या
+  escalate करो। उसी नतीजे की तीसरी repetition कभी नहीं।
+- **अपने host के पास जो órganos हैं उन्हीं का इस्तेमाल करो।** एक red test, एक
+  independent reviewer, assert करने के लिए एक real side effect, checkpoint वाला
+  एक bounded loop। जिस mechanism को host enforce नहीं कर सकता, वह "unvalidated
+  until demonstrated" रहता है।
+
 ## How the absorbs flow runs
 
 `skills/absorb/SKILL.md` is the canonical absorb organ. The burn invokes it

@@ -59,6 +59,35 @@ isn't repeated.
    the mission surfaced that the skill did not already encode. Land the
    skill update alongside the mission's main artifact (whole-seam closure).
 
+## Le contrat de preuve du point aveugle
+
+Une reponse sur un point aveugle est **une preuve, pas une opinion**. Le
+contrat complet, avec le pseudo-code et les scenarios d'acceptation, est en
+anglais : [references/blindspot_protocol.md](../../../../skills/turn-and-burn/references/blindspot_protocol.md).
+
+- **Un +1 exige chaque predicat requis avec une preuve a jour.** Une preuve
+  manquante, périmée, incomplete, dupliquée ou malformée laisse le verdict a -1,
+  et le motif nomme le predicat qui a echoue. Jamais de validation molle, jamais
+  un simple "ca à l'air correct".
+- **Admis, exécuté et observe sont trois faits distincts.** Etre autorise a
+  s'exécutér n'est pas s'exécutér. S'exécutér n'est pas une fin observee. Une
+  etape jamais observee n'est jamais annoncee comme terminée.
+- **Le constructeur ne peut pas rediger sa propre verification positive faisant
+  autorite.** Il peut fournir des preuves ; le +1 qui fait autorite vient du
+  controle qui l'a observe, ou d'un relecteur independant dans une session
+  fraiche, disjointe de l'auteur.
+- **La revue independante s'exécuté sur des entrees figees, dans un espace de
+  travail separe.** L'isolation n'est affirmee que si le runtime l'impose et
+  qu'elle a ete démontrée - jamais parce qu'on a demande au relecteur d'être
+  independant.
+- **Une confiance répétée sans nouvelle preuve est un signal, pas un progrès.**
+  Une sonde decisive capable de distinguer les causes réelles, puis -1 avec le
+  motif ou une escalade. Jamais une troisième repetition de la meme conclusión.
+- **Utilisez les organes que votre hote fournit deja.** Un test rouge, un
+  relecteur independant, un effet reel a asserter, une boucle bornée avec point
+  de reprise. Tout mécanisme que l'hote ne peut pas imposer reste "non validé
+  jusqu'a demonstration".
+
 ## How the absorbs flow runs
 
 `skills/absorb/SKILL.md` is the canonical absorb organ. The burn invokes it

@@ -54,7 +54,9 @@ The source has **62 skill folders**, including **3 compatibility aliases** and
 canonical bundles remove alias folders where the host would discover duplicate
 names. See [release 0.9.5](docs/releases/0.9.5.md) for the integration and verification,
 [release 0.9.6](docs/releases/0.9.6.md) for the model-agnostic clarification, and
-[release 0.9.7](docs/releases/0.9.7.md) for native Codex Build Flow continuation.
+[release 0.9.7](docs/releases/0.9.7.md) for native Codex Build Flow continuation, and
+[release 0.9.8](docs/releases/0.9.8.md) for the public blind-spot bridge and the
+honest-expectations README.
 
 ## What this does
 
@@ -90,6 +92,59 @@ Reasoning without research is hallucination.
 
 **Reason only where reasoning is the only tool that works.** Everything else is the
 harness's job.
+
+## What this pack does not include
+
+Fair expectations, up front. This pack is the portable layer of a bigger
+platform, and the platform is not here. If you buy this pack expecting the
+full behavior, you will be disappointed. Here is exactly what is missing.
+
+- **No running platform underneath.** There is no server, no database, no
+  scheduler, no daemon holding your state. Every file here is markdown your
+  agent reads.
+- **No memory that carries across sessions.** The pack cannot file a lesson for
+  tomorrow or wake the next session up with today's context. That lane lives
+  in your repo, not here.
+- **No model router and no budget ledger.** The pack routes by discipline, never
+  by a hardcoded model name. Choosing a live model, staying inside a budget, and
+  failing loud when the pool is dry are yours to run.
+- **No proof engine.** Nothing here measures your agent for you. The contract
+  that a verdict needs current evidence is written down; enforcing it is a
+  harness you build or a gate you install.
+- **No isolation between the builder and the reviewer** unless your host can
+  start a session without the author's context. Where it cannot, this pack says
+  so rather than pretending.
+- **No coordination between agents.** No board, no lanes, no heartbeat, no
+  hand-off between parallel workers. The leap protocol fans work out; the
+  reconciliation spine is yours.
+- **No live-surface proof.** Your agent's real surface — the screen the human
+  types in — is yours to drive. A green test on a proxy is not a proof, and
+  this pack will not pretend otherwise.
+
+## What you bring to get the same behavior
+
+The pack is the discipline. Six organs make that discipline real, and every one
+of them is cheap to build:
+
+1. **A gate the agent cannot talk its way past.** A hook, a pre-tool check, a
+   wrapper script. Without one, every rule here is a suggestion the agent can
+   forget at exactly the moment it is busiest.
+2. **A red test you actually run.** Write it, commit it, watch it fail for the
+   reason you claim, then let the builder make it green without touching it.
+3. **A real side effect to assert.** A file on disk, a row read back from the
+   real database, a real payload in a real DOM. Mocking the thing you claim to
+   prove is the one failure mode that survives a green suite.
+4. **A way to start a fresh session.** Independence is a property of the
+   runtime. If your host can only continue a conversation, the reviewer is not
+   independent and the report must say so.
+5. **A lessons file the next session reads before it plans.** One file, in the
+   repo. It is the cheapest capability in this whole list and it compounds.
+6. **A bounded loop with a checkpoint.** Retries, workers, review rounds and
+   hand-offs share one budget. When it runs out, checkpoint and escalate
+   instead of continuing quietly.
+
+A real surface to prove on is the seventh, and it is not optional: the human's
+own screen or command is where "done" is real.
 
 ## How it fits
 
@@ -183,6 +238,63 @@ in [INSTALL.md](INSTALL.md).
 - **Visual guide** — the complete skill map and core loops are in
   [FLOWCHARTS.md](docs/FLOWCHARTS.md), with text versions for terminals and screen
   readers.
+## The flow
+
+Every mission runs the same loop. **Boot, turn, burn, learn.** The turn sharpens
+the roster before the burn uses it, and the learn step files what the mission
+taught so the next turn starts sharper. The
+[visual guide](docs/FLOWCHARTS.md) has the full map of every loop below.
+
+```mermaid
+flowchart TD
+  accTitle: The mission flow
+  accDescr: A mission boots the harness, then turns the roster with a blind tribunal and an absorb pass, burns the mission with a red contract and an independent grade, and files the lesson back so the next mission starts sharper.
+
+  MISSION["Mission arrives"] --> BOOT["Boot: harness, floor, human profile"]
+  BOOT --> TURN
+
+  subgraph TURN["TURN - sharpen the roster before the work"]
+    T1["Essence and lessons"] --> T2["Play dispatch"]
+    T2 --> T3["Blind tribunal on plan and design"]
+    T3 --> T4["Three questions"]
+    T4 --> T5["Absorb missing skills, upgrade current skills"]
+  end
+
+  TURN --> BURN
+
+  subgraph BURN["BURN - run the mission on the upgraded kit"]
+    B1["Red contract test, committed"] --> B2["Build"]
+    B2 --> B3["Sniper tests and quality gauntlet"]
+    B3 --> B4["Independent blind grade"]
+    B4 --> B5["Land, prove on the real surface"]
+  end
+
+  BURN --> LEARN
+
+  subgraph LEARN["LEARN - feed the next mission"]
+    L1["File the lesson"] --> L2["Upgrade the skill that missed it"]
+  end
+
+  LEARN --> MISSION
+```
+
+Text version, if the diagram does not render:
+
+1. **Boot.** Load the harness, the numbered floor, and the human's profile.
+2. **Turn.** Read the essence and the lessons. Dispatch the play. Blind-tribunal
+   the plan and the design. Answer the three questions. Absorb any skill the
+   mission showed you were missing, and upgrade the skills the mission showed
+   you were stale.
+3. **Burn.** Commit the red contract first. Build. Run the tests that cover what
+   you touched. Let an independent reviewer grade it. Land it and prove it on
+   the real surface.
+4. **Learn.** File the lesson. Upgrade the skill that missed it. The next
+   mission starts from a sharper roster.
+
+The turn and the burn are the same loop run twice — the turn sharpens the kit,
+the burn uses it, and the learn step is what makes the next turn sharper than
+the last.
+
 ## Proof it works
 
 Run the pack's own suite:
@@ -266,6 +378,7 @@ homework.
 | [session-handoff](skills/session-handoff/SKILL.md) | Compact a session into one flat file a brand-new agent can read cold and continue from. Secrets redacted. |
 | [sniper-testing](skills/sniper-testing/SKILL.md) | Run only the tests that cover what you touched. Kill mock theater — tests that pass while the capability is broken. |
 | [truth-audit](skills/truth-audit/SKILL.md) | Find out what is really running and what is really broken, read-only and proven by command, then hand off a repair spec any coder or agent can execute. |
+| [turn-and-burn](skills/turn-and-burn/SKILL.md) | Run the mission loop: boot, turn the roster (essence, lessons, play, blind tribunal, three questions, absorb), burn the mission on the upgraded kit, then file the lesson so the next turn starts sharper. |
 | [understanding-gates](skills/understanding-gates/SKILL.md) | Gate Design, Plan, Build, Test, and Ship with approve/revise/reject verdicts, so the build still matches the ask. |
 | [wayfinder](skills/wayfinder/SKILL.md) | When lost, chart a decision map to the destination instead of parking a question on the human. |
 ## The plays
@@ -327,9 +440,56 @@ Same rules the pack teaches.
 New skill? Read [NAMING.md](NAMING.md) first: skills are noun phrases, commands are
 verbs, and the floor is law.
 
-## Credit
+## Credit — the real repos, and what is original here
 
-Composition and conversion by [Tcuzzo](https://github.com/Tcuzzo). Some skills carry
-scaffold credits for the published work they graft; those are noted inline and
-collected in [NOTICE.md](NOTICE.md). Licensed [MIT](LICENSE). Contributions are
+Composition and conversion by [Tcuzzo](https://github.com/Tcuzzo). This pack is
+**[backs-aios-skills](https://github.com/Tcuzzo/backs-aios-skills)**. Some skills
+carry scaffold credits for the published work they graft; those are noted inline
+and collected in [NOTICE.md](NOTICE.md). Licensed [MIT](LICENSE). Contributions are
 welcome — keep the credits intact.
+
+**The people and projects this pack stands on, out loud:**
+
+- **[mattpocock/skills](https://github.com/mattpocock/skills)** (MIT) — the
+  wayfinder, blind-tribunal, root-cause-first, session-handoff, guided-steps and
+  live-research skills were re-engineered from his scaffolds.
+- **[obra/superpowers](https://github.com/obra/superpowers)** (MIT) — the
+  test-first and systematic-debugging disciplines.
+- **[anthropics/skills](https://github.com/anthropics/skills)** and the
+  [Agent Skills format](https://agentskills.io/) — the SKILL.md convention this
+  pack speaks.
+- **[W3C Design Tokens](https://tr.designtokens.org/format/)** and
+  **[WCAG 2.2](https://www.w3.org/TR/WCAG22/)** — the token format and the
+  accessibility hard gate in design-taste.
+- **[karpathy/autoresearch](https://github.com/karpathy/autoresearch)** (MIT) —
+  the keep-or-revert discipline behind blind-eval.
+- The CRAP metric (Savoia & Evans), Ousterhout's deep modules, ASD-STE100,
+  UICrit and superdesign — the named sources behind the quality bar and the
+  plain-language bar.
+- Two sibling agents on the same seam, both public:
+  **[HydraAgent_public](https://github.com/Tcuzzo/HydraAgent_public)** and
+  **[bucks](https://github.com/Tcuzzo/bucks)**.
+
+**What is original here.** Said plainly, with no hedging:
+
+- **The harness invariants.** The numbered floor every autonomous change has to
+  clear before it lands.
+- **The blind, author-disjoint tribunal.** Eight lenses, one reviewer each,
+  authorship hidden, reviewer-session provenance recorded, and every finding
+  turned into a failing test.
+- **The red-first tamper-proof contract**, and the rule that a green which mocks
+  the seam under change is not a proof.
+- **The reflex seam.** The model decides; the runtime owns state, files, and
+  rules, and refuses out loud instead of guessing.
+- **The turn-and-burn ritual and the blind-spot evidence contract.** A verdict is
+  +1 only on complete, current evidence, and -1 with the reason otherwise.
+- **The decision bar.** Only taste, vision, and destructive risk reach the human;
+  everything else executes.
+- **The leap protocol, the session rollover, operator essence, and the
+  model-agnostic routing discipline** — never a model name hardcoded in a
+  tracked file.
+
+Where a skill grew out of someone else's scaffold, [NOTICE.md](NOTICE.md) names
+the source, the license, and exactly what was taken, and the credit stays in the
+skill file. Six skills were re-engineered from Matt Pocock's scaffolds; the
+design wrapped around them is this pack's own.

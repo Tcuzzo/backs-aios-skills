@@ -59,6 +59,37 @@ isn't repeated.
    the mission surfaced that the skill did not already encode. Land the
    skill update alongside the mission's main artifact (whole-seam closure).
 
+## Der Blindspot-Nachweisvertrag
+
+Eine Blindspot-Antwort ist **Beleg, nicht Meinung**. Den vollständigen Vertrag
+mit Pseudocode und Abnahmeszenarien gibt es auf Englisch:
+[references/blindspot_protocol.md](../../../../skills/turn-and-burn/references/blindspot_protocol.md).
+
+- **Ein +1 braucht jedes geforderte Prädikat mit aktuellen Belegen.** Fehlende,
+  veraltete, unvollständige, doppelte oder fehlerhafte Belege lassen das Urteil
+  bei -1, und der Grund nennt das gescheiterte Prädikat. Nie ein weiches
+  Bestehen, nie ein blößes "sieht gut aus".
+- **Zugelassen, ausgeführt und beobachtet sind drei verschiedene Dinge.** Erlaubt
+  zu laufen ist nicht laufen. Laufen ist nicht beobachtetes Abschließen. Eine
+  Stufe, die nie beobachtet wurde, wird nie als erledigt gemeldet.
+- **Der Builder darf seine eigene maßgebliche Bestaetigung nicht verfassen.**
+  Er darf Belege liefern; das maßgebliche +1 kommt von der Prüfung, die es
+  beobachtet hat, oder von einem unabhängigen Reviewer in einer frischen,
+  autorenfremden Sitzung.
+- **Unabhaengige Prüfung laeuft auf eingefrorenen Eingaben, in getrenntem
+  Scratch-Speicher.** Isolation wird nur behauptet, wenn die Laufzeit sie
+  erzwingt und sie nachgewiesen wurde - nie, weil der Reviewer angewiesen
+  wurde, unabhaengig zu sein.
+- **Wiederholte Zuversicht ohne neue Belege ist ein Signal, kein Fortschritt.**
+  Eine entscheidende Sonde, die die lebenden Ursachen trennt, dann -1 mit
+  Begründung oder Eskalation. Nie eine dritte Wiederholung derselben
+  Schlussfolgerung.
+- **Nutze die Organe, die dein Host bereits mitbringt.** Ein roter Test, ein
+  unabhängiger Reviewer, eine echte Nebenwirkung zum Behaupten, eine begrenzte
+  Schleife mit Checkpoint. Jeder Mechanismus, den der Host nicht erzwingen kann,
+  bleibt "unvalidiert bis nachgewiesen", bis ein Live-Beleg zeigt, dass er
+  haelt.
+
 ## How the absorbs flow runs
 
 `skills/absorb/SKILL.md` is the canonical absorb organ. The burn invokes it
