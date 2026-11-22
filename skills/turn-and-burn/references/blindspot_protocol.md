@@ -53,7 +53,8 @@ predicate_failed: <name of the predicate, only when verdict is -1>
 evidence:
   - kind: test | command | file | receipt | review
     ref: <path, command line, or receipt id>
-    observed_at: <timestamp>
+    observed: true | false
+    observed_at: <timestamp> | null
     fresh: true | false
     author: builder | observer | independent-reviewer
 isolation:
@@ -67,17 +68,20 @@ The fields that make a verdict load-bearing:
 
 - **`fresh`** — evidence that predates the change it judges is stale, and stale
   evidence is a -1, not a caveat.
+- **`observed`** — `kind` says what the evidence IS; `observed` says whether
+  anyone actually watched it happen. Evidence nobody witnessed is a -1 for any
+  predicate that requires observation, whatever its kind.
 - **`author`** — evidence written by the same execution that made the change is
   supporting material, never an authoritative +1.
 - **`enforced_by`** — isolation you cannot name a mechanism for is isolation you
   do not have.
 - **`status`** — a mechanism that has never been shown holding on this host stays
-  `unvalidated until demonstrated`.
+  `unvalidated until demonstrated`, and a verdict cannot be +1 while it is.
 
 ## The verdict function
 
 ```text
-verdict(claim, required_predicates, evidence, author) -> (+1 | -1, reason)
+verdict(claim, required_predicates, evidence, author, status) -> (+1 | -1, reason)
 
   for each predicate p in required_predicates:
       bound = evidence bound to p
@@ -85,7 +89,7 @@ verdict(claim, required_predicates, evidence, author) -> (+1 | -1, reason)
           return (-1, "predicate " + p + " has no evidence")
       if bound is stale or incomplete or duplicate or malformed:
           return (-1, "predicate " + p + " has " + bound.problem)
-      if p requires observation and bound.kind != observed:
+      if p requires observation and not bound.observed:
           return (-1, "predicate " + p + " was never observed")
       if p requires independence and bound.author == author:
           return (-1, "predicate " + p + " was verified by its own author")
@@ -93,12 +97,18 @@ verdict(claim, required_predicates, evidence, author) -> (+1 | -1, reason)
   if claim was already asserted with the same evidence:
       return (-1, "no new evidence — run one decisive probe")
 
+  if status != "validated":
+      return (-1, "the mechanism is unvalidated until demonstrated — a live receipt "
+                 + "must show it holding on this host before the verdict can be +1")
+
   return (+1, "")
 ```
 
-Two properties of this shape are the point. The verdict cannot be softened: there
-is no branch that returns a qualified yes. And the reason is always the name of
-the predicate that failed, so the next probe is chosen, not guessed.
+Three properties of this shape are the point. The verdict cannot be softened:
+there is no branch that returns a qualified yes. The reason is always the name of
+the predicate that failed, so the next probe is chosen, not guessed. And an
+unvalidated mechanism can never carry a +1 — the contract cannot be talked into
+passing itself.
 
 ## Acceptance scenarios
 
@@ -133,6 +143,13 @@ supposed to be proven. The evidence is malformed by construction — a mock of t
 thing under test proves nothing — so the verdict is -1 and the repair is a real
 side effect: a file on disk, a row read back from the real database, a real
 payload in a real DOM.
+
+**Fails (-1) on an undemonstrated mechanism.** Every predicate has current
+evidence, and the isolation looks right on paper — but the host has never shown
+the enforcement holding. The record still says `unvalidated until demonstrated`,
+so the verdict is -1 with the reason "the mechanism is unvalidated until
+demonstrated". The repair is not more writing. It is one live receipt on that
+host, and then the status flips to `validated`.
 
 ## How to get this behavior on your host
 

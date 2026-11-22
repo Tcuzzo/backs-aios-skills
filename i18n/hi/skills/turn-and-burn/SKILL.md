@@ -69,7 +69,7 @@ pseudocode और स्वीकृति के परिदृश्य अ�
   पुरानी, अधूरी, duplicate या बिगड़ी हुई हो, verdict -1 पर रहता है, और कारण
   बताता है कि कौन-सा predicate fail हुआ। कभी soft pass नहीं, कभी सिर्फ "ठीक
   लगता है" नहीं।
-- **Admitted, exécutéd और observed तीन अलग बातें हैं।** चलने की अनुमति चलना नहीं
+- **Admitted, executed और observed तीन अलग बातें हैं।** चलने की अनुमति चलना नहीं
   है। चलना observed completion नहीं है। जो stage observe तक नहीं पहुँचा, उसे
   कभी पूरा बताया नहीं जाता।
 - **Builder अपना खुद का authoritative positive verification नहीं लिख सकता।** वह
@@ -78,10 +78,10 @@ pseudocode और स्वीकृति के परिदृश्य अ�
 - **Independent review frozen inputs पर, अलग scratch में चलता है।** Isolation
   तब ही claim की जाती है जब runtime उसे enforce करे और वह दिखाया गया हो —
   इसलिए नहीं कि reviewer से कहा गया कि "independent रहो"।
-- **बिना नए evidence के बार-बार same confidence progrèss नहीं, signal है।** एक
+- **बिना नए evidence के बार-बार same confidence progress नहीं, signal है।** एक
   decisive probe चलाओ जो ज़िंदा causes को अलग कर सके, फिर कारण के साथ -1 या
   escalate करो। उसी नतीजे की तीसरी repetition कभी नहीं।
-- **अपने host के पास जो órganos हैं उन्हीं का इस्तेमाल करो।** एक red test, एक
+- **अपने host के पास जो अंग हैं उन्हीं का इस्तेमाल करो।** एक red test, एक
   independent reviewer, assert करने के लिए एक real side effect, checkpoint वाला
   एक bounded loop। जिस mechanism को host enforce नहीं कर सकता, वह "unvalidated
   until demonstrated" रहता है।

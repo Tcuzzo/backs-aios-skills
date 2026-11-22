@@ -59,32 +59,32 @@ isn't repeated.
    the mission surfaced that the skill did not already encode. Land the
    skill update alongside the mission's main artifact (whole-seam closure).
 
-## O contrato de evidencia do ponto cego
+## O contrato de evidência do ponto cego
 
-Uma resposta sobre um ponto cego e **evidencia, nao opiniao**. O contrato
-completo, com pseudocódigo e cenarios de aceitacao, esta em ingles:
+Uma resposta sobre um ponto cego é **evidência, não opinião**. O contrato
+completo, com pseudocódigo e cenários de aceitação, está em inglês:
 [references/blindspot_protocol.md](../../../../skills/turn-and-burn/references/blindspot_protocol.md).
 
-- **Um +1 exige cada predicado obrigatorio com evidencia atual.** Evidencia
+- **Um +1 exige cada predicado obrigatório com evidência atual.** Evidência
   ausente, antiga, incompleta, duplicada ou malformada deixa o veredicto em -1, e
-  o motivo nomeia o predicado que falhou. Nunca uma aprovacao frouxa, nunca um
+  o motivo nomeia o predicado que falhou. Nunca uma aprovação frouxa, nunca um
   simples "parece certo".
-- **Admitido, executado e observado sao tres fatos diferentes.** Poder rodar nao
-  e rodar. Rodar nao e conclusao observada. Uma etapa que nunca chegou a
-  observacao nunca e reportada como concluida.
-- **O construtor nao pode redigir a propria verificacao positiva autoritativa.**
-  Ele pode fornecer evidencia; o +1 autoritativo vem da checagem que observóu a
-  coisa, ou de um revisor independente em uma sessao nova e sem o contexto do
+- **Admitido, executado e observado são três fatos diferentes.** Poder rodar não
+  é rodar. Rodar não é conclusão observada. Uma etapa que nunca chegou a
+  observação nunca é reportada como concluída.
+- **O construtor não pode redigir sua própria verificação positiva autoritativa.**
+  Ele pode fornecer evidência; o +1 autoritativo vem da checagem que observou a
+  coisa, ou de um revisor independente em uma sessão nova e sem o contexto do
   autor.
-- **A revisao independente roda sobre entradas congeladas, em um scratch
-  separado.** O isolamento e alegado so quando o runtime o impoe e ele foi
+- **A revisão independente roda sobre entradas congeladas, em um scratch
+  separado.** O isolamento é alegado só quando o runtime o impõe e ele foi
   demonstrado - nunca porque foi pedido ao revisor que fosse independente.
-- **Confianca repetida sem evidencia nova e sinal, nao progrèsso.** Rode uma
-  sonda decisiva que separe as causas vivas, entao responda -1 com o motivo ou
-  escale. Nunca uma terceira repeticao da mesma conclusao.
-- **Use os orgaos que o seu host ja traz.** Um teste vermelho, um revisor
+- **Confiança repetida sem evidência nova é sinal, não progresso.** Rode uma
+  sonda decisiva que separe as causas vivas, então responda -1 com o motivo ou
+  escale. Nunca uma terceira repetição da mesma conclusão.
+- **Use os órgãos que o seu host já traz.** Um teste vermelho, um revisor
   independente, um efeito real para afirmar, um loop limitado com checkpoint.
-  Qualquer mecanismo que o host nao consiga impor fica "nao validado ate ser
+  Qualquer mecanismo que o host não consiga impor fica "não validado até ser
   demonstrado".
 
 ## How the absorbs flow runs

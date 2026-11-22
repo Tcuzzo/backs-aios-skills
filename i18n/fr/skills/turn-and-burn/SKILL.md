@@ -61,32 +61,32 @@ isn't repeated.
 
 ## Le contrat de preuve du point aveugle
 
-Une reponse sur un point aveugle est **une preuve, pas une opinion**. Le
-contrat complet, avec le pseudo-code et les scenarios d'acceptation, est en
+Une réponse sur un point aveugle est **une preuve, pas une opinion**. Le
+contrat complet, avec le pseudo-code et les scénarios d'acceptation, est en
 anglais : [references/blindspot_protocol.md](../../../../skills/turn-and-burn/references/blindspot_protocol.md).
 
-- **Un +1 exige chaque predicat requis avec une preuve a jour.** Une preuve
-  manquante, périmée, incomplete, dupliquée ou malformée laisse le verdict a -1,
-  et le motif nomme le predicat qui a echoue. Jamais de validation molle, jamais
-  un simple "ca à l'air correct".
-- **Admis, exécuté et observe sont trois faits distincts.** Etre autorise a
-  s'exécutér n'est pas s'exécutér. S'exécutér n'est pas une fin observee. Une
-  etape jamais observee n'est jamais annoncee comme terminée.
-- **Le constructeur ne peut pas rediger sa propre verification positive faisant
-  autorite.** Il peut fournir des preuves ; le +1 qui fait autorite vient du
-  controle qui l'a observe, ou d'un relecteur independant dans une session
-  fraiche, disjointe de l'auteur.
-- **La revue independante s'exécuté sur des entrees figees, dans un espace de
-  travail separe.** L'isolation n'est affirmee que si le runtime l'impose et
-  qu'elle a ete démontrée - jamais parce qu'on a demande au relecteur d'être
-  independant.
+- **Un +1 exige chaque prédicat requis avec une preuve à jour.** Une preuve
+  manquante, périmée, incomplète, dupliquée ou malformée laisse le verdict à -1,
+  et le motif nomme le prédicat qui a échoué. Jamais de validation molle, jamais
+  un simple "ça a l'air correct".
+- **Admis, exécuté et observé sont trois faits distincts.** Être autorisé à
+  s'exécuter n'est pas s'exécuter. S'exécuter n'est pas une fin observée. Une
+  étape jamais observée n'est jamais annoncée comme terminée.
+- **Le constructeur ne peut pas rédiger sa propre vérification positive faisant
+  autorité.** Il peut fournir des preuves ; le +1 qui fait autorité vient du
+  contrôle qui l'a observé, ou d'un relecteur indépendant dans une session
+  fraîche, disjointe de l'auteur.
+- **La revue indépendante s'exécute sur des entrées figées, dans un espace de
+  travail séparé.** L'isolation n'est affirmée que si le runtime l'impose et
+  qu'elle a été démontrée - jamais parce qu'on a demandé au relecteur d'être
+  indépendant.
 - **Une confiance répétée sans nouvelle preuve est un signal, pas un progrès.**
-  Une sonde decisive capable de distinguer les causes réelles, puis -1 avec le
-  motif ou une escalade. Jamais une troisième repetition de la meme conclusión.
-- **Utilisez les organes que votre hote fournit deja.** Un test rouge, un
-  relecteur independant, un effet reel a asserter, une boucle bornée avec point
-  de reprise. Tout mécanisme que l'hote ne peut pas imposer reste "non validé
-  jusqu'a demonstration".
+  Une sonde décisive capable de distinguer les causes réelles, puis -1 avec le
+  motif ou une escalade. Jamais une troisième répétition de la même conclusion.
+- **Utilisez les organes que votre hôte fournit déjà.** Un test rouge, un
+  relecteur indépendant, un effet réel à asserter, une boucle bornée avec point
+  de reprise. Tout mécanisme que l'hôte ne peut pas imposer reste "non validé
+  jusqu'à démonstration".
 
 ## How the absorbs flow runs
 
