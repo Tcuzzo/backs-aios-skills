@@ -1,11 +1,6 @@
 ---
 name: turn-and-burn
-description: 'Use when BACKS gets a mission of any size — runs the plays, quick-tribunals
-  the plan and design, asks its 3 questions, then researches verified-skill.com and
-  absorbs the missing skills to remove blindspots in the roster, updating current
-  skills to the most elite state before burning the mission. Trigger words: turn and
-  burn, mission intake, run the plays, blindspot, absorb missing skills, verified
-  skills, elite state, skill update, skill research, mission burn, ritual burn.'
+description: "Use when an agent gets a mission of any size — it runs the plays, quick-tribunals the plan and design, asks its 3 questions, then researches verified-skill.com and absorbs the missing skills to close the gaps the roster hides, updating current skills to the most elite state before burning the mission. Every gap answer carries evidence: +1 only on complete, current evidence, and -1 with the reason when evidence is missing, stale, duplicate or malformed. Trigger words: turn and burn, mission intake, run the plays, truth audit, absorb missing skills, verified skills, elite state, skill update, skill research, mission burn, ritual burn, evidence contract."
 license: MIT
 metadata:
   tags: "hi"
@@ -59,11 +54,10 @@ isn't repeated.
    the mission surfaced that the skill did not already encode. Land the
    skill update alongside the mission's main artifact (whole-seam closure).
 
-## अंधे धब्बे का सबूत-अनुबंध
+## अंतराल का सबूत-अनुबंध
 
-अंधे धब्बे के बारे में कोई जवाब **सबूत है, राय नहीं।** पूरा अनुबंध, उसका
-pseudocode और स्वीकृति के परिदृश्य अंग्रेज़ी में हैं:
-[references/blindspot_protocol.md](../../../../skills/turn-and-burn/references/blindspot_protocol.md).
+अंतराल के बारे में कोई जवाब **सबूत है, राय नहीं।** अनुबंध अंग्रेज़ी में यहाँ है:
+[truth-audit](../../../../skills/truth-audit/SKILL.md).
 
 - **+1 के लिए हर ज़रूरी predicate की मौजूदा evidence चाहिए।** जो evidence गायब,
   पुरानी, अधूरी, duplicate या बिगड़ी हुई हो, verdict -1 पर रहता है, और कारण

@@ -1,11 +1,6 @@
 ---
 name: turn-and-burn
-description: 'Use when BACKS gets a mission of any size — runs the plays, quick-tribunals
-  the plan and design, asks its 3 questions, then researches verified-skill.com and
-  absorbs the missing skills to remove blindspots in the roster, updating current
-  skills to the most elite state before burning the mission. Trigger words: turn and
-  burn, mission intake, run the plays, blindspot, absorb missing skills, verified
-  skills, elite state, skill update, skill research, mission burn, ritual burn.'
+description: "Use when an agent gets a mission of any size — it runs the plays, quick-tribunals the plan and design, asks its 3 questions, then researches verified-skill.com and absorbs the missing skills to close the gaps the roster hides, updating current skills to the most elite state before burning the mission. Every gap answer carries evidence: +1 only on complete, current evidence, and -1 with the reason when evidence is missing, stale, duplicate or malformed. Trigger words: turn and burn, mission intake, run the plays, truth audit, absorb missing skills, verified skills, elite state, skill update, skill research, mission burn, ritual burn, evidence contract."
 license: MIT
 metadata:
   tags: "pt-BR"
@@ -59,11 +54,11 @@ isn't repeated.
    the mission surfaced that the skill did not already encode. Land the
    skill update alongside the mission's main artifact (whole-seam closure).
 
-## O contrato de evidência do ponto cego
+## O contrato de evidência da lacuna
 
-Uma resposta sobre um ponto cego é **evidência, não opinião**. O contrato
-completo, com pseudocódigo e cenários de aceitação, está em inglês:
-[references/blindspot_protocol.md](../../../../skills/turn-and-burn/references/blindspot_protocol.md).
+Uma resposta sobre uma lacuna é **evidência, não opinião**. O contrato está na
+skill truth-audit:
+[truth-audit](../../../../skills/truth-audit/SKILL.md).
 
 - **Um +1 exige cada predicado obrigatório com evidência atual.** Evidência
   ausente, antiga, incompleta, duplicada ou malformada deixa o veredicto em -1, e

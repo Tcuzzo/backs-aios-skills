@@ -1,11 +1,6 @@
 ---
 name: turn-and-burn
-description: 'Use when BACKS gets a mission of any size — runs the plays, quick-tribunals
-  the plan and design, asks its 3 questions, then researches verified-skill.com and
-  absorbs the missing skills to remove blindspots in the roster, updating current
-  skills to the most elite state before burning the mission. Trigger words: turn and
-  burn, mission intake, run the plays, blindspot, absorb missing skills, verified
-  skills, elite state, skill update, skill research, mission burn, ritual burn.'
+description: "Use when an agent gets a mission of any size — it runs the plays, quick-tribunals the plan and design, asks its 3 questions, then researches verified-skill.com and absorbs the missing skills to close the gaps the roster hides, updating current skills to the most elite state before burning the mission. Every gap answer carries evidence: +1 only on complete, current evidence, and -1 with the reason when evidence is missing, stale, duplicate or malformed. Trigger words: turn and burn, mission intake, run the plays, truth audit, absorb missing skills, verified skills, elite state, skill update, skill research, mission burn, ritual burn, evidence contract."
 license: MIT
 metadata:
   tags: "zh-CN"
@@ -59,10 +54,10 @@ isn't repeated.
    the mission surfaced that the skill did not already encode. Land the
    skill update alongside the mission's main artifact (whole-seam closure).
 
-## 盲点证据契约
+## 缺口证据契约
 
-关于盲点的回答是**证据，不是意见**。完整契约、伪代码和验收场景见英文版：
-[references/blindspot_protocol.md](../../../../skills/turn-and-burn/references/blindspot_protocol.md)。
+关于缺口的回答是**证据，不是意见**。契约见 truth-audit 技能：
+[truth-audit](../../../../skills/truth-audit/SKILL.md)。
 
 - **+1 需要每个必需的判定项都配上当前有效的证据。** 证据缺失、过期、不完整、
   重复或格式错误，判定就停在 -1，并写明是哪一项没通过。绝不放水，也绝不含糊

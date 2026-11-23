@@ -1,11 +1,6 @@
 ---
 name: turn-and-burn
-description: 'Use when BACKS gets a mission of any size — runs the plays, quick-tribunals
-  the plan and design, asks its 3 questions, then researches verified-skill.com and
-  absorbs the missing skills to remove blindspots in the roster, updating current
-  skills to the most elite state before burning the mission. Trigger words: turn and
-  burn, mission intake, run the plays, blindspot, absorb missing skills, verified
-  skills, elite state, skill update, skill research, mission burn, ritual burn.'
+description: "Use when an agent gets a mission of any size — it runs the plays, quick-tribunals the plan and design, asks its 3 questions, then researches verified-skill.com and absorbs the missing skills to close the gaps the roster hides, updating current skills to the most elite state before burning the mission. Every gap answer carries evidence: +1 only on complete, current evidence, and -1 with the reason when evidence is missing, stale, duplicate or malformed. Trigger words: turn and burn, mission intake, run the plays, truth audit, absorb missing skills, verified skills, elite state, skill update, skill research, mission burn, ritual burn, evidence contract."
 license: MIT
 metadata:
   tags: "fr"
@@ -59,11 +54,11 @@ isn't repeated.
    the mission surfaced that the skill did not already encode. Land the
    skill update alongside the mission's main artifact (whole-seam closure).
 
-## Le contrat de preuve du point aveugle
+## Le contrat de preuve de la lacune
 
-Une réponse sur un point aveugle est **une preuve, pas une opinion**. Le
-contrat complet, avec le pseudo-code et les scénarios d'acceptation, est en
-anglais : [references/blindspot_protocol.md](../../../../skills/turn-and-burn/references/blindspot_protocol.md).
+Une réponse sur une lacune est **une preuve, pas une opinion**. Le contrat est dans
+la skill truth-audit :
+[truth-audit](../../../../skills/truth-audit/SKILL.md).
 
 - **Un +1 exige chaque prédicat requis avec une preuve à jour.** Une preuve
   manquante, périmée, incomplète, dupliquée ou malformée laisse le verdict à -1,

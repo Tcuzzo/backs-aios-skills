@@ -583,7 +583,7 @@ uses it, and the learn step files what the mission taught so the next turn
 starts sharper. The skill that carries this loop is
 [turn-and-burn](../skills/turn-and-burn/SKILL.md), and the evidence contract it
 leans on is in
-[references/blindspot_protocol.md](../skills/turn-and-burn/references/blindspot_protocol.md).
+[truth-audit](../skills/truth-audit/SKILL.md).
 
 ```mermaid
 flowchart TD

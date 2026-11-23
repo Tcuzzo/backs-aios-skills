@@ -126,6 +126,30 @@ edited, inserted or removed line), and compares the head file (truncation at the
 If someone rewrites the ledger and its head file together, only an outside copy of the
 head hash, kept in a receipt or a commit, can show it.
 
+### 5a. The evidence contract this skill owns
+
+A truth-audit answer is EVIDENCE, not an opinion. Six rules, enforced by the ledger
+above and by every reviewer that grades an audit:
+
+- **+1 only when every required predicate has valid, current evidence.** Missing,
+  stale, incomplete, duplicate or malformed evidence leaves the verdict at -1, and the
+  reason names the predicate that failed. Never a soft pass, never a bare "looks good".
+- **Stage admission, authorized execution and observed completion stay separate.**
+  Being allowed to run is not running. Running is not observed completion. A stage that
+  never reached observation is never reported as done.
+- **A builder cannot author its own authoritative positive verification.** The builder
+  may supply evidence; the authoritative +1 comes from the check that observed it, or
+  from an independent reviewer in a fresh, author-disjoint session.
+- **Independent review runs on frozen inputs in separate scratch.** Isolation is
+  claimed only when the runtime enforces it and it was shown - never asserted.
+- **Repeating the same confidence with no new evidence is a signal, not progress.**
+  Run one decisive probe that tells the live causes apart, then answer -1 with the
+  reason or escalate. Never a third repetition of the same conclusion.
+- **Use the organs your host already ships.** A red test, an independent reviewer, a
+  real side effect to assert, a bounded loop with a checkpoint. Any mechanism the host
+  cannot enforce stays marked "unvalidated until demonstrated" until a live receipt
+  shows it holding.
+
 ### 6. Root-cause classes, not a bug list
 
 Group findings into a handful of classes and fix each class at its shared primitive,

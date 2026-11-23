@@ -1,11 +1,6 @@
 ---
 name: turn-and-burn
-description: 'Use when BACKS gets a mission of any size — runs the plays, quick-tribunals
-  the plan and design, asks its 3 questions, then researches verified-skill.com and
-  absorbs the missing skills to remove blindspots in the roster, updating current
-  skills to the most elite state before burning the mission. Trigger words: turn and
-  burn, mission intake, run the plays, blindspot, absorb missing skills, verified
-  skills, elite state, skill update, skill research, mission burn, ritual burn.'
+description: "Use when an agent gets a mission of any size — it runs the plays, quick-tribunals the plan and design, asks its 3 questions, then researches verified-skill.com and absorbs the missing skills to close the gaps the roster hides, updating current skills to the most elite state before burning the mission. Every gap answer carries evidence: +1 only on complete, current evidence, and -1 with the reason when evidence is missing, stale, duplicate or malformed. Trigger words: turn and burn, mission intake, run the plays, truth audit, absorb missing skills, verified skills, elite state, skill update, skill research, mission burn, ritual burn, evidence contract."
 license: MIT
 metadata:
   tags: "de"
@@ -59,11 +54,11 @@ isn't repeated.
    the mission surfaced that the skill did not already encode. Land the
    skill update alongside the mission's main artifact (whole-seam closure).
 
-## Der Blindspot-Nachweisvertrag
+## Der Lücken-Nachweisvertrag
 
-Eine Blindspot-Antwort ist **Beleg, nicht Meinung**. Den vollständigen Vertrag
-mit Pseudocode und Abnahmeszenarien gibt es auf Englisch:
-[references/blindspot_protocol.md](../../../../skills/turn-and-burn/references/blindspot_protocol.md).
+Eine Lücken-Antwort ist **Beleg, nicht Meinung**. Den Vertrag gibt es beim
+truth-audit Skill:
+[truth-audit](../../../../skills/truth-audit/SKILL.md).
 
 - **Ein +1 braucht jedes geforderte Prädikat mit aktuellen Belegen.** Fehlende,
   veraltete, unvollständige, doppelte oder fehlerhafte Belege lassen das Urteil

@@ -1,6 +1,6 @@
 ---
 name: "turn-and-burn"
-description: "Use when an agent gets a mission of any size — it runs the plays, quick-tribunals the plan and design, asks its 3 questions, then researches verified-skill.com and absorbs the missing skills to remove blindspots in the roster, updating current skills to the most elite state before burning the mission. Every blindspot answer carries evidence: +1 only on complete, current evidence, and -1 with the reason when evidence is missing, stale, duplicate or malformed. Trigger words: turn and burn, mission intake, run the plays, blindspot, blind spot, absorb missing skills, verified skills, elite state, skill update, skill research, mission burn, ritual burn, evidence contract."
+description: "Use when an agent gets a mission of any size — it runs the plays, quick-tribunals the plan and design, asks its 3 questions, then researches verified-skill.com and absorbs the missing skills to close the gaps the roster hides, updating current skills to the most elite state before burning the mission. Every gap answer carries evidence: +1 only on complete, current evidence, and -1 with the reason when evidence is missing, stale, duplicate or malformed. Trigger words: turn and burn, mission intake, run the plays, truth audit, absorb missing skills, verified skills, elite state, skill update, skill research, mission burn, ritual burn, evidence contract."
 license: "MIT"
 ---
 
@@ -48,11 +48,11 @@ not repeated.
    the mission surfaced that the skill did not already encode. Land the
    skill update alongside the mission's main artifact (whole-seam closure).
 
-## The blind-spot evidence contract
+## The gap evidence contract
 
-A blindspot answer is **evidence, not an opinion**. The full contract, the
-pseudocode and the acceptance scenarios live in
-[references/blindspot_protocol.md](references/blindspot_protocol.md). This is the
+A gap answer is **evidence, not an opinion**. The six rules below are the
+contract. In the BACKS-native pack the truth-audit skill owns them, along with
+the full contracts, the pseudocode and the acceptance scenarios. This is the
 short form every mission reads.
 
 - **A +1 needs every required predicate, with current evidence.** Missing, stale,
@@ -117,8 +117,8 @@ behavior — the list is short, and every item has a bring-your-own answer.
 
 ## Cross-references
 
-- The blind-spot evidence contract, in full:
-  [references/blindspot_protocol.md](references/blindspot_protocol.md).
+- The gap evidence contract, in full: the truth-audit skill in the
+  BACKS-native pack.
 - The absorb flow: [absorb](../absorb/SKILL.md).
 - The blind review this skill leans on:
   [blind-tribunal](../blind-tribunal/SKILL.md).
