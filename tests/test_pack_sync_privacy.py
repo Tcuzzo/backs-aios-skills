@@ -10,15 +10,38 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BASH = Path(r"C:\Program Files\Git\bin\bash.exe")
+
+
+def find_bash() -> str | None:
+    if os.name != "nt":
+        return shutil.which("bash")
+
+    # Use Git for Windows to match the drive-letter path conversion below.
+    git = shutil.which("git")
+    if git:
+        git_bin = Path(git).resolve().parent
+        git_root = git_bin.parent
+        if git_bin.name.lower() == "bin" and git_root.name.lower() in {"mingw32", "mingw64", "usr"}:
+            git_root = git_root.parent
+        git_bash = git_root / "bin" / "bash.exe"
+        if git_bash.is_file():
+            return str(git_bash)
+
+    git_bash = Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "Git" / "bin" / "bash.exe"
+    return str(git_bash) if git_bash.is_file() else None
+
+
+BASH = find_bash()
 
 
 def bash_path(path: Path) -> str:
     resolved = path.resolve()
-    return f"/{resolved.drive[0].lower()}{resolved.as_posix()[2:]}"
+    if resolved.drive.endswith(":"):
+        return f"/{resolved.drive[0].lower()}{resolved.as_posix()[2:]}"
+    return resolved.as_posix()
 
 
-@unittest.skipUnless(BASH.is_file(), "Git Bash is needed for the shell bridge contract")
+@unittest.skipUnless(BASH is not None, "Bash is needed for the shell bridge contract")
 class PackSyncPrivacyTest(unittest.TestCase):
     def setUp(self) -> None:
         sandbox = ROOT / "sandbox"
