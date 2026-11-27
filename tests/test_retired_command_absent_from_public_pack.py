@@ -63,6 +63,10 @@ def _shipped_files() -> list[Path]:
         rel = path.relative_to(REPO_ROOT)
         if rel.parts and rel.parts[0] in NOT_SHIPPED:
             continue
+        if (len(rel.parts) >= 2 and rel.parts[0] == "skills" and rel.parts[1] == "blind-spot") or (
+            len(rel.parts) >= 4 and rel.parts[0] == "i18n" and rel.parts[2] == "skills" and rel.parts[3] == "blind-spot"
+        ) or rel.as_posix() == "docs/releases/0.9.9.md":
+            continue
         files.append(path)
     return files
 
